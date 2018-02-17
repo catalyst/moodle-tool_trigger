@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="admin/tool/trigger/db" VERSION="20180217" COMMENT="XMLDB file for Moodle admin/tool/trigger"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../../../lib/xmldb/xmldb.xsd"
+>
+  <TABLES>
+    <TABLE NAME="tool_trigger_workflows" COMMENT="Workflows for the Trigger administration tool">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Name of this workflow"/>
+        <FIELD NAME="description" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Description of the workflow"/>
+        <FIELD NAME="event" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="event name associated with this workflow"/>
+        <FIELD NAME="async" TYPE="binary" NOTNULL="true" SEQUENCE="false" COMMENT="True if this is an asynchronous event"/>
+        <FIELD NAME="enabled" TYPE="binary" NOTNULL="true" SEQUENCE="false" COMMENT="is this workflow enabled"/>
+        <FIELD NAME="draft" TYPE="binary" NOTNULL="true" SEQUENCE="false" COMMENT="Is this workflow in draft mode"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Timestamp when this workflow was created"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Timestamp when this workflow was last modified"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="event" UNIQUE="false" FIELDS="event" COMMENT="event index"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="tool_trigger_queue" COMMENT="Queue of workflow tasks to be processed.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="workflowid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the workflow this queue item relates to"/>
+        <FIELD NAME="status" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Status of processing. 0 pending, 1, processed, -1 failed"/>
+        <FIELD NAME="tries" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="number of times this item has attempted to be processed"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Timestamp this item was added to the queue"/>
+        <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Time this item was last modifief"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="workflowid" TYPE="foreign" FIELDS="workflowid" REFTABLE="tool_trigger_workflows" REFFIELDS="id" COMMENT="foreign key relates to id in workflow table"/>
+      </KEYS>
+    </TABLE>
+  </TABLES>
+</XMLDB>
