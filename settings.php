@@ -25,7 +25,12 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-if ($ADMIN->fulltree) {
-   // TODO: Define the plugin settings page.
-   // https://docs.moodle.org/dev/Admin_settings
+if ($hassiteconfig) {
+    $pluginsettings = new admin_externalpage('tool_trigger_settings',
+            get_string('pluginname', 'tool_trigger'),
+            new moodle_url('/admin/tool/trigger/index.php'));
+
+    $ADMIN->add('tools', $pluginsettings);
+
+    $settings = null;
 }

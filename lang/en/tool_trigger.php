@@ -26,3 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['pluginname'] = 'Event Trigger';
+$string['pluginname_help'] = 'Event Triggering for Moodle';
+
+$string['editsettings'] = 'Workflow settings';
+$string['workflowoverview'] = 'Workflow overview';

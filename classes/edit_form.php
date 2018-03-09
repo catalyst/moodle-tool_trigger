@@ -15,17 +15,36 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * Document enrichment settings form class.
  *
  * @package     tool_trigger
  * @copyright   Matt Porritt <mattp@catalyst-au.net>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace tool_trigger;
+
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'tool_trigger';
-$plugin->release = '2018030907';
-$plugin->version = 2018030907;
-$plugin->requires = 2016052300;
-$plugin->maturity = MATURITY_ALPHA;
+require_once("$CFG->libdir/formslib.php");
+
+/**
+ * Document enrichment settings form class.
+ *
+ * @package     tool_trigger
+ * @copyright   Matt Porritt <mattp@catalyst-au.net>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class edit_form extends \moodleform {
+
+    /**
+     * Build form for the general setting admin page for plugin.
+     */
+    public function definition() {
+        $config = get_config('tool_trigger');
+        $mform = $this->_form;
+
+        $this->add_action_buttons();
+    }
+
+}
