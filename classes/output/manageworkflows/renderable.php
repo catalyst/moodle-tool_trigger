@@ -67,7 +67,7 @@ class renderable extends \table_sql implements \renderable {
                 'async',
                 'active',
                 'draft',
-                'lasttriggered'
+                'lasttriggered',
                 'manage')
                 );
         $this->define_headers(array(
@@ -83,45 +83,46 @@ class renderable extends \table_sql implements \renderable {
         );
         $this->pagesize = $perpage;
         $systemcontext = \context_system::instance();
-        $this->context = $systemcontext
+        $this->context = $systemcontext;
        // $this->hassystemcap = has_capability('tool/monitor:managerules', $systemcontext);
         $this->collapsible(false);
         $this->sortable(false);
         $this->pageable(true);
         $this->is_downloadable(false);
         $this->define_baseurl($url);
+        $this->workflowid = 0;
     }
 
     /**
      * Generate content for name column.
      *
-     * @param \tool_trigger\rule $rule rule object
+     * @param \tool_trigger\workflow $workflow rule object
      * @return string html used to display the column field.
      */
-    public function col_name(\tool_trigger\rule $rule) {
-        return $rule->get_name($this->context);
+    public function col_name(\tool_trigger\workflow $workflow) {
+        return $workflow->get_name($this->context);
     }
 
     /**
      * Generate content for description column.
      *
-     * @param \tool_trigger\rule $rule rule object
+     * @param \tool_trigger\workflow $workflow rule object
      * @return string html used to display the column field.
      */
-    public function col_description(\tool_trigger\rule $rule) {
-        return $rule->get_description($this->context);
+    public function col_description(\tool_trigger\workflow $workflow) {
+        return $workflow->get_description($this->context);
     }
 
     /**
      * Generate content for course column.
      *
-     * @param \tool_trigger\rule $rule rule object
+     * @param \tool_trigger\workflow $workflow rule object
      * @return string html used to display the context column field.
      */
-    public function col_course(\tool_trigger\rule $rule) {
-        $coursename = $rule->get_course_name($this->context);
+    public function col_course(\tool_trigger\workflow $workflow) {
+        $coursename = $workflow->get_course_name($this->context);
 
-        $courseid = $rule->courseid;
+        $courseid = $workflow->courseid;
         if (empty($courseid)) {
             return $coursename;
         } else {
@@ -132,40 +133,40 @@ class renderable extends \table_sql implements \renderable {
     /**
      * Generate content for plugin column.
      *
-     * @param \tool_trigger\rule $rule rule object
+     * @param \tool_trigger\workflow $workflow rule object
      * @return string html used to display the column field.
      */
-    public function col_plugin(\tool_trigger\rule $rule) {
-        return $rule->get_plugin_name();
+    public function col_plugin(\tool_trigger\workflow $workflow) {
+        return $workflow->get_plugin_name();
     }
 
     /**
      * Generate content for eventname column.
      *
-     * @param \tool_trigger\rule $rule rule object
+     * @param \tool_trigger\workflow $workflow rule object
      * @return string html used to display the column field.
      */
-    public function col_eventname(\tool_trigger\rule $rule) {
-        return $rule->get_event_name();
+    public function col_eventname(\tool_trigger\workflow $workflow) {
+        return $workflow->get_event_name();
     }
 
     /**
      * Generate content for filters column.
      *
-     * @param \tool_trigger\rule $rule rule object
+     * @param \tool_trigger\workflow $workflow rule object
      * @return string html used to display the filters column field.
      */
-    public function col_filters(\tool_trigger\rule $rule) {
-        return $rule->get_filters_description();
+    public function col_filters(\tool_trigger\workflow $workflow) {
+        return $workflow->get_filters_description();
     }
 
     /**
      * Generate content for manage column.
      *
-     * @param \tool_trigger\rule $rule rule object
+     * @param \tool_trigger\workflow $workflow rule object
      * @return string html used to display the manage column field.
      */
-    public function col_manage(\tool_trigger\rule $rule) {
+    public function col_manage(\tool_trigger\workflow $workflow) {
         global $OUTPUT, $CFG;
 
         $manage = '';
@@ -173,22 +174,22 @@ class renderable extends \table_sql implements \renderable {
         // Do not allow the user to edit the rule unless they have the system capability, or we are viewing the rules
         // for a course, and not the site. Note - we don't need to check for the capability at a course level since
         // the user is never shown this page otherwise.
-        if ($this->hassystemcap || ($rule->courseid != 0)) {
-            $editurl = new \moodle_url($CFG->wwwroot. '/admin/tool/monitor/edit.php', array('ruleid' => $rule->id,
-                    'courseid' => $rule->courseid, 'sesskey' => sesskey()));
+        if ($this->hassystemcap || ($workflow->courseid != 0)) {
+            $editurl = new \moodle_url($CFG->wwwroot. '/admin/tool/monitor/edit.php', array('ruleid' => $workflow->id,
+                    'courseid' => $workflow->courseid, 'sesskey' => sesskey()));
             $icon = $OUTPUT->render(new \pix_icon('t/edit', get_string('editrule', 'tool_trigger')));
             $manage .= \html_writer::link($editurl, $icon, array('class' => 'action-icon'));
         }
 
         // The user should always be able to copy the rule if they are able to view the page.
         $copyurl = new \moodle_url($CFG->wwwroot. '/admin/tool/monitor/managerules.php',
-                array('ruleid' => $rule->id, 'action' => 'copy', 'courseid' => $this->courseid, 'sesskey' => sesskey()));
+                array('ruleid' => $workflow->id, 'action' => 'copy', 'courseid' => $this->courseid, 'sesskey' => sesskey()));
         $icon = $OUTPUT->render(new \pix_icon('t/copy', get_string('duplicaterule', 'tool_trigger')));
         $manage .= \html_writer::link($copyurl, $icon, array('class' => 'action-icon'));
 
-        if ($this->hassystemcap || ($rule->courseid != 0)) {
-            $deleteurl = new \moodle_url($CFG->wwwroot. '/admin/tool/monitor/managerules.php', array('ruleid' => $rule->id,
-                    'action' => 'delete', 'courseid' => $rule->courseid, 'sesskey' => sesskey()));
+        if ($this->hassystemcap || ($workflow->courseid != 0)) {
+            $deleteurl = new \moodle_url($CFG->wwwroot. '/admin/tool/monitor/managerules.php', array('ruleid' => $workflow->id,
+                    'action' => 'delete', 'courseid' => $workflow->courseid, 'sesskey' => sesskey()));
             $icon = $OUTPUT->render(new \pix_icon('t/delete', get_string('deleterule', 'tool_trigger')));
             $manage .= \html_writer::link($deleteurl, $icon, array('class' => 'action-icon'));
         }
@@ -204,11 +205,10 @@ class renderable extends \table_sql implements \renderable {
      */
     public function query_db($pagesize, $useinitialsbar = true) {
 
-        $total = \tool_trigger\rule_manager::count_rules_by_courseid($this->courseid);
+        $total = \tool_trigger\workflow_manager::count_workflows();
         $this->pagesize($pagesize, $total);
-        $rules = \tool_trigger\rule_manager::get_rules_by_courseid($this->courseid, $this->get_page_start(),
-                $this->get_page_size());
-        $this->rawdata = $rules;
+        $workflows = \tool_trigger\workflow_manager::get_workflows($this->get_page_start(), $this->get_page_size());
+        $this->rawdata = $workflows;
         // Set initial bars.
         if ($useinitialsbar) {
             $this->initialbars($total > $pagesize);

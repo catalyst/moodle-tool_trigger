@@ -17,21 +17,20 @@
 /**
  * Renderer class for manage rules page.
  *
- * @package    tool_monitor
- * @copyright  2014 onwards Ankit Agarwal <ankit.agrr@gmail.com>
+ * @package    tool_trigger
+ * @copyright  Matt Porritt <mattp@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace tool_monitor\output\managerules;
+namespace tool_trigger\output\manageworkflows;
 
 defined('MOODLE_INTERNAL') || die;
 
 /**
  * Renderer class for manage rules page.
  *
- * @since      Moodle 2.8
- * @package    tool_monitor
- * @copyright  2014 onwards Ankit Agarwal <ankit.agrr@gmail.com>
+ * @package    tool_trigger
+ * @copyright  Matt Porritt <mattp@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class renderer extends \plugin_renderer_base {
@@ -45,7 +44,7 @@ class renderer extends \plugin_renderer_base {
      */
     protected function render_renderable(renderable $renderable) {
         $o = $this->render_table($renderable);
-        $o .= $this->render_add_button($renderable->courseid);
+        $o .= $this->render_add_button($renderable->workflowid);
 
         return $o;
     }
@@ -68,17 +67,15 @@ class renderer extends \plugin_renderer_base {
     }
 
     /**
-     * Html to add a button for adding a new rule.
-     *
-     * @param int $courseid course id.
+     * Html to add a button for adding a new workflow.
      *
      * @return string html for the button.
      */
-    protected function render_add_button($courseid) {
+    protected function render_add_button($workflowid) {
         global $CFG;
 
-        $button = \html_writer::tag('button', get_string('addrule', 'tool_monitor'), ['class' => 'btn btn-primary']);
-        $addurl = new \moodle_url($CFG->wwwroot. '/admin/tool/monitor/edit.php', array('courseid' => $courseid));
+        $button = \html_writer::tag('button', get_string('addworkflow', 'tool_trigger'), ['class' => 'btn btn-primary']);
+        $addurl = new \moodle_url($CFG->wwwroot. '/admin/tool/trigger/edit.php', array('workflowid' => $workflowid));
         return \html_writer::link($addurl, $button);
     }
 
@@ -91,8 +88,8 @@ class renderer extends \plugin_renderer_base {
      */
     public function render_subscriptions_link($manageurl) {
         echo \html_writer::start_div();
-        $a = \html_writer::link($manageurl, get_string('managesubscriptions', 'tool_monitor'));
-        $link = \html_writer::tag('span', get_string('managesubscriptionslink', 'tool_monitor', $a));
+        $a = \html_writer::link($manageurl, get_string('managesubscriptions', 'tool_trigger'));
+        $link = \html_writer::tag('span', get_string('managesubscriptionslink', 'tool_trigger', $a));
         echo $link;
         echo \html_writer::end_div();
     }

@@ -15,30 +15,38 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Azure Search search engine settings.
+ * Workflow class.
  *
  * @package    tool_trigger
  * @copyright  Matt Porritt <mattp@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once(dirname(__FILE__) . '/../../../config.php');
-require_once($CFG->libdir . '/adminlib.php');
+namespace tool_trigger;
 
 defined('MOODLE_INTERNAL') || die();
 
-$workflowid = optional_param('workflowid', 0, PARAM_INT);
+/**
+ * Worklfow class.
+ *
+ * @package    tool_trigger
+ * @copyright  Matt Porritt <mattp@catalyst-au.net>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class workflow {
 
-// Set up the page.
-$url = new moodle_url("/admin/tool/trigger/edit.php", array('workflowid' => $workflowid));
-$context = context_system::instance();
-$PAGE->set_context($context);
-$PAGE->set_url($url);
-$PAGE->set_pagelayout('report');
-$PAGE->set_title(get_string('addworkflow', 'tool_trigger'));
-$PAGE->set_heading(get_string('addworkflow', 'tool_trigger'));
+    /**
+     * @var \stdClass The rule object form database.
+     */
+    protected $workflow;
 
-// Build the page output.
-echo $OUTPUT->header();
-//$form->display();
-echo $OUTPUT->footer();
+    /**
+     * Constructor.
+     *
+     * @param \stdClass $rule A rule object from database.
+     */
+    public function __construct($workflow) {
+        $this->workflow = $workflow;
+    }
+
+}

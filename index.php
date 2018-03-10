@@ -27,7 +27,7 @@ require_once($CFG->libdir . '/adminlib.php');
 
 defined('MOODLE_INTERNAL') || die();
 
-admin_externalpage_setup('tool_trigger_settings');
+admin_externalpage_setup('tool_trigger_settings','', null, '', array('pagelayout' => 'report'));
 
 // Build the page output.
 echo $OUTPUT->header();
@@ -39,9 +39,5 @@ $manageurl = new moodle_url('/admin/tool/trigger/index.php');
 $renderable = new \tool_trigger\output\manageworkflows\renderable('tooltrigger', $manageurl);
 $renderer = $PAGE->get_renderer('tool_trigger', 'manageworkflows');
 echo $renderer->render($renderable);
-
-// Show add new workflow button
-// $manageurl = new moodle_url("/admin/tool/monitor/index.php", array('courseid' => $courseid));
-// echo $renderer->render_subscriptions_link($manageurl);
 
 echo $OUTPUT->footer();
