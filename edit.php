@@ -34,11 +34,30 @@ $url = new moodle_url("/admin/tool/trigger/edit.php", array('workflowid' => $wor
 $context = context_system::instance();
 $PAGE->set_context($context);
 $PAGE->set_url($url);
-$PAGE->set_pagelayout('report');
+$PAGE->set_pagelayout('admin');
 $PAGE->set_title(get_string('addworkflow', 'tool_trigger'));
 $PAGE->set_heading(get_string('addworkflow', 'tool_trigger'));
 
+
+
+// Get event lists.
+$eventlist = \tool_monitor\eventlist::get_all_eventlist(true);
+$pluginlist = \tool_monitor\eventlist::get_plugin_list();
+
+// Filter out events which cannot be triggered for some reason.
+$eventlist = array_filter($eventlist, function($classname) {
+    return !$classname::is_deprecated();
+}, ARRAY_FILTER_USE_KEY);
+
+// Modify the lists to add the choosers.
+$eventlist = array_merge(array('' => get_string('choosedots')), $eventlist);
+$pluginlist = array_merge(array('' => get_string('choosedots')), $pluginlist);
+
+// Get data ready for mform.
+$form = new \tool_trigger\edit_form(null, array('eventlist' => $eventlist, 'pluginlist' => $pluginlist));
+
+
 // Build the page output.
 echo $OUTPUT->header();
-//$form->display();
+$form->display();
 echo $OUTPUT->footer();
