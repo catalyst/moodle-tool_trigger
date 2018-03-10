@@ -46,6 +46,7 @@ $PAGE->set_heading(get_string('addworkflow', 'tool_trigger'));
 
 // Load the javascript.
 $PAGE->requires->js_call_amd('tool_trigger/workflow', 'init');
+$PAGE->requires->js_call_amd('tool_trigger/step_select', 'init');
 
 // Get plugin list.
 $pluginlist = \tool_monitor\eventlist::get_plugin_list();

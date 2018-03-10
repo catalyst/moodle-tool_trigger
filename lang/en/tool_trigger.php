@@ -46,6 +46,7 @@ $string['eventtomonitor'] = 'Event to monitor';
 $string['eventtomonitor_help'] = 'The Moodle event to trigger workflow on.';
 $string['lasttriggered'] = 'Last triggered';
 $string['manage'] = 'Manage';
+$string['modaltitle'] = 'Add workflow step.';
 $string['name'] = 'Name';
 $string['step_modal_button'] = 'Add workflow step';
 $string['workflowactive'] = 'Workflow active';
