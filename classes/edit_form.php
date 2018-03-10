@@ -79,7 +79,7 @@ class edit_form extends \moodleform {
         }
 
         // Event.
-        $eventlist = $this->_customdata['eventlist'];
+        $eventlist = array('' => get_string('choosedots'));
         $mform->addElement('select', 'eventtomonitor', get_string('eventtomonitor', 'tool_trigger'), $eventlist);
         $mform->addHelpButton('eventtomonitor', 'eventtomonitor', 'tool_trigger');
         $mform->addRule('eventtomonitor', get_string('required'), 'required');

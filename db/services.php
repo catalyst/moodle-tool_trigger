@@ -15,36 +15,24 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Trigger workflow settings.
+ * Admin tool trigger web service external functions and service definitions.
  *
  * @package    tool_trigger
  * @copyright  Matt Porritt <mattp@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once(dirname(__FILE__) . '/../../../config.php');
-require_once($CFG->libdir . '/adminlib.php');
-
 defined('MOODLE_INTERNAL') || die();
 
-require_login();
-
-admin_externalpage_setup('tool_trigger_settings','', null, '', array('pagelayout' => 'report'));
-
-$context = context_system::instance();
-
-// Check for caps.
-require_capability('tool/trigger:manageworkflows', $context);
-
-// Build the page output.
-echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('workflowoverview', 'tool_trigger'));
-echo 'some content';
-
-// Render the rule list.
-$manageurl = new moodle_url('/admin/tool/trigger/index.php');
-$renderable = new \tool_trigger\output\manageworkflows\renderable('tooltrigger', $manageurl);
-$renderer = $PAGE->get_renderer('tool_trigger', 'manageworkflows');
-echo $renderer->render($renderable);
-
-echo $OUTPUT->footer();
+// Define the web service functions to install.
+$functions = array(
+        'tool_trigger_get_all_eventlist' => array(
+                'classname'   => 'tool_trigger_external',
+                'methodname'  => 'get_all_eventlist',
+                'classpath'   => 'admin/tool/trigger/externallib.php',
+                'description' => 'Returns available events',
+                'type'        => 'read',
+                'capabilities'  => 'tool/trigger:manageworkflows',
+                'ajax' => true
+        ),
+);

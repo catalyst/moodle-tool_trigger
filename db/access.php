@@ -15,36 +15,25 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Trigger workflow settings.
+ * Capabilities.
+ *
+ * This files lists capabilities related to tool_trigger.
  *
  * @package    tool_trigger
  * @copyright  Matt Porritt <mattp@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once(dirname(__FILE__) . '/../../../config.php');
-require_once($CFG->libdir . '/adminlib.php');
-
 defined('MOODLE_INTERNAL') || die();
 
-require_login();
+$capabilities = array(
 
-admin_externalpage_setup('tool_trigger_settings','', null, '', array('pagelayout' => 'report'));
-
-$context = context_system::instance();
-
-// Check for caps.
-require_capability('tool/trigger:manageworkflows', $context);
-
-// Build the page output.
-echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('workflowoverview', 'tool_trigger'));
-echo 'some content';
-
-// Render the rule list.
-$manageurl = new moodle_url('/admin/tool/trigger/index.php');
-$renderable = new \tool_trigger\output\manageworkflows\renderable('tooltrigger', $manageurl);
-$renderer = $PAGE->get_renderer('tool_trigger', 'manageworkflows');
-echo $renderer->render($renderable);
-
-echo $OUTPUT->footer();
+    'tool/trigger:manageworkflows' => array(
+        'riskbitmask' => RISK_CONFIG,
+        'captype' => 'write',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'manager' => CAP_ALLOW
+        ),
+    ),
+);

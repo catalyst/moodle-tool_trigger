@@ -29,33 +29,32 @@ defined('MOODLE_INTERNAL') || die();
 
 $workflowid = optional_param('workflowid', 0, PARAM_INT);
 
-// Set up the page.
+require_login();
+
 $url = new moodle_url("/admin/tool/trigger/edit.php", array('workflowid' => $workflowid));
 $context = context_system::instance();
+
+// Check for caps.
+require_capability('tool/trigger:manageworkflows', $context);
+
+// Set up the page.
 $PAGE->set_context($context);
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('admin');
 $PAGE->set_title(get_string('addworkflow', 'tool_trigger'));
 $PAGE->set_heading(get_string('addworkflow', 'tool_trigger'));
 
+// Load the javascript.
+$PAGE->requires->js_call_amd('tool_trigger/workflow', 'init');
 
-
-// Get event lists.
-$eventlist = \tool_monitor\eventlist::get_all_eventlist(true);
+// Get plugin list.
 $pluginlist = \tool_monitor\eventlist::get_plugin_list();
 
-// Filter out events which cannot be triggered for some reason.
-$eventlist = array_filter($eventlist, function($classname) {
-    return !$classname::is_deprecated();
-}, ARRAY_FILTER_USE_KEY);
-
-// Modify the lists to add the choosers.
-$eventlist = array_merge(array('' => get_string('choosedots')), $eventlist);
+// Modify the list to add the choosers.
 $pluginlist = array_merge(array('' => get_string('choosedots')), $pluginlist);
 
 // Get data ready for mform.
-$form = new \tool_trigger\edit_form(null, array('eventlist' => $eventlist, 'pluginlist' => $pluginlist));
-
+$form = new \tool_trigger\edit_form(null, array('pluginlist' => $pluginlist));
 
 // Build the page output.
 echo $OUTPUT->header();
