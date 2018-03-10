@@ -88,16 +88,56 @@ class edit_form extends \moodleform {
         }
 
         // Draft mode.
+        $mform->addElement('advcheckbox',
+            'draftmode',
+            get_string ('draftmode', 'tool_trigger'),
+            'Enable', array(), array(0, 1));
+        $mform->setType('draftmode', PARAM_INT);
+        $mform->addHelpButton('draftmode', 'draftmode', 'tool_trigger');
+        if (isset($this->_customdata['draftmode'])) {
+            $mform->setDefault('draftmode', $this->_customdata['draftmode']);
+        } else {
+            $mform->setDefault('draftmode', 0);
+        }
 
         // Async mode.
+        $mform->addElement('advcheckbox',
+            'asyncmode',
+            get_string ('asyncmode', 'tool_trigger'),
+            'Enable', array(), array(0, 1));
+        $mform->setType('asyncmode', PARAM_INT);
+        $mform->addHelpButton('asyncmode', 'asyncmode', 'tool_trigger');
+        if (isset($this->_customdata['asyncmode'])) {
+            $mform->setDefault('asyncmode', $this->_customdata['asyncmode']);
+        } else {
+            $mform->setDefault('asyncmode', 1);
+        }
 
         // Workflow active.
+        $mform->addElement('advcheckbox',
+            'workflowactive',
+            get_string ('workflowactive', 'tool_trigger'),
+            'Enable', array(), array(0, 1));
+        $mform->setType('workflowactive', PARAM_INT);
+        $mform->addHelpButton('workflowactive', 'workflowactive', 'tool_trigger');
+        if (isset($this->_customdata['workflowactive'])) {
+            $mform->setDefault('workflowactive', $this->_customdata['workflowactive']);
+        } else {
+            $mform->setDefault('workflowactive', 1);
+        }
 
         //  Hidden text field for step JSON.
-
-        // Add processing step button.
+        $mform->addElement('hidden', 'stepjson');
+        $mform->setType('stepjson', PARAM_RAW_TRIMMED);
+        if (isset($this->_customdata['stepjson'])) {
+            $mform->setDefault('stepjson', $this->_customdata['stepjson']);
+        }
 
         // Workflow steps mini table.
+        $mform->addElement('html', '<div id="steps-table"></div>');
+
+        // Add processing step button.
+        $mform->addElement('button', 'step_modal_button', get_string('step_modal_button', 'tool_trigger'));
 
         $this->add_action_buttons();
     }
