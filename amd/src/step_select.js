@@ -49,8 +49,8 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
     }
 
     function updateTable(tableData) {
+        console.log(tableData);
         Templates.render('tool_trigger/workflow_steps', tableData).then(function(html) {
-                // TODO: Update table.
             $('#steps-table').html(html);
             }).fail(function(ex) {
                 // TODO: Deal with this exception (I recommend core/notify exception function for this).
