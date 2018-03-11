@@ -24,7 +24,7 @@
  * @since      3.4
  */
 
-define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events', 'core/templates', 'core/ajax', 'core/fragment'],
+define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/templates', 'core/ajax', 'core/fragment'],
         function ($, Str, ModalFactory, ModalEvents, Templates, ajax, Fragment) {
 
     /**
@@ -33,6 +33,7 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events', 'core/t
     var StepSelect = {};
     var contextid;
     var modalObj;
+    var stepData;
     var spinner = '<p class="text-center"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i><span class="sr-only">Loading...</span></p>';
 
     /**
@@ -45,6 +46,45 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events', 'core/t
         var params = {jsonformdata: JSON.stringify(formdata)};
         modalObj.setBody(spinner);
         modalObj.setBody(Fragment.loadFragment('tool_trigger', 'new_base_form', contextid, params));
+    }
+
+    function updateTable(tableData) {
+        Templates.render('tool_trigger/workflow_steps', tableData).then(function(html) {
+                // TODO: Update table.
+            $('#steps-table').html(html);
+            }).fail(function(ex) {
+                // TODO: Deal with this exception (I recommend core/notify exception function for this).
+            });
+    }
+
+    /**
+     * Updates Moodle form with slected video information.
+     * @private
+     */
+    function processForm(e) {
+        e.preventDefault(); // Stop modal from closing.
+        var stepsJsonArr = [];
+
+        // Form data.
+        var formData = modalObj.getRoot().find('form');
+        var formDataObj = formData.serializeArray();
+
+        // Get and update hidden workflow form element
+        var stepsjson = $('[name=stepjson]').val();
+        console.log(stepsjson);
+        if (stepsjson !== '') {
+            stepsJsonArr = JSON.parse(stepsjson);
+        }
+        stepsJsonArr.push(formDataObj);
+        stepsjson = JSON.stringify(stepsJsonArr);
+        $('[name=stepjson]').val(stepsjson);
+
+        // TODO: Submit form via ajax to do server side validation.
+
+        // Update table in workflow form.
+        updateTable(stepsJsonArr);
+
+        modalObj.hide(); // Hide the modal.
     }
 
     /**
@@ -67,7 +107,8 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events', 'core/t
             }, trigger)
             .done(function(modal) {
                 modalObj = modal;
-                //modalObj.getRoot().on(ModalEvents.save, updateForm);
+                modalObj.getRoot().on(ModalEvents.save, processForm);
+                modalObj.getRoot().on(ModalEvents.hidden, updateBody);
                 updateBody();
             });
         });
