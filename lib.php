@@ -15,27 +15,31 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Base lookup step form class.
+ * Global functions for tool_trigger plugin.
  *
  * @package    tool_trigger
  * @copyright  Matt Porritt <mattp@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-namespace tool_trigger\steps;
 
 use tool_trigger\steps\base\base_form;
 
 defined('MOODLE_INTERNAL') || die;
 
-/**
- * Base lookup step form class.
- *
- * @package    tool_trigger
- * @copyright  Matt Porritt <mattp@catalyst-au.net>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-class base_lookup_form extends base_form {
+function tool_trigger_output_fragment_new_base_form($args) {
+    $args = (object) $args;
+    $context = $args->context;
+    $o = '';
 
+    require_capability('moodle/course:managegroups', $context);
+
+    $mform = new base_form();
+
+    ob_start();
+    $mform->display();
+    $o .= ob_get_contents();
+    ob_end_clean();
+
+    return $o;
 
 }

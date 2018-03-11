@@ -24,23 +24,37 @@
  * @since      3.4
  */
 
-define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events', 'core/templates', 'core/ajax'],
-        function ($, Str, ModalFactory, ModalEvents, Templates, ajax) {
+define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events', 'core/templates', 'core/ajax', 'core/fragment'],
+        function ($, Str, ModalFactory, ModalEvents, Templates, ajax, Fragment) {
 
     /**
      * Module level variables.
      */
     var StepSelect = {};
+    var contextid;
     var modalObj;
     var spinner = '<p class="text-center"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i><span class="sr-only">Loading...</span></p>';
+
+    /**
+     * Updates the body of the modal window.
+     *
+     * @private
+     */
+    function updateBody() {
+        var formdata = {};
+        var params = {jsonformdata: JSON.stringify(formdata)};
+        modalObj.setBody(spinner);
+        modalObj.setBody(Fragment.loadFragment('tool_trigger', 'new_base_form', contextid, params));
+    }
 
     /**
      * Initialise the class.
      *
      * @public
      */
-    StepSelect.init = function() {
+    StepSelect.init = function(context) {
         var trigger = $('#id_step_modal_button'); // form button to trigger modal
+        contextid = context;
 
         //Get the Title String
         Str.get_string('modaltitle', 'tool_trigger').then(function(title) {
@@ -53,8 +67,7 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events', 'core/t
             }, trigger)
             .done(function(modal) {
                 modalObj = modal;
-                modalObj.getRoot().on(ModalEvents.save, updateForm);
-                clickHandlers();
+                //modalObj.getRoot().on(ModalEvents.save, updateForm);
                 updateBody();
             });
         });

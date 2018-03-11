@@ -35,14 +35,7 @@ defined('MOODLE_INTERNAL') || die;
  * @copyright  Matt Porritt <mattp@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class base_filter_form extends base_form {
+class base_filter_form extends base_form {
 
-    /**
-     * Build form.
-     */
-    public function definition() {
-
-        $mform = $this->_form;
-    }
 
 }
