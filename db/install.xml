@@ -45,9 +45,9 @@
         <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="name of the step"/>
         <FIELD NAME="description" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Description of the step"/>
         <FIELD NAME="type" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Type of the step"/>
-        <FIELD NAME="class" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="the class path for the step"/>
+        <FIELD NAME="stepclass" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="the class path for the step"/>
         <FIELD NAME="data" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="The JSON data for the step."/>
-        <FIELD NAME="order" TYPE="int" LENGTH="4" NOTNULL="true" SEQUENCE="false" COMMENT="The steps order in the workflow processing"/>
+        <FIELD NAME="steporder" TYPE="int" LENGTH="4" NOTNULL="true" SEQUENCE="false" COMMENT="The steps order in the workflow processing"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The time the step was created"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The time the step was last modified"/>
       </FIELDS>
@@ -56,7 +56,7 @@
         <KEY NAME="workflowid" TYPE="foreign" FIELDS="workflowid" REFTABLE="tool_trigger_workflows" REFFIELDS="id" COMMENT="Foreign key for workflow table"/>
       </KEYS>
       <INDEXES>
-        <INDEX NAME="class" UNIQUE="false" FIELDS="class" COMMENT="index for class paths"/>
+        <INDEX NAME="class" UNIQUE="false" FIELDS="stepclass" COMMENT="index for class paths"/>
       </INDEXES>
     </TABLE>
   </TABLES>

@@ -44,11 +44,11 @@ class workflow_process {
      * @var array Array of fields to filter from step JSON.
      */
     protected $stepfields = array(
-            'steptype',
-            'step',
-            'stepname',
-            'stepdescription',
-            'order'
+            'type',
+            'stepclass',
+            'name',
+            'description',
+            'steporder'
     );
 
     /**
@@ -92,25 +92,41 @@ class workflow_process {
         return $records;
     }
 
-    public function processform() {
+    public function processform($now=0) {
         global $DB;
+
+        if ($now == 0) {
+            $now = time();
+        }
 
         $return = true;
         $formdata = $this->formdata;
+        $formjson = $formdata->stepjson;
 
-        // Save workflow and get back id
+        $workflowrecord = new \stdClass();
+        $workflowrecord->name = $formdata->workflowname;
+        $workflowrecord->description = json_encode($formdata->workflowdescription);
+        $workflowrecord->event = $formdata->eventtomonitor;
+        $workflowrecord->async = $formdata->asyncmode;
+        $workflowrecord->enabled = $formdata->workflowactive;
+        $workflowrecord->draft = $formdata->draftmode;
+        $workflowrecord->timecreated = $now;
+        $workflowrecord->timemodified = $now;
+        $workflowrecord->timetriggered = 0;
 
-        // Process step JSON and save records to db.
         try {
             $transaction = $DB->start_delegated_transaction();
-            // Insert a record
-            $DB->insert_record('foo', $object);
-            $DB->insert_record('bar', $otherobject);
+            $workflowid = $DB->insert_record('tool_trigger_workflows', $workflowrecord); // Save workflow and get back id.
+
+            // Process step JSON and save records to db.
+            $steprecords = $this->processjson($formjson, $workflowid);
+            $DB->insert_records('tool_trigger_steps', $steprecords);
 
             // Assuming the both inserts work, we get to the following line.
             $transaction->allow_commit();
         } catch(\Exception $e) {
             $transaction->rollback($e);
+            $return = false;
         }
 
         return $return;

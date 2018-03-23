@@ -50,43 +50,43 @@ class base_form extends \moodleform {
             'filter' =>  get_string('filter', 'tool_trigger'),
             'lookup' =>  get_string('lookup', 'tool_trigger'),
         );
-        $mform->addElement('select', 'steptype', get_string('steptype', 'tool_trigger'), $steptype);
-        $mform->addHelpButton('steptype', 'steptype', 'tool_trigger');
-        $mform->addRule('steptype', get_string('required'), 'required');
-        if (isset($this->_customdata['steptype'])) {
-            $mform->setDefault('steptype', $this->_customdata['steptype']);
+        $mform->addElement('select', 'type', get_string('steptype', 'tool_trigger'), $steptype);
+        $mform->addHelpButton('type', 'steptype', 'tool_trigger');
+        $mform->addRule('type', get_string('required'), 'required');
+        if (isset($this->_customdata['type'])) {
+            $mform->setDefault('type', $this->_customdata['type']);
         }
 
         // Step.
         $steps = array(
             '' =>  get_string('choosedots'),
-            '/steps/trigger/log_step' =>  'LOG', // Hard coded until we build steps. TODO: fix.
+            '/steps/triggers/log_step' =>  'LOG', // Hard coded until we build steps. TODO: fix.
         );
-        $mform->addElement('select', 'step', get_string('step', 'tool_trigger'), $steps);
-        $mform->addHelpButton('step', 'step', 'tool_trigger');
-        $mform->addRule('step', get_string('required'), 'required');
-        if (isset($this->_customdata['step'])) {
-            $mform->setDefault('step', $this->_customdata['step']);
+        $mform->addElement('select', 'stepclass', get_string('stepclass', 'tool_trigger'), $steps);
+        $mform->addHelpButton('stepclass', 'stepclass', 'tool_trigger');
+        $mform->addRule('stepclass', get_string('required'), 'required');
+        if (isset($this->_customdata['stepclass'])) {
+            $mform->setDefault('stepclass', $this->_customdata['stepclass']);
         }
 
         // Name.
         $attributes=array('size'=>'50');
-        $mform->addElement('text', 'stepname', get_string ('stepname', 'tool_trigger'), $attributes);
-        $mform->setType('stepname', PARAM_ALPHAEXT);
-        $mform->addRule('stepname', get_string('required'), 'required');
-        $mform->addHelpButton('stepname', 'stepname', 'tool_trigger');
-        if (isset($this->_customdata['stepname'])) {
-            $mform->setDefault('stepname', $this->_customdata['stepname']);
+        $mform->addElement('text', 'name', get_string ('stepname', 'tool_trigger'), $attributes);
+        $mform->setType('name', PARAM_ALPHAEXT);
+        $mform->addRule('name', get_string('required'), 'required');
+        $mform->addHelpButton('name', 'stepname', 'tool_trigger');
+        if (isset($this->_customdata['name'])) {
+            $mform->setDefault('name', $this->_customdata['name']);
         }
 
         // Description.
         $attributes=array('cols' => '50', 'rows' => '5');
-        $mform->addElement('textarea', 'stepdescription', get_string ('stepdescription', 'tool_trigger'), $attributes);
-        $mform->setType('stepdescription', PARAM_ALPHAEXT);
-        $mform->addRule('stepdescription', get_string('required'), 'required');
-        $mform->addHelpButton('stepdescription', 'stepdescription', 'tool_trigger');
-        if (isset($this->_customdata['stepdescription'])) {
-            $mform->setDefault('stepdescription', $this->_customdata['stepdescription']);
+        $mform->addElement('textarea', 'description', get_string ('stepdescription', 'tool_trigger'), $attributes);
+        $mform->setType('description', PARAM_ALPHAEXT);
+        $mform->addRule('description', get_string('required'), 'required');
+        $mform->addHelpButton('description', 'stepdescription', 'tool_trigger');
+        if (isset($this->_customdata['description'])) {
+            $mform->setDefault('description', $this->_customdata['description']);
         }
 
     }
