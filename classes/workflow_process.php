@@ -36,10 +36,26 @@ defined('MOODLE_INTERNAL') || die();
 class workflow_process {
 
     /**
-     * @var \stdClass The rule object form database.
+     * @var \stdClass The data from the submitted form.
      */
     protected $formdata;
 
+    /**
+     * @var array Array of fields to filter from step JSON.
+     */
+    protected $stepfields = array(
+            'steptype',
+            'step',
+            'stepname',
+            'stepdescription',
+            'order'
+    );
+
+    /**
+     * Class constructor.
+     *
+     * @param \core_form\data $mformdata Data from submitted form.
+     */
     public function __construct($mformdata) {
         $this->formdata = $mformdata;
     }
@@ -48,19 +64,32 @@ class workflow_process {
      * Take JSON from the form and format ready for insertion into DB.
      *
      * @param string $formjson The JSON from the form.
+     * @param int $workflowid The id for the workflow to associte step records to.
+     * @return array $records The array of record objects ready for DB insertion.
      */
-    public function processjson($formjson) {
+    public function processjson($formjson, $workflowid, $now=0) {
+        $jsonobjs = json_decode($formjson);
+        $records = array();
 
-        $record1 = new \stdClass();
-        $record1->name         = 'overview';
-        $record1->displayorder = '10000';
-        $record2 = new \stdClass();
-        $record2->name         = 'overview';
-        $record2->displayorder = '10000';
-        $records = array($record1, $record2);
+        if ($now == 0) {
+            $now = time();
+        }
+
+        // Nested loops FTW.
+        foreach ($jsonobjs as $jsonobj) {
+            $record = new \stdClass();
+            foreach ($jsonobj as $namevalue){
+                if(in_array($namevalue->name, $this->stepfields)) {
+                    $record->{$namevalue->name} = $namevalue->value;
+                }
+                $record->workflowid = $workflowid;
+                $record->timecreated = $now;
+                $record->timemodified = $now;
+            }
+            $records[] = $record;
+        }
 
         return $records;
-
     }
 
     public function processform() {

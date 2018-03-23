@@ -46,9 +46,9 @@ class base_form extends \moodleform {
         // Step type.
         $steptype = array(
             '' =>  get_string('choosedots'),
-            '1' =>  get_string('trigger', 'tool_trigger'),
-            '2' =>  get_string('filter', 'tool_trigger'),
-            '3' =>  get_string('lookup', 'tool_trigger'),
+            'trigger' =>  get_string('trigger', 'tool_trigger'),
+            'filter' =>  get_string('filter', 'tool_trigger'),
+            'lookup' =>  get_string('lookup', 'tool_trigger'),
         );
         $mform->addElement('select', 'steptype', get_string('steptype', 'tool_trigger'), $steptype);
         $mform->addHelpButton('steptype', 'steptype', 'tool_trigger');

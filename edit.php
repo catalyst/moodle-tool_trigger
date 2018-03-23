@@ -64,6 +64,7 @@ if ($mform->is_cancelled()) {
 
 } else if ($mdata = $mform->get_data()) {
     // Process validated data.
+    error_log(print_r($mdata, true));
     $workflowprocess = new \tool_trigger\workflow_process($mdata);
     $result = $workflowprocess->processform();
 

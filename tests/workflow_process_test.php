@@ -36,14 +36,79 @@ global $CFG;
 class tool_trigger_workflow_process_testcase extends advanced_testcase {
 
     /**
-     * Test getting areas that have been boosted in plugin config
+     * Test workflow process form data
      */
-    public function test_get_boosted_areas() {
+    public function test_processform() {
         $this->resetAfterTest();
 
-        $workflowprocess = new \tool_trigger\workflow_process($mdata);
-        $result = $workflowprocess->processform();
+        $mdata = new \stdClass();
 
-        $this->assertTrue($result);
+        $workflowprocess = new \tool_trigger\workflow_process($mdata);
+        //$result = $workflowprocess->processform();
+
+       // $this->assertTrue($result);
+    }
+
+    /**
+     * Test workflow process step json data.
+     */
+    public function test_processjson() {
+        $mdata = new \stdClass();
+        $json = '[[{"name":"sesskey","value":"5IfqXAV9A5"},{"name":"_qf__tool_trigger_steps_base_base_form","value":"1"},'
+                .'{"name":"steptype","value":"trigger"},{"name":"step","value":"/steps/trigger/log_step"},'
+                .'{"name":"stepname","value":"test step"},{"name":"stepdescription","value":"test step description"}]]';
+        $now = 1521773594;
+
+        $expected = new \stdClass();
+        $expected->workflowid = 1;
+        $expected->timecreated = $now;
+        $expected->timemodified = $now;
+        $expected->steptype = 'trigger';
+        $expected->step = '/steps/trigger/log_step';
+        $expected->stepname = 'test step';
+        $expected->stepdescription = 'test step description';
+
+        $workflowprocess = new \tool_trigger\workflow_process($mdata);
+        $result = $workflowprocess->processjson($json, 1, $now);
+
+        $this->assertEquals($expected, $result[0]);
+    }
+
+    /**
+     * Test workflow process step json data with mulitple steps.
+     */
+    public function test_processjson_multiple_steps() {
+        $mdata = new \stdClass();
+        $json = '[[{"name":"sesskey","value":"uONxhfLknA"},{"name":"_qf__tool_trigger_steps_base_base_form","value":"1"},'
+                .'{"name":"steptype","value":"trigger"},{"name":"step","value":"/steps/trigger/log_step"},'
+                .'{"name":"stepname","value":"step 1 name"},{"name":"stepdescription","value":"step 1 description"}],'
+                .'[{"name":"sesskey","value":"uONxhfLknA"},{"name":"_qf__tool_trigger_steps_base_base_form","value":"1"},'.
+                '{"name":"steptype","value":"trigger"},{"name":"step","value":"/steps/trigger/log_step"},'
+                .'{"name":"stepname","value":"step 2 name"},{"name":"stepdescription","value":"step 2 description"}]]';
+        $now = 1521773594;
+
+        $expected1 = new \stdClass ();
+        $expected1->workflowid = 1;
+        $expected1->timecreated = $now;
+        $expected1->timemodified = $now;
+        $expected1->steptype = 'trigger';
+        $expected1->step = '/steps/trigger/log_step';
+        $expected1->stepname = 'step 1 name';
+        $expected1->stepdescription = 'step 1 description';
+
+        $expected2 = new \stdClass ();
+        $expected2->workflowid = 1;
+        $expected2->timecreated = $now;
+        $expected2->timemodified = $now;
+        $expected2->steptype = 'trigger';
+        $expected2->step = '/steps/trigger/log_step';
+        $expected2->stepname = 'step 2 name';
+        $expected2->stepdescription = 'step 2 description';
+
+        $workflowprocess = new \tool_trigger\workflow_process ($mdata);
+        $result = $workflowprocess->processjson ($json, 1, $now);
+
+        $this->assertEquals ($expected1, $result[0]);
+        $this->assertEquals ($expected2, $result[1]);
     }
 }
