@@ -55,9 +55,34 @@ $pluginlist = \tool_monitor\eventlist::get_plugin_list();
 $pluginlist = array_merge(array('' => get_string('choosedots')), $pluginlist);
 
 // Get data ready for mform.
-$form = new \tool_trigger\edit_form(null, array('pluginlist' => $pluginlist));
+$mform = new \tool_trigger\edit_form(null, array('pluginlist' => $pluginlist));
 
-// Build the page output.
-echo $OUTPUT->header();
-$form->display();
-echo $OUTPUT->footer();
+if ($mform->is_cancelled()) {
+    // Handle form cancel operation.
+    // Redirect back to workflow page.
+    redirect(new moodle_url('/admin/tool/trigger/index.php'));
+
+} else if ($mdata = $mform->get_data()) {
+    // Process validated data.
+    $workflowprocess = new \tool_trigger\workflow_process($mdata);
+    $result = $workflowprocess->processform();
+
+    // Redirect back to workflow page and show success or failure.
+    if ($result) {
+        redirect(new moodle_url('/admin/tool/trigger/index.php'), get_string('changessaved'));
+    } else {
+        // TODO: add redirect with failure condition.
+    }
+
+} else {
+    // This branch is executed if the form is submitted but the data doesn't validate,
+    // or on the first display of the form.
+
+    //$mform->set_data($toform); // TODO: Set default data (if any)
+
+    // Build the page output.
+    echo $OUTPUT->header();
+    $mform->display();
+    echo $OUTPUT->footer();
+
+}

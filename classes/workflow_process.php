@@ -15,17 +15,44 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * Process workflow form.
  *
  * @package     tool_trigger
  * @copyright   Matt Porritt <mattp@catalyst-au.net>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace tool_trigger;
+
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'tool_trigger';
-$plugin->release = '2018032300';
-$plugin->version = 2018032300;
-$plugin->requires = 2016052300;
-$plugin->maturity = MATURITY_ALPHA;
+/**
+ * Process workflow form.
+ *
+ * @package     tool_trigger
+ * @copyright   Matt Porritt <mattp@catalyst-au.net>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class workflow_process {
+
+    /**
+     * @var \stdClass The rule object form database.
+     */
+    protected $formdata;
+
+    public function __construct($mformdata) {
+        $this->formdata = $mformdata;
+    }
+
+    public function processform() {
+        $return = true;
+        $formdata = $this->formdata;
+
+        // Save workflow and get back id
+
+        // Process step JSON and save records to db.
+
+        return $return;
+    }
+
+}
