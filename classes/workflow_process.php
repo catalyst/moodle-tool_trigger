@@ -44,13 +44,45 @@ class workflow_process {
         $this->formdata = $mformdata;
     }
 
+    /**
+     * Take JSON from the form and format ready for insertion into DB.
+     *
+     * @param string $formjson The JSON from the form.
+     */
+    public function processjson($formjson) {
+
+        $record1 = new \stdClass();
+        $record1->name         = 'overview';
+        $record1->displayorder = '10000';
+        $record2 = new \stdClass();
+        $record2->name         = 'overview';
+        $record2->displayorder = '10000';
+        $records = array($record1, $record2);
+
+        return $records;
+
+    }
+
     public function processform() {
+        global $DB;
+
         $return = true;
         $formdata = $this->formdata;
 
         // Save workflow and get back id
 
         // Process step JSON and save records to db.
+        try {
+            $transaction = $DB->start_delegated_transaction();
+            // Insert a record
+            $DB->insert_record('foo', $object);
+            $DB->insert_record('bar', $otherobject);
+
+            // Assuming the both inserts work, we get to the following line.
+            $transaction->allow_commit();
+        } catch(\Exception $e) {
+            $transaction->rollback($e);
+        }
 
         return $return;
     }
