@@ -59,6 +59,7 @@ $string['stepname'] = 'Step name';
 $string['stepname_help'] = 'The name of this step.';
 $string['steptype'] = 'Step type';
 $string['steptype_help'] = 'The type of step to apply.';
+$string['taskprocessworkflows'] = 'Process workflows scheduled task.';
 $string['trigger'] = 'Trigger';
 $string['workflowactive'] = 'Workflow active';
 $string['workflowactive_help'] = 'Only active worklows will be processed when an event is triggered.';
