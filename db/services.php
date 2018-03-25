@@ -35,4 +35,13 @@ $functions = array(
                 'capabilities'  => 'tool/trigger:manageworkflows',
                 'ajax' => true
         ),
+        'tool_trigger_step_by_type' => array(
+                'classname'   => 'tool_trigger_external',
+                'methodname'  => 'step_by_type',
+                'classpath'   => 'admin/tool/trigger/externallib.php',
+                'description' => 'Returns all steps matching supplied type',
+                'type'        => 'read',
+                'capabilities'  => 'tool/trigger:manageworkflows',
+                'ajax' => true
+        ),
 );

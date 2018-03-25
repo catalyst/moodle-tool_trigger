@@ -99,5 +99,69 @@ class tool_trigger_external extends external_api {
                     )
                 );
     }
+    /**
+     * Returns description of method parameters
+     * @return external_function_parameters
+     */
+    public static function step_by_type_parameters() {
+        return new external_function_parameters(
+            array(
+                // If I had any parameters, they would be described here. But I don't have any, so this array is empty.
+            )
+            );
+    }
 
+    /**
+     * Returns available events
+     *
+     */
+    public static function step_by_type() {
+        global $USER;
+
+        // Context validation.
+        $context = context_user::instance($USER->id);
+        self::validate_context($context);
+
+        // Capability checking.
+        if (!has_capability('tool/trigger:manageworkflows', $context)) {
+            throw new moodle_exception('cannot_access_api');
+        }
+
+        // Execute API call.
+        $events = \tool_monitor\eventlist::get_all_eventlist(true);
+
+        // Filter out events which cannot be triggered for some reason.
+        $events = array_filter($events, function($classname) {
+            return !$classname::is_deprecated();
+        }, ARRAY_FILTER_USE_KEY);
+
+            $eventlist = array();
+
+            // Format response
+            foreach ($events as $key => $event){
+                $record = new \stdClass();
+                $record->id = $key;
+                $record->name = $event;
+
+                $eventlist[] = $record;
+            }
+
+            return $eventlist;
+
+    }
+
+    /**
+     * Returns description of method result value
+     * @return external_description
+     */
+    public static function step_by_type_returns() {
+        return new external_multiple_structure(
+            new external_single_structure(
+                array(
+                    'id' => new external_value(PARAM_TEXT, 'Event identifier'),
+                    'name' => new external_value(PARAM_TEXT, 'Event Name'),
+                )
+                )
+            );
+    }
 }
