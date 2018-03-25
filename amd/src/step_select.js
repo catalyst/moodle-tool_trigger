@@ -88,6 +88,32 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
     }
 
     /**
+     * Gets a list of filtered steps based on the selected step type.
+     * Triggers updating of the form step select element.
+     *
+     * @param string varfilter The filter area.
+     */
+    function getStepsOfType(valfilter) {
+        var promises = ajax.call([
+            { methodname: 'tool_trigger_step_by_type', args: {'steptype': valfilter} },
+        ]);
+
+       promises[0].done(function(response) {
+           console.log(response);
+       });
+    }
+
+    /**
+     *
+     */
+    function changeHandlers() {
+        // Add event listener for step type select onchange.
+        $('body').on('change', '[name=type]', function() {
+            getStepsOfType(this.value);
+        });
+    }
+
+    /**
      * Initialise the class.
      *
      * @public
@@ -109,6 +135,7 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
                 modalObj = modal;
                 modalObj.getRoot().on(ModalEvents.save, processForm);
                 modalObj.getRoot().on(ModalEvents.hidden, updateBody);
+                changeHandlers();
                 updateBody();
             });
         });
