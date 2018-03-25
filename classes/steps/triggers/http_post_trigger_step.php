@@ -15,17 +15,24 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * HTTP Post trigger step class.
  *
- * @package     tool_trigger
- * @copyright   Matt Porritt <mattp@catalyst-au.net>
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    tool_trigger
+ * @copyright  Matt Porritt <mattp@catalyst-au.net>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+namespace tool_trigger\steps;
 
-$plugin->component = 'tool_trigger';
-$plugin->release = '2018032500';
-$plugin->version = 2018032500;
-$plugin->requires = 2016052300;
-$plugin->maturity = MATURITY_ALPHA;
+defined('MOODLE_INTERNAL') || die;
+
+/**
+ * HTTP Post trigger step class.
+ *
+ * @package    tool_trigger
+ * @copyright  Matt Porritt <mattp@catalyst-au.net>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+abstract class base_trigger_step extends base_trigger_step {
+
+}
