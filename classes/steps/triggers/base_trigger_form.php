@@ -36,6 +36,28 @@ defined('MOODLE_INTERNAL') || die;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class base_trigger_form extends base_form {
+    public function definition() {
+        $mform = parent::definition();
 
+        // Name.
+        $attributes=array('size'=>'50');
+        $mform->addElement('text', 'name', get_string ('stepname', 'tool_trigger'), $attributes);
+        $mform->setType('name', PARAM_ALPHAEXT);
+        $mform->addRule('name', get_string('required'), 'required');
+        $mform->addHelpButton('name', 'stepname', 'tool_trigger');
+        if (isset($this->_customdata['name'])) {
+            $mform->setDefault('name', $this->_customdata['name']);
+        }
+
+        // Description.
+        $attributes=array('cols' => '50', 'rows' => '5');
+        $mform->addElement('textarea', 'description', get_string ('stepdescription', 'tool_trigger'), $attributes);
+        $mform->setType('description', PARAM_ALPHAEXT);
+        $mform->addRule('description', get_string('required'), 'required');
+        $mform->addHelpButton('description', 'stepdescription', 'tool_trigger');
+        if (isset($this->_customdata['description'])) {
+            $mform->setDefault('description', $this->_customdata['description']);
+        }
+    }
 
 }

@@ -68,27 +68,6 @@ class base_form extends \moodleform {
         if (isset($this->_customdata['stepclass'])) {
             $mform->setDefault('stepclass', $this->_customdata['stepclass']);
         }
-
-        // Name.
-        $attributes=array('size'=>'50');
-        $mform->addElement('text', 'name', get_string ('stepname', 'tool_trigger'), $attributes);
-        $mform->setType('name', PARAM_ALPHAEXT);
-        $mform->addRule('name', get_string('required'), 'required');
-        $mform->addHelpButton('name', 'stepname', 'tool_trigger');
-        if (isset($this->_customdata['name'])) {
-            $mform->setDefault('name', $this->_customdata['name']);
-        }
-
-        // Description.
-        $attributes=array('cols' => '50', 'rows' => '5');
-        $mform->addElement('textarea', 'description', get_string ('stepdescription', 'tool_trigger'), $attributes);
-        $mform->setType('description', PARAM_ALPHAEXT);
-        $mform->addRule('description', get_string('required'), 'required');
-        $mform->addHelpButton('description', 'stepdescription', 'tool_trigger');
-        if (isset($this->_customdata['description'])) {
-            $mform->setDefault('description', $this->_customdata['description']);
-        }
-
     }
 
 }
