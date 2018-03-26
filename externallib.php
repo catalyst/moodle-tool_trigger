@@ -106,16 +106,16 @@ class tool_trigger_external extends external_api {
     public static function step_by_type_parameters() {
         return new external_function_parameters(
             array(
-                // If I had any parameters, they would be described here. But I don't have any, so this array is empty.
+                'steptype' => new external_value(PARAM_ALPHA, 'The type of step to get.'),
             )
             );
     }
 
     /**
-     * Returns available events
+     * Returns all steps matching provided type.
      *
      */
-    public static function step_by_type() {
+    public static function step_by_type($steptype) {
         global $USER;
 
         // Context validation.
@@ -127,26 +127,15 @@ class tool_trigger_external extends external_api {
             throw new moodle_exception('cannot_access_api');
         }
 
+        // Validate_parameters.
+        $params = self::validate_parameters(self::step_by_type_parameters(),
+                ['steptype' => $steptype]);
+
         // Execute API call.
-        $events = \tool_monitor\eventlist::get_all_eventlist(true);
+        $wfmanager = new \tool_trigger\workflow_manager();
+        $steps = $wfmanager->get_steps_by_type($params['steptype']);
 
-        // Filter out events which cannot be triggered for some reason.
-        $events = array_filter($events, function($classname) {
-            return !$classname::is_deprecated();
-        }, ARRAY_FILTER_USE_KEY);
-
-            $eventlist = array();
-
-            // Format response
-            foreach ($events as $key => $event){
-                $record = new \stdClass();
-                $record->id = $key;
-                $record->name = $event;
-
-                $eventlist[] = $record;
-            }
-
-            return $eventlist;
+        return $steps;
 
     }
 
@@ -158,7 +147,7 @@ class tool_trigger_external extends external_api {
         return new external_multiple_structure(
             new external_single_structure(
                 array(
-                    'id' => new external_value(PARAM_TEXT, 'Event identifier'),
+                    'class' => new external_value(PARAM_TEXT, 'Event identifier'),
                     'name' => new external_value(PARAM_TEXT, 'Event Name'),
                 )
                 )

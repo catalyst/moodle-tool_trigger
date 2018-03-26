@@ -22,7 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace tool_trigger\steps;
+namespace tool_trigger\steps\triggers;
+
+use tool_trigger\steps\triggers\base_trigger_step;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -33,6 +35,24 @@ defined('MOODLE_INTERNAL') || die;
  * @copyright  Matt Porritt <mattp@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class base_trigger_step extends base_trigger_step {
+class http_post_trigger_step extends base_trigger_step {
+
+    /**
+     * Returns the step name.
+     *
+     * @return string human readable step name.
+     */
+    static public function get_step_name() {
+       return get_string('httpposttriggerstepname', 'tool_trigger');
+    }
+
+    /**
+     * Returns the step name.
+     *
+     * @return string human readable step name.
+     */
+    static public function get_step_desc() {
+        return get_string('httpposttriggerstepdesc', 'tool_trigger');
+    }
 
 }

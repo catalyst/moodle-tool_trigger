@@ -22,7 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace tool_trigger\steps;
+namespace tool_trigger\steps\triggers;
 
 use tool_trigger\steps\base\base_step;
 
@@ -36,5 +36,19 @@ defined('MOODLE_INTERNAL') || die;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 abstract class base_trigger_step extends base_step {
+
+    /**
+     * Returns the step name.
+     *
+     * @return string human readable step name.
+     */
+    abstract static public function get_step_name();
+
+    /**
+     * Returns the step description.
+     *
+     * @return string human readable step description.
+     */
+    abstract static public function get_step_desc();
 
 }

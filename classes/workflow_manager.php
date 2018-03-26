@@ -78,5 +78,53 @@ class workflow_manager {
         return $workflows;
     }
 
+    public function get_step_class_names($steptype) {
+
+        $matchedsteps = array();
+        $matches = array();
+        $stepdir = __DIR__ . '/steps/' . $steptype;
+        $handle = opendir($stepdir);
+        while (($file = readdir($handle)) !== false) {
+            preg_match('/\b(?!base)(.*step)/', $file, $matches);
+            $matchedsteps = array_merge($matches, $matchedsteps);
+
+        }
+        closedir($handle);
+        $matchedsteps = array_unique($matchedsteps);
+
+        return $matchedsteps;
+
+    }
+
+    public function get_steps_with_names($stepclasses) {
+        $stepnames = array();
+
+        foreach ($stepclasses as $stepclass) {
+
+            $stepclass = '\tool_trigger\steps\triggers\\' . $stepclass;
+            $class = new $stepclass();
+            $stepname = array(
+                    'class' => $stepclass,
+                    'name' => $class->get_step_name()
+            );
+            $stepnames[] = $stepname;
+
+        }
+
+        return $stepnames;
+
+    }
+
+    public function get_steps_by_type($steptype) {
+        $acceptedtypes = array('lookups', 'triggers', 'filters');
+        if (!in_array($steptype, $acceptedtypes)) {
+            throw new \moodle_exception('badsteptype', 'tool_trigger', '');
+        }
+
+        $matchedsteps = $this->get_step_class_names($steptype);
+        $stepswithnames = $this->get_steps_with_names($matchedsteps);
+
+        return $stepswithnames;
+    }
 
 }
