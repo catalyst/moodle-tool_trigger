@@ -88,6 +88,30 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
     }
 
     /**
+     * Updates the step list in the step modal edit form,
+     * with only the steps that correspond to the selected
+     * step type.
+     *
+     * @param array events Array of steps to update selection with.
+     */
+    function updateSteps(events) {
+
+        // First clear the existing options in the select element.
+        $('[name=stepclass]').empty().append($('<option>', {
+            value: '',
+            text : 'Choose...'
+        }));
+
+        // Update the select with applicable events.
+        $.each(events, function (i, event) {
+            $('[name=stepclass]').append($('<option>', {
+                value: event.class,
+                text : event.name
+            }));
+        });
+    }
+
+    /**
      * Gets a list of filtered steps based on the selected step type.
      * Triggers updating of the form step select element.
      *
@@ -99,8 +123,21 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
         ]);
 
        promises[0].done(function(response) {
-           console.log(response);
+           updateSteps(response);
        });
+    }
+
+    /**
+     * Gets a list of filtered steps based on the selected step type.
+     * Triggers updating of the form step select element.
+     *
+     * @param string varfilter The filter area.
+     */
+    function getStepForm(valfilter) {
+        var formdata = {};
+        var params = {jsonformdata: JSON.stringify(formdata)};
+        modalObj.setBody(spinner);
+        modalObj.setBody(Fragment.loadFragment('tool_trigger', 'new_base_form', contextid, params));
     }
 
     /**
@@ -110,6 +147,11 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
         // Add event listener for step type select onchange.
         $('body').on('change', '[name=type]', function() {
             getStepsOfType(this.value);
+        });
+
+        // Add event listener for step  select onchange.
+        $('body').on('change', '[name=stepclass]', function() {
+            getStepForm(this.value);
         });
     }
 

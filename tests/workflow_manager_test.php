@@ -54,9 +54,10 @@ class tool_trigger_workflow_manager_testcase extends advanced_testcase {
      */
     public function test_get_steps_with_names() {
 
+        $steptype = 'triggers';
         $stepclasses = array('http_post_trigger_step');
         $stepobj = new \tool_trigger\workflow_manager();
-        $steps = $stepobj->get_steps_with_names($stepclasses);
+        $steps = $stepobj->get_steps_with_names($steptype, $stepclasses);
 
         $expected = array(array(
                 'class' => '\tool_trigger\steps\triggers\http_post_trigger_step',

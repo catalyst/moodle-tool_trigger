@@ -96,12 +96,12 @@ class workflow_manager {
 
     }
 
-    public function get_steps_with_names($stepclasses) {
+    public function get_steps_with_names($steptype,$stepclasses) {
         $stepnames = array();
 
         foreach ($stepclasses as $stepclass) {
 
-            $stepclass = '\tool_trigger\steps\triggers\\' . $stepclass;
+            $stepclass = '\tool_trigger\steps\\' . $steptype . '\\' . $stepclass;
             $class = new $stepclass();
             $stepname = array(
                     'class' => $stepclass,
@@ -122,7 +122,7 @@ class workflow_manager {
         }
 
         $matchedsteps = $this->get_step_class_names($steptype);
-        $stepswithnames = $this->get_steps_with_names($matchedsteps);
+        $stepswithnames = $this->get_steps_with_names($steptype, $matchedsteps);
 
         return $stepswithnames;
     }
