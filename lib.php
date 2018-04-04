@@ -41,5 +41,24 @@ function tool_trigger_output_fragment_new_base_form($args) {
     ob_end_clean();
 
     return $o;
+}
 
+function tool_trigger_output_fragment_new_step_form($args) {
+    $args = (object) $args;
+    $context = $args->context;
+    $formdata = json_decode($args->jsonformdata);
+    $o = '';
+
+    require_capability('moodle/course:managegroups', $context);
+    $customdata = array('type' => $formdata->steptype, 'stepclass' => $formdata->stepval, 'steptext' => $formdata->steptext);
+    $formclass = substr($formdata->stepval, 0, (strlen($formdata->stepval)-4)) . 'form';
+
+    $mform = new $formclass(null, $customdata);
+
+    ob_start();
+    $mform->display();
+    $o .= ob_get_contents();
+    ob_end_clean();
+
+    return $o;
 }

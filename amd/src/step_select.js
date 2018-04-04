@@ -133,11 +133,16 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
      *
      * @param string varfilter The filter area.
      */
-    function getStepForm(valfilter) {
-        var formdata = {};
+    function getStepForm($steptype, $stepval, $steptext) {
+        var formdata = {
+                'steptype' : $steptype,
+                'stepval' : $stepval,
+                'steptext' : $steptext
+        };
+
         var params = {jsonformdata: JSON.stringify(formdata)};
         modalObj.setBody(spinner);
-        modalObj.setBody(Fragment.loadFragment('tool_trigger', 'new_base_form', contextid, params));
+        modalObj.setBody(Fragment.loadFragment('tool_trigger', 'new_step_form', contextid, params));
     }
 
     /**
@@ -151,7 +156,10 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
 
         // Add event listener for step  select onchange.
         $('body').on('change', '[name=stepclass]', function() {
-            getStepForm(this.value);
+            $steptype = $('[name=type]').val();
+            $stepval = this.value;
+            $steptext = $('[name=stepclass] option:selected').text();
+            getStepForm($steptype, $stepval, $steptext);
         });
     }
 

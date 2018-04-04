@@ -61,6 +61,10 @@ class base_form extends \moodleform {
         $steps = array(
             '' =>  get_string('choosedots'),
         );
+        if (isset($this->_customdata['stepclass'])) {
+            $steps[$this->_customdata['stepclass']] = $this->_customdata['steptext'];
+        }
+
         $mform->addElement('select', 'stepclass', get_string('stepclass', 'tool_trigger'), $steps);
         $mform->addHelpButton('stepclass', 'stepclass', 'tool_trigger');
         $mform->addRule('stepclass', get_string('required'), 'required');

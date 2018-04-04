@@ -22,7 +22,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace tool_trigger\steps;
+namespace tool_trigger\steps\triggers;
+
+use tool_trigger\steps\triggers\base_trigger_form;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -36,7 +38,8 @@ defined('MOODLE_INTERNAL') || die;
 class http_post_trigger_form extends base_trigger_form {
 
     public function definition() {
-        $mform = parent::definition();
+        parent::definition();
+        $mform = $this->_form;
 
         // URL.
         $attributes=array('size'=>'50');
