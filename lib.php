@@ -53,7 +53,17 @@ function tool_trigger_output_fragment_new_step_form($args) {
     $customdata = array('type' => $formdata->steptype, 'stepclass' => $formdata->stepval, 'steptext' => $formdata->steptext);
     $formclass = substr($formdata->stepval, 0, (strlen($formdata->stepval)-4)) . 'form';
 
-    $mform = new $formclass(null, $customdata);
+    $data = array();
+    if (!empty($formdata->data)) {
+        parse_str($formdata->data, $data);
+    }
+
+    $mform = new $formclass(null, $customdata, 'post', '', null, true, $data);
+
+    if (!empty($data)) {
+        // If we were passed non-empty form data we want the mform to call validation functions and show errors.
+        $mform->is_validated();
+    }
 
     ob_start();
     $mform->display();

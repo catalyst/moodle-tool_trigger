@@ -68,6 +68,7 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
         // Form data.
         var formData = modalObj.getRoot().find('form');
         var formDataObj = formData.serializeArray();
+        var stepclass = $('[name=stepclass] option:selected').attr('value');
 
         // Get and update hidden workflow form element
         var stepsjson = $('[name=stepjson]').val();
@@ -79,12 +80,23 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
         stepsjson = JSON.stringify(stepsJsonArr);
         $('[name=stepjson]').val(stepsjson);
 
-        // TODO: Submit form via ajax to do server side validation.
+        // Submit form via ajax to do server side validation.
+        var promises = ajax.call([{
+            methodname: 'tool_trigger_validate_form',
+            args: {stepclass: stepclass, jsonformdata: JSON.stringify(formData.serialize())},
+        }]);
 
-        // Update table in workflow form.
-        updateTable(stepsJsonArr);
+        promises[0].done(function(response) {
+            updateTable(stepsJsonArr); // Update table in workflow form.
+            modalObj.hide(); // Hide the modal.;
+        });
 
-        modalObj.hide(); // Hide the modal.
+        promises[0].fail(function(response) {
+            $steptype = $('[name=type]').val();
+            $stepval = stepclass;
+            $steptext = $('[name=stepclass] option:selected').text();
+            getStepForm($steptype, $stepval, $steptext, formData.serialize());
+        });
     }
 
     /**
@@ -133,11 +145,16 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
      *
      * @param string varfilter The filter area.
      */
-    function getStepForm($steptype, $stepval, $steptext) {
+    function getStepForm(steptype, stepval, steptext, data) {
+        if (data === undefined) {
+            var data = '';
+        }
+
         var formdata = {
-                'steptype' : $steptype,
-                'stepval' : $stepval,
-                'steptext' : $steptext
+                'steptype' : steptype,
+                'stepval' : stepval,
+                'steptext' : steptext,
+                'data' : data
         };
 
         var params = {jsonformdata: JSON.stringify(formdata)};

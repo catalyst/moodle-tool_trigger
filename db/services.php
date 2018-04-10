@@ -44,4 +44,13 @@ $functions = array(
                 'capabilities'  => 'tool/trigger:manageworkflows',
                 'ajax' => true
         ),
+        'tool_trigger_validate_form' => array(
+            'classname'   => 'tool_trigger_external',
+            'methodname'  => 'validate_form',
+            'classpath'   => 'admin/tool/trigger/externallib.php',
+            'description' => 'Checks to see if a form contains valid data',
+            'type'        => 'read',
+            'capabilities'  => 'tool/trigger:manageworkflows',
+            'ajax' => true
+    ),
 );
