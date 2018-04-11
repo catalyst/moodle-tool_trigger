@@ -153,4 +153,63 @@ class tool_trigger_external extends external_api {
                 )
             );
     }
+
+    /**
+     * Describes the parameters for validate_form webservice.
+     * @return external_function_parameters
+     */
+    public static function validate_form_parameters() {
+        return new external_function_parameters(
+            array(
+                'stepclass' => new external_value(PARAM_RAW, 'The step class being validated'),
+                'jsonformdata' => new external_value(PARAM_RAW, 'The data from the create group form, encoded as a json array')
+            )
+        );
+    }
+
+    /**
+     * Validate the form.
+     *
+     * @param string stepclass The step class being validated
+     * @param string $jsonformdata The data from the form, encoded as a json array.
+     * @return int new group id.
+     */
+    public static function validate_form($stepclass, $jsonformdata) {
+        global $USER;
+
+        // Step class is passed - convert it to the form class for this step.
+        $formclass = substr($stepclass, 0, (strlen($stepclass)-4)) . 'form';
+        // Context validation.
+        $context = context_user::instance($USER->id);
+        self::validate_context($context);
+
+        // We always must pass webservice params through validate_parameters.
+        $params = self::validate_parameters(self::validate_form_parameters(),
+            ['stepclass' => $stepclass, 'jsonformdata' => $jsonformdata]);
+
+        $data = array();
+        if (!empty($params['jsonformdata'])) {
+            $serialiseddata = json_decode($params['jsonformdata']);
+            parse_str($serialiseddata, $data);
+        }
+
+        // The last param is the ajax submitted data.
+        $mform = new $formclass(null, array(), 'post', '', null, true, $data);
+
+        if (!$mform->is_validated()) {
+            // Generate a warning.
+            throw new moodle_exception('erroreditgroup', 'group');
+        }
+        return true;
+    }
+
+    /**
+     * Returns description of method result value.
+     *
+     * @return external_description
+     */
+    public static function validate_form_returns() {
+        return new external_value(PARAM_RAW, 'form errors');
+    }
+
 }
