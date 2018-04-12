@@ -48,11 +48,30 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
         modalObj.setBody(Fragment.loadFragment('tool_trigger', 'new_base_form', contextid, params));
     }
 
-    function updateTable(tableData) {
+    function updateTable(stepData) {
+        // Format data for template.
+        var rows = [];
+        stepData.forEach(function(element){ // Iterate through steps.
+            var cells = {};
+            element.forEach(function(element){ // Iterate through step values
+                if (element.name === 'type') {
+                    cells.type = element.value;
+                } else if (element.name  === 'name') {
+                    cells.name = element.value;
+                } else if (element.name === 'step') {
+                    cells.step = element.value;
+                }
+            });
+
+            rows.push(cells);
+        });
+        var tableData = {'rows': rows};
         console.log(tableData);
+
         Templates.render('tool_trigger/workflow_steps', tableData).then(function(html) {
             $('#steps-table').html(html);
             }).fail(function(ex) {
+                console.log(ex);
                 // TODO: Deal with this exception (I recommend core/notify exception function for this).
             });
     }
@@ -68,11 +87,12 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
         // Form data.
         var formData = modalObj.getRoot().find('form');
         var formDataObj = formData.serializeArray();
+        formDataObj.push({'name': 'step', 'value': $('[name=stepclass] option:selected').text()});
         var stepclass = $('[name=stepclass] option:selected').attr('value');
 
         // Get and update hidden workflow form element
         var stepsjson = $('[name=stepjson]').val();
-        console.log(stepsjson);
+
         if (stepsjson !== '') {
             stepsJsonArr = JSON.parse(stepsjson);
         }

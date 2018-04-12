@@ -36,18 +36,26 @@
 <table class="table table-sm table-striped">
   <thead>
     <tr>
-      <th scope="col">{{# str }} steptype, tool_trigger {{/ str }}</th>
       <th scope="col">{{# str }} stepname, tool_trigger {{/ str }}</th>
+      <th scope="col">{{# str }} steptype, tool_trigger {{/ str }}</th>
+      <th scope="col">{{# str }} stepclass, tool_trigger {{/ str }}</th>
       <th scope="col">{{# str }} manage, tool_trigger {{/ str }}</th>
     </tr>
   </thead>
   <tbody>
+  {{#rows}}
     <tr>
-      <th scope="row">1</th>
-      <td>Mark</td>
-      <td>Otto</td>
+      <th scope="row">{{name}}</th>
+      <td>{{type}}</td>
+      <td>{{step}}</td>
+      <td>
+        <i class="icon fa fa-arrow-up fa-fw " aria-hidden="true" title="Delete Step" aria-label="Delete Step"></i>
+        <i class="icon fa fa-arrow-down fa-fw " aria-hidden="true" title="Delete Step" aria-label="Delete Step"></i>
+        <i class="icon fa fa-edit fa-fw " aria-hidden="true" title="Delete Step" aria-label="Delete Step"></i>
+        <i class="icon fa fa-trash fa-fw " aria-hidden="true" title="Delete Step" aria-label="Delete Step"></i>
+      </td>
     </tr>
-
+  {{/rows}}
   </tbody>
 </table>
 
