@@ -90,8 +90,10 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
         formDataObj.push({'name': 'step', 'value': $('[name=stepclass] option:selected').text()});
         var stepclass = $('[name=stepclass] option:selected').attr('value');
 
-        // Get and update hidden workflow form element
+        // Get and update hidden workflow form element.
         var stepsjson = $('[name=stepjson]').val();
+        // Keep the original valid value for use if validation fails.
+        var originalstepsjson = $('[name=stepjson]').val();
 
         if (stepsjson !== '') {
             stepsJsonArr = JSON.parse(stepsjson);
@@ -99,7 +101,6 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
         stepsJsonArr.push(formDataObj);
         stepsjson = JSON.stringify(stepsJsonArr);
         $('[name=stepjson]').val(stepsjson);
-
         // Submit form via ajax to do server side validation.
         var promises = ajax.call([{
             methodname: 'tool_trigger_validate_form',
@@ -112,6 +113,8 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
         });
 
         promises[0].fail(function(response) {
+            // Reset stepsjson with data prior to validation fail.
+            $('[name=stepjson]').val(originalstepsjson);
             $steptype = $('[name=type]').val();
             $stepval = stepclass;
             $steptext = $('[name=stepclass] option:selected').text();
