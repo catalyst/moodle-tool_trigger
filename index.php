@@ -39,7 +39,6 @@ require_capability('tool/trigger:manageworkflows', $context);
 // Build the page output.
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('workflowoverview', 'tool_trigger'));
-echo 'some content';
 
 // Render the rule list.
 $manageurl = new moodle_url('/admin/tool/trigger/index.php');

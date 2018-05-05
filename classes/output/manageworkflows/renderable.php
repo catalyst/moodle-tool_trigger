@@ -84,7 +84,6 @@ class renderable extends \table_sql implements \renderable {
         $this->pagesize = $perpage;
         $systemcontext = \context_system::instance();
         $this->context = $systemcontext;
-       // $this->hassystemcap = has_capability('tool/monitor:managerules', $systemcontext);
         $this->collapsible(false);
         $this->sortable(false);
         $this->pageable(true);
@@ -111,23 +110,6 @@ class renderable extends \table_sql implements \renderable {
      */
     public function col_description(\tool_trigger\workflow $workflow) {
         return $workflow->get_description($this->context);
-    }
-
-    /**
-     * Generate content for course column.
-     *
-     * @param \tool_trigger\workflow $workflow rule object
-     * @return string html used to display the context column field.
-     */
-    public function col_course(\tool_trigger\workflow $workflow) {
-        $coursename = $workflow->get_course_name($this->context);
-
-        $courseid = $workflow->courseid;
-        if (empty($courseid)) {
-            return $coursename;
-        } else {
-            return \html_writer::link(new \moodle_url('/course/view.php', array('id' => $courseid)), $coursename);
-        }
     }
 
     /**
@@ -171,28 +153,21 @@ class renderable extends \table_sql implements \renderable {
 
         $manage = '';
 
-        // Do not allow the user to edit the rule unless they have the system capability, or we are viewing the rules
-        // for a course, and not the site. Note - we don't need to check for the capability at a course level since
-        // the user is never shown this page otherwise.
-        if ($this->hassystemcap || ($workflow->courseid != 0)) {
-            $editurl = new \moodle_url($CFG->wwwroot. '/admin/tool/monitor/edit.php', array('ruleid' => $workflow->id,
-                    'courseid' => $workflow->courseid, 'sesskey' => sesskey()));
-            $icon = $OUTPUT->render(new \pix_icon('t/edit', get_string('editrule', 'tool_trigger')));
-            $manage .= \html_writer::link($editurl, $icon, array('class' => 'action-icon'));
-        }
+        $editurl = new \moodle_url($CFG->wwwroot. '/admin/tool/trigger/edit.php', array('ruleid' => $workflow->id,
+                'sesskey' => sesskey()));
+        $icon = $OUTPUT->render(new \pix_icon('t/edit', get_string('editrule', 'tool_trigger')));
+        $manage .= \html_writer::link($editurl, $icon, array('class' => 'action-icon'));
 
         // The user should always be able to copy the rule if they are able to view the page.
-        $copyurl = new \moodle_url($CFG->wwwroot. '/admin/tool/monitor/managerules.php',
-                array('ruleid' => $workflow->id, 'action' => 'copy', 'courseid' => $this->courseid, 'sesskey' => sesskey()));
+        $copyurl = new \moodle_url($CFG->wwwroot. '/admin/tool/trigger/managerules.php',
+                array('ruleid' => $workflow->id, 'action' => 'copy', 'sesskey' => sesskey()));
         $icon = $OUTPUT->render(new \pix_icon('t/copy', get_string('duplicaterule', 'tool_trigger')));
         $manage .= \html_writer::link($copyurl, $icon, array('class' => 'action-icon'));
 
-        if ($this->hassystemcap || ($workflow->courseid != 0)) {
-            $deleteurl = new \moodle_url($CFG->wwwroot. '/admin/tool/monitor/managerules.php', array('ruleid' => $workflow->id,
-                    'action' => 'delete', 'courseid' => $workflow->courseid, 'sesskey' => sesskey()));
-            $icon = $OUTPUT->render(new \pix_icon('t/delete', get_string('deleterule', 'tool_trigger')));
-            $manage .= \html_writer::link($deleteurl, $icon, array('class' => 'action-icon'));
-        }
+        $deleteurl = new \moodle_url($CFG->wwwroot. '/admin/tool/trigger/managerules.php', array('ruleid' => $workflow->id,
+                'action' => 'delete', 'sesskey' => sesskey()));
+        $icon = $OUTPUT->render(new \pix_icon('t/delete', get_string('deleterule', 'tool_trigger')));
+        $manage .= \html_writer::link($deleteurl, $icon, array('class' => 'action-icon'));
 
         return $manage;
     }

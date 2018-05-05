@@ -41,12 +41,69 @@ class workflow {
     protected $workflow;
 
     /**
+    * @var \int The workflow ID.
+    */
+    public $id;
+
+    /**
+     * @var \string The event name.
+     */
+    public $event;
+
+    /**
+     * @var \int Is this workflow async.
+     */
+    public $async;
+
+    /**
+     * @var \int Is this workflow enabled.
+     */
+    public $active;
+
+    /**
+     * @var \int Is this workflow in draft mode.
+     */
+    public $draft;
+
+    /**
+     * @var \int When was this workflow last triggered.
+     */
+    public $lasttriggered;
+
+    /**
      * Constructor.
      *
      * @param \stdClass $rule A rule object from database.
      */
     public function __construct($workflow) {
         $this->workflow = $workflow;
+        $this->id = $workflow->id;
+        $this->event = $workflow->event;
+        $this->async = $workflow->async;
+        $this->active = $workflow->enabled;
+        $this->draft = $workflow->draft;
+        $this->lasttriggered = $workflow->timetriggered;
+
     }
 
+    /**
+     * Get name of workflow.
+     *
+     * @param \stdClass $context
+     * @returns \string
+     */
+    public function get_name($context) {
+        return format_text($this->workflow->name, FORMAT_HTML, array('context' => $context));
+    }
+
+    /**
+     * Get description of workflow.
+     *
+     * @param \stdClass $context
+     * @returns \string
+     */
+    public function get_description($context) {
+        $description = json_decode($this->workflow->description);
+        return format_text($description->text, $description->format, array('context' => $context));
+    }
 }
