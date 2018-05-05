@@ -53,9 +53,10 @@ $pluginlist = \tool_monitor\eventlist::get_plugin_list();
 
 // Modify the list to add the choosers.
 $pluginlist = array_merge(array('' => get_string('choosedots')), $pluginlist);
+$eventlist = tool_monitor\eventlist::get_all_eventlist(true);
 
 // Get data ready for mform.
-$mform = new \tool_trigger\edit_form(null, array('pluginlist' => $pluginlist));
+$mform = new \tool_trigger\edit_form(null, array('pluginlist' => $pluginlist, 'eventlist' => $eventlist));
 
 if ($mform->is_cancelled()) {
     // Handle form cancel operation.

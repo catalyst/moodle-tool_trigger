@@ -43,6 +43,8 @@ class edit_form extends \moodleform {
     public function definition() {
 
         $mform = $this->_form;
+        $eventlist = $this->_customdata['eventlist'];
+        $pluginlist = $this->_customdata['pluginlist'];
 
         // Workflow name.
         $mform->addElement('text', 'workflowname', get_string ('workflowname', 'tool_trigger'), 'size="50"');
@@ -69,8 +71,6 @@ class edit_form extends \moodleform {
             $mform->setDefault('workflowdescription', $this->_customdata['workflowdescription']);
         }
 
-        // Event Area.
-        $pluginlist = $this->_customdata['pluginlist'];
         $mform->addElement('select', 'areatomonitor', get_string('areatomonitor', 'tool_trigger'), $pluginlist);
         $mform->addHelpButton('areatomonitor', 'areatomonitor', 'tool_trigger');
         $mform->addRule('areatomonitor', get_string('required'), 'required');
@@ -78,8 +78,6 @@ class edit_form extends \moodleform {
             $mform->setDefault('areatomonitor', $this->_customdata['areatomonitor']);
         }
 
-        // Event.
-        $eventlist = array('' => get_string('choosedots'));
         $mform->addElement('select', 'eventtomonitor', get_string('eventtomonitor', 'tool_trigger'), $eventlist);
         $mform->addHelpButton('eventtomonitor', 'eventtomonitor', 'tool_trigger');
         $mform->addRule('eventtomonitor', get_string('required'), 'required');
