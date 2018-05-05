@@ -35,6 +35,16 @@ defined('MOODLE_INTERNAL') || die();
  */
 class event_processor {
 
+
+    /** @var array $buffer buffer of events. */
+    protected $buffer = array();
+
+    /** @var int Number of entries in the buffer. */
+    protected $count = 0;
+
+    /** @var  eventobservers a reference to a self instance. */
+    protected static $instance;
+
     /**
      * The observer monitoring all the events.
      *
@@ -42,10 +52,112 @@ class event_processor {
      */
     public static function process_event(\core\event\base $event) {
 
-        // Check if event is in list of workflows.
+        if (empty(self::$instance)) {
+            self::$instance = new static();
+            // Register shutdown handler - this is useful for buffering, processing events, etc.
+            \core_shutdown_manager::register_function(array(self::$instance, 'process_buffer'));
+        }
+
+        self::$instance->buffer_event($event);
 
         return false;
 
+    }
+
+    /**
+     * Api to buffer events to store, to reduce db queries.
+     *
+     * @param \core\event\base $event
+     */
+    protected function buffer_event(\core\event\base $event) {
+
+        // If there are no subscriptions for this event do not buffer it.
+        if (!\tool_trigger\event_processor::event_has_subscriptions($event->eventname)) {
+            return false;
+        }
+
+        $eventdata = $event->get_data();
+        $eventobj = new \stdClass();
+        $eventobj->eventname = $eventdata['eventname'];
+        $eventobj->contextid = $eventdata['contextid'];
+        $eventobj->contextlevel = $eventdata['contextlevel'];
+        $eventobj->contextinstanceid = $eventdata['contextinstanceid'];
+        if ($event->get_url()) {
+            // Get link url if exists.
+            $eventobj->link = $event->get_url()->out();
+        } else {
+            $eventobj->link = '';
+        }
+        $eventobj->courseid = $eventdata['courseid'];
+        $eventobj->timecreated = $eventdata['timecreated'];
+
+        $this->buffer[] = $eventobj;
+        $this->count++;
+    }
+
+    /**
+     * This method process all events stored in the buffer.
+     *
+     * This is a multi purpose api. It does the following:-
+     * 1. Write event data to tool_monitor_events
+     * 2. Find out users that need to be notified about rule completion and schedule a task to send them messages.
+     */
+    public function process_buffer() {
+
+    }
+
+    /**
+     * Protected method that flushes the buffer of events and writes them to the database.
+     *
+     * @return array a copy of the events buffer.
+     */
+    protected function flush() {
+        global $DB;
+
+        // Flush the buffer to the db.
+        $events = $this->buffer;
+        $DB->insert_records('tool_monitor_events', $events); // Insert the whole chunk into the database.
+        $this->buffer = array();
+        $this->count = 0;
+        return $events;
+    }
+
+    /**
+     * Returns true if an event in a particular course has a subscription.
+     *
+     * @param string $eventname the name of the event
+     * @param int $courseid the course id
+     * @return bool returns true if the event has subscriptions in a given course, false otherwise.
+     */
+    public static function event_has_subscriptions($eventname) {
+        global $DB;
+
+        // Check if we can return these from cache.
+        $cache = \cache::make('tool_trigger', 'eventsubscriptions');
+
+        // The SQL we will be using to fill the cache if it is empty.
+        $sql = "SELECT DISTINCT(r.eventname)
+                  FROM {tool_trigger_workflow}";
+
+        $sitesubscriptions = $cache->get(0);
+        // If we do not have the triggers in the cache then return them from the DB.
+        if ($sitesubscriptions === false) {
+            // Set the array for the cache.
+            $sitesubscriptions = array();
+            if ($subscriptions = $DB->get_records_sql($sql)) {
+                foreach ($subscriptions as $subscription) {
+                    $sitesubscriptions[$subscription->eventname] = true;
+                }
+            }
+            $cache->set(0, $sitesubscriptions);
+        }
+
+        // Check if a subscription exists for this event.
+        if (isset($sitesubscriptions[$eventname])) {
+            return true;
+        }
+
+        return false;
     }
 
 }
