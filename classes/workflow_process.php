@@ -74,6 +74,7 @@ class workflow_process {
         if ($now == 0) {
             $now = time();
         }
+        $steporder = 0;
 
         // Nested loops FTW.
         foreach ($jsonobjs as $jsonobj) {
@@ -85,6 +86,7 @@ class workflow_process {
                 $record->workflowid = $workflowid;
                 $record->timecreated = $now;
                 $record->timemodified = $now;
+                $record->steporder = $steporder++;
             }
             $records[] = $record;
         }
