@@ -59,5 +59,20 @@
         <INDEX NAME="class" UNIQUE="false" FIELDS="stepclass" COMMENT="index for class paths"/>
       </INDEXES>
     </TABLE>
+    <TABLE NAME="tool_trigger_events" COMMENT="A table that keeps a log of events related to workflows">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="eventname" TYPE="char" LENGTH="254" NOTNULL="true" SEQUENCE="false" COMMENT="Event name"/>
+        <FIELD NAME="contextid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Context id"/>
+        <FIELD NAME="contextlevel" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Context level"/>
+        <FIELD NAME="contextinstanceid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Context instance id"/>
+        <FIELD NAME="link" TYPE="char" LENGTH="254" NOTNULL="true" SEQUENCE="false" COMMENT="Link to the event location"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="course id"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Time created"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+    </TABLE>
   </TABLES>
 </XMLDB>

@@ -15,18 +15,22 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * Trigger cache definitions.
  *
- * @package     tool_trigger
- * @copyright   Matt Porritt <mattp@catalyst-au.net>
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    tool_trigger
+ * @copyright  2018 Catalyst IT
+ * @author     Dan Marsden <dan@danmarsden.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+defined('MOODLE_INTERNAL') || die;
 
-$plugin->component = 'tool_trigger';
-$plugin->release = '2018050700';
-$plugin->version = 2018050700;
-$plugin->requires = 2016052300;
-$plugin->maturity = MATURITY_ALPHA;
-$plugin->dependencies = array('tool_monitor' => 2015051101);
+$definitions = array(
+    'eventsubscriptions' => array(
+        'mode' => cache_store::MODE_APPLICATION,
+        'simplekeys' => true,
+        'simpledata' => true,
+        'staticacceleration' => true,
+        'staticaccelerationsize' => 30
+    )
+);
