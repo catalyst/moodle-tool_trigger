@@ -45,18 +45,27 @@ $PAGE->set_title(get_string('addworkflow', 'tool_trigger'));
 $PAGE->set_heading(get_string('addworkflow', 'tool_trigger'));
 
 // Load the javascript.
-$PAGE->requires->js_call_amd('tool_trigger/workflow', 'init');
 $PAGE->requires->js_call_amd('tool_trigger/step_select', 'init', array($context->id));
 
-// Get plugin list.
-$pluginlist = \tool_monitor\eventlist::get_plugin_list();
+$eventlist = \tool_monitor\eventlist::get_all_eventlist();
 
-// Modify the list to add the choosers.
-$pluginlist = array_merge(array('' => get_string('choosedots')), $pluginlist);
-$eventlist = tool_monitor\eventlist::get_all_eventlist(true);
+// Group the events by plugin.
+$pluginlist = \tool_monitor\eventlist::get_plugin_list($eventlist);
+$plugineventlist = [];
+foreach($pluginlist as $plugin => $pluginname) {
+    foreach($eventlist[$plugin] as $event => $eventname) {
+        // Filter out events which cannot be triggered for some reason.
+        if (!$event::is_deprecated()) {
+            $plugineventlist[$event] = "${pluginname}: ${eventname}";
+        }
+    }
+}
 
 // Get data ready for mform.
-$mform = new \tool_trigger\edit_form(null, array('pluginlist' => $pluginlist, 'eventlist' => $eventlist));
+$mform = new \tool_trigger\edit_form(
+    null,
+    ['plugineventlist' => $plugineventlist]
+);
 
 if ($mform->is_cancelled()) {
     // Handle form cancel operation.

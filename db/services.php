@@ -26,15 +26,6 @@ defined('MOODLE_INTERNAL') || die();
 
 // Define the web service functions to install.
 $functions = array(
-        'tool_trigger_get_all_eventlist' => array(
-                'classname'   => 'tool_trigger_external',
-                'methodname'  => 'get_all_eventlist',
-                'classpath'   => 'admin/tool/trigger/externallib.php',
-                'description' => 'Returns available events',
-                'type'        => 'read',
-                'capabilities'  => 'tool/trigger:manageworkflows',
-                'ajax' => true
-        ),
         'tool_trigger_step_by_type' => array(
                 'classname'   => 'tool_trigger_external',
                 'methodname'  => 'step_by_type',
