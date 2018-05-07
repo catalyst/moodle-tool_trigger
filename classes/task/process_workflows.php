@@ -49,7 +49,7 @@ class process_workflows extends \core\task\scheduled_task {
 
         // Now process queue just created.
         $sql = "SELECT q.id as qid, q.workflowid, q.status, q.tries, q.timecreated, q.timemodified, 
-                       e.*
+                       e.id as eid, e.eventname, e.contextid, e.contextlevel, e.contextinstanceid, e.link, e.courseid, e.timecreated
                   FROM {tool_trigger_queue} q
                   JOIN {tool_trigger_workflows} w ON w.id = q.workflowid
                   JOIN {tool_trigger_events} e ON e.id = q.eventid
@@ -62,20 +62,35 @@ class process_workflows extends \core\task\scheduled_task {
             $workflow->timetriggered = time();
             $DB->update_record('tool_trigger_workflows', $workflow);
 
+            $event = new \stdClass();
+            $event->id = $q->eid;
+            $event->eventname = $q->eventname;
+            $event->contextid = $q->contextid;
+            $event->contextlevel = $q->contextlevel;
+            $event->contextinstanceid = $q->contextinstanceid;
+            $event->link = $q->link;
+            $event->courseid = $q->courseid;
+            $event->timecreated = $q->timecreated;
+
+            $trigger = new \stdClass();
+            $trigger->id = $q->qid;
+            $trigger->workflowid = $q->workflowid;
+            $trigger->status = $q->status;
+            $trigger->tries = $q->tries + 1;
+            $trigger->timecreated = $q->timecreated;
+            $trigger->timemodified = $q->timemodified;
+
             // Get steps for this workflow.
-            $steps = $DB->get_records('tool_trigger_steps', array('workflowid' => $q->workflowid));
+            $steps = $DB->get_records('tool_trigger_steps', array('workflowid' => $q->workflowid), 'steporder');
             foreach ($steps as $step) {
                 // Update queue to say which step was last attempted.
-                $tq = new \stdClass();
-                $tq->id = $q->qid;
-                $tq->laststep = $step->id;
-                $tq->tries = $q->tries + 1;
-                $tq->timemodified = time();
+                $trigger->laststep = $step->id;
+                $trigger->timemodified = time();
 
-                $DB->update_record('tool_trigger_queue', $tq);
+                $DB->update_record('tool_trigger_queue', $trigger);
 
                 $stepclass = new $step->stepclass();
-                $stepclass->execute($step, $q);
+                $stepclass->execute($step, $trigger, $event);
             }
         }
 
