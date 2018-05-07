@@ -144,4 +144,12 @@ class edit_form extends \moodleform {
         $this->add_action_buttons();
     }
 
+    function validation($data, $files) {
+        if (empty($data['stepjson'])) {
+            // TODO: Validate the structure of the returned JSON?
+            // tool_trigger_external::validate_form($stepclass, $data['stepjson']);
+            return ['step_modal_button' => get_string('steprequired', 'tool_trigger')];
+        }
+        return [];
+    }
 }

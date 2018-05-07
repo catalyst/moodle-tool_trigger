@@ -69,6 +69,7 @@ $string['stepdescription_help'] = 'A meaningful description for this step.';
 $string['step_modal_button'] = 'Add workflow step';
 $string['stepname'] = 'Step name';
 $string['stepname_help'] = 'The name of this step.';
+$string['steprequired'] = 'The workflow must have at least one step.';
 $string['steptype'] = 'Step type';
 $string['steptype_help'] = 'The type of step to apply.';
 $string['taskprocessworkflows'] = 'Process workflows scheduled task.';
