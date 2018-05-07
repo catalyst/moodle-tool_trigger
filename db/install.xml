@@ -10,9 +10,9 @@
         <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="Name of this workflow"/>
         <FIELD NAME="description" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Description of the workflow"/>
         <FIELD NAME="event" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="event name associated with this workflow"/>
-        <FIELD NAME="async" TYPE="binary" NOTNULL="true" SEQUENCE="false" COMMENT="True if this is an asynchronous event"/>
-        <FIELD NAME="enabled" TYPE="binary" NOTNULL="true" SEQUENCE="false" COMMENT="is this workflow enabled"/>
-        <FIELD NAME="draft" TYPE="binary" NOTNULL="true" SEQUENCE="false" COMMENT="Is this workflow in draft mode"/>
+        <FIELD NAME="async" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="True if this is an asynchronous event"/>
+        <FIELD NAME="enabled" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="is this workflow enabled"/>
+        <FIELD NAME="draft" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Is this workflow in draft mode"/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Timestamp when this workflow was created"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Timestamp when this workflow was last modified"/>
         <FIELD NAME="timetriggered" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Timestamp of when the workflow was last triggered"/>
@@ -28,8 +28,10 @@
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="workflowid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the workflow this queue item relates to"/>
+        <FIELD NAME="eventid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the trigger event this queue item relates to"/>
         <FIELD NAME="status" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Status of processing. 0 pending, 1, processed, -1 failed"/>
         <FIELD NAME="tries" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="number of times this item has attempted to be processed"/>
+        <FIELD NAME="laststep" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="ID of last step that was attempted."/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Timestamp this item was added to the queue"/>
         <FIELD NAME="timemodified" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Time this item was last modifief"/>
       </FIELDS>

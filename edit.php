@@ -77,6 +77,9 @@ if ($mform->is_cancelled()) {
     $workflowprocess = new \tool_trigger\workflow_process($mdata);
     $result = $workflowprocess->processform();
 
+    $cache = \cache::make('tool_trigger', 'eventsubscriptions');
+    $cache->purge();
+
     // Redirect back to workflow page and show success or failure.
     if ($result) {
         redirect(new moodle_url('/admin/tool/trigger/index.php'), get_string('changessaved'));

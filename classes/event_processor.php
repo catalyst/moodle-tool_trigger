@@ -139,8 +139,8 @@ class event_processor {
         $cache = \cache::make('tool_trigger', 'eventsubscriptions');
 
         // The SQL we will be using to fill the cache if it is empty.
-        $sql = "SELECT DISTINCT(r.eventname)
-                  FROM {tool_trigger_workflow}";
+        $sql = "SELECT DISTINCT(event)
+                  FROM {tool_trigger_workflows}";
 
         $sitesubscriptions = $cache->get(0);
         // If we do not have the triggers in the cache then return them from the DB.
@@ -149,7 +149,7 @@ class event_processor {
             $sitesubscriptions = array();
             if ($subscriptions = $DB->get_records_sql($sql)) {
                 foreach ($subscriptions as $subscription) {
-                    $sitesubscriptions[$subscription->eventname] = true;
+                    $sitesubscriptions[$subscription->event] = true;
                 }
             }
             $cache->set(0, $sitesubscriptions);

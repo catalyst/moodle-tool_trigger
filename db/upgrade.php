@@ -62,5 +62,61 @@ function xmldb_tool_trigger_upgrade($oldversion) {
         // Trigger savepoint reached.
         upgrade_plugin_savepoint(true, 2018050700, 'tool', 'trigger');
     }
+
+    if ($oldversion < 2018050702) {
+
+        // Define field eventid to be added to tool_trigger_queue.
+        $table = new xmldb_table('tool_trigger_queue');
+        $field = new xmldb_field('eventid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, 'workflowid');
+
+        // Conditionally launch add field eventid.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        $field = new xmldb_field('laststep', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, 0, 'tries');
+
+        // Conditionally launch add field eventid.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Trigger savepoint reached.
+        upgrade_plugin_savepoint(true, 2018050701, 'tool', 'trigger');
+    }
+
+    if ($oldversion < 2018050703) {
+
+        // Invalid Type set on theses fields (binary) should be int. unfortunately change_type is a bit hard, easier to drop field
+        // and recreate.
+        // TODO: We should remove this block before production release as it's only needed for us testing with older code.
+
+        // Changing type of field async on table tool_trigger_workflows to int.
+        $table = new xmldb_table('tool_trigger_workflows');
+
+        // Launch change of type for field async.
+        $field = new xmldb_field('async', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, 0, 'event');
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+        $dbman->add_field($table, $field);
+
+        $field = new xmldb_field('enabled', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, 1, 'async');
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+        $dbman->add_field($table, $field);
+
+        $field = new xmldb_field('draft', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, 0, 'enabled');
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+        $dbman->add_field($table, $field);
+
+        // Trigger savepoint reached.
+        upgrade_plugin_savepoint(true, 2018050703, 'tool', 'trigger');
+    }
+
+
     return true;
 }
