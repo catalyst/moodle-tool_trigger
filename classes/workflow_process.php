@@ -120,7 +120,7 @@ class workflow_process {
             $stepdata = json_decode($step->data, true);
             unset($step->data);
             if ($stepdata !== null) {
-                $flattenedstep = array_merge((array) $step, $stepdata);
+                $flattenedstep = array_merge($stepdata, (array) $step);
             }
             $arrayedstep = [];
             foreach ($flattenedstep as $fieldname => $fieldvalue) {
