@@ -173,11 +173,13 @@ class workflow_manager {
             $newworkflowid = $DB->insert_record('tool_trigger_workflows', $newworkflow);
 
             $newsteps = [];
-            foreach ($steps as $step) {
-                unset($step->id);
-                $step->workflowid = $newworkflowid;
-                $step->timecreated = $now;
-                $step->timemodified = $now;
+            foreach($steps as $step) {
+                $newstep = fullclone($step);
+                unset($newstep->id);
+                $newstep->workflowid = $newworkflowid;
+                $newstep->timecreated = $now;
+                $newstep->timemodified = $now;
+                $newsteps[] = $newstep;
             }
             $DB->insert_records('tool_trigger_steps', $newsteps);
 
