@@ -38,7 +38,7 @@ class workflow {
     /**
      * @var \stdClass The rule object form database.
      */
-    protected $workflow;
+    public $workflow;
 
     /**
     * @var \int The workflow ID.

@@ -27,7 +27,7 @@ namespace tool_trigger;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Worklfow manager class.
+ * Workflow manager class.
  *
  * @package    tool_trigger
  * @copyright  Matt Porritt <mattp@catalyst-au.net>
@@ -60,15 +60,30 @@ class workflow_manager {
         return $count;
     }
 
+    /**
+     * Retrieve a specific workflow
+     *
+     * @param int $workflowid
+     * @return boolean|\tool_trigger\workflow
+     */
+    public static function get_workflow($workflowid) {
+        global $DB;
+        $record = $DB->get_record('tool_trigger_workflows', ['id' => $workflowid], '*', IGNORE_MISSING);
+        if (!$record) {
+            return false;
+        } else {
+            return new workflow($record);
+        }
+    }
 
     /**
-     * Get workflows.
+     * Get all the created workflows, to show them in a table.
      *
      * @param int $limitfrom Limit from which to fetch worklfows.
      * @param int $limitto  Limit to which workflows need to be fetched.
      * @return array List of worklfows .
      */
-    public static function get_workflows($limitfrom = 0, $limitto = 0) {
+    public static function get_workflows_paginated($limitfrom = 0, $limitto = 0) {
         global $DB;
 
         $orderby = 'name ASC';
@@ -96,7 +111,7 @@ class workflow_manager {
 
     }
 
-    public function get_steps_with_names($steptype,$stepclasses) {
+    public function get_steps_with_names($steptype, $stepclasses) {
         $stepnames = array();
 
         foreach ($stepclasses as $stepclass) {
@@ -127,4 +142,71 @@ class workflow_manager {
         return $stepswithnames;
     }
 
+    /**
+     * Create a copy of a workflow.
+     *
+     * @param \tool_trigger\workflow $workflow
+     * @return boolean|\tool_trigger\workflow
+     */
+    public function copy_workflow(\tool_trigger\workflow $workflow) {
+        global $DB;
+
+        $now = time();
+
+        $newworkflow = fullclone($workflow->workflow);
+        unset($newworkflow->id);
+        // Add " (copy)" suffix to name
+        $newworkflow->name = get_string('duplicatedworkflowname', 'tool_trigger', $newworkflow->name);
+        $newworkflow->timecreated = $now;
+        $newworkflow->timemodified = $now;
+        $newworkflow->timetriggered = 0;
+
+        $steps = $DB->get_records(
+            'tool_trigger_steps',
+            ['workflowid' => $workflow->id],
+            'steporder'
+        );
+
+        try {
+            $transaction = $DB->start_delegated_transaction();
+
+            $newworkflowid = $DB->insert_record('tool_trigger_workflows', $newworkflow);
+
+            $newsteps = [];
+            foreach($steps as $step) {
+                unset($step->id);
+                $step->workflowid = $newworkflowid;
+                $step->timecreated = $now;
+                $step->timemodified = $now;
+            }
+            $DB->insert_records('tool_trigger_steps', $newsteps);
+
+            $DB->commit_delegated_transaction($transaction);
+        } catch (\Exception $e) {
+            $transaction->rollback($e);
+            return false;
+        }
+
+        return self::get_workflow($newworkflowid);
+    }
+
+    /**
+     * Delete a workflow.
+     * @param int $workflowid
+     * @return boolean
+     */
+    public function delete_workflow($workflowid) {
+        global $DB;
+
+        try {
+            $transaction = $DB->start_delegated_transaction();
+            $DB->delete_records('tool_trigger_steps', ['workflowid' => $workflowid]);
+            $DB->delete_records('tool_trigger_workflows', ['id' => $workflowid]);
+            $DB->commit_delegated_transaction($transaction);
+        } catch (\Exception $e) {
+            $transaction->rollback($e);
+            return false;
+        }
+        return true;
+    }
 }

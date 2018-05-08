@@ -181,7 +181,7 @@ class renderable extends \table_sql implements \renderable {
 
         $total = \tool_trigger\workflow_manager::count_workflows();
         $this->pagesize($pagesize, $total);
-        $workflows = \tool_trigger\workflow_manager::get_workflows($this->get_page_start(), $this->get_page_size());
+        $workflows = \tool_trigger\workflow_manager::get_workflows_paginated($this->get_page_start(), $this->get_page_size());
         $this->rawdata = $workflows;
         // Set initial bars.
         if ($useinitialsbar) {
