@@ -202,6 +202,7 @@ class workflow_manager {
             $transaction = $DB->start_delegated_transaction();
             $DB->delete_records('tool_trigger_steps', ['workflowid' => $workflowid]);
             $DB->delete_records('tool_trigger_workflows', ['id' => $workflowid]);
+            $DB->delete_records('tool_trigger_queue', ['workflowid' => $workflowid]);
             $DB->commit_delegated_transaction($transaction);
         } catch (\Exception $e) {
             $transaction->rollback($e);
