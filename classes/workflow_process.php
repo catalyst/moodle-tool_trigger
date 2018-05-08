@@ -56,8 +56,34 @@ class workflow_process {
      *
      * @param null|\stdClass $mformdata Data from submitted form.
      */
-    public function __construct($mformdata) {
-        $this->formdata = $mformdata;
+    public function __construct($mformdata = null) {
+        if ($mformdata !== null) {
+            $this->formdata = $mformdata;
+        }
+    }
+
+    /**
+     * Converts a workflow object into the data structure needed to fill in the
+     * default values in the "edit workflow" form.
+     *
+     * @param \tool_trigger\workflow $workflow
+     * @return array
+     */
+    public function to_form_defaults($workflowid) {
+        $workflow = workflow_manager::get_workflow($workflowid);
+        return [
+            'workflowname' => $workflow->workflow->name,
+            'workflowdescription' => [
+                'text' => $workflow->descriptiontext,
+                'format' => $workflow->descriptionformat
+            ],
+            'eventtomonitor' => $workflow->event,
+            'draftmode' => $workflow->draft,
+            'asyncmode' => $workflow->async,
+            'workflowactive' => $workflow->active
+            // TODO: jsonencode the data for the steps
+            //,'stepjson' => $workflow->stepjson
+        ];
     }
 
     /**
@@ -137,5 +163,4 @@ class workflow_process {
 
         return $return;
     }
-
 }

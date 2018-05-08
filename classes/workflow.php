@@ -71,6 +71,16 @@ class workflow {
     public $lasttriggered;
 
     /**
+     * @var string
+     */
+    public $descriptiontext;
+
+    /**
+     * @var int
+     */
+    public $descriptionformat;
+
+    /**
      * Constructor.
      *
      * @param \stdClass $rule A rule object from database.
@@ -84,6 +94,9 @@ class workflow {
         $this->draft = $workflow->draft;
         $this->lasttriggered = $workflow->timetriggered;
 
+        $description = json_decode($workflow->description);
+        $this->descriptiontext = $description->text;
+        $this->descriptionformat = $description->format;
     }
 
     /**
@@ -103,7 +116,6 @@ class workflow {
      * @returns \string
      */
     public function get_description($context) {
-        $description = json_decode($this->workflow->description);
-        return format_text($description->text, $description->format, array('context' => $context));
+        return format_text($this->descriptiontext, $this->descriptionformat, array('context' => $context));
     }
 }

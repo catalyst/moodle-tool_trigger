@@ -49,9 +49,6 @@ class edit_form extends \moodleform {
         $mform->setType('workflowname', PARAM_ALPHAEXT);
         $mform->addRule('workflowname', get_string('required'), 'required');
         $mform->addHelpButton('workflowname', 'workflowname', 'tool_trigger');
-        if (isset($this->_customdata['workflowname'])) {
-            $mform->setDefault('workflowname', $this->_customdata['workflowname']);
-        }
 
         // Workflow description.
         $editoroptions = array(
@@ -64,10 +61,8 @@ class edit_form extends \moodleform {
             'trusttext' => 0
         );
         $mform->addElement('editor', 'workflowdescription', get_string ('workflowdescription', 'tool_trigger'), $editoroptions);
+        $mform->setType('workflowdescription', PARAM_RAW_TRIMMED);
         $mform->addHelpButton('workflowdescription', 'workflowdescription', 'tool_trigger');
-        if (isset($this->_customdata['workflowdescription'])) {
-            $mform->setDefault('workflowdescription', $this->_customdata['workflowdescription']);
-        }
 
         // Event.
         $mform->addElement(
@@ -85,9 +80,6 @@ class edit_form extends \moodleform {
         );
         $mform->addHelpButton('eventtomonitor', 'eventtomonitor', 'tool_trigger');
         $mform->addRule('eventtomonitor', get_string('required'), 'required');
-        if (isset($this->_customdata['eventtomonitor'])) {
-            $mform->setDefault('eventtomonitor', $this->_customdata['eventtomonitor']);
-        }
 
         // Draft mode.
         $mform->addElement('advcheckbox',
@@ -96,11 +88,7 @@ class edit_form extends \moodleform {
             'Enable', array(), array(0, 1));
         $mform->setType('draftmode', PARAM_INT);
         $mform->addHelpButton('draftmode', 'draftmode', 'tool_trigger');
-        if (isset($this->_customdata['draftmode'])) {
-            $mform->setDefault('draftmode', $this->_customdata['draftmode']);
-        } else {
-            $mform->setDefault('draftmode', 0);
-        }
+        $mform->setDefault('draftmode', 0);
 
         // Async mode.
         $mform->addElement('advcheckbox',
@@ -109,11 +97,7 @@ class edit_form extends \moodleform {
             'Enable', array(), array(0, 1));
         $mform->setType('asyncmode', PARAM_INT);
         $mform->addHelpButton('asyncmode', 'asyncmode', 'tool_trigger');
-        if (isset($this->_customdata['asyncmode'])) {
-            $mform->setDefault('asyncmode', $this->_customdata['asyncmode']);
-        } else {
-            $mform->setDefault('asyncmode', 1);
-        }
+        $mform->setDefault('asyncmode', 1);
 
         // Workflow active.
         $mform->addElement('advcheckbox',
@@ -122,18 +106,11 @@ class edit_form extends \moodleform {
             'Enable', array(), array(0, 1));
         $mform->setType('workflowactive', PARAM_INT);
         $mform->addHelpButton('workflowactive', 'workflowactive', 'tool_trigger');
-        if (isset($this->_customdata['workflowactive'])) {
-            $mform->setDefault('workflowactive', $this->_customdata['workflowactive']);
-        } else {
-            $mform->setDefault('workflowactive', 1);
-        }
+        $mform->setDefault('workflowactive', 1);
 
         //  Hidden text field for step JSON.
         $mform->addElement('hidden', 'stepjson');
         $mform->setType('stepjson', PARAM_RAW_TRIMMED);
-        if (isset($this->_customdata['stepjson'])) {
-            $mform->setDefault('stepjson', $this->_customdata['stepjson']);
-        }
 
         // Workflow steps mini table.
         $mform->addElement('html', '<div id="steps-table"></div>');

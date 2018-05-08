@@ -41,8 +41,13 @@ require_capability('tool/trigger:manageworkflows', $context);
 $PAGE->set_context($context);
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('admin');
-$PAGE->set_title(get_string('addworkflow', 'tool_trigger'));
-$PAGE->set_heading(get_string('addworkflow', 'tool_trigger'));
+if ($workflowid) {
+    $pagetitlestr = get_string('editworkflow', 'tool_trigger');
+} else {
+    $pagetitlestr = get_string('addworkflow', 'tool_trigger');
+}
+$PAGE->set_title($pagetitlestr);
+$PAGE->set_heading($pagetitlestr);
 
 // Load the javascript.
 $PAGE->requires->js_call_amd('tool_trigger/step_select', 'init', array($context->id));
@@ -91,7 +96,10 @@ if ($mform->is_cancelled()) {
     // This branch is executed if the form is submitted but the data doesn't validate,
     // or on the first display of the form.
 
-    //$mform->set_data($toform); // TODO: Set default data (if any)
+    if ($workflowid) {
+        $workflowprocess = new \tool_trigger\workflow_process(null);
+        $mform->set_data($workflowprocess->to_form_defaults($workflowid));
+    }
 
     // Build the page output.
     echo $OUTPUT->header();

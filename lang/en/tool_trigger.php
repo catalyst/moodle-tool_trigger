@@ -46,6 +46,7 @@ $string['duplicaterule'] = 'Duplicate rule';
 $string['duplicatedworkflowname'] = '{$a} (copy)';
 $string['editrule'] = 'Edit rule';
 $string['editsettings'] = 'Workflow settings';
+$string['editworkflow'] = 'Edit trigger workflow';
 $string['event'] = 'Event';
 $string['eventtomonitor'] = 'Event to monitor';
 $string['eventtomonitor_help'] = 'The Moodle event to trigger workflow on.';
