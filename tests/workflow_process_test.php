@@ -57,7 +57,7 @@ class tool_trigger_workflow_process_testcase extends advanced_testcase {
         $workflowprocess = new \tool_trigger\workflow_process($mdata);
         $result = $workflowprocess->processform();
 
-        // Check that some values were actually written to db;
+        // Check that some values were actually written to db.
         $workflowexists = $DB->record_exists('tool_trigger_workflows', array('name' => 'test workflow'));
         $stepexists = $DB->record_exists('tool_trigger_steps', array('name' => 'test step'));
 

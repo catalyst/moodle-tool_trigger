@@ -82,7 +82,7 @@ function xmldb_tool_trigger_upgrade($oldversion) {
         }
 
         // Trigger savepoint reached.
-        upgrade_plugin_savepoint(true, 2018050701, 'tool', 'trigger');
+        upgrade_plugin_savepoint(true, 2018050702, 'tool', 'trigger');
     }
 
     if ($oldversion < 2018050703) {
@@ -116,7 +116,6 @@ function xmldb_tool_trigger_upgrade($oldversion) {
         // Trigger savepoint reached.
         upgrade_plugin_savepoint(true, 2018050703, 'tool', 'trigger');
     }
-
 
     return true;
 }

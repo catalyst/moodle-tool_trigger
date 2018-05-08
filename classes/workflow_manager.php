@@ -155,7 +155,7 @@ class workflow_manager {
 
         $newworkflow = fullclone($workflow->workflow);
         unset($newworkflow->id);
-        // Add " (copy)" suffix to name
+        // Add " (copy)" suffix to name.
         $newworkflow->name = get_string('duplicatedworkflowname', 'tool_trigger', $newworkflow->name);
         $newworkflow->timecreated = $now;
         $newworkflow->timemodified = $now;
@@ -173,7 +173,7 @@ class workflow_manager {
             $newworkflowid = $DB->insert_record('tool_trigger_workflows', $newworkflow);
 
             $newsteps = [];
-            foreach($steps as $step) {
+            foreach ($steps as $step) {
                 unset($step->id);
                 $step->workflowid = $newworkflowid;
                 $step->timecreated = $now;

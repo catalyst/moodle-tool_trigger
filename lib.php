@@ -51,7 +51,7 @@ function tool_trigger_output_fragment_new_step_form($args) {
 
     require_capability('moodle/course:managegroups', $context);
     $customdata = array('type' => $formdata->steptype, 'stepclass' => $formdata->stepval, 'steptext' => $formdata->steptext);
-    $formclass = substr($formdata->stepval, 0, (strlen($formdata->stepval)-4)) . 'form';
+    $formclass = substr($formdata->stepval, 0, (strlen($formdata->stepval) - 4)) . 'form';
 
     $data = array();
     if (!empty($formdata->data)) {

@@ -69,13 +69,13 @@ class edit_form extends \moodleform {
             'autocomplete',
             'eventtomonitor',
             get_string('eventtomonitor', 'tool_trigger'),
-            // choices in the menu
+            // Choices in the menu.
             array_merge(
-                // placeholder string (because Moodle doesn't add it from the 'noselectionstring' automatically
+                // Placeholder string (because Moodle doesn't add it from the 'noselectionstring' automatically.
                 ['' => get_string('choosedots')],
                 $this->_customdata['plugineventlist']
             ),
-            // form element options
+            // Form element options.
             ['noselectionstring' => get_string('choosedots')]
         );
         $mform->addHelpButton('eventtomonitor', 'eventtomonitor', 'tool_trigger');
@@ -108,7 +108,7 @@ class edit_form extends \moodleform {
         $mform->addHelpButton('workflowactive', 'workflowactive', 'tool_trigger');
         $mform->setDefault('workflowactive', 1);
 
-        //  Hidden text field for step JSON.
+        // Hidden text field for step JSON.
         $mform->addElement('hidden', 'stepjson');
         $mform->setType('stepjson', PARAM_RAW_TRIMMED);
 
@@ -127,7 +127,7 @@ class edit_form extends \moodleform {
      * Adds the steps table to the form. (We need to do this in definition_after_data(),
      * so that it will properly re-display the table after form validation fails.)
      */
-    function definition_after_data() {
+    public function definition_after_data() {
         global $PAGE;
 
         $mform = $this->_form;
@@ -156,7 +156,7 @@ class edit_form extends \moodleform {
      * Validation. For now it just makes sure that the stepjson hidden field isn't
      * empty. If it is, it puts an error flag on the "add workflow steps" button.
      */
-    function validation($data, $files) {
+    public function validation($data, $files) {
         if (empty($data['stepjson'])) {
             // TODO: Validate the structure of the returned JSON?
             // tool_trigger_external::validate_form($stepclass, $data['stepjson']);

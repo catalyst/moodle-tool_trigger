@@ -72,7 +72,7 @@ class event_processor {
     protected function buffer_event(\core\event\base $event) {
 
         // If there are no subscriptions for this event do not buffer it.
-        if (!\tool_trigger\event_processor::event_has_subscriptions($event->eventname)) {
+        if (!self::event_has_subscriptions($event->eventname)) {
             return false;
         }
 

@@ -113,7 +113,7 @@ class tool_trigger_external extends external_api {
         global $USER;
 
         // Step class is passed - convert it to the form class for this step.
-        $formclass = substr($stepclass, 0, (strlen($stepclass)-4)) . 'form';
+        $formclass = substr($stepclass, 0, (strlen($stepclass) - 4)) . 'form';
         // Context validation.
         $context = context_user::instance($USER->id);
         self::validate_context($context);

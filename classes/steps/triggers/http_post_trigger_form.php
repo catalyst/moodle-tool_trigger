@@ -40,7 +40,7 @@ class http_post_trigger_form extends base_trigger_form {
         $mform = $this->_form;
 
         // URL.
-        $attributes=array('size'=>'50');
+        $attributes = array('size' => '50');
         $mform->addElement('text', 'httposttiggerurl', get_string ('httposttiggerurl', 'tool_trigger'), $attributes);
         $mform->setType('httposttiggerurl', PARAM_URL);
         $mform->addRule('httposttiggerurl', get_string('required'), 'required');
@@ -50,7 +50,7 @@ class http_post_trigger_form extends base_trigger_form {
         }
 
         // Headers.
-        $attributes=array('cols' => '50', 'rows' => '5');
+        $attributes = array('cols' => '50', 'rows' => '5');
         $mform->addElement('textarea', 'httposttiggerheaders', get_string ('httposttiggerheaders', 'tool_trigger'), $attributes);
         $mform->setType('httposttiggerheaders', PARAM_RAW_TRIMMED);
         $mform->addRule('httposttiggerheaders', get_string('required'), 'required');
@@ -60,7 +60,7 @@ class http_post_trigger_form extends base_trigger_form {
         }
 
         // Params.
-        $attributes=array('cols' => '50', 'rows' => '5');
+        $attributes = array('cols' => '50', 'rows' => '5');
         $mform->addElement('textarea', 'httposttiggerparams', get_string ('httposttiggerparams', 'tool_trigger'), $attributes);
         $mform->setType('httposttiggerparams', PARAM_RAW_TRIMMED);
         $mform->addRule('httposttiggerparams', get_string('required'), 'required');

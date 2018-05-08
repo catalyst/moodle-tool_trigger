@@ -24,6 +24,7 @@
 
 namespace tool_trigger\task;
 
+defined('MOODLE_INTERNAL') || die();
 /**
  * Simple task to rocess queued workflows.
  */
@@ -44,11 +45,11 @@ class process_workflows extends \core\task\scheduled_task {
     public function execute() {
         global $DB;
         $now = time();
-        $maxtries = 5; //TODO MAGIC NUMBER!!
+        $maxtries = 5; // TODO MAGIC NUMBER!!
         $this->create_trigger_queue($now);
 
         // Now process queue just created.
-        $sql = "SELECT q.id as qid, q.workflowid, q.status, q.tries, q.timecreated, q.timemodified, 
+        $sql = "SELECT q.id as qid, q.workflowid, q.status, q.tries, q.timecreated, q.timemodified,
                        e.id as eid, e.eventname, e.contextid, e.contextlevel, e.contextinstanceid, e.link, e.courseid, e.timecreated
                   FROM {tool_trigger_queue} q
                   JOIN {tool_trigger_workflows} w ON w.id = q.workflowid
@@ -97,8 +98,6 @@ class process_workflows extends \core\task\scheduled_task {
         $queue->close();
 
         // TODO: Now check to see if there are old events in queue to process.
-
-
     }
 
     /** Create queue of workflows that need processing.
@@ -106,7 +105,7 @@ class process_workflows extends \core\task\scheduled_task {
      * @throws \coding_exception
      * @throws \dml_exception
      */
-    function create_trigger_queue($now) {
+    private function create_trigger_queue($now) {
         global $DB;
         $triggerqueue = array();
 

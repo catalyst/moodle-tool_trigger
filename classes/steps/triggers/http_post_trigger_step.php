@@ -41,7 +41,7 @@ class http_post_trigger_step extends base_trigger_step {
      * @return string human readable step name.
      */
     static public function get_step_name() {
-       return get_string('httpposttriggerstepname', 'tool_trigger');
+        return get_string('httpposttriggerstepname', 'tool_trigger');
     }
 
     /**

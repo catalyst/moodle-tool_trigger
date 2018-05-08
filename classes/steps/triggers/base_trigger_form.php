@@ -41,7 +41,7 @@ class base_trigger_form extends base_form {
         $mform = $this->_form;
 
         // Name.
-        $attributes=array('size'=>'50');
+        $attributes = array('size' => '50');
         $mform->addElement('text', 'name', get_string ('stepname', 'tool_trigger'), $attributes);
         $mform->setType('name', PARAM_ALPHAEXT);
         $mform->addRule('name', get_string('required'), 'required');
@@ -51,7 +51,7 @@ class base_trigger_form extends base_form {
         }
 
         // Description.
-        $attributes=array('cols' => '50', 'rows' => '5');
+        $attributes = array('cols' => '50', 'rows' => '5');
         $mform->addElement('textarea', 'description', get_string ('stepdescription', 'tool_trigger'), $attributes);
         $mform->setType('description', PARAM_ALPHAEXT);
         $mform->addRule('description', get_string('required'), 'required');

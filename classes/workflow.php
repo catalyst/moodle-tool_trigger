@@ -41,8 +41,8 @@ class workflow {
     public $workflow;
 
     /**
-    * @var int The workflow ID.
-    */
+     * @var int The workflow ID.
+     */
     public $id;
 
     /**

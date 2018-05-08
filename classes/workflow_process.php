@@ -117,7 +117,7 @@ class workflow_process {
         // nested array structure as the modal form uses.
         $stepsforjson = [];
         foreach ($steps as $step) {
-            $stepdata = json_decode($step->data, TRUE);
+            $stepdata = json_decode($step->data, true);
             unset($step->data);
             if ($stepdata !== null) {
                 $flattenedstep = array_merge((array) $step, $stepdata);
@@ -127,7 +127,7 @@ class workflow_process {
                 $arrayedstep[] = [
                     'name' => $fieldname,
                     'value' => $fieldvalue
-               ];
+                ];
             }
             $stepsforjson[] = $arrayedstep;
         }
@@ -155,8 +155,8 @@ class workflow_process {
         foreach ($jsonobjs as $jsonobj) {
             $record = new \stdClass();
             $data = new \stdClass();
-            foreach ($jsonobj as $namevalue){
-                if(in_array($namevalue->name, $this->stepfields)) {
+            foreach ($jsonobj as $namevalue) {
+                if (in_array($namevalue->name, $this->stepfields)) {
                     $record->{$namevalue->name} = $namevalue->value;
                 } else if ($namevalue->name <> 'sesskey') {
                     $data->{$namevalue->name} = $namevalue->value;
@@ -205,7 +205,7 @@ class workflow_process {
 
             // Assuming the both inserts work, we get to the following line.
             $transaction->allow_commit();
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $transaction->rollback($e);
             $return = false;
         }

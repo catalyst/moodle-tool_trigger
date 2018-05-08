@@ -29,7 +29,7 @@ defined('MOODLE_INTERNAL') || die();
 
 require_login();
 
-admin_externalpage_setup('tool_trigger_settings','', null, '', array('pagelayout' => 'report'));
+admin_externalpage_setup('tool_trigger_settings', '', null, '', array('pagelayout' => 'report'));
 
 $context = context_system::instance();
 

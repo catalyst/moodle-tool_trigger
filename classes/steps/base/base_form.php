@@ -45,10 +45,10 @@ class base_form extends \moodleform {
 
         // Step type.
         $steptype = array(
-            '' =>  get_string('choosedots'),
-            'triggers' =>  get_string('trigger', 'tool_trigger'),
-            'filters' =>  get_string('filter', 'tool_trigger'),
-            'lookups' =>  get_string('lookup', 'tool_trigger'),
+            '' => get_string('choosedots'),
+            'triggers' => get_string('trigger', 'tool_trigger'),
+            'filters' => get_string('filter', 'tool_trigger'),
+            'lookups' => get_string('lookup', 'tool_trigger'),
         );
         $mform->addElement('select', 'type', get_string('steptype', 'tool_trigger'), $steptype);
         $mform->addHelpButton('type', 'steptype', 'tool_trigger');
@@ -59,7 +59,7 @@ class base_form extends \moodleform {
 
         // Step.
         $steps = array(
-            '' =>  get_string('choosedots'),
+            '' => get_string('choosedots'),
         );
         if (isset($this->_customdata['stepclass'])) {
             $steps[$this->_customdata['stepclass']] = $this->_customdata['steptext'];
