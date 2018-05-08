@@ -54,7 +54,7 @@ class workflow_process {
     /**
      * Class constructor.
      *
-     * @param \core_form\data $mformdata Data from submitted form.
+     * @param null|\stdClass $mformdata Data from submitted form.
      */
     public function __construct($mformdata) {
         $this->formdata = $mformdata;

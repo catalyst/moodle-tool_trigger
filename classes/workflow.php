@@ -41,32 +41,32 @@ class workflow {
     public $workflow;
 
     /**
-    * @var \int The workflow ID.
+    * @var int The workflow ID.
     */
     public $id;
 
     /**
-     * @var \string The event name.
+     * @var string The event name.
      */
     public $event;
 
     /**
-     * @var \int Is this workflow async.
+     * @var int Is this workflow async.
      */
     public $async;
 
     /**
-     * @var \int Is this workflow enabled.
+     * @var int Is this workflow enabled.
      */
     public $active;
 
     /**
-     * @var \int Is this workflow in draft mode.
+     * @var int Is this workflow in draft mode.
      */
     public $draft;
 
     /**
-     * @var \int When was this workflow last triggered.
+     * @var int When was this workflow last triggered.
      */
     public $lasttriggered;
 

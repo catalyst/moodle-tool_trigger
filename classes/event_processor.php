@@ -42,7 +42,7 @@ class event_processor {
     /** @var int Number of entries in the buffer. */
     protected $count = 0;
 
-    /** @var  eventobservers a reference to a self instance. */
+    /** @var  event_processor a reference to a self instance. */
     protected static $instance;
 
     /**

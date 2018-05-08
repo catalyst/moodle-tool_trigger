@@ -24,8 +24,6 @@
 
 namespace tool_trigger\steps\triggers;
 
-use tool_trigger\steps\triggers\base_trigger_step;
-
 defined('MOODLE_INTERNAL') || die;
 
 /**

@@ -82,7 +82,7 @@ class renderer extends \plugin_renderer_base {
     /**
      * Html to add a link to go to the subscription page.
      *
-     * @param moodle_url $manageurl The url of the subscription page.
+     * @param \moodle_url $manageurl The url of the subscription page.
      *
      * @return string html for the link to the subscription page.
      */
