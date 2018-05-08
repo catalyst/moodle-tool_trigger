@@ -93,4 +93,20 @@ class renderer extends \plugin_renderer_base {
         echo $link;
         echo \html_writer::end_div();
     }
+
+    public function render_workflow_steps($stepdata) {
+        $rows = [];
+        foreach ($stepdata as $step) {
+            // The JSON format for a step, instead of being a plain Javascript object,
+            // it's a JavaScript array of little objects, each of representing on field
+            // of the step, and having a "name" and "value" field.
+            //
+            // In PHP, this turns into a list of lists, and each sublist has keys
+            // "value" and "name". The PHP core function "array_column()" allows us
+            // to turn that into a more conventional associated array with the
+            // "name"s as the array keys, and the "value"s as the array values.
+            $rows[] = array_column($step, 'value', 'name');
+        }
+        return $this->render_from_template('tool_trigger/workflow_steps', ['rows' => $rows]);
+    }
 }

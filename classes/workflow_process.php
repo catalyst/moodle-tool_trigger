@@ -44,6 +44,7 @@ class workflow_process {
      * @var array Array of fields to filter from step JSON.
      */
     protected $stepfields = array(
+            'id',
             'type',
             'stepclass',
             'name',
@@ -80,14 +81,62 @@ class workflow_process {
             'eventtomonitor' => $workflow->event,
             'draftmode' => $workflow->draft,
             'asyncmode' => $workflow->async,
-            'workflowactive' => $workflow->active
-            // TODO: jsonencode the data for the steps
-            //,'stepjson' => $workflow->stepjson
+            'workflowactive' => $workflow->active,
+            'stepjson' => $this->encode_steps_to_json_for_form($workflow)
         ];
     }
 
     /**
+     * Encode the workflow's steps into the JSON format used by the
+     * form's modal. This is effectively the reverse operation to
+     * $this->processjson().
+     *
+     * @param \tool_trigger\workflow $workflow
+     * @return string
+     */
+    public function encode_steps_to_json_for_form($workflow) {
+        global $DB;
+
+        $steps = $DB->get_records(
+            'tool_trigger_steps',
+            ['workflowid' => $workflow->id],
+            'steporder',
+            // Fetch all the "stepfields" fields from the database, as well
+            // as the "data" field which has json-encoded additional data
+            // that may vary by step type.
+            implode(
+                ', ',
+                array_merge($this->stepfields, ['data'])
+            )
+        );
+        if (!$steps) {
+            return '';
+        }
+
+        // Deserialize the "data" field, and convert it into the same weird
+        // nested array structure as the modal form uses.
+        $stepsforjson = [];
+        foreach ($steps as $step) {
+            $stepdata = json_decode($step->data, TRUE);
+            unset($step->data);
+            if ($stepdata !== null) {
+                $flattenedstep = array_merge((array) $step, $stepdata);
+            }
+            $arrayedstep = [];
+            foreach ($flattenedstep as $fieldname => $fieldvalue) {
+                $arrayedstep[] = [
+                    'name' => $fieldname,
+                    'value' => $fieldvalue
+               ];
+            }
+            $stepsforjson[] = $arrayedstep;
+        }
+        return json_encode($stepsforjson);
+    }
+
+    /**
      * Take JSON from the form and format ready for insertion into DB.
+     * This is effectively the reverse operation to $this->encode_steps_to_json_for_form().
      *
      * @param string $formjson The JSON from the form.
      * @param int $workflowid The id for the workflow to associte step records to.

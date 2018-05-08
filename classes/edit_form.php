@@ -112,8 +112,10 @@ class edit_form extends \moodleform {
         $mform->addElement('hidden', 'stepjson');
         $mform->setType('stepjson', PARAM_RAW_TRIMMED);
 
-        // Workflow steps mini table.
-        $mform->addElement('html', '<div id="steps-table"></div>');
+        // Workflow steps mini table will be added here, in the
+        // "definition_after_data()" function (so that it can include
+        // steps from the submission in process, in case we fail
+        // validation).
 
         // Add processing step button.
         $mform->addElement('button', 'step_modal_button', get_string('step_modal_button', 'tool_trigger'));
@@ -121,6 +123,39 @@ class edit_form extends \moodleform {
         $this->add_action_buttons();
     }
 
+    /**
+     * Adds the steps table to the form. (We need to do this in definition_after_data(),
+     * so that it will properly re-display the table after form validation fails.)
+     */
+    function definition_after_data() {
+        global $PAGE;
+
+        $mform = $this->_form;
+        $stepdatajson = $mform->getElementValue('stepjson');
+
+        // Render the steps table, using the same template used by the modal form.
+        if ($stepdatajson && null !== ($stepdata = json_decode($stepdatajson))) {
+            $stepstable = $PAGE->get_renderer(
+                'tool_trigger', 'manageworkflows'
+            )->render_workflow_steps($stepdata);
+        } else {
+            $stepstable = '';
+        }
+
+        // Put the table right before the "add step" button.
+        $mform->insertElementBefore(
+            $mform->createElement(
+                'html',
+                '<div id="steps-table">' . $stepstable . '</div>'
+            ),
+            'step_modal_button'
+        );
+    }
+
+    /**
+     * Validation. For now it just makes sure that the stepjson hidden field isn't
+     * empty. If it is, it puts an error flag on the "add workflow steps" button.
+     */
     function validation($data, $files) {
         if (empty($data['stepjson'])) {
             // TODO: Validate the structure of the returned JSON?
