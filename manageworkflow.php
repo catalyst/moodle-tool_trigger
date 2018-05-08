@@ -27,7 +27,6 @@
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
-defined('MOODLE_INTERNAL') || die();
 require_login();
 $context = context_system::instance();
 require_capability('tool/trigger:manageworkflows', $context);
