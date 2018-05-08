@@ -79,15 +79,19 @@ class workflow_process {
         // Nested loops FTW.
         foreach ($jsonobjs as $jsonobj) {
             $record = new \stdClass();
+            $data = new \stdClass();
             foreach ($jsonobj as $namevalue){
                 if(in_array($namevalue->name, $this->stepfields)) {
                     $record->{$namevalue->name} = $namevalue->value;
+                } else if ($namevalue->name <> 'sesskey') {
+                    $data->{$namevalue->name} = $namevalue->value;
                 }
-                $record->workflowid = $workflowid;
-                $record->timecreated = $now;
-                $record->timemodified = $now;
-                $record->steporder = $steporder++;
             }
+            $record->workflowid = $workflowid;
+            $record->timecreated = $now;
+            $record->timemodified = $now;
+            $record->steporder = $steporder++;
+            $record->data = json_encode($data);
             $records[] = $record;
         }
 
