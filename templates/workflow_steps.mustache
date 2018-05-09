@@ -49,10 +49,10 @@
       <td>{{type}}</td>
       <td>{{step}}</td>
       <td>
-        <i class="icon fa fa-arrow-up fa-fw " aria-hidden="true" title="Delete Step" aria-label="Delete Step"></i>
-        <i class="icon fa fa-arrow-down fa-fw " aria-hidden="true" title="Delete Step" aria-label="Delete Step"></i>
-        <i class="icon fa fa-edit fa-fw " aria-hidden="true" title="Delete Step" aria-label="Delete Step"></i>
-        <i class="icon fa fa-trash fa-fw " aria-hidden="true" title="Delete Step" aria-label="Delete Step"></i>
+        {{# pix }} t/up, core, {{# str }} movestepup, tool_trigger {{/ str }} {{/ pix }}
+        {{# pix }} t/down, core, {{# str }} movestepdown, tool_trigger {{/ str }} {{/ pix }}
+        {{# pix }} t/edit, core, {{# str }} editstep, tool_trigger {{/ str }} {{/ pix }}
+        {{# pix }} t/delete, core, {{# str }} deletestep, tool_trigger {{/ str }} {{/ pix }}
       </td>
     </tr>
   {{/rows}}
