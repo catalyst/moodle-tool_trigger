@@ -101,6 +101,8 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
         stepsJsonArr.push(formDataObj);
         stepsjson = JSON.stringify(stepsJsonArr);
         $('[name=stepjson]').val(stepsjson);
+        // Set the flag field that indicates there was a change to the steps.
+        $('[name=isstepschanged]').val(1);
         // Submit form via ajax to do server side validation.
         var promises = ajax.call([{
             methodname: 'tool_trigger_validate_form',

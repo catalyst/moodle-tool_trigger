@@ -44,9 +44,13 @@ class edit_form extends \moodleform {
 
         $mform = $this->_form;
 
+        $mform->addElement('hidden', 'workflowid');
+        $mform->setType('workflowid', PARAM_INT);
+        $mform->setDefault('hidden', 0);
+
         // Workflow name.
         $mform->addElement('text', 'workflowname', get_string ('workflowname', 'tool_trigger'), 'size="50"');
-        $mform->setType('workflowname', PARAM_ALPHAEXT);
+        $mform->setType('workflowname', PARAM_TEXT);
         $mform->addRule('workflowname', get_string('required'), 'required');
         $mform->addHelpButton('workflowname', 'workflowname', 'tool_trigger');
 
@@ -111,6 +115,11 @@ class edit_form extends \moodleform {
         // Hidden text field for step JSON.
         $mform->addElement('hidden', 'stepjson');
         $mform->setType('stepjson', PARAM_RAW_TRIMMED);
+
+        // A convenience flag to indicate whether the steps were updated or not.
+        $mform->addElement('hidden', 'isstepschanged');
+        $mform->setType('isstepschanged', PARAM_BOOL);
+        $mform->setDefault('isstepschanged', 0);
 
         // Workflow steps mini table will be added here, in the
         // "definition_after_data()" function (so that it can include

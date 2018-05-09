@@ -73,6 +73,7 @@ class workflow_process {
     public function to_form_defaults($workflowid) {
         $workflow = workflow_manager::get_workflow($workflowid);
         return [
+            'workflowid' => $workflow->id,
             'workflowname' => $workflow->workflow->name,
             'workflowdescription' => [
                 'text' => $workflow->descriptiontext,
@@ -184,6 +185,8 @@ class workflow_process {
         $formdata = $this->formdata;
         $formjson = $formdata->stepjson;
 
+       $isnewworkflow = ($formdata->workflowid == 0);
+
         $workflowrecord = new \stdClass();
         $workflowrecord->name = $formdata->workflowname;
         $workflowrecord->description = json_encode($formdata->workflowdescription);
@@ -197,14 +200,91 @@ class workflow_process {
 
         try {
             $transaction = $DB->start_delegated_transaction();
-            $workflowid = $DB->insert_record('tool_trigger_workflows', $workflowrecord); // Save workflow and get back id.
+            if ($isnewworkflow) {
+                $workflowid = $DB->insert_record('tool_trigger_workflows', $workflowrecord);
+            } else {
+                $workflowid = $formdata->workflowid;
+                $workflowrecord->id = $workflowid;
+                $DB->update_record('tool_trigger_workflows', $workflowrecord);
+            }
 
-            // Process step JSON and save records to db.
-            $steprecords = $this->processjson($formjson, $workflowid);
-            $DB->insert_records('tool_trigger_steps', $steprecords);
+            if ($formdata->isstepschanged) {
 
-            // Assuming the both inserts work, we get to the following line.
+                // Process step JSON and save records to db.
+                $submittedsteps = $this->processjson($formjson, $workflowid);
+
+                if ($isnewworkflow) {
+                    // New workflow, all the steps need to be newly inserted.
+                    $stepstoinsert = $submittedsteps;
+                    $stepstoupdate = [];
+                    $stepstodelete = [];
+                } else {
+                    // Existing workflow, we may need to insert, update, or delete steps.
+
+                    // Get the IDs of the existing steps for this workflow
+                    $oldstepids = $DB->get_fieldset_select(
+                        'tool_trigger_steps',
+                        'id',
+                        'workflowid = :workflowid',
+                        ['workflowid' => $workflowid]
+                    );
+
+                    $stepstoinsert = [];
+                    $stepstoupdate = [];
+                    $stepstodelete = [];
+
+                    foreach ($submittedsteps as &$curstep) {
+                        if (!property_exists($curstep, 'id') || !$curstep->id) {
+                            // No ID means that the step is not yet in the database.
+                            unset($curstep->id); // Remove the ID field, in case it's an empty string or 0.
+                            $stepstoinsert[] = $curstep;
+                        } else {
+                            $i = array_search($curstep->id, $oldstepids);
+                            if (false === $i) {
+                                // An update to a step that is not currently in the database?
+                                // This shouldn't happen normally, but could be a result of a
+                                // duplicate submission? We'll treat it as a new insert.
+                                \core\notification::warning('Step with an invalid database ID present in form data. Check that the steps as submitted look correct.');
+
+                                unset($curstep->id); // Clear the ID so we can do a new insert.
+                                $stepstoinsert[] = $curstep;
+                            } else {
+                                // A step that's already in the database. Update it.
+                                if (array_key_exists($curstep->id, $stepstoupdate)) {
+                                    \core\notification::warning('Duplicate step database IDs in form data. Check that the steps as submitted look correct.');
+                                }
+                                $stepstoupdate[] = $curstep;
+                            }
+                        }
+                    }
+
+                    // Delete any steps whose ID is in oldstepids, but not in the
+                    // submitted steps
+                    $stepstodelete = array_diff(
+                        $oldstepids,
+                        array_column($stepstoupdate, 'id')
+                    );
+                }
+
+                // Put steps into the database
+
+                if (count($stepstoinsert)) {
+                    $DB->insert_records('tool_trigger_steps', $stepstoinsert);
+                }
+
+                if (count($stepstoupdate)) {
+                    foreach ($stepstoupdate as $steprec) {
+                        $DB->update_record('tool_trigger_steps', $steprec, true);
+                    }
+                }
+
+                if (count($stepstodelete)) {
+                    $DB->delete_records_list('tool_trigger_steps', 'id', $stepstodelete);
+                }
+            }
+
             $transaction->allow_commit();
+
         } catch (\Exception $e) {
             $transaction->rollback($e);
             $return = false;
