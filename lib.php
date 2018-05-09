@@ -50,8 +50,13 @@ function tool_trigger_output_fragment_new_step_form($args) {
     $o = '';
 
     require_capability('moodle/course:managegroups', $context);
-    $customdata = array('type' => $formdata->steptype, 'stepclass' => $formdata->stepval, 'steptext' => $formdata->steptext);
+    $stepclass = new $formdata->stepval();
     $formclass = substr($formdata->stepval, 0, (strlen($formdata->stepval) - 4)) . 'form';
+    $customdata = array(
+        'type' => $formdata->steptype,
+        'stepclass' => $formdata->stepval,
+        'steptext' => $stepclass->get_step_name()
+    );
 
     $data = array();
     if (!empty($formdata->data)) {
@@ -59,6 +64,10 @@ function tool_trigger_output_fragment_new_step_form($args) {
     }
 
     $mform = new $formclass(null, $customdata, 'post', '', null, true, $data);
+
+    if (!empty($formdata->defaults)) {
+        $mform->set_data($formdata->defaults);
+    }
 
     if (!empty($data)) {
         // If we were passed non-empty form data we want the mform to call validation functions and show errors.

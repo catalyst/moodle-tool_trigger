@@ -37,11 +37,32 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
     var spinner = '<p class="text-center"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i><span class="sr-only">Loading...</span></p>';
 
     /**
+     * Retrieves the steps serialized to JSON in the stepsjson hidden form field.
+     */
+    function getParentFormSteps() {
+        var stepsjson = $('[name=stepjson]').val();
+        var steps = [];
+        if (stepsjson !== '') {
+            steps = JSON.parse(stepsjson);
+        }
+        return steps;
+    }
+
+    /**
+     * Updates the steps stored in the hidden form field
+     */
+    function setCurrentFormSteps(steps) {
+        $('[name=stepjson]').val(JSON.stringify(steps));
+        // Set the flag field that indicates there was a change to the steps.
+        $('[name=isstepschanged]').val(1);
+    }
+
+    /**
      * Updates the body of the modal window.
      *
      * @private
      */
-    function updateBody() {
+    function updateModalBody() {
         var formdata = {};
         var params = {jsonformdata: JSON.stringify(formdata)};
         modalObj.setBody(spinner);
@@ -84,12 +105,11 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
     }
 
     /**
-     * Updates Moodle form with slected video information.
+     * Updates Moodle form with selected information.
      * @private
      */
-    function processForm(e) {
+    function processModalForm(e) {
         e.preventDefault(); // Stop modal from closing.
-        var stepsJsonArr = [];
 
         // Form data.
         var formData = modalObj.getRoot().find('form');
@@ -97,34 +117,24 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
         formDataObj.push({'name': 'step', 'value': $('[name=stepclass] option:selected').text()});
         var stepclass = $('[name=stepclass] option:selected').attr('value');
 
-        // Get and update hidden workflow form element.
-        var stepsjson = $('[name=stepjson]').val();
-        // Keep the original valid value for use if validation fails.
-        var originalstepsjson = $('[name=stepjson]').val();
-
-        if (stepsjson !== '') {
-            stepsJsonArr = JSON.parse(stepsjson);
-        }
-
-        stepsJsonArr.push(formDataObj);
-        stepsjson = JSON.stringify(stepsJsonArr);
-        $('[name=stepjson]').val(stepsjson);
-        // Set the flag field that indicates there was a change to the steps.
-        $('[name=isstepschanged]').val(1);
         // Submit form via ajax to do server side validation.
-        var promises = ajax.call([{
+        ajax.call([{
             methodname: 'tool_trigger_validate_form',
             args: {stepclass: stepclass, jsonformdata: JSON.stringify(formData.serialize())},
-        }]);
+        }])[0].done(function(response) {
 
-        promises[0].done(function(response) {
-            updateTable(stepsJsonArr); // Update table in workflow form.
+            // Validation succeeded! Update the parent form's hidden steps data, and update
+            // the table.
+            var steps = getParentFormSteps();
+            steps.push(formDataObj);
+            setCurrentFormSteps(steps); // Update steps in hidden form field
+            updateTable(steps); // Update table in workflow form.
             modalObj.hide(); // Hide the modal.;
-        });
 
-        promises[0].fail(function(response) {
-            // Reset stepsjson with data prior to validation fail.
-            $('[name=stepjson]').val(originalstepsjson);
+        }).fail(function(response) {
+
+            // Validation failed! Don't close the modal, don't update anything on the parent
+            // form.
             $steptype = $('[name=type]').val();
             $stepval = stepclass;
             $steptext = $('[name=stepclass] option:selected').text();
@@ -139,7 +149,7 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
      *
      * @param array events Array of steps to update selection with.
      */
-    function updateSteps(events) {
+    function updateStepOptions(events) {
 
         // First clear the existing options in the select element.
         $('[name=stepclass]').empty().append($('<option>', {
@@ -163,12 +173,10 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
      * @param string varfilter The filter area.
      */
     function getStepsOfType(valfilter) {
-        var promises = ajax.call([
+        ajax.call([
             { methodname: 'tool_trigger_step_by_type', args: {'steptype': valfilter} },
-        ]);
-
-       promises[0].done(function(response) {
-           updateSteps(response);
+        ])[0].done(function(response) {
+           updateStepOptions(response);
        });
     }
 
@@ -186,7 +194,6 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
         var formdata = {
                 'steptype' : steptype,
                 'stepval' : stepval,
-                'steptext' : steptext,
                 'data' : data
         };
 
@@ -198,7 +205,7 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
     /**
      *
      */
-    function changeHandlers() {
+    function setupModalChangeHandlers() {
         // Add event listener for step type select onchange.
         $('body').on('change', '[name=type]', function() {
             getStepsOfType(this.value);
@@ -208,25 +215,20 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
         $('body').on('change', '[name=stepclass]', function() {
             $steptype = $('[name=type]').val();
             $stepval = this.value;
-            $steptext = $('[name=stepclass] option:selected').text();
-            getStepForm($steptype, $stepval, $steptext);
+            getStepForm($steptype, $stepval);
         });
     }
 
     function setupTableHandlers() {
         $('.tool-trigger-step-moveup').on('click', function() {
-            var steporder = $(this).data('steporder');
+            var steps = getParentFormSteps();
 
             // Already at the top. Can't move any higher!
+            var steporder = $(this).data('steporder');
             if (steporder === 0) {
                 return true;
             }
-            // Get and update hidden workflow form element.
-            var stepsjson = $('[name=stepjson]').val();
-            var steps = [];
-            if (stepsjson !== '') {
-                steps = JSON.parse(stepsjson);
-            }
+
             // Swap this one and the one above it.
             var posup = steporder - 1;
             var posdown = steporder;
@@ -235,25 +237,16 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
             steps[posup] = goesup;
             steps[posdown] = goesdown;
 
-            $('[name=stepjson]').val(JSON.stringify(steps));
-            // Set the flag field that indicates there was a change to the steps.
-            $('[name=isstepschanged]').val(1);
-
+            setCurrentFormSteps(steps);
             updateTable(steps);
 
             return true;
         });
         $('.tool-trigger-step-movedown').on('click', function() {
-            var steporder = $(this).data('steporder');
-
-            // Get and update hidden workflow form element.
-            var stepsjson = $('[name=stepjson]').val();
-            var steps = [];
-            if (stepsjson !== '') {
-                steps = JSON.parse(stepsjson);
-            }
+            var steps = getParentFormSteps();
 
             // Already at the end. Can't move any further!
+            var steporder = $(this).data('steporder');
             if (steporder >= steps.length - 1) {
                 return true;
             }
@@ -266,42 +259,57 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
             steps[posup] = goesup;
             steps[posdown] = goesdown;
 
-            $('[name=stepjson]').val(JSON.stringify(steps));
-            // Set the flag field that indicates there was a change to the steps.
-            $('[name=isstepschanged]').val(1);
-
+            setCurrentFormSteps(steps);
             updateTable(steps);
 
             return true;
         });
-        // TODO
-//        $('.tool-trigger-step-edit').on('click', function() {
-//        });
         $('.tool-trigger-step-delete').on('click', function() {
-            var steporder = $(this).data('steporder');
-
-            // Get and update hidden workflow form element.
-            var stepsjson = $('[name=stepjson]').val();
-            var steps = [];
-            if (stepsjson !== '') {
-                steps = JSON.parse(stepsjson);
-            }
-
-            if (steporder < 0 || steporder > steps.length - 1) {
-                return true;
-            }
+            var steps = getParentFormSteps();
 
             // Remove it from the array
+            var steporder = $(this).data('steporder');
             steps.splice(steporder, 1);
 
-            $('[name=stepjson]').val(JSON.stringify(steps));
-            // Set the flag field that indicates there was a change to the steps.
-            $('[name=isstepschanged]').val(1);
-
+            setCurrentFormSteps(steps);
             updateTable(steps);
 
             return true;
         });
+        $('.tool-trigger-step-edit').on('click', function() {
+            modalObj.setBody(spinner);
+            modalObj.show();
+            var steps = getParentFormSteps();
+            var steporder = $(this).data('steporder');
+            var step = steps[steporder];
+            step = step.reduce(
+                function(step, stepfield) {
+                    step[stepfield.name] = stepfield.value;
+                    return step;
+                },
+                {}
+            );
+
+            var formdata = {
+              'steptype': step.type,
+              'stepval': step.stepclass,
+              'defaults': step
+            };
+            var params = {
+                jsonformdata: JSON.stringify(formdata)
+            };
+            modalObj.setBody(
+                Fragment.loadFragment(
+                    'tool_trigger',
+                    'new_step_form',
+                    contextid,
+                    params
+                )
+            );
+        });
+    }
+
+    function setupModalTrigger($elements) {
     }
 
     /**
@@ -310,10 +318,8 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
      * @public
      */
     StepSelect.init = function(context) {
-        var trigger = $('#id_step_modal_button'); // form button to trigger modal
+        // Save the context ID in a closure variable.
         contextid = context;
-
-        setupTableHandlers();
 
         //Get the Title String
         Str.get_string('modaltitle', 'tool_trigger').then(function(title) {
@@ -323,16 +329,18 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
                 title: title,
                 body: spinner,
                 large: true
-            }, trigger)
+            }, $('#id_step_modal_button'))
             .done(function(modal) {
                 modalObj = modal;
-                modalObj.getRoot().on(ModalEvents.save, processForm);
-                modalObj.getRoot().on(ModalEvents.hidden, updateBody);
-                changeHandlers();
-                updateBody();
+                modalObj.getRoot().on(ModalEvents.save, processModalForm);
+                modalObj.getRoot().on(ModalEvents.hidden, updateModalBody);
+                setupModalChangeHandlers();
+                updateModalBody();
             });
         });
 
+        // Setup click handlers on the edit/delete icons in the steps table
+        setupTableHandlers();
     };
  
     return StepSelect;
