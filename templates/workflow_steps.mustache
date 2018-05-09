@@ -49,10 +49,10 @@
       <td>{{type}}</td>
       <td>{{step}}</td>
       <td>
-        {{# pix }} t/up, core, {{# str }} movestepup, tool_trigger {{/ str }} {{/ pix }}
-        {{# pix }} t/down, core, {{# str }} movestepdown, tool_trigger {{/ str }} {{/ pix }}
-        {{# pix }} t/edit, core, {{# str }} editstep, tool_trigger {{/ str }} {{/ pix }}
-        {{# pix }} t/delete, core, {{# str }} deletestep, tool_trigger {{/ str }} {{/ pix }}
+        <span class="tool-trigger-step-moveup" data-steporder="{{steporder}}">{{# pix }} t/up, core, {{# str }} movestepup, tool_trigger {{/ str }} {{/ pix }}</span>
+        <span class="tool-trigger-step-movedown" data-steporder="{{steporder}}">{{# pix }} t/down, core, {{# str }} movestepdown, tool_trigger {{/ str }} {{/ pix }}</span>
+        <span class="tool-trigger-step-edit" data-steporder="{{steporder}}">{{# pix }} t/edit, core, {{# str }} editstep, tool_trigger {{/ str }} {{/ pix }}</span>
+        <span class="tool-trigger-step-delete" data-steporder="{{steporder}}">{{# pix }} t/delete, core, {{# str }} deletestep, tool_trigger {{/ str }} {{/ pix }}</span>
       </td>
     </tr>
   {{/rows}}

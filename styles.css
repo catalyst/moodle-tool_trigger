@@ -1,0 +1,6 @@
+.tool-trigger-step-moveup,
+.tool-trigger-step-movedown,
+.tool-trigger-step-edit,
+.tool-trigger-step-delete {
+    cursor: pointer;
+}

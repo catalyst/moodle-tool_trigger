@@ -50,30 +50,37 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
 
     function updateTable(stepData) {
         // Format data for template.
-        var rows = [];
-        stepData.forEach(function(element){ // Iterate through steps.
-            var cells = {};
-            element.forEach(function(element){ // Iterate through step values
-                if (element.name === 'type') {
-                    cells.type = element.value;
-                } else if (element.name  === 'name') {
-                    cells.name = element.value;
-                } else if (element.name === 'step') {
-                    cells.step = element.value;
+
+        // We want one row object for each step.
+        var rows = stepData.map(
+          function(step, stepidx) {
+            // Iterate through the array of form elements, and extract the
+            // values of the ones we need for the template.
+            return step.reduce(
+              function(row, field) {
+                if (['type', 'name', 'step'].includes(field.name)) {
+                  row[field.name] = field.value;
                 }
-            });
-
-            rows.push(cells);
-        });
+                return row;
+              },
+              // Put the step's array index into the row object as the "steporder" field.
+              {'steporder': stepidx}
+            );
+          }
+        );
         var tableData = {'rows': rows};
-        console.log(tableData);
-
-        Templates.render('tool_trigger/workflow_steps', tableData).then(function(html) {
+        Templates.render(
+            'tool_trigger/workflow_steps',
+            tableData
+        ).then(function(html) {
             $('#steps-table').html(html);
-            }).fail(function(ex) {
-                console.log(ex);
-                // TODO: Deal with this exception (I recommend core/notify exception function for this).
-            });
+            setupTableHandlers();
+            console.log('set up!');
+            console.log(tableData);
+        }).fail(function(ex) {
+            console.log('Error in updateTable()!', ex);
+            // TODO: Deal with this exception (I recommend core/notify exception function for this).
+        });
     }
 
     /**
@@ -98,6 +105,7 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
         if (stepsjson !== '') {
             stepsJsonArr = JSON.parse(stepsjson);
         }
+
         stepsJsonArr.push(formDataObj);
         stepsjson = JSON.stringify(stepsJsonArr);
         $('[name=stepjson]').val(stepsjson);
@@ -205,6 +213,97 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
         });
     }
 
+    function setupTableHandlers() {
+        $('.tool-trigger-step-moveup').on('click', function() {
+            var steporder = $(this).data('steporder');
+
+            // Already at the top. Can't move any higher!
+            if (steporder === 0) {
+                return true;
+            }
+            // Get and update hidden workflow form element.
+            var stepsjson = $('[name=stepjson]').val();
+            var steps = [];
+            if (stepsjson !== '') {
+                steps = JSON.parse(stepsjson);
+            }
+            // Swap this one and the one above it.
+            var posup = steporder - 1;
+            var posdown = steporder;
+            var goesup = steps[posdown];
+            var goesdown = steps[posup];
+            steps[posup] = goesup;
+            steps[posdown] = goesdown;
+
+            $('[name=stepjson]').val(JSON.stringify(steps));
+            // Set the flag field that indicates there was a change to the steps.
+            $('[name=isstepschanged]').val(1);
+
+            updateTable(steps);
+
+            return true;
+        });
+        $('.tool-trigger-step-movedown').on('click', function() {
+            var steporder = $(this).data('steporder');
+
+            // Get and update hidden workflow form element.
+            var stepsjson = $('[name=stepjson]').val();
+            var steps = [];
+            if (stepsjson !== '') {
+                steps = JSON.parse(stepsjson);
+            }
+
+            // Already at the end. Can't move any further!
+            if (steporder >= steps.length - 1) {
+                return true;
+            }
+
+            // Swap this one and the one above it.
+            var posup = steporder;
+            var posdown = steporder + 1;
+            var goesup = steps[posdown];
+            var goesdown = steps[posup];
+            steps[posup] = goesup;
+            steps[posdown] = goesdown;
+
+            $('[name=stepjson]').val(JSON.stringify(steps));
+            // Set the flag field that indicates there was a change to the steps.
+            $('[name=isstepschanged]').val(1);
+
+            updateTable(steps);
+
+            return true;
+        });
+        // TODO
+//        $('.tool-trigger-step-edit').on('click', function() {
+//        });
+        $('.tool-trigger-step-delete').on('click', function() {
+            var steporder = $(this).data('steporder');
+
+            // Get and update hidden workflow form element.
+            var stepsjson = $('[name=stepjson]').val();
+            var steps = [];
+            if (stepsjson !== '') {
+                steps = JSON.parse(stepsjson);
+            }
+
+            if (steporder < 0 || steporder > steps.length - 1) {
+                return true;
+            }
+
+            // Remove it from the array
+            steps.splice(steporder, 1);
+
+            $('[name=stepjson]').val(JSON.stringify(steps));
+            // Set the flag field that indicates there was a change to the steps.
+            $('[name=isstepschanged]').val(1);
+
+            updateTable(steps);
+
+            return true;
+        });
+    }
+
     /**
      * Initialise the class.
      *
@@ -213,6 +312,8 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
     StepSelect.init = function(context) {
         var trigger = $('#id_step_modal_button'); // form button to trigger modal
         contextid = context;
+
+        setupTableHandlers();
 
         //Get the Title String
         Str.get_string('modaltitle', 'tool_trigger').then(function(title) {
