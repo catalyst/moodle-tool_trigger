@@ -163,7 +163,11 @@ class workflow_process {
             $record->timemodified = $now;
             $record->steporder = $steporder++;
             // Store other fields as serialized data in the DB.
-            $record->data = json_encode($jsonobj);
+            if (!$jsonobj) {
+                $record->data = '';
+            } else {
+                $record->data = json_encode($jsonobj);
+            }
             $records[] = $record;
         }
 
