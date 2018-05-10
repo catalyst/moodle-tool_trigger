@@ -23,7 +23,6 @@
  */
 
 use tool_trigger\steps\base\base_form;
-use tool_httpsreplace\form;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -36,7 +35,7 @@ defined('MOODLE_INTERNAL') || die;
  * @return string
  */
 function tool_trigger_output_fragment_new_base_form($args) {
-    require_capability('moodle/course:managegroups', $args['context']);
+    require_capability('tool/trigger:manageworkflows', $args['context']);
 
     $mform = new base_form();
 
@@ -63,7 +62,7 @@ function tool_trigger_output_fragment_new_base_form($args) {
  */
 function tool_trigger_output_fragment_new_step_form($args) {
     $context = $args['context'];
-    require_capability('moodle/course:managegroups', $context);
+    require_capability('tool/trigger:manageworkflows', $context);
 
     $steptype = clean_param($args['steptype'], PARAM_ALPHA);
 
