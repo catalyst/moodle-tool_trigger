@@ -24,8 +24,10 @@
  * @since      3.4
  */
 
-define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/templates', 'core/ajax', 'core/fragment'],
-        function ($, Str, ModalFactory, ModalEvents, Templates, ajax, Fragment) {
+define(
+  ['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/templates', 'core/ajax', 'core/fragment',
+      'core/notification'],
+  function ($, Str, ModalFactory, ModalEvents, Templates, ajax, Fragment, Notification) {
 
     /**
      * Module level variables.
