@@ -173,7 +173,7 @@ class workflow_manager {
             $newworkflowid = $DB->insert_record('tool_trigger_workflows', $newworkflow);
 
             $newsteps = [];
-            foreach($steps as $step) {
+            foreach ($steps as $step) {
                 $newstep = fullclone($step);
                 unset($newstep->id);
                 $newstep->workflowid = $newworkflowid;

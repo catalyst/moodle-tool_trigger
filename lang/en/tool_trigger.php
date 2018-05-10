@@ -52,6 +52,7 @@ $string['editworkflow'] = 'Edit trigger workflow';
 $string['event'] = 'Event';
 $string['eventtomonitor'] = 'Event to monitor';
 $string['eventtomonitor_help'] = 'The Moodle event to trigger workflow on.';
+$string['errorsavingworkflow'] = 'Something went wrong while attempting to save the workflow. Please try again.';
 $string['filter'] = 'Filter';
 $string['httposttiggerurl'] = 'URL';
 $string['httposttiggerurl_help'] = 'The URL to post the data to.';

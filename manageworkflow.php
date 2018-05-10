@@ -59,11 +59,6 @@ $PAGE->set_heading($workflowname);
 
 require_sesskey();
 
-// // If the rule does not exist, then redirect back as the rule must have already been deleted.
-// if (!$rule = $DB->get_record('tool_monitor_rules', array('id' => $workflowid), '*', IGNORE_MISSING)) {
-//     redirect(new moodle_url('/admin/tool/monitor/managerules.php', array('courseid' => $courseid)));
-// }
-
 $workflowmanager = new \tool_trigger\workflow_manager();
 
 switch ($action) {

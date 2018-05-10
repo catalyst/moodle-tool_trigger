@@ -130,7 +130,7 @@ class process_workflows extends \core\task\scheduled_task {
 
             // Get steps for this workflow.
             $steps = $DB->get_records('tool_trigger_steps', array('workflowid' => $q->workflowid), 'steporder');
-            $previousstepresult = new \stdClass(); // Contains result of previous step execution;
+            $previousstepresult = new \stdClass(); // Contains result of previous step execution.
             $success = false;
             foreach ($steps as $step) {
                 // Update queue to say which step was last attempted.

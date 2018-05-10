@@ -33,8 +33,9 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
     var StepSelect = {};
     var contextid;
     var modalObj;
-    var stepData;
-    var spinner = '<p class="text-center"><i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i><span class="sr-only">Loading...</span></p>';
+    var spinner = '<p class="text-center">'
+        + '<i class="fa fa-spinner fa-pulse fa-2x fa-fw"></i><span class="sr-only">Loading...</span>'
+        + '</p>';
 
     /**
      * Retrieves the steps serialized to JSON in the stepsjson hidden form field.
@@ -91,9 +92,8 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
         ).then(function(html) {
             $('#steps-table').html(html);
             setupTableHandlers();
-        }).fail(function(ex) {
-            console.log('Error in updateTable()!', ex);
-            // TODO: Deal with this exception (I recommend core/notify exception function for this).
+        }).fail(function() {
+            Notification.exception({message: 'Error updating steps table'});
         });
     }
 
@@ -131,7 +131,7 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
                 stepclass: curstep['stepclass'],
                 jsonformdata: JSON.stringify($stepform.serialize())
             },
-        }])[0].done(function(response) {
+        }])[0].done(function() {
 
             // Validation succeeded! Update the parent form's hidden steps data, and update
             // the table.
@@ -149,7 +149,7 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
             updateTable(steps); // Update table in workflow form.
             modalObj.hide(); // Hide the modal.;
 
-        }).fail(function(response) {
+        }).fail(function() {
 
             // Validation failed! Don't close the modal, don't update anything on the parent
             // form.
@@ -239,8 +239,8 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
 
         // Add event listener for step  select onchange.
         $('body').on('change', '[name=stepclass]', function() {
-            steptype = $('[name=type]').val();
-            stepclass = this.value;
+            var steptype = $('[name=type]').val();
+            var stepclass = this.value;
             renderStepForm(steptype, stepclass);
         });
     }
@@ -329,9 +329,6 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
         });
     }
 
-    function setupModalTrigger($elements) {
-    }
-
     /**
      * Initialise the class.
      *
@@ -362,6 +359,6 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
         // Setup click handlers on the edit/delete icons in the steps table
         setupTableHandlers();
     };
- 
+
     return StepSelect;
 });

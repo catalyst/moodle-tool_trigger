@@ -49,7 +49,8 @@ class tool_trigger_workflow_process_testcase extends advanced_testcase {
         $mdata->asyncmode = 1;
         $mdata->workflowactive = 1;
         $mdata->draftmode = 0;
-        $mdata->stepjson = '[[{"name":"sesskey","value":"5IfqXAV9A5"},{"name":"_qf__tool_trigger_steps_base_base_form","value":"1"},'
+        $mdata->stepjson = '[[{"name":"sesskey","value":"5IfqXAV9A5"},'
+                            .'{"name":"_qf__tool_trigger_steps_base_base_form","value":"1"},'
                             .'{"name":"type","value":"trigger"},{"name":"stepclass","value":"/steps/trigger/log_step"},'
                             .'{"name":"steporder","value":"0"},'
                             .'{"name":"name","value":"test step"},{"name":"description","value":"test step description"}]]';

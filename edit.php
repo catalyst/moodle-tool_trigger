@@ -89,7 +89,7 @@ if ($mform->is_cancelled()) {
     if ($result) {
         redirect(new moodle_url('/admin/tool/trigger/index.php'), get_string('changessaved'));
     } else {
-        // TODO: add redirect with failure condition.
+        redirect(new moodle_url('/admin/tool/trigger/index.php'), get_tring('errorsavingworkflow'));
     }
 
 } else {

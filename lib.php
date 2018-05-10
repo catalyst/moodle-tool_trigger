@@ -75,9 +75,9 @@ function tool_trigger_output_fragment_new_step_form($args) {
     $formclass = substr($stepclass, 0, -1 * strlen('step')) . 'form';
 
     $customdata = array(
-        'type' => $steptype,
+        'type'      => $steptype,
         'stepclass' => $stepclass,
-        'steptext' => $stepclassobj->get_step_name()
+        'steptext'  => $stepname
     );
 
     $ajaxformdata = array();
@@ -93,7 +93,7 @@ function tool_trigger_output_fragment_new_step_form($args) {
         $mform->set_data(json_decode($args['defaults'], true));
     }
 
-    if (!empty($data)) {
+    if (!empty($ajaxformdata)) {
         // If we were passed non-empty form data we want the mform to call validation functions and show errors.
         $mform->is_validated();
     }

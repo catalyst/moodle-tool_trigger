@@ -39,6 +39,9 @@ class edit_form extends \moodleform {
 
     /**
      * Build form for the general setting admin page for plugin.
+     *
+     * {@inheritDoc}
+     * @see \moodleform::definition()
      */
     public function definition() {
 
@@ -135,6 +138,9 @@ class edit_form extends \moodleform {
     /**
      * Adds the steps table to the form. (We need to do this in definition_after_data(),
      * so that it will properly re-display the table after form validation fails.)
+     *
+     * {@inheritDoc}
+     * @see \moodleform::definition_after_data()
      */
     public function definition_after_data() {
         global $PAGE;
@@ -161,13 +167,15 @@ class edit_form extends \moodleform {
     /**
      * Validation. For now it just makes sure that the stepjson hidden field isn't
      * empty. If it is, it puts an error flag on the "add workflow steps" button.
+     *
+     * {@inheritDoc}
+     * @see \moodleform::validation()
      */
     public function validation($data, $files) {
+        $errors = parent::validation($data, $files);
         if (empty($data['stepjson'])) {
-            // TODO: Validate the structure of the returned JSON?
-            // tool_trigger_external::validate_form($stepclass, $data['stepjson']);
-            return ['step_modal_button' => get_string('steprequired', 'tool_trigger')];
+            $errors['step_modal_button'] = get_string('steprequired', 'tool_trigger');
         }
-        return [];
+        return $errors;
     }
 }

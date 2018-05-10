@@ -111,7 +111,7 @@ class renderer extends \plugin_renderer_base {
 
         // Extract only the fields needed for the template.
         $rows = [];
-        foreach($stepdata as $step) {
+        foreach ($stepdata as $step) {
             $rows[] = array_intersect_key(
                 $step,
                 array_flip(['type', 'name', 'step', 'steporder'])
