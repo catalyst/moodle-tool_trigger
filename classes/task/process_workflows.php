@@ -29,6 +29,14 @@ defined('MOODLE_INTERNAL') || die();
  * Simple task to rocess queued workflows.
  */
 class process_workflows extends \core\task\scheduled_task {
+    /** Max number of tries before ignoring task. */
+    const MAXTRIES = 5;
+
+    /** Max number of tasks to try and process in a queue. */
+    const LIMITQUEUE = 500;
+
+    /** Max processing time for a queue in seconds. */
+    const MAXTIME = 60;
 
     /**
      * Get a descriptive name for this task.
@@ -43,61 +51,21 @@ class process_workflows extends \core\task\scheduled_task {
      * Processes workflows.
      */
     public function execute() {
-        global $DB;
         $now = time();
-        $maxtries = 5; // TODO MAGIC NUMBER!!
+
+        // Check events and create queue of workflows to process.
         $this->create_trigger_queue($now);
 
-        // Now process queue just created.
+        // Now process queue.
         $sql = "SELECT q.id as qid, q.workflowid, q.status, q.tries, q.timecreated, q.timemodified,
                        e.id as eid, e.eventname, e.contextid, e.contextlevel, e.contextinstanceid, e.link, e.courseid, e.timecreated
                   FROM {tool_trigger_queue} q
                   JOIN {tool_trigger_workflows} w ON w.id = q.workflowid
                   JOIN {tool_trigger_events} e ON e.id = q.eventid
-                  WHERE w.enabled = 1 AND q.status = 0 AND q.timecreated = ? AND q.tries < ?";
-        $queue = $DB->get_recordset_sql($sql, array($now, $maxtries));
-        foreach ($queue as $q) {
-            // Update workflow record to state this workflow was attempted.
-            $workflow = new \stdClass();
-            $workflow->id = $q->workflowid;
-            $workflow->timetriggered = time();
-            $DB->update_record('tool_trigger_workflows', $workflow);
+                  WHERE w.enabled = 1 AND q.status = 0 AND AND q.tries < ?
+                  ORDER BY q.timecreated";
 
-            $event = new \stdClass();
-            $event->id = $q->eid;
-            $event->eventname = $q->eventname;
-            $event->contextid = $q->contextid;
-            $event->contextlevel = $q->contextlevel;
-            $event->contextinstanceid = $q->contextinstanceid;
-            $event->link = $q->link;
-            $event->courseid = $q->courseid;
-            $event->timecreated = $q->timecreated;
-
-            $trigger = new \stdClass();
-            $trigger->id = $q->qid;
-            $trigger->workflowid = $q->workflowid;
-            $trigger->status = $q->status;
-            $trigger->tries = $q->tries + 1;
-            $trigger->timecreated = $q->timecreated;
-            $trigger->timemodified = $q->timemodified;
-
-            // Get steps for this workflow.
-            $steps = $DB->get_records('tool_trigger_steps', array('workflowid' => $q->workflowid), 'steporder');
-            foreach ($steps as $step) {
-                // Update queue to say which step was last attempted.
-                $trigger->laststep = $step->id;
-                $trigger->timemodified = time();
-
-                $DB->update_record('tool_trigger_queue', $trigger);
-
-                $stepclass = new $step->stepclass();
-                $stepclass->execute($step, $trigger, $event);
-            }
-        }
-
-        $queue->close();
-
-        // TODO: Now check to see if there are old events in queue to process.
+        $this->process_queue($sql, array(self::MAXTRIES), self::LIMITQUEUE, $now);
     }
 
     /** Create queue of workflows that need processing.
@@ -129,5 +97,69 @@ class process_workflows extends \core\task\scheduled_task {
         }
         $events->close();
         $DB->insert_records('tool_trigger_queue', $triggerqueue);
+    }
+
+    private function process_queue($sql, $params, $limit, $starttime) {
+        global $DB;
+
+        $queue = $DB->get_recordset_sql($sql, $params, 0, $limit);
+        foreach ($queue as $q) {
+            // Update workflow record to state this workflow was attempted.
+            $workflow = new \stdClass();
+            $workflow->id = $q->workflowid;
+            $workflow->timetriggered = time();
+            $DB->update_record('tool_trigger_workflows', $workflow);
+
+            $event = new \stdClass();
+            $event->id = $q->eid;
+            $event->eventname = $q->eventname;
+            $event->contextid = $q->contextid;
+            $event->contextlevel = $q->contextlevel;
+            $event->contextinstanceid = $q->contextinstanceid;
+            $event->link = $q->link;
+            $event->courseid = $q->courseid;
+            $event->timecreated = $q->timecreated;
+
+            $trigger = new \stdClass();
+            $trigger->id = $q->qid;
+            $trigger->workflowid = $q->workflowid;
+            $trigger->status = $q->status;
+            $trigger->tries = $q->tries + 1;
+            $trigger->timecreated = $q->timecreated;
+            $trigger->timemodified = $q->timemodified;
+
+            // Get steps for this workflow.
+            $steps = $DB->get_records('tool_trigger_steps', array('workflowid' => $q->workflowid), 'steporder');
+            $previousstepresult = new \stdClass(); // Contains result of previous step execution;
+            $success = false;
+            foreach ($steps as $step) {
+                // Update queue to say which step was last attempted.
+                $trigger->laststep = $step->id;
+                $trigger->timemodified = time();
+
+                $DB->update_record('tool_trigger_queue', $trigger);
+
+                $stepclass = new $step->stepclass();
+                list($success, $previousstepresult) = $stepclass->execute($step, $trigger, $event, $previousstepresult);
+                if (!$success) {
+                    // Failed to execute this step, exit processing this trigger try again next time.
+                    break;
+                }
+            }
+            if ($success) {
+                // Step completed and succesful result.
+                $trigger->status = 1;
+                $trigger->timemodified = time();
+
+                $DB->update_record('tool_trigger_queue', $trigger);
+            }
+
+            if (($starttime + self::MAXTIME) > time()) {
+                // Max processing time for this task has been reached.
+                break;
+            }
+        }
+
+        $queue->close();
     }
 }
