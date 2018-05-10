@@ -247,6 +247,61 @@ define(
         });
     }
 
+    function swapSteps(steps, pos1, pos2){
+        // milliseconds of animation
+        var duration = 400;
+
+        // Swap the steps in the JSON list.
+        var step1 = steps[pos1];
+        var step2 = steps[pos2];
+        step1.steporder = pos2;
+        step2.steporder = pos2;
+        steps[pos1] = step2;
+        steps[pos2] = step1;
+
+        var $rows = $('tr.tool-trigger-step-table-row');
+        var $row1 = $rows.eq(pos1);
+        var $row2 = $rows.eq(pos2);
+        var row1height = $row1.height();
+        var row2height = $row2.height();
+        var row1color = $row1.find('th').css('background-color');
+        var row2color = $row2.find('th').css('background-color');
+
+        $([$row1, $row2]).each(function(idx, row){
+            row[0].style.position = 'relative';
+            row[0].style.top = '0';
+            row[0].style.transition = 'top ' + duration + 'ms';
+            row.find('th,td').each(function(idx, cell){
+                cell.style.transition = 'background-color ' + duration + 'ms';
+            });
+        });
+        window.setTimeout(function(){
+          $row1[0].style.top = row2height + "px";
+          $row1.find('td,th').each(function(idx, cell){
+              cell.style.backgroundColor = row2color;
+          });
+          $row2[0].style.top = (-1 * row1height) + "px";
+          $row2.find('td,th').each(function(idx, cell){
+              cell.style.backgroundColor = row1color;
+          });
+        });
+
+        // Also fade out the up/down buttons on the rows, because otherwise it can
+        // be visually confusing.
+        $row1.find('.tool-trigger-step-movedown').fadeTo(duration, 0.1);
+        // Replace the form once the animation is finished.
+        $row2.find('.tool-trigger-step-moveup')
+          .fadeTo(duration, 0.1)
+          .promise()
+          .always(
+            function(){
+              setCurrentFormSteps(steps);
+              updateTable(steps);
+            }
+          );
+
+    }
+
     /**
      * Display the action icons for the steps table, and set up
      * handlers on them to make them clickable.
@@ -265,18 +320,7 @@ define(
                 return true;
             }
 
-            // Swap this one and the one above it.
-            var posup = steporder - 1;
-            var posdown = steporder;
-            var goesup = steps[posdown];
-            var goesdown = steps[posup];
-            goesup.steporder = posup;
-            goesdown.steporder = posdown;
-            steps[posup] = goesup;
-            steps[posdown] = goesdown;
-
-            setCurrentFormSteps(steps);
-            updateTable(steps);
+            swapSteps(steps, steporder - 1 , steporder);
 
             return true;
         });
@@ -294,18 +338,7 @@ define(
                 return true;
             }
 
-            // Swap this one and the one above it.
-            var posup = steporder;
-            var posdown = steporder + 1;
-            var goesup = steps[posdown];
-            var goesdown = steps[posup];
-            goesup.steporder = posup;
-            goesdown.steporder = posdown;
-            steps[posup] = goesup;
-            steps[posdown] = goesdown;
-
-            setCurrentFormSteps(steps);
-            updateTable(steps);
+            swapSteps(steps, steporder, steporder + 1);
 
             return true;
         });
@@ -344,7 +377,11 @@ define(
             }
 
             setCurrentFormSteps(steps);
-            updateTable(steps);
+            $(this).closest('tr').fadeOut(
+                function(){
+                    updateTable(steps);
+                }
+            );
 
             return true;
         });
