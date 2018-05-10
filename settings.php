@@ -26,11 +26,33 @@
 defined('MOODLE_INTERNAL') || die();
 
 if ($hassiteconfig) {
-    $pluginsettings = new admin_externalpage('tool_trigger_settings',
-            get_string('pluginname', 'tool_trigger'),
-            new moodle_url('/admin/tool/trigger/index.php'));
 
-    $ADMIN->add('tools', $pluginsettings);
+    $ADMIN->add('tools', new admin_category('toolstrigger',
+        new lang_string('pluginname', 'tool_trigger')));
+
+    $settings = new admin_settingpage('tooltriggersettings',
+        new lang_string('settings'));
+
+    $cleanupoptions = array(
+        21600 => new lang_string('numhours', '', 6),
+        43200 => new lang_string('numhours', '', 12),
+        86400 => new lang_string('numhours', '', 24),
+        172800 => new lang_string('numdays', '', 2),
+        604800 => new lang_string('numdays', '', 7)
+    );
+    $settings->add(new admin_setting_configselect('tool_trigger/timetocleanup',
+        new lang_string('timetocleanup', 'tool_trigger'),
+        null, '86400', $cleanupoptions));
+
+    // Add the category to the admin tree.
+    $ADMIN->add('toolstrigger', $settings);
+
+    $pluginsettings = new admin_externalpage('tool_trigger_settings',
+        get_string('manageworkflow', 'tool_trigger'),
+        new moodle_url('/admin/tool/trigger/index.php'));
+
+    $ADMIN->add('toolstrigger', $pluginsettings);
+
 
     $settings = null;
 }
