@@ -23,50 +23,74 @@
  */
 
 use tool_trigger\steps\base\base_form;
+use tool_httpsreplace\form;
 
 defined('MOODLE_INTERNAL') || die;
 
+/**
+ * Renders the top part of the "new workflow step" modal form. (The part with
+ * the "Step type" and "Step" menus.
+ *
+ * @param array $args
+ * @param context $args['context']
+ * @return string
+ */
 function tool_trigger_output_fragment_new_base_form($args) {
-    $args = (object) $args;
-    $context = $args->context;
-    $o = '';
-
-    require_capability('moodle/course:managegroups', $context);
+    require_capability('moodle/course:managegroups', $args['context']);
 
     $mform = new base_form();
 
     ob_start();
     $mform->display();
-    $o .= ob_get_contents();
+    $o = ob_get_contents();
     ob_end_clean();
 
     return $o;
 }
 
+/**
+ * Renders the full form for a particular step class, for the "new workflow
+ * step" modal form.
+ *
+ * @param array   $args
+ * @param context $args['context']
+ * @param string  $args['steptype'] The steptype to display in the form.
+ * @param string  $args['stepclass'] The stepclass to display in the form.
+ * @param string  $args['defaults'] Default values to populate the form with (JSON-encoded array)
+ * @param string  $args['ajaxformdata'] Serialized form submission data, if the form
+ * is being redisplayed after failed validation.
+ * @return string
+ */
 function tool_trigger_output_fragment_new_step_form($args) {
-    $args = (object) $args;
-    $context = $args->context;
-    $formdata = json_decode($args->jsonformdata);
-    $o = '';
-
+    $context = $args['context'];
     require_capability('moodle/course:managegroups', $context);
-    $stepclass = new $formdata->stepval();
-    $formclass = substr($formdata->stepval, 0, (strlen($formdata->stepval) - 4)) . 'form';
+
+    $steptype = clean_param($args['steptype'], PARAM_ALPHA);
+
+    // TODO: whitelist the stepclass values!
+    $stepclass = clean_param($args['stepclass'], PARAM_RAW);
+    $stepclassobj = new $stepclass();
+    $stepname = $stepclassobj->get_step_name();
+
+    $formclass = substr($stepclass, 0, -1 * strlen('step')) . 'form';
+
     $customdata = array(
-        'type' => $formdata->steptype,
-        'stepclass' => $formdata->stepval,
-        'steptext' => $stepclass->get_step_name()
+        'type' => $steptype,
+        'stepclass' => $stepclass,
+        'steptext' => $stepclassobj->get_step_name()
     );
 
-    $data = array();
-    if (!empty($formdata->data)) {
-        parse_str($formdata->data, $data);
+    $ajaxformdata = array();
+    if (!empty($args['ajaxformdata'])) {
+        // Don't need to clean/validate these, because formslib will do that.
+        parse_str($args['ajaxformdata'], $ajaxformdata);
     }
 
-    $mform = new $formclass(null, $customdata, 'post', '', null, true, $data);
+    $mform = new $formclass(null, $customdata, 'post', '', null, true, $ajaxformdata);
 
-    if (!empty($formdata->defaults)) {
-        $mform->set_data($formdata->defaults);
+    if (!empty($args['defaults'])) {
+        // Don't need to clean/validate these, because formslib will do that.
+        $mform->set_data(json_decode($args['defaults'], true));
     }
 
     if (!empty($data)) {

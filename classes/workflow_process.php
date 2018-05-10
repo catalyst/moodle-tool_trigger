@@ -114,8 +114,9 @@ class workflow_process {
             return '';
         }
 
-        // Deserialize the "data" field, and convert it into the same weird
-        // nested array structure as the modal form uses.
+        // Deserialize the JSON data, and merge the values from the
+        // named database columns, with the values from the deserialized
+        // json.
         $stepsforjson = [];
         foreach ($steps as $step) {
             $stepdata = json_decode($step->data, true);
@@ -123,16 +124,9 @@ class workflow_process {
             if ($stepdata !== null) {
                 $flattenedstep = array_merge($stepdata, (array) $step);
             }
-            $arrayedstep = [];
-            foreach ($flattenedstep as $fieldname => $fieldvalue) {
-                $arrayedstep[] = [
-                    'name' => $fieldname,
-                    'value' => $fieldvalue
-                ];
-            }
-            $stepsforjson[] = $arrayedstep;
+            $stepsforjson[] = $flattenedstep;
         }
-        return json_encode($stepsforjson);
+        return json_encode(array_values($stepsforjson));
     }
 
     /**
@@ -144,8 +138,8 @@ class workflow_process {
      * @return array $records The array of record objects ready for DB insertion.
      */
     public function processjson($formjson, $workflowid, $now=0) {
-        $jsonobjs = json_decode($formjson);
-        $records = array();
+        $jsonobjs = json_decode($formjson, true);
+        $records = [];
 
         if ($now == 0) {
             $now = time();
@@ -154,20 +148,22 @@ class workflow_process {
 
         // Nested loops FTW.
         foreach ($jsonobjs as $jsonobj) {
-            $record = new \stdClass();
-            $data = new \stdClass();
-            foreach ($jsonobj as $namevalue) {
-                if (in_array($namevalue->name, $this->stepfields)) {
-                    $record->{$namevalue->name} = $namevalue->value;
-                } else if ($namevalue->name <> 'sesskey') {
-                    $data->{$namevalue->name} = $namevalue->value;
+            $record = [];
+            // Extract the fields that are stored in specific database columns.
+            foreach ($this->stepfields as $field) {
+                if (array_key_exists($field, $jsonobj)) {
+                    $record[$field] = $jsonobj[$field];
+                    unset($jsonobj[$field]);
                 }
             }
+
+            $record = (object) $record;
             $record->workflowid = $workflowid;
             $record->timecreated = $now;
             $record->timemodified = $now;
             $record->steporder = $steporder++;
-            $record->data = json_encode($data);
+            // Store other fields as serialized data in the DB
+            $record->data = json_encode($jsonobj);
             $records[] = $record;
         }
 

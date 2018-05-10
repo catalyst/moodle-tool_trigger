@@ -142,14 +142,11 @@ class edit_form extends \moodleform {
         $mform = $this->_form;
         $stepdatajson = $mform->getElementValue('stepjson');
 
-        // Render the steps table, using the same template used by the modal form.
-        if ($stepdatajson && null !== ($stepdata = json_decode($stepdatajson))) {
-            $stepstable = $PAGE->get_renderer(
-                'tool_trigger', 'manageworkflows'
-            )->render_workflow_steps($stepdata);
-        } else {
-            $stepstable = '';
-        }
+        // Render the steps table using the same mustache template as the Modal form.
+        $stepstable = $PAGE->get_renderer(
+            'tool_trigger',
+            'manageworkflows'
+        )->render_workflow_steps($stepdatajson);
 
         // Put the table right before the "add step" button.
         $mform->insertElementBefore(

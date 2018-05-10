@@ -72,22 +72,17 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
     function updateTable(stepData) {
         // Format data for template.
 
-        // We want one row object for each step.
+        // Filter out only the fields we want for each step, and make sure the "steporder" values
+        // are correct.
         var rows = stepData.map(
-          function(step, stepidx) {
-            // Iterate through the array of form elements, and extract the
-            // values of the ones we need for the template.
-            return step.reduce(
-              function(row, field) {
-                if (['type', 'name', 'step'].includes(field.name)) {
-                  row[field.name] = field.value;
-                }
-                return row;
-              },
-              // Put the step's array index into the row object as the "steporder" field.
-              {'steporder': stepidx}
-            );
-          }
+            function(step, stepidx) {
+                return {
+                    type: step.type,
+                    name: step.name,
+                    step: step.step,
+                    steporder: stepidx
+                };
+            }
         );
         var tableData = {'rows': rows};
         Templates.render(
@@ -96,8 +91,6 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
         ).then(function(html) {
             $('#steps-table').html(html);
             setupTableHandlers();
-            console.log('set up!');
-            console.log(tableData);
         }).fail(function(ex) {
             console.log('Error in updateTable()!', ex);
             // TODO: Deal with this exception (I recommend core/notify exception function for this).
@@ -112,21 +105,38 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
         e.preventDefault(); // Stop modal from closing.
 
         // Form data.
-        var formData = modalObj.getRoot().find('form');
-        var formDataObj = formData.serializeArray();
-        formDataObj.push({'name': 'step', 'value': $('[name=stepclass] option:selected').text()});
-        var stepclass = $('[name=stepclass] option:selected').attr('value');
+        var $stepform = modalObj.getRoot().find('form');
+        // Use jQuery().serializeArray() to collect the values of all the form fields.
+        // Then convert from its array-of-objects output format into a single object.
+        var curstep = $stepform.serializeArray().reduce(
+            function(finalobj, field) {
+
+                // Filter out the sesskey and formslib system fields.
+                if (field.name !== 'sesskey' && !field.name.startsWith('_qf__')) {
+                    finalobj[field.name] = field.value;
+                }
+                return finalobj;
+            },
+            {}
+        );
+
+        // Add the description string for the stepclass, in order to make later rendering
+        // easier...
+        curstep['step'] = $('[name=stepclass] option:selected').text();
 
         // Submit form via ajax to do server side validation.
         ajax.call([{
             methodname: 'tool_trigger_validate_form',
-            args: {stepclass: stepclass, jsonformdata: JSON.stringify(formData.serialize())},
+            args: {
+                stepclass: curstep['stepclass'],
+                jsonformdata: JSON.stringify($stepform.serialize())
+            },
         }])[0].done(function(response) {
 
             // Validation succeeded! Update the parent form's hidden steps data, and update
             // the table.
             var steps = getParentFormSteps();
-            steps.push(formDataObj);
+            steps.push(curstep);
             setCurrentFormSteps(steps); // Update steps in hidden form field
             updateTable(steps); // Update table in workflow form.
             modalObj.hide(); // Hide the modal.;
@@ -135,10 +145,7 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
 
             // Validation failed! Don't close the modal, don't update anything on the parent
             // form.
-            $steptype = $('[name=type]').val();
-            $stepval = stepclass;
-            $steptext = $('[name=stepclass] option:selected').text();
-            getStepForm($steptype, $stepval, $steptext, formData.serialize());
+            renderStepForm(curstep['type'], curstep['stepclass'], '', $stepform.serialize());
         });
     }
 
@@ -181,25 +188,36 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
     }
 
     /**
-     * Gets a list of filtered steps based on the selected step type.
-     * Triggers updating of the form step select element.
+     * Render the correct form for a particular step (or type of step)
      *
-     * @param string varfilter The filter area.
+     * @param {string} steptype The step category (triggers, filters, lookups)
+     * @param {string} stepclass The step class (\tool_trigger\steps\triggers\http_post_trigger_step, ...)
+     * @param {Object} formdefaults Default values to display in a new form
+     * @param {string} formsubmission Serialized (via jQuery().serialize()) form submission values to load
+     * into the form, when re-displaying a form that has failed validation.
      */
-    function getStepForm(steptype, stepval, steptext, data) {
-        if (data === undefined) {
-            var data = '';
+    function renderStepForm(steptype, stepclass, formdefaults, formsubmission) {
+        if (formdefaults === undefined) {
+            formdefaults = '';
+        }
+        if (formsubmission === undefined) {
+            formsubmission = '';
         }
 
-        var formdata = {
-                'steptype' : steptype,
-                'stepval' : stepval,
-                'data' : data
-        };
-
-        var params = {jsonformdata: JSON.stringify(formdata)};
         modalObj.setBody(spinner);
-        modalObj.setBody(Fragment.loadFragment('tool_trigger', 'new_step_form', contextid, params));
+        modalObj.setBody(
+            Fragment.loadFragment(
+                'tool_trigger',
+                'new_step_form',
+                contextid,
+                {
+                    'steptype' : steptype,
+                    'stepclass' : stepclass,
+                    'defaults': JSON.stringify(formdefaults),
+                    'ajaxformdata': formsubmission
+                }
+            )
+        );
     }
 
     /**
@@ -213,9 +231,9 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
 
         // Add event listener for step  select onchange.
         $('body').on('change', '[name=stepclass]', function() {
-            $steptype = $('[name=type]').val();
-            $stepval = this.value;
-            getStepForm($steptype, $stepval);
+            steptype = $('[name=type]').val();
+            stepclass = this.value;
+            renderStepForm(steptype, stepclass);
         });
     }
 
@@ -234,6 +252,8 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
             var posdown = steporder;
             var goesup = steps[posdown];
             var goesdown = steps[posup];
+            goesup.steporder = posup;
+            goesdown.steporder = posdown;
             steps[posup] = goesup;
             steps[posdown] = goesdown;
 
@@ -256,6 +276,8 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
             var posdown = steporder + 1;
             var goesup = steps[posdown];
             var goesdown = steps[posup];
+            goesup.steporder = posup;
+            goesdown.steporder = posdown;
             steps[posup] = goesup;
             steps[posdown] = goesdown;
 
@@ -270,6 +292,14 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
             // Remove it from the array
             var steporder = $(this).data('steporder');
             steps.splice(steporder, 1);
+            // Adjust the steporder of all subsequent steps.
+            if (steporder <= steps.length) {
+                steps.slice(steporder).forEach(
+                    function(step) {
+                        step.steporder = step.steporder - 1;
+                    }
+                );
+            }
 
             setCurrentFormSteps(steps);
             updateTable(steps);
@@ -282,29 +312,11 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
             var steps = getParentFormSteps();
             var steporder = $(this).data('steporder');
             var step = steps[steporder];
-            step = step.reduce(
-                function(step, stepfield) {
-                    step[stepfield.name] = stepfield.value;
-                    return step;
-                },
-                {}
-            );
 
-            var formdata = {
-              'steptype': step.type,
-              'stepval': step.stepclass,
-              'defaults': step
-            };
-            var params = {
-                jsonformdata: JSON.stringify(formdata)
-            };
-            modalObj.setBody(
-                Fragment.loadFragment(
-                    'tool_trigger',
-                    'new_step_form',
-                    contextid,
-                    params
-                )
+            renderStepForm(
+                step['type'],
+                step['stepclass'],
+                step
             );
         });
     }
