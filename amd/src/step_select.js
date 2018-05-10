@@ -247,8 +247,16 @@ define(
         });
     }
 
+    /**
+     * Display the action icons for the steps table, and set up
+     * handlers on them to make them clickable.
+     */
     function setupTableHandlers() {
-        $('.tool-trigger-step-moveup').on('click', function() {
+        $('.tool-trigger-step-moveup')
+        // Don't show an up arrow for the top row of the table.
+        .slice(1)
+        .removeClass('tool-trigger-initial-hidden')
+        .on('click', function() {
             var steps = getParentFormSteps();
 
             // Already at the top. Can't move any higher!
@@ -272,7 +280,12 @@ define(
 
             return true;
         });
-        $('.tool-trigger-step-movedown').on('click', function() {
+
+        $('.tool-trigger-step-movedown')
+        // Don't show a down arrow for the bottom row of the table.
+        .slice(0, -1)
+        .removeClass('tool-trigger-initial-hidden')
+        .on('click', function() {
             var steps = getParentFormSteps();
 
             // Already at the end. Can't move any further!
@@ -296,7 +309,26 @@ define(
 
             return true;
         });
-        $('.tool-trigger-step-delete').on('click', function() {
+
+        $('.tool-trigger-step-edit')
+        .removeClass('tool-trigger-initial-hidden')
+        .on('click', function() {
+            modalObj.setBody(spinner);
+            modalObj.show();
+            var steps = getParentFormSteps();
+            var steporder = $(this).data('steporder');
+            var step = steps[steporder];
+
+            renderStepForm(
+                step['type'],
+                step['stepclass'],
+                step
+            );
+        });
+
+        $('.tool-trigger-step-delete')
+        .removeClass('tool-trigger-initial-hidden')
+        .on('click', function() {
             var steps = getParentFormSteps();
 
             // Remove it from the array
@@ -315,19 +347,6 @@ define(
             updateTable(steps);
 
             return true;
-        });
-        $('.tool-trigger-step-edit').on('click', function() {
-            modalObj.setBody(spinner);
-            modalObj.show();
-            var steps = getParentFormSteps();
-            var steporder = $(this).data('steporder');
-            var step = steps[steporder];
-
-            renderStepForm(
-                step['type'],
-                step['stepclass'],
-                step
-            );
         });
     }
 

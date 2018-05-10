@@ -4,3 +4,6 @@
 .tool-trigger-step-delete {
     cursor: pointer;
 }
+.tool-trigger-initial-hidden {
+    visibility: hidden;
+}
