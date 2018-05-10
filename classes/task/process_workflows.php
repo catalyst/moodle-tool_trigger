@@ -104,62 +104,67 @@ class process_workflows extends \core\task\scheduled_task {
 
         $queue = $DB->get_recordset_sql($sql, $params, 0, $limit);
         foreach ($queue as $q) {
-            // Update workflow record to state this workflow was attempted.
-            $workflow = new \stdClass();
-            $workflow->id = $q->workflowid;
-            $workflow->timetriggered = time();
-            $DB->update_record('tool_trigger_workflows', $workflow);
-
-            $event = new \stdClass();
-            $event->id = $q->eid;
-            $event->eventname = $q->eventname;
-            $event->contextid = $q->contextid;
-            $event->contextlevel = $q->contextlevel;
-            $event->contextinstanceid = $q->contextinstanceid;
-            $event->link = $q->link;
-            $event->courseid = $q->courseid;
-            $event->timecreated = $q->timecreated;
-
-            $trigger = new \stdClass();
-            $trigger->id = $q->qid;
-            $trigger->workflowid = $q->workflowid;
-            $trigger->status = $q->status;
-            $trigger->tries = $q->tries + 1;
-            $trigger->timecreated = $q->timecreated;
-            $trigger->timemodified = $q->timemodified;
-
-            // Get steps for this workflow.
-            $steps = $DB->get_records('tool_trigger_steps', array('workflowid' => $q->workflowid), 'steporder');
-            $previousstepresult = new \stdClass(); // Contains result of previous step execution.
-            $success = false;
-            foreach ($steps as $step) {
-                // Update queue to say which step was last attempted.
-                $trigger->laststep = $step->id;
-                $trigger->timemodified = time();
-
-                $DB->update_record('tool_trigger_queue', $trigger);
-
-                $stepclass = new $step->stepclass();
-                list($success, $previousstepresult) = $stepclass->execute($step, $trigger, $event, $previousstepresult);
-                if (!$success) {
-                    // Failed to execute this step, exit processing this trigger try again next time.
-                    break;
-                }
-            }
-            if ($success) {
-                // Step completed and succesful result.
-                $trigger->status = 1;
-                $trigger->timemodified = time();
-
-                $DB->update_record('tool_trigger_queue', $trigger);
-            }
+            $this->process_item($q);
 
             if (($starttime + self::MAXTIME) > time()) {
                 // Max processing time for this task has been reached.
                 break;
             }
         }
-
         $queue->close();
+    }
+    private function process_item($item) {
+        global $DB;
+
+        // Update workflow record to state this workflow was attempted.
+        $workflow = new \stdClass();
+        $workflow->id = $item->workflowid;
+        $workflow->timetriggered = time();
+        $DB->update_record('tool_trigger_workflows', $workflow);
+
+        $event = new \stdClass();
+        $event->id = $item->eid;
+        $event->eventname = $item->eventname;
+        $event->contextid = $item->contextid;
+        $event->contextlevel = $item->contextlevel;
+        $event->contextinstanceid = $item->contextinstanceid;
+        $event->link = $item->link;
+        $event->courseid = $item->courseid;
+        $event->timecreated = $item->timecreated;
+
+        $trigger = new \stdClass();
+        $trigger->id = $item->qid;
+        $trigger->workflowid = $item->workflowid;
+        $trigger->status = $item->status;
+        $trigger->tries = $item->tries + 1;
+        $trigger->timecreated = $item->timecreated;
+        $trigger->timemodified = $item->timemodified;
+
+        // Get steps for this workflow.
+        $steps = $DB->get_records('tool_trigger_steps', array('workflowid' => $item->workflowid), 'steporder');
+        $previousstepresult = new \stdClass(); // Contains result of previous step execution.
+        $success = false;
+        foreach ($steps as $step) {
+            // Update queue to say which step was last attempted.
+            $trigger->laststep = $step->id;
+            $trigger->timemodified = time();
+
+            $DB->update_record('tool_trigger_queue', $trigger);
+
+            $stepclass = new $step->stepclass();
+            list($success, $previousstepresult) = $stepclass->execute($step, $trigger, $event, $previousstepresult);
+            if (!$success) {
+                // Failed to execute this step, exit processing this trigger try again next time.
+                break;
+            }
+        }
+        if ($success) {
+            // Step completed and succesful result.
+            $trigger->status = 1;
+            $trigger->timemodified = time();
+
+            $DB->update_record('tool_trigger_queue', $trigger);
+        }
+
     }
 }
