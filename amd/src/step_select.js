@@ -136,7 +136,15 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events','core/te
             // Validation succeeded! Update the parent form's hidden steps data, and update
             // the table.
             var steps = getParentFormSteps();
-            steps.push(curstep);
+
+            if (curstep.steporder >= 0) {
+                // If we were editing an existing step, swap it into place in the list.
+                steps[curstep.steporder] = curstep;
+            } else {
+                //If we were creating a new step, add it to the end of the list.
+                steps.push(curstep);
+                curstep.steporder = steps.length - 1;
+            }
             setCurrentFormSteps(steps); // Update steps in hidden form field
             updateTable(steps); // Update table in workflow form.
             modalObj.hide(); // Hide the modal.;

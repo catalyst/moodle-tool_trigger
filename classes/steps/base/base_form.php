@@ -43,6 +43,14 @@ class base_form extends \moodleform {
     public function definition() {
         $mform = $this->_form;
 
+        $mform->addElement('hidden', 'id');
+        $mform->setType('id', PARAM_INT);
+        $mform->setDefault('id', 0);
+
+        $mform->addElement('hidden', 'steporder');
+        $mform->setType('steporder', PARAM_INT);
+        $mform->setDefault('steporder', -1);
+
         // Step type.
         $steptype = array(
             '' => get_string('choosedots'),
