@@ -47,7 +47,6 @@ class tool_trigger_workflow_process_testcase extends advanced_testcase {
         $mdata->workflowname = 'test workflow';
         $mdata->workflowdescription = 'test workflow description';
         $mdata->eventtomonitor = '\mod_scorm\event\user_report_viewed';
-        $mdata->asyncmode = 1;
         $mdata->workflowactive = 1;
         $mdata->draftmode = 0;
         $mdata->isstepschanged = 1;

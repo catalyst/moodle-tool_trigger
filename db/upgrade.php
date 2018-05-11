@@ -94,13 +94,6 @@ function xmldb_tool_trigger_upgrade($oldversion) {
         // Changing type of field async on table tool_trigger_workflows to int.
         $table = new xmldb_table('tool_trigger_workflows');
 
-        // Launch change of type for field async.
-        $field = new xmldb_field('async', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, 0, 'event');
-        if ($dbman->field_exists($table, $field)) {
-            $dbman->drop_field($table, $field);
-        }
-        $dbman->add_field($table, $field);
-
         $field = new xmldb_field('enabled', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, 1, 'async');
         if ($dbman->field_exists($table, $field)) {
             $dbman->drop_field($table, $field);

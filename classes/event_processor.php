@@ -103,10 +103,7 @@ class event_processor {
      * 2. Find out users that need to be notified about rule completion and schedule a task to send them messages.
      */
     public function process_buffer() {
-        $events = $this->flush(); // Flush data.
-
-        // TODO: process async events if any exist.
-
+        $this->flush(); // Flush data.
     }
 
     /**

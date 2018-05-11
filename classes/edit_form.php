@@ -97,15 +97,6 @@ class edit_form extends \moodleform {
         $mform->addHelpButton('draftmode', 'draftmode', 'tool_trigger');
         $mform->setDefault('draftmode', 0);
 
-        // Async mode.
-        $mform->addElement('advcheckbox',
-            'asyncmode',
-            get_string ('asyncmode', 'tool_trigger'),
-            'Enable', array(), array(0, 1));
-        $mform->setType('asyncmode', PARAM_INT);
-        $mform->addHelpButton('asyncmode', 'asyncmode', 'tool_trigger');
-        $mform->setDefault('asyncmode', 1);
-
         // Workflow active.
         $mform->addElement('advcheckbox',
             'workflowactive',

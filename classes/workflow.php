@@ -51,11 +51,6 @@ class workflow {
     public $event;
 
     /**
-     * @var int Is this workflow async.
-     */
-    public $async;
-
-    /**
      * @var int Is this workflow enabled.
      */
     public $active;
@@ -89,7 +84,6 @@ class workflow {
         $this->workflow = $workflow;
         $this->id = $workflow->id;
         $this->event = $workflow->event;
-        $this->async = $workflow->async;
         $this->active = $workflow->enabled;
         $this->draft = $workflow->draft;
         $this->lasttriggered = $workflow->timetriggered;
