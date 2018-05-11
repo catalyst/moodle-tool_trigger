@@ -35,15 +35,16 @@ defined('MOODLE_INTERNAL') || die();
  */
 class event_processor {
 
-
-    /** @var array $buffer buffer of events. */
-    protected $buffer = array();
-
-    /** @var int Number of entries in the buffer. */
-    protected $count = 0;
+    // This class works basically the same as a logstore writer plugin.
+    use \tool_log\helper\buffered_writer;
 
     /** @var  event_processor a reference to a self instance. */
-    protected static $instance;
+    protected static $singleton;
+
+    protected function __construct() {
+        // Register shutdown handler - this is useful for buffering, processing events, etc.
+        \core_shutdown_manager::register_function(array(self::$singleton, 'flush'));
+    }
 
     /**
      * The observer monitoring all the events.
@@ -52,87 +53,24 @@ class event_processor {
      */
     public static function process_event(\core\event\base $event) {
 
-        if (empty(self::$instance)) {
-            self::$instance = new static();
-            // Register shutdown handler - this is useful for buffering, processing events, etc.
-            \core_shutdown_manager::register_function(array(self::$instance, 'process_buffer'));
+        if (empty(self::$singleton)) {
+            self::$singleton = new self();
         }
 
-        self::$instance->buffer_event($event);
+        // Note: We don't need to test the
+        self::$singleton->write($event);
 
         return false;
-
     }
 
     /**
-     * Api to buffer events to store, to reduce db queries.
+     * The \tool_log\helper\buffered_writer trait uses this to decide whether
+     * or not to record an event.
      *
      * @param \core\event\base $event
+     * @return boolean
      */
-    protected function buffer_event(\core\event\base $event) {
-
-        // If there are no subscriptions for this event do not buffer it.
-        if (!self::event_has_subscriptions($event->eventname)) {
-            return false;
-        }
-
-        $eventdata = $event->get_data();
-        $eventobj = new \stdClass();
-        $eventobj->eventname = $eventdata['eventname'];
-        $eventobj->contextid = $eventdata['contextid'];
-        $eventobj->contextlevel = $eventdata['contextlevel'];
-        $eventobj->contextinstanceid = $eventdata['contextinstanceid'];
-        if ($event->get_url()) {
-            // Get link url if exists.
-            $eventobj->link = $event->get_url()->out();
-        } else {
-            $eventobj->link = '';
-        }
-        $eventobj->courseid = $eventdata['courseid'];
-        $eventobj->timecreated = $eventdata['timecreated'];
-
-        $this->buffer[] = $eventobj;
-        $this->count++;
-    }
-
-    /**
-     * This method process all events stored in the buffer.
-     *
-     * This is a multi purpose api. It does the following:-
-     * 1. Write event data to tool_monitor_events
-     * 2. Find out users that need to be notified about rule completion and schedule a task to send them messages.
-     */
-    public function process_buffer() {
-        $events = $this->flush(); // Flush data.
-
-        // TODO: process async events if any exist.
-
-    }
-
-    /**
-     * Protected method that flushes the buffer of events and writes them to the database.
-     *
-     * @return array a copy of the events buffer.
-     */
-    protected function flush() {
-        global $DB;
-
-        // Flush the buffer to the db.
-        $events = $this->buffer;
-        $DB->insert_records('tool_trigger_events', $events); // Insert the whole chunk into the database.
-        $this->buffer = array();
-        $this->count = 0;
-        return $events;
-    }
-
-    /**
-     * Returns true if an event in a particular course has a subscription.
-     *
-     * @param string $eventname the name of the event
-     * @param int $courseid the course id
-     * @return bool returns true if the event has subscriptions in a given course, false otherwise.
-     */
-    public static function event_has_subscriptions($eventname) {
+    protected function is_event_ignored(\core\event\base $event) {
         global $DB;
 
         // Check if we can return these from cache.
@@ -156,11 +94,34 @@ class event_processor {
         }
 
         // Check if a subscription exists for this event.
-        if (isset($sitesubscriptions[$eventname])) {
-            return true;
+        if (isset($sitesubscriptions[$event->eventname])) {
+            return false;
         }
 
-        return false;
+        return true;
     }
 
+    /**
+     * Used by the \tool_log\helper\buffered_writer trait to insert records
+     * into the database.
+     *
+     * @param array $evententries raw event data
+     */
+    protected function insert_event_entries($evententries) {
+        global $DB;
+        $DB->insert_records('tool_trigger_events', $evententries);
+    }
+
+    /**
+     * Used by the \tool_log\helper\buffered_writer trait.
+     *
+     * @param string $name Config name
+     * @param mixed $default default value
+     *
+     * @return mixed config value if set, else the default value.
+     */
+    protected function get_config($name, $default = null) {
+        // We don't actually need to return any config values for our purposes.
+        return false;
+    }
 }

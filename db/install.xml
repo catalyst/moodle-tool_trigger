@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="admin/tool/trigger/db" VERSION="20180310" COMMENT="XMLDB file for Moodle admin/tool/trigger"
+<XMLDB PATH="admin/tool/trigger/db" VERSION="20180511" COMMENT="XMLDB file for Moodle admin/tool/trigger"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../../lib/xmldb/xmldb.xsd"
 >
@@ -38,6 +38,8 @@
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
         <KEY NAME="workflowid" TYPE="foreign" FIELDS="workflowid" REFTABLE="tool_trigger_workflows" REFFIELDS="id" COMMENT="foreign key relates to id in workflow table"/>
+        <KEY NAME="eventid" TYPE="foreign" FIELDS="eventid" REFTABLE="tool_trigger_events" REFFIELDS="id"/>
+        <KEY NAME="laststep" TYPE="foreign" FIELDS="laststep" REFTABLE="tool_trigger_steps" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
     <TABLE NAME="tool_trigger_steps" COMMENT="Table to store data about individual steps in a workflow.">
@@ -61,20 +63,37 @@
         <INDEX NAME="class" UNIQUE="false" FIELDS="stepclass" COMMENT="index for class paths"/>
       </INDEXES>
     </TABLE>
-    <TABLE NAME="tool_trigger_events" COMMENT="A table that keeps a log of events related to workflows">
+    <TABLE NAME="tool_trigger_events" COMMENT="Events that we have active workflow subscriptions for.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
-        <FIELD NAME="eventname" TYPE="char" LENGTH="254" NOTNULL="true" SEQUENCE="false" COMMENT="Event name"/>
-        <FIELD NAME="contextid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Context id"/>
-        <FIELD NAME="contextlevel" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Context level"/>
-        <FIELD NAME="contextinstanceid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Context instance id"/>
-        <FIELD NAME="link" TYPE="char" LENGTH="254" NOTNULL="true" SEQUENCE="false" COMMENT="Link to the event location"/>
-        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="course id"/>
-        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="Time created"/>
+        <FIELD NAME="eventname" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="component" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="action" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="target" TYPE="char" LENGTH="100" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="objecttable" TYPE="char" LENGTH="50" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="objectid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="crud" TYPE="char" LENGTH="1" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="edulevel" TYPE="int" LENGTH="1" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="contextid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="contextlevel" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="contextinstanceid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="courseid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="relateduserid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="anonymous" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Was this event anonymous at the time of triggering?"/>
+        <FIELD NAME="other" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
+        <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
+        <FIELD NAME="origin" TYPE="char" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="cli, cron, ws, etc."/>
+        <FIELD NAME="ip" TYPE="char" LENGTH="45" NOTNULL="false" SEQUENCE="false" COMMENT="IP address"/>
+        <FIELD NAME="realuserid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="real user id when logged-in-as"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="contextid" TYPE="foreign" FIELDS="contextid" REFTABLE="context" REFFIELDS="id"/>
       </KEYS>
+      <INDEXES>
+        <INDEX NAME="timecreated" UNIQUE="false" FIELDS="timecreated"/>
+      </INDEXES>
     </TABLE>
   </TABLES>
 </XMLDB>

@@ -117,5 +117,19 @@ function xmldb_tool_trigger_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2018050703, 'tool', 'trigger');
     }
 
+    // TODO: remove this block before production release.
+    if ($oldversion < 2018050704) {
+        // Major refactoring of the tool_trigger_events table, so it's easier
+        // just to drop it and re-create it.
+        $table = new xmldb_table('tool_trigger_events');
+        $dbman->drop_table($table);
+        $dbman->create_table($table);
+
+        // Also delete any records in the workflow queue, because the event IDs
+        // will no longer match up.
+        $DB->delete_records('tool_trigger_queue');
+        upgrade_plugin_savepoint(true, 2018050704, 'tool', 'trigger');
+    }
+
     return true;
 }
