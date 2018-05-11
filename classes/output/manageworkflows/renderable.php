@@ -65,7 +65,7 @@ class renderable extends \table_sql implements \renderable {
                 'description',
                 'event',
                 'active',
-                'draft',
+            //    'draft',
                 'lasttriggered',
                 'manage')
                 );
@@ -74,7 +74,7 @@ class renderable extends \table_sql implements \renderable {
                 get_string('description', 'tool_trigger'),
                 get_string('event', 'tool_trigger'),
                 get_string('active', 'tool_trigger'),
-                get_string('draft', 'tool_trigger'),
+                //get_string('draft', 'tool_trigger'),
                 get_string('lasttriggered', 'tool_trigger'),
                 get_string('manage', 'tool_trigger'),
             )
@@ -118,6 +118,18 @@ class renderable extends \table_sql implements \renderable {
      */
     public function col_plugin(\tool_trigger\workflow $workflow) {
         return $workflow->get_plugin_name();
+    }
+
+    /**
+     * Generate content for plugin column.
+     *
+     * @param \tool_trigger\workflow $workflow rule object
+     * @return string html used to display the column field.
+     */
+    public function col_lasttriggered(\tool_trigger\workflow $workflow) {
+        if (!empty($workflow->lasttriggered)) {
+            return userdate($workflow->lasttriggered);
+        }
     }
 
     /**
