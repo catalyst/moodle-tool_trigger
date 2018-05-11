@@ -113,6 +113,33 @@ class process_workflows extends \core\task\scheduled_task {
         }
         $queue->close();
     }
+
+    /**
+     * Returns an event from the log data.
+     *
+     * @param \stdClass $data Log data
+     * @return \core\event\base
+     */
+    private function restore_event($data) {
+
+        $extra = array('origin' => $data->origin, 'ip' => $data->ip, 'realuserid' => $data->realuserid);
+        $data = (array)$data;
+        $data['other'] = unserialize($data['other']);
+        if ($data['other'] === false) {
+            $data['other'] = array();
+        }
+        unset($data['origin']);
+        unset($data['ip']);
+        unset($data['realuserid']);
+        unset($data['id']);
+
+        if (!$event = \core\event\base::restore($data, $extra)) {
+            return null;
+        }
+
+        return $event;
+    }
+
     private function process_item($item) {
         global $DB;
 
@@ -122,15 +149,9 @@ class process_workflows extends \core\task\scheduled_task {
         $workflow->timetriggered = time();
         $DB->update_record('tool_trigger_workflows', $workflow);
 
-        $event = new \stdClass();
-        $event->id = $item->eid;
-        $event->eventname = $item->eventname;
-        $event->contextid = $item->contextid;
-        $event->contextlevel = $item->contextlevel;
-        $event->contextinstanceid = $item->contextinstanceid;
-        $event->link = $item->link;
-        $event->courseid = $item->courseid;
-        $event->timecreated = $item->timecreated;
+        $event = $this->restore_event(
+            $DB->get_record('tool_trigger_event', ['id' => $item->eid])
+        );
 
         $trigger = new \stdClass();
         $trigger->id = $item->qid;
