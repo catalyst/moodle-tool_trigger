@@ -87,15 +87,18 @@ class edit_form extends \moodleform {
         );
         $mform->addHelpButton('eventtomonitor', 'eventtomonitor', 'tool_trigger');
         $mform->addRule('eventtomonitor', get_string('required'), 'required');
-
+        /*
+        // Disabling draft mode for now - this is not yet implemented.
         // Draft mode.
         $mform->addElement('advcheckbox',
             'draftmode',
             get_string ('draftmode', 'tool_trigger'),
             'Enable', array(), array(0, 1));
-        $mform->setType('draftmode', PARAM_INT);
         $mform->addHelpButton('draftmode', 'draftmode', 'tool_trigger');
         $mform->setDefault('draftmode', 0);
+        */
+        $mform->addElement('hidden', 'draftmode', 0);
+        $mform->setType('draftmode', PARAM_INT);
 
         // Workflow active.
         $mform->addElement('advcheckbox',
