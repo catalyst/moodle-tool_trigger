@@ -17,6 +17,9 @@
 /**
  * Base trigger step class.
  *
+ * A trigger is a workflow step that executes an external API, or performs
+ * some other "output" action.
+ *
  * @package    tool_trigger
  * @copyright  Matt Porritt <mattp@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -36,19 +39,4 @@ defined('MOODLE_INTERNAL') || die;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 abstract class base_trigger_step extends base_step {
-
-    /**
-     * Returns the step name.
-     *
-     * @return string human readable step name.
-     */
-    abstract static public function get_step_name();
-
-    /**
-     * Returns the step description.
-     *
-     * @return string human readable step description.
-     */
-    abstract static public function get_step_desc();
-
 }

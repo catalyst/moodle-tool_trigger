@@ -17,6 +17,10 @@
 /**
  * Base lookup step class.
  *
+ * A lookup is a step that adds or mutates data to the workflow instance's
+ * data. (It should communicate these changes via the second field of its
+ * execute() method.)
+ *
  * @package    tool_trigger
  * @copyright  Matt Porritt <mattp@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

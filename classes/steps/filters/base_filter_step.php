@@ -17,6 +17,9 @@
 /**
  * Base filter step class.
  *
+ * A filter is a workflow step that applies a test to the workflow instance's
+ * data, and halts execution of further steps if the test does not pass.
+ *
  * @package    tool_trigger
  * @copyright  Matt Porritt <mattp@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

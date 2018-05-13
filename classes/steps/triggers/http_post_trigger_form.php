@@ -40,14 +40,11 @@ class http_post_trigger_form extends base_trigger_form {
         $mform = $this->_form;
 
         // URL.
-        $attributes = array('size' => '50');
+        $attributes = array('size' => '50', 'placeholder' => 'https://www.example.com/api', 'type' => 'url');
         $mform->addElement('text', 'httposttiggerurl', get_string ('httposttiggerurl', 'tool_trigger'), $attributes);
         $mform->setType('httposttiggerurl', PARAM_URL);
         $mform->addRule('httposttiggerurl', get_string('required'), 'required');
         $mform->addHelpButton('httposttiggerurl', 'httposttiggerurl', 'tool_trigger');
-        if (isset($this->_customdata['httposttiggerurl'])) {
-            $mform->setDefault('httposttiggerurl', $this->_customdata['httposttiggerurl']);
-        }
 
         // Headers.
         $attributes = array('cols' => '50', 'rows' => '5');
@@ -55,9 +52,6 @@ class http_post_trigger_form extends base_trigger_form {
         $mform->setType('httposttiggerheaders', PARAM_RAW_TRIMMED);
         $mform->addRule('httposttiggerheaders', get_string('required'), 'required');
         $mform->addHelpButton('httposttiggerheaders', 'httposttiggerheaders', 'tool_trigger');
-        if (isset($this->_customdata['httposttiggerheaders'])) {
-            $mform->setDefault('httposttiggerheaders', $this->_customdata['httposttiggerheaders']);
-        }
 
         // Params.
         $attributes = array('cols' => '50', 'rows' => '5');
@@ -65,10 +59,6 @@ class http_post_trigger_form extends base_trigger_form {
         $mform->setType('httposttiggerparams', PARAM_RAW_TRIMMED);
         $mform->addRule('httposttiggerparams', get_string('required'), 'required');
         $mform->addHelpButton('httposttiggerparams', 'httposttiggerparams', 'tool_trigger');
-        if (isset($this->_customdata['httposttiggerparams'])) {
-            $mform->setDefault('httposttiggerparams', $this->_customdata['httposttiggerparams']);
-        }
-
     }
 
 }

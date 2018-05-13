@@ -63,6 +63,6 @@ class http_post_trigger_step extends base_trigger_step {
     public function execute($step, $trigger, $event, $previousstepresult) {
         // TODO: DO SOMETHING HERE.
         mtrace("execute trigger");
-        return array(true, array());
+        return array(true, $previousstepresult);
     }
 }
