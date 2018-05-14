@@ -26,7 +26,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace tool_trigger\steps;
+namespace tool_trigger\steps\lookups;
 
 use tool_trigger\steps\base\base_step;
 
