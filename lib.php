@@ -99,7 +99,7 @@ function tool_trigger_output_fragment_new_step_form($args) {
 
     ob_start();
     $mform->display();
-    $o .= ob_get_contents();
+    $o = ob_get_contents();
     ob_end_clean();
 
     return $o;
