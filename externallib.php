@@ -112,8 +112,6 @@ class tool_trigger_external extends external_api {
     public static function validate_form($stepclass, $jsonformdata) {
         global $USER;
 
-        // Step class is passed - convert it to the form class for this step.
-        $formclass = substr($stepclass, 0, (strlen($stepclass) - 4)) . 'form';
         // Context validation.
         $context = context_user::instance($USER->id);
         self::validate_context($context);
@@ -129,7 +127,8 @@ class tool_trigger_external extends external_api {
         }
 
         // The last param is the ajax submitted data.
-        $mform = new $formclass(null, array(), 'post', '', null, true, $data);
+        $step = new $stepclass();
+        $mform = $step->make_form(array(), $data);
 
         if (!$mform->is_validated()) {
             // Generate a warning.

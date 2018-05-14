@@ -65,4 +65,32 @@ class http_post_trigger_step extends base_trigger_step {
         mtrace("execute trigger");
         return array(true, $previousstepresult);
     }
+
+    /**
+     * {@inheritDoc}
+     * @see \tool_trigger\steps\base\base_step::add_extra_form_fields()
+     */
+    public function form_definition_extra($form, $mform, $customdata) {
+
+        // URL.
+        $attributes = array('size' => '50', 'placeholder' => 'https://www.example.com/api', 'type' => 'url');
+        $mform->addElement('text', 'httposttiggerurl', get_string ('httposttiggerurl', 'tool_trigger'), $attributes);
+        $mform->setType('httposttiggerurl', PARAM_URL);
+        $mform->addRule('httposttiggerurl', get_string('required'), 'required');
+        $mform->addHelpButton('httposttiggerurl', 'httposttiggerurl', 'tool_trigger');
+
+        // Headers.
+        $attributes = array('cols' => '50', 'rows' => '5');
+        $mform->addElement('textarea', 'httposttiggerheaders', get_string ('httposttiggerheaders', 'tool_trigger'), $attributes);
+        $mform->setType('httposttiggerheaders', PARAM_RAW_TRIMMED);
+        $mform->addRule('httposttiggerheaders', get_string('required'), 'required');
+        $mform->addHelpButton('httposttiggerheaders', 'httposttiggerheaders', 'tool_trigger');
+
+        // Params.
+        $attributes = array('cols' => '50', 'rows' => '5');
+        $mform->addElement('textarea', 'httposttiggerparams', get_string ('httposttiggerparams', 'tool_trigger'), $attributes);
+        $mform->setType('httposttiggerparams', PARAM_RAW_TRIMMED);
+        $mform->addRule('httposttiggerparams', get_string('required'), 'required');
+        $mform->addHelpButton('httposttiggerparams', 'httposttiggerparams', 'tool_trigger');
+    }
 }

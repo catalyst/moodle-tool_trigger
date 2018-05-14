@@ -38,6 +38,26 @@ require_once($CFG->dirroot.'/lib/formslib.php');
 class base_form extends \moodleform {
 
     /**
+     * An instance of a step class. Used to allow steps to customize the
+     * interface.
+     *
+     * @var \tool_trigger\steps\base\base_step
+     */
+    protected $step = false;
+
+    /**
+     * {@inheritDoc}
+     * @see \moodleform::__construct()
+     * @param \tool_trigger\steps\base\base_step $step A step instance, to add
+     * fields to this form.
+     */
+    public function __construct($action = null, $customdata = null, $method = 'post', $target = '', $attributes = null,
+            $editable = true, $ajaxformdata = null, $step = false) {
+        $this->step = $step;
+        parent::__construct($action, $customdata, $method, $target, $attributes, $editable, $ajaxformdata);
+    }
+
+    /**
      * Build form.
      */
     public function definition() {
@@ -78,6 +98,31 @@ class base_form extends \moodleform {
         $mform->addRule('stepclass', get_string('required'), 'required');
         if (isset($this->_customdata['stepclass'])) {
             $mform->setDefault('stepclass', $this->_customdata['stepclass']);
+        }
+
+        // If a step class has already been instantiated, add more step details.
+        if ($this->step) {
+            // Name.
+            $attributes = array('size' => '50');
+            $mform->addElement('text', 'name', get_string ('stepname', 'tool_trigger'), $attributes);
+            $mform->setType('name', PARAM_ALPHAEXT);
+            $mform->addRule('name', get_string('required'), 'required');
+            $mform->addHelpButton('name', 'stepname', 'tool_trigger');
+
+            // Description.
+            $attributes = array('cols' => '50', 'rows' => '5');
+            $mform->addElement('textarea', 'description', get_string ('stepdescription', 'tool_trigger'), $attributes);
+            $mform->setType('description', PARAM_ALPHAEXT);
+            $mform->addRule('description', get_string('required'), 'required');
+            $mform->addHelpButton('description', 'stepdescription', 'tool_trigger');
+
+            // Additional fields specific to the step type.
+            $this->step->form_definition_extra($this, $this->_form, $this->_customdata);
+
+            // TODO: If it's helpful, add additional hooks into other form methods like validate() and definition_after_data().
+            //
+            // Although, if a step needs to customize the form that much, it may be better off
+            // just using its own form subclass.
         }
     }
 

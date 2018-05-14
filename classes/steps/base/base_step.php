@@ -62,4 +62,31 @@ abstract class base_step {
      * later steps.
      */
     abstract public function execute($step, $trigger, $event, $previousstepresult);
+
+    /**
+     * Instantiate a form for this step.
+     *
+     * If all you need to do is add fields to the form, then you should be able to get by
+     * with this default implementation, and override the "form_definition()" method to your
+     * step's class.
+     *
+     * If you want more control over other parts of the form, then override this method
+     * to return a custom subclass of \base_form instead.
+     *
+     * @param mixed $customdata
+     * @param mixed $ajaxformdata
+     * @return \moodleform
+     */
+    public function make_form($customdata, $ajaxformdata) {
+        return new base_form(null, $customdata, 'post', '', null, true, $ajaxformdata, $this);
+    }
+
+    /**
+     * A callback to add fields to the step definition form, specific to each step class.
+     *
+     * @param \moodleform $form
+     * @param \MoodleQuickForm $mform
+     * @param mixed $customdata
+     */
+    abstract public function form_definition_extra($form, $mform, $customdata);
 }

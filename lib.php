@@ -71,8 +71,6 @@ function tool_trigger_output_fragment_new_step_form($args) {
     $stepclassobj = new $stepclass();
     $stepname = $stepclassobj->get_step_name();
 
-    $formclass = substr($stepclass, 0, -1 * strlen('step')) . 'form';
-
     $customdata = array(
         'type'      => $steptype,
         'stepclass' => $stepclass,
@@ -85,7 +83,7 @@ function tool_trigger_output_fragment_new_step_form($args) {
         parse_str($args['ajaxformdata'], $ajaxformdata);
     }
 
-    $mform = new $formclass(null, $customdata, 'post', '', null, true, $ajaxformdata);
+    $mform = $stepclassobj->make_form($customdata, $ajaxformdata);
 
     if (!empty($args['defaults'])) {
         // Don't need to clean/validate these, because formslib will do that.
