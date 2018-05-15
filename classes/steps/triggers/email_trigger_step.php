@@ -68,26 +68,42 @@ class email_trigger_step extends base_trigger_step {
         $emailto = $data->emailto;
         $emailsubject = $data->emailsubject;
         $emailcontent = $data->emailcontent;
+        $messageplain = $data->emailcontent;
 
         // TODO - run template stuff on above fields.
 
-        // check we have a valid email address.
+        // Check we have a valid email address.
         if ($emailto == clean_param($emailto, PARAM_EMAIL)) {
+            $oldforcelang = current_language(); // Current language
+
             // Check if user exists and use user record.
             $user = $DB->get_record('user', array('email' => $emailto, 'deleted' => 0));
 
-            // If email not listed in db, use no_reply_user as base.
+            // If user not found, use noreply as a base.
             if (empty($user)) {
-                $user = core_user::get_noreply_user();
+                $user = \core_user::get_noreply_user();
                 $user->firstname = $emailto;
                 $user->email = $emailto;
                 $user->maildisplay = 1;
                 $user->emailstop = 0;
-
             }
-            $from = core_user::get_support_user();
+            $from = \core_user::get_support_user();
 
-            email_to_user($user, $from, $emailsubject, $emailcontent);
+            $eventdata = new \core\message\message();
+            $eventdata->courseid = $event->courseid;
+            $eventdata->modulename = 'reengagement';
+            $eventdata->userfrom = $from;
+            $eventdata->userto = $user;
+            $eventdata->subject = $emailsubject;
+            $eventdata->fullmessage = $messageplain;
+            $eventdata->fullmessageformat = FORMAT_HTML;
+            $eventdata->fullmessagehtml = $emailcontent;
+            $eventdata->smallmessage = $emailsubject;
+            // Required for messaging framework.
+            $eventdata->name = 'tool_trigger';
+            $eventdata->component = 'tool_trigger';
+
+            message_send($eventdata);
         }
 
         return array(true, $previousstepresult);
@@ -119,4 +135,5 @@ class email_trigger_step extends base_trigger_step {
         $mform->addRule('emailcontent', get_string('required'), 'required');
         $mform->addHelpButton('emailcontent', 'emailcontent', 'tool_trigger');
     }
+
 }
