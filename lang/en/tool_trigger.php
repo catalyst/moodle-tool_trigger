@@ -73,6 +73,7 @@ $string['lasttriggered'] = 'Last triggered';
 $string['lookup'] = 'Lookup';
 $string['manage'] = 'Manage';
 $string['manageworkflow'] = 'Manage workflow';
+$string['messageprovider:tool_trigger'] = 'Event trigger notifications';
 $string['modaltitle'] = 'Add workflow step.';
 $string['movestepup'] = 'Move step towards start';
 $string['movestepdown'] = 'Move step towards end';

@@ -74,7 +74,6 @@ class email_trigger_step extends base_trigger_step {
 
         // Check we have a valid email address.
         if ($emailto == clean_param($emailto, PARAM_EMAIL)) {
-            $oldforcelang = current_language(); // Current language
 
             // Check if user exists and use user record.
             $user = $DB->get_record('user', array('email' => $emailto, 'deleted' => 0));

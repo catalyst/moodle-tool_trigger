@@ -13,20 +13,16 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
-
 /**
- * Plugin version and other meta-data are defined here.
+ * Defines message providers (types of message sent) for the Re-engagement activity.
  *
- * @package     tool_trigger
- * @copyright   Matt Porritt <mattp@catalyst-au.net>
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    tool_trigger
+ * @author     Dan Marsden
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'tool_trigger';
-$plugin->release = '2018051001';
-$plugin->version = 2018051001;
-$plugin->requires = 2016052300;
-$plugin->maturity = MATURITY_ALPHA;
-$plugin->dependencies = array('tool_monitor' => 2015051101);
+defined('MOODLE_INTERNAL') || die();
+$messageproviders = array(
+    'tool_trigger' => array(),
+);
