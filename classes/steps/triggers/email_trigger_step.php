@@ -90,8 +90,6 @@ class email_trigger_step extends base_trigger_step {
             email_to_user($user, $from, $emailsubject, $emailcontent);
         }
 
-        return false;
-
         return array(true, $previousstepresult);
     }
 
