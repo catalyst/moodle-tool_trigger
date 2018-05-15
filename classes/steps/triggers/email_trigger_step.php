@@ -121,7 +121,6 @@ class email_trigger_step extends base_trigger_step {
         $mform->addRule('emailto', get_string('required'), 'required');
         $mform->addHelpButton('emailto', 'emailto', 'tool_trigger');
 
-
         // Subject
         $mform->addElement('text', 'emailsubject', get_string ('emailsubject', 'tool_trigger'));
         $mform->setType('emailsubject', PARAM_RAW_TRIMMED);
