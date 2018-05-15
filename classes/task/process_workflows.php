@@ -179,8 +179,8 @@ class process_workflows extends \core\task\scheduled_task {
 
         // Get steps for this workflow.
         $steps = $DB->get_records('tool_trigger_steps', array('workflowid' => $item->workflowid), 'steporder');
-        $previousstepresult = new \stdClass(); // Contains result of previous step execution.
         $success = false;
+        $stepresults = [];
         foreach ($steps as $step) {
             // Update queue to say which step was last attempted.
             $trigger->laststep = $step->id;
@@ -190,8 +190,9 @@ class process_workflows extends \core\task\scheduled_task {
             mtrace('Execute workflow step: ' . $step->id . ', ' . $step->stepclass);
 
             try {
-                $stepclass = new $step->stepclass();
-                list($success, $previousstepresult) = $stepclass->execute($step, $trigger, $event, $previousstepresult);
+                /* @var $stepobj \tool_trigger\steps\base\base_step */
+                $stepobj = new $step->stepclass($step->data);
+                list($success, $stepresults) = $stepobj->execute($step, $trigger, $event, $stepresults);
                 if (!$success) {
                     // Failed to execute this step, exit processing this trigger, but don't try again.
                     mtrace('Exiting workflow early');
@@ -199,7 +200,7 @@ class process_workflows extends \core\task\scheduled_task {
                 }
             } catch (\Exception $e) {
                 // Errored out executing this step. Exit processing this trigger, and try again later(?)
-                $trigger->status = self::STATUS_FAILED;
+                $trigger->status = self::STATUS_READY_TO_RUN;
                 $trigger->timemodified = time();
                 $DB->update_record('tool_trigger_queue', $trigger);
                 if (!empty($e->debuginfo)) {

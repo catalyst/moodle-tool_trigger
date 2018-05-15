@@ -35,6 +35,14 @@ defined('MOODLE_INTERNAL') || die;
  */
 abstract class base_step {
 
+    protected $data = [];
+
+    public function __construct($jsondata = null) {
+        if ($jsondata) {
+            $this->data = json_decode($jsondata, true);
+        }
+    }
+
     /**
      * Returns the step name.
      *
@@ -53,15 +61,15 @@ abstract class base_step {
      * @param \stdClass $step The `tool_trigger_steps` record for this step instance
      * @param \stdClass $trigger The `tool_trigger_queue` record for this execution
      * of the workflow.
-     * @param \core\event\base $event The deserialized event that triggered this execution
-     * @param \stdClass $previousstepresult Data aggregated from previous steps, to include in
-     * processing this step.
-     * @return array<bool, \stdClass> Returns an array. The first element is a boolean
+     * @param \core\event\base $event (Read-only) The deserialized event object that triggered this execution
+     * @param array $stepresults (Read-Write) Data aggregated from the return values of previous steps in
+     * the workflow.
+     * @return array<bool, array> Returns an array. The first element is a boolean
      * indicating whether or not the step was executed successfully; the second element should
      * be the $previousstepresult object, optionally mutated to provide data to
      * later steps.
      */
-    abstract public function execute($step, $trigger, $event, $previousstepresult);
+    abstract public function execute($step, $trigger, $event, $stepresults);
 
     /**
      * Instantiate a form for this step.
