@@ -36,6 +36,11 @@ defined('MOODLE_INTERNAL') || die();
 class workflow_manager {
 
     /**
+     * @var string[] The categories of steps available.
+     */
+    const STEPTYPES = array('lookups', 'triggers', 'filters');
+
+    /**
      * Helper method to convert db records to workflow objects.
      *
      * @param array $records of workflows from db.
@@ -93,37 +98,50 @@ class workflow_manager {
         return $workflows;
     }
 
-    public function get_step_class_names($steptype) {
+    /**
+     * Gets the names of the available step classes.
+     *
+     * @param null|string $steptype Limit to steps of one step type. Or null (default)
+     * to retrieve steps of all types.
+     * @throws \invalid_parameter_exception
+     * @return array
+     */
+    public function get_step_class_names($steptype = null) {
+        if ($steptype === null) {
+            $steptypes = self::STEPTYPES;
+        } else {
+            $steptypes = [$steptype];
+        }
 
         $matchedsteps = array();
         $matches = array();
-        $stepdir = __DIR__ . '/steps/' . $steptype;
-        $handle = opendir($stepdir);
-        while (($file = readdir($handle)) !== false) {
-            preg_match('/\b(?!base)(.*step)/', $file, $matches);
-            $matchedsteps = array_merge($matches, $matchedsteps);
 
+        foreach ($steptypes as $steptype) {
+            $stepdir = __DIR__ . '/steps/' . $steptype;
+            $handle = opendir($stepdir);
+            while (($file = readdir($handle)) !== false) {
+                preg_match('/\b(?!base)(.*step)/', $file, $matches);
+                foreach ($matches as $classname) {
+                    $matchedsteps[] = '\tool_trigger\steps\\' . $steptype . '\\' . $classname;
+                }
+            }
+            closedir($handle);
         }
-        closedir($handle);
         $matchedsteps = array_unique($matchedsteps);
 
         return $matchedsteps;
 
     }
 
-    public function get_steps_with_names($steptype, $stepclasses) {
+    public function get_steps_with_names($stepclasses) {
         $stepnames = array();
 
         foreach ($stepclasses as $stepclass) {
-
-            $stepclass = '\tool_trigger\steps\\' . $steptype . '\\' . $stepclass;
-            $class = new $stepclass();
-            $stepname = array(
-                    'class' => $stepclass,
-                    'name' => $class->get_step_name()
+            $stepobj = $this->validate_and_make_step($stepclass);
+            $stepnames[] = array(
+                'class' => $stepclass,
+                'name' => $stepobj->get_step_name()
             );
-            $stepnames[] = $stepname;
-
         }
 
         return $stepnames;
@@ -131,13 +149,12 @@ class workflow_manager {
     }
 
     public function get_steps_by_type($steptype) {
-        $acceptedtypes = array('lookups', 'triggers', 'filters');
-        if (!in_array($steptype, $acceptedtypes)) {
-            throw new \moodle_exception('badsteptype', 'tool_trigger', '');
+        if (!in_array($steptype, self::STEPTYPES)) {
+            throw new \invalid_parameter_exception('badsteptype', 'tool_trigger', '');
         }
 
         $matchedsteps = $this->get_step_class_names($steptype);
-        $stepswithnames = $this->get_steps_with_names($steptype, $matchedsteps);
+        $stepswithnames = $this->get_steps_with_names($matchedsteps);
 
         return $stepswithnames;
     }
@@ -211,5 +228,27 @@ class workflow_manager {
             return false;
         }
         return true;
+    }
+
+    protected $stepclasses = null;
+
+    /**
+     * Factory method to validate the stepclass name and then instantiate the stepclass.
+     *
+     * @param string $stepclass
+     * @param mixed ...$params Additional params to pass to the stepclass constructor.
+     * @throws \invalid_parameter_exception
+     * @return \tool_trigger\steps\base\base_step
+     */
+    public function validate_and_make_step($stepclass, ...$params) {
+        if ($this->stepclasses === null) {
+            $this->stepclasses = $this->get_step_class_names();
+        }
+
+        if (!in_array($stepclass, $this->stepclasses)) {
+            throw new \invalid_parameter_exception(get_string('badstepclass', 'tool_trigger'));
+        }
+
+        return new $stepclass(...$params);
     }
 }

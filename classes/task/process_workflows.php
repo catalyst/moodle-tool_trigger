@@ -177,6 +177,8 @@ class process_workflows extends \core\task\scheduled_task {
             $DB->get_record('tool_trigger_events', ['id' => $item->eventid])
         );
 
+        $workflowmanager = new \tool_trigger\workflow_manager();
+
         // Get steps for this workflow.
         $steps = $DB->get_records('tool_trigger_steps', array('workflowid' => $item->workflowid), 'steporder');
         $success = false;
@@ -190,14 +192,16 @@ class process_workflows extends \core\task\scheduled_task {
             mtrace('Execute workflow step: ' . $step->id . ', ' . $step->stepclass);
 
             try {
-                /* @var $stepobj \tool_trigger\steps\base\base_step */
-                $stepobj = new $step->stepclass($step->data);
+                $stepobj = $workflowmanager->validate_and_make_step($step->stepclass, $step->data);
+
                 list($success, $stepresults) = $stepobj->execute($step, $trigger, $event, $stepresults);
+
                 if (!$success) {
                     // Failed to execute this step, exit processing this trigger, but don't try again.
                     mtrace('Exiting workflow early');
                     break;
                 }
+
             } catch (\Exception $e) {
                 // Errored out executing this step. Exit processing this trigger, and try again later(?)
                 $trigger->status = self::STATUS_READY_TO_RUN;
@@ -210,6 +214,7 @@ class process_workflows extends \core\task\scheduled_task {
                 }
                 mtrace("Backtrace:");
                 mtrace(format_backtrace($e->getTrace(), true));
+                return;
 
             } finally {
                 if ($DB->is_transaction_started()) {

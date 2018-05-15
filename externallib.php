@@ -63,8 +63,10 @@ class tool_trigger_external extends external_api {
         }
 
         // Validate_parameters.
-        $params = self::validate_parameters(self::step_by_type_parameters(),
-                ['steptype' => $steptype]);
+        $params = self::validate_parameters(
+            self::step_by_type_parameters(),
+            ['steptype' => $steptype]
+        );
 
         // Execute API call.
         $wfmanager = new \tool_trigger\workflow_manager();
@@ -120,19 +122,22 @@ class tool_trigger_external extends external_api {
         $params = self::validate_parameters(self::validate_form_parameters(),
             ['stepclass' => $stepclass, 'jsonformdata' => $jsonformdata]);
 
+        // Validate the stepclass name.
+        $workflowmanager = new \tool_trigger\workflow_manager();
+        $step = $workflowmanager->validate_and_make_step($stepclass);
+
         $data = array();
         if (!empty($params['jsonformdata'])) {
             $serialiseddata = json_decode($params['jsonformdata']);
             parse_str($serialiseddata, $data);
         }
 
-        // The last param is the ajax submitted data.
-        $step = new $stepclass();
+        // Create the form and trigger validation.
         $mform = $step->make_form(array(), $data);
 
         if (!$mform->is_validated()) {
             // Generate a warning.
-            throw new moodle_exception('erroreditgroup', 'group');
+            throw new moodle_exception('erroreditstep', 'tool_trigger');
         }
         return true;
     }

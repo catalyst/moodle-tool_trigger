@@ -66,15 +66,14 @@ function tool_trigger_output_fragment_new_step_form($args) {
 
     $steptype = clean_param($args['steptype'], PARAM_ALPHA);
 
-    // TODO: whitelist the stepclass values!
     $stepclass = clean_param($args['stepclass'], PARAM_RAW);
-    $stepclassobj = new $stepclass();
-    $stepname = $stepclassobj->get_step_name();
+    $workflowmanager = new \tool_trigger\workflow_manager();
+    $stepclassobj = $workflowmanager->validate_and_make_step($stepclass);
 
     $customdata = array(
         'type'      => $steptype,
         'stepclass' => $stepclass,
-        'steptext'  => $stepname
+        'steptext'  => $stepclassobj->get_step_name()
     );
 
     $ajaxformdata = array();
