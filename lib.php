@@ -73,7 +73,7 @@ function tool_trigger_output_fragment_new_step_form($args) {
     $customdata = array(
         'type'      => $steptype,
         'stepclass' => $stepclass,
-        'steptext'  => $stepclassobj->get_step_name()
+        'steptext'  => $stepclass::get_step_name()
     );
 
     $ajaxformdata = array();

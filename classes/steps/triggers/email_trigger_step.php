@@ -25,6 +25,8 @@
 
 namespace tool_trigger\steps\triggers;
 
+use tool_trigger\workflow_manager;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -55,6 +57,20 @@ class email_trigger_step extends base_trigger_step {
     }
 
     /**
+     * {@inheritDoc}
+     * @see \tool_trigger\steps\base\base_step::__construct()
+     */
+    public function __construct($jsondata = null) {
+        parent::__construct($jsondata);
+        if ($jsondata) {
+            $this->emailto = $data->emailto;
+            $this->emailsubject = $data->emailsubject;
+            $this->emailcontent = $data->emailcontent;
+            $this->messageplain = $data->emailcontent;
+        }
+    }
+
+    /**
      * @param $step
      * @param $trigger
      * @param $event
@@ -64,13 +80,10 @@ class email_trigger_step extends base_trigger_step {
     public function execute($step, $trigger, $event, $previousstepresult) {
         global $DB;
 
-        $data = json_decode($step->data);
-        $emailto = $data->emailto;
-        $emailsubject = $data->emailsubject;
-        $emailcontent = $data->emailcontent;
-        $messageplain = $data->emailcontent;
-
-        // TODO - run template stuff on above fields.
+        $emailto = workflow_manager::fill_in_datafield_placeholders($this->emailto, $event, $previousstepresult);
+        $emailsubject = workflow_manager::fill_in_datafield_placeholders($this->emailsubject, $event, $previousstepresult);
+        $emailcontent = workflow_manager::fill_in_datafield_placeholders($this->emailcontent, $event, $previousstepresult);
+        $messageplain = workflow_manager::fill_in_datafield_placeholders($this->emailcontent, $event, $previousstepresult);
 
         // Check we have a valid email address.
         if ($emailto == clean_param($emailto, PARAM_EMAIL)) {

@@ -54,6 +54,7 @@ class logdump_trigger_step extends base_trigger_step {
         $o = ob_get_contents();
         ob_end_clean();
         mtrace($o);
+        $stepresults['vardump'] = $o;
         return [true, $stepresults];
     }
 

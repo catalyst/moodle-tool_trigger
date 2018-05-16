@@ -16,6 +16,8 @@
 
 namespace tool_trigger\steps\lookups;
 
+use tool_trigger\workflow_manager;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -60,16 +62,7 @@ class user_lookup_step extends base_lookup_step {
      */
     public function execute($step, $trigger, $event, $stepresults) {
 
-        // TODO: refactor this into a shared library function.
-        $allfields = array_merge($event->get_data(), $event->get_logextra());
-        if (isset($allfields['other']) && is_array($allfields['other'])) {
-            foreach ($allfields['other'] as $key => $value) {
-                if (is_scalar($value)) {
-                    $allfields["other_{$key}"] = $value;
-                }
-            }
-            unset($allfields['other']);
-        }
+        $allfields = workflow_manager::get_datafields($event, $stepresults);
 
         if (!array_key_exists($this->useridfield, $allfields)) {
             throw new \invalid_parameter_exception("Specified userid field not present in the workflow data: "

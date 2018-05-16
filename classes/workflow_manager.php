@@ -137,11 +137,12 @@ class workflow_manager {
         $stepnames = array();
 
         foreach ($stepclasses as $stepclass) {
-            $stepobj = $this->validate_and_make_step($stepclass);
-            $stepnames[] = array(
-                'class' => $stepclass,
-                'name' => $stepobj->get_step_name()
-            );
+            if ($this->validate_step_class($stepclass)) {
+                $stepnames[] = array(
+                    'class' => $stepclass,
+                    'name' => $stepclass::get_step_name()
+                );
+            }
         }
 
         return $stepnames;
@@ -232,6 +233,13 @@ class workflow_manager {
 
     protected $stepclasses = null;
 
+    public function validate_step_class($stepclass) {
+        if ($this->stepclasses === null) {
+            $this->stepclasses = $this->get_step_class_names();
+        }
+        return in_array($stepclass, $this->stepclasses);
+    }
+
     /**
      * Factory method to validate the stepclass name and then instantiate the stepclass.
      *
@@ -241,14 +249,96 @@ class workflow_manager {
      * @return \tool_trigger\steps\base\base_step
      */
     public function validate_and_make_step($stepclass, ...$params) {
-        if ($this->stepclasses === null) {
-            $this->stepclasses = $this->get_step_class_names();
-        }
-
-        if (!in_array($stepclass, $this->stepclasses)) {
+        if (!$this->validate_step_class($stepclass)) {
             throw new \invalid_parameter_exception(get_string('badstepclass', 'tool_trigger'));
         }
 
         return new $stepclass(...$params);
+    }
+
+    /**
+     * Combines the scalar values from the workflow's event data, and lookup
+     * data, into a single associative array with regularized names for each
+     * item. These can then be used as a way for workflow authors to identify
+     * a particular field of data, and as placeholders for substitution into
+     * output templates.
+     *
+     * These are all combined into a single array, with lookup values overwriting
+     * event values. $event->get_data()['other'] values are prefaced with
+     * "other_", e.g. $event->get_data()['other']['teacherid'] would become
+     * "other_teacherid".
+     *
+     * NOTE: As tempting as it may be, this cannot be used during the step
+     * "edit" phase. That's because events do not include a machine-readable
+     * list of their "other" fields. So, we have to look at an instantiated
+     * event object in order to get those; and the way to properly instantiate
+     * an event is different for every event type!
+     *
+     * (Also our own workflow steps don't provide a machine-readable list of
+     * the fields they add, either. But we could implement that.)
+     *
+     * TODO: Refactor this to someplace that makes more OO sense. Maybe in
+     * an object that represents the current workflow process being executed?
+     *
+     * @param \core\event\base $event (Read-only) The deserialized event object that triggered this execution
+     * @param array $stepresults (Read-Write) Data aggregated from the return values of previous steps in
+     * the workflow.
+     */
+    public static function get_datafields($event = null, $stepresults = null) {
+        $fields = [];
+        if ($event !== null) {
+            $fields = array_merge($fields, $event->get_data(), $event->get_logextra());
+            if (isset($fields['other']) && is_array($fields['other'])) {
+                foreach ($fields['other'] as $key => $value) {
+                    if (is_scalar($value)) {
+                        $fields["other_{$key}"] = $value;
+                    }
+                }
+                unset($fields['other']);
+            }
+        }
+
+        if ($stepresults !== null) {
+            foreach ($stepresults as $key => $value) {
+                if (is_scalar($value)) {
+                    $fields[$key] = $value;
+                }
+            }
+        }
+
+        return $fields;
+    }
+
+    /**
+     * Searches a "template" string for placeholders that are surrounded in curly brackets
+     * e.g.: {firstname}. If there's a matching data field with the same name, we replace
+     * the placeholder with the value of the data field.
+     *
+     * TODO: Refactor this to someplace that makes more OO sense. Maybe in
+     * an object that represents the current workflow process being executed?
+     *
+     * @param string $templatestr
+     * @param \core\event\base $event (Read-only) The deserialized event object that triggered this execution
+     * @param array $stepresults (Read-Write) Data aggregated from the return values of previous steps in
+     * @return mixed
+     */
+    public static function fill_in_datafield_placeholders($templatestr, $event = null, $stepresults = null) {
+        $fields = self::get_process_fields($event, $stepresults);
+
+        return preg_replace_callback(
+            '/\{([-_A-Za-z0-9]+\)}/',
+            // "... use ($fields)" gives this anonymous function access to the $fields
+            // variable we declared a few lines up. (It's like a "closure" in JS,
+            // except that you have to explicitly declare which variables are shared.)
+            function ($matches) use ($fields){
+                if (array_key_exists($matches[1], $fields)) {
+                    return $fields[$matches[1]];
+                } else {
+                    // No match! Leave the template string in place.
+                    return $matches[0];
+                }
+            },
+            $templatestr
+        );
     }
 }
