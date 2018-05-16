@@ -39,6 +39,40 @@ defined('MOODLE_INTERNAL') || die;
 class email_trigger_step extends base_trigger_step {
 
     /**
+     * @var string
+     */
+    protected $emailto;
+
+    /**
+     * @var string
+     */
+    protected $emailsubject;
+
+    /**
+     * @var string
+     */
+    protected $emailcontent;
+
+    /**
+     * @var string
+     */
+    protected $messageplain;
+
+    /**
+     * {@inheritDoc}
+     * @see \tool_trigger\steps\base\base_step::__construct()
+     */
+    public function __construct($jsondata = null) {
+        parent::__construct($jsondata);
+        if ($jsondata) {
+            $this->emailto = $this->data->emailto;
+            $this->emailsubject = $this->data->emailsubject;
+            $this->emailcontent = $this->data->emailcontent;
+            $this->messageplain = $this->data->emailcontent;
+        }
+    }
+
+    /**
      * Returns the step name.
      *
      * @return string human readable step name.
@@ -54,20 +88,6 @@ class email_trigger_step extends base_trigger_step {
      */
     static public function get_step_desc() {
         return get_string('emailtriggerstepdesc', 'tool_trigger');
-    }
-
-    /**
-     * {@inheritDoc}
-     * @see \tool_trigger\steps\base\base_step::__construct()
-     */
-    public function __construct($jsondata = null) {
-        parent::__construct($jsondata);
-        if ($jsondata) {
-            $this->emailto = $data->emailto;
-            $this->emailsubject = $data->emailsubject;
-            $this->emailcontent = $data->emailcontent;
-            $this->messageplain = $data->emailcontent;
-        }
     }
 
     /**

@@ -24,6 +24,8 @@
 
 namespace tool_trigger\steps\triggers;
 
+use tool_trigger\steps\base\base_step;
+
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -34,6 +36,19 @@ defined('MOODLE_INTERNAL') || die;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class http_post_trigger_step extends base_trigger_step {
+
+    protected $url;
+    protected $headers;
+    protected $params;
+
+    public function __construct($jsondata) {
+        parent::__construct($jsondata);
+        if ($this->data) {
+            $this->url = $this->data->url;
+            $this->headers = $this->data->httpheaders;
+            $this->params = $this->data->httpparams;
+        }
+    }
 
     /**
      * Returns the step name.
@@ -61,9 +76,46 @@ class http_post_trigger_step extends base_trigger_step {
      * @return array if execution was succesful and the response from the execution.
      */
     public function execute($step, $trigger, $event, $previousstepresult) {
-        // TODO: DO SOMETHING HERE.
-        mtrace("execute trigger");
-        return array(true, $previousstepresult);
+        $c = new \curl();
+        $headers = \tool_trigger\workflow_manager::fill_in_datafield_placeholders(
+            $this->headers,
+            $event,
+            $previousstepresult
+        );
+
+        // Need to send the headers as an array.
+        $headers = explode("\n", str_replace("\r\n", "\n", $headers));
+        $c->setHeader($headers);
+
+        // urlencode the values of any substitutions being placed into the URL
+        // or the POST params
+        $urlencodecallback = function($v, $k) { return urlencode($v); };
+
+        $url = \tool_trigger\workflow_manager::fill_in_datafield_placeholders(
+            $this->url,
+            $event,
+            $previousstepresult,
+            $urlencodecallback
+        );
+
+        // TODO: This may need some tweaking. The "params" that Moodle sends
+        // to curl are via the CURLOPT_POSTFIELDS setting. Which means that
+        // it either needs to be a urlencoded string "para1=val1&para2=val2",
+        // or it needs to be an associative array. Since we're just taking
+        // a block of text from the user, that means they'll need to write that
+        // annoying urlencoded string themselves.
+        $params = \tool_trigger\workflow_manager::fill_in_datafield_placeholders(
+            $this->params,
+            $event,
+            $previousstepresult,
+            $urlencodecallback
+        );
+
+        $response = $c->post($url, $params);
+        if ($response) {
+            $previousstepresult['http_response'] = implode("\n", $c->getResponse());
+        }
+        return array($response, $previousstepresult);
     }
 
     /**
@@ -74,23 +126,23 @@ class http_post_trigger_step extends base_trigger_step {
 
         // URL.
         $attributes = array('size' => '50', 'placeholder' => 'https://www.example.com/api', 'type' => 'url');
-        $mform->addElement('text', 'httposttiggerurl', get_string ('httposttiggerurl', 'tool_trigger'), $attributes);
-        $mform->setType('httposttiggerurl', PARAM_URL);
-        $mform->addRule('httposttiggerurl', get_string('required'), 'required');
-        $mform->addHelpButton('httposttiggerurl', 'httposttiggerurl', 'tool_trigger');
+        $mform->addElement('text', 'url', get_string ('httposttriggerurl', 'tool_trigger'), $attributes);
+        $mform->setType('url', PARAM_URL);
+        $mform->addRule('url', get_string('required'), 'required');
+        $mform->addHelpButton('url', 'httposttriggerurl', 'tool_trigger');
 
         // Headers.
         $attributes = array('cols' => '50', 'rows' => '5');
-        $mform->addElement('textarea', 'httposttiggerheaders', get_string ('httposttiggerheaders', 'tool_trigger'), $attributes);
-        $mform->setType('httposttiggerheaders', PARAM_RAW_TRIMMED);
-        $mform->addRule('httposttiggerheaders', get_string('required'), 'required');
-        $mform->addHelpButton('httposttiggerheaders', 'httposttiggerheaders', 'tool_trigger');
+        $mform->addElement('textarea', 'httpheaders', get_string ('httposttriggerheaders', 'tool_trigger'), $attributes);
+        $mform->setType('httpheaders', PARAM_RAW_TRIMMED);
+        $mform->addRule('httpheaders', get_string('required'), 'required');
+        $mform->addHelpButton('httpheaders', 'httposttriggerheaders', 'tool_trigger');
 
         // Params.
         $attributes = array('cols' => '50', 'rows' => '5');
-        $mform->addElement('textarea', 'httposttiggerparams', get_string ('httposttiggerparams', 'tool_trigger'), $attributes);
-        $mform->setType('httposttiggerparams', PARAM_RAW_TRIMMED);
-        $mform->addRule('httposttiggerparams', get_string('required'), 'required');
-        $mform->addHelpButton('httposttiggerparams', 'httposttiggerparams', 'tool_trigger');
+        $mform->addElement('textarea', 'httpparams', get_string ('httposttriggerparams', 'tool_trigger'), $attributes);
+        $mform->setType('httpparams', PARAM_RAW_TRIMMED);
+        $mform->addRule('httpparams', get_string('required'), 'required');
+        $mform->addHelpButton('httpparams', 'httposttriggerparams', 'tool_trigger');
     }
 }

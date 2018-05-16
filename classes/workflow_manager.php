@@ -320,24 +320,40 @@ class workflow_manager {
      * @param string $templatestr
      * @param \core\event\base $event (Read-only) The deserialized event object that triggered this execution
      * @param array $stepresults (Read-Write) Data aggregated from the return values of previous steps in
-     * @return mixed
+     * @param callable $transformcallback An optional callback function to transform each datafield's value
+     * before swapping it in. (For example, to urlencode them.) Should have the signature function($value, $fieldname).
+     * @return string
      */
-    public static function fill_in_datafield_placeholders($templatestr, $event = null, $stepresults = null) {
+    public static function fill_in_datafield_placeholders($templatestr, $event = null, $stepresults = null, $transformcallback = false) {
         $fields = self::get_process_fields($event, $stepresults);
 
-        return preg_replace_callback(
-            '/\{([-_A-Za-z0-9]+\)}/',
+        if (false === $transformcallback) {
             // "... use ($fields)" gives this anonymous function access to the $fields
             // variable we declared a few lines up. (It's like a "closure" in JS,
             // except that you have to explicitly declare which variables are shared.)
-            function ($matches) use ($fields){
+            $callback = function ($matches) use ($fields){
                 if (array_key_exists($matches[1], $fields)) {
                     return $fields[$matches[1]];
                 } else {
                     // No match! Leave the template string in place.
                     return $matches[0];
                 }
-            },
+            };
+        } else {
+            // If they provided a transformcallback, then
+            $callback = function ($matches) use ($fields, $transformcallback){
+                if (array_key_exists($matches[1], $fields)) {
+                    return $transformcallback($fields[$matches[1]], $matches[1]);
+                } else {
+                    // No match! Leave the template string in place.
+                    return $matches[0];
+                }
+            };
+        }
+
+        return preg_replace_callback(
+            '/\{([-_A-Za-z0-9]+\)}/',
+            $callback,
             $templatestr
         );
     }
