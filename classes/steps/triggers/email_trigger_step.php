@@ -25,8 +25,6 @@
 
 namespace tool_trigger\steps\triggers;
 
-use tool_trigger\workflow_manager;
-
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -37,6 +35,8 @@ defined('MOODLE_INTERNAL') || die;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class email_trigger_step extends base_trigger_step {
+
+    use \tool_trigger\helper\datafield_manager;
 
     /**
      * @var string
@@ -91,16 +91,17 @@ class email_trigger_step extends base_trigger_step {
      * @param $step
      * @param $trigger
      * @param $event
-     * @param $previousstepresult - result of previousstep to include in processing this step.
+     * @param $stepresults - result of previousstep to include in processing this step.
      * @return array if execution was succesful and the response from the execution.
      */
-    public function execute($step, $trigger, $event, $previousstepresult) {
+    public function execute($step, $trigger, $event, $stepresults) {
         global $DB;
 
-        $emailto = workflow_manager::fill_in_datafield_placeholders($this->emailto, $event, $previousstepresult);
-        $emailsubject = workflow_manager::fill_in_datafield_placeholders($this->emailsubject, $event, $previousstepresult);
-        $emailcontent = workflow_manager::fill_in_datafield_placeholders($this->emailcontent, $event, $previousstepresult);
-        $messageplain = workflow_manager::fill_in_datafield_placeholders($this->emailcontent, $event, $previousstepresult);
+        $this->update_datafields($event, $stepresults);
+        $emailto = $this->render_datafields($this->emailto);
+        $emailsubject = $this->render_datafields($this->emailsubject);
+        $emailcontent = $this->render_datafields($this->emailcontent);
+        $messageplain = $this->render_datafields($this->emailcontent);
 
         // Check we have a valid email address.
         if ($emailto == clean_param($emailto, PARAM_EMAIL)) {
@@ -135,7 +136,7 @@ class email_trigger_step extends base_trigger_step {
             message_send($eventdata);
         }
 
-        return array(true, $previousstepresult);
+        return array(true, $stepresults);
     }
 
     /**

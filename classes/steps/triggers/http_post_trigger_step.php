@@ -24,8 +24,6 @@
 
 namespace tool_trigger\steps\triggers;
 
-use tool_trigger\steps\base\base_step;
-
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -36,6 +34,8 @@ defined('MOODLE_INTERNAL') || die;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class http_post_trigger_step extends base_trigger_step {
+
+    use \tool_trigger\helper\datafield_manager;
 
     protected $url;
     protected $headers;
@@ -69,16 +69,14 @@ class http_post_trigger_step extends base_trigger_step {
      * @param $step
      * @param $trigger
      * @param $event
-     * @param $previousstepresult - result of previousstep to include in processing this step.
+     * @param $stepresults - result of previousstep to include in processing this step.
      * @return array if execution was succesful and the response from the execution.
      */
-    public function execute($step, $trigger, $event, $previousstepresult) {
+    public function execute($step, $trigger, $event, $stepresults) {
         $c = new \curl();
-        $headers = \tool_trigger\workflow_manager::fill_in_datafield_placeholders(
-            $this->headers,
-            $event,
-            $previousstepresult
-        );
+        $this->update_datafields($event, $stepresults);
+
+        $headers = $this->render_datafields($this->headers);
 
         // Need to send the headers as an array.
         $headers = explode("\n", str_replace("\r\n", "\n", $headers));
@@ -86,14 +84,9 @@ class http_post_trigger_step extends base_trigger_step {
 
         // urlencode the values of any substitutions being placed into the URL
         // or the POST params
-        $urlencodecallback = function($v, $k) { return urlencode($v); };
+        $urlencodecallback = function($v) { return urlencode($v); };
 
-        $url = \tool_trigger\workflow_manager::fill_in_datafield_placeholders(
-            $this->url,
-            $event,
-            $previousstepresult,
-            $urlencodecallback
-        );
+        $url = $this->render_datafields($this->url, null, null, $urlencodecallback);
 
         // TODO: This may need some tweaking. The "params" that Moodle sends
         // to curl are via the CURLOPT_POSTFIELDS setting. Which means that
@@ -101,18 +94,13 @@ class http_post_trigger_step extends base_trigger_step {
         // or it needs to be an associative array. Since we're just taking
         // a block of text from the user, that means they'll need to write that
         // annoying urlencoded string themselves.
-        $params = \tool_trigger\workflow_manager::fill_in_datafield_placeholders(
-            $this->params,
-            $event,
-            $previousstepresult,
-            $urlencodecallback
-        );
+        $params = $this->render_datafields($this->params, null, null, $urlencodecallback);
 
         $response = $c->post($url, $params);
         if ($response) {
-            $previousstepresult['http_response'] = implode("\n", $c->getResponse());
+            $stepresults['http_response'] = implode("\n", $c->getResponse());
         }
-        return array($response, $previousstepresult);
+        return array($response, $stepresults);
     }
 
     /**

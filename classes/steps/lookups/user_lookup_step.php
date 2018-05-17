@@ -16,8 +16,6 @@
 
 namespace tool_trigger\steps\lookups;
 
-use tool_trigger\workflow_manager;
-
 defined('MOODLE_INTERNAL') || die;
 
 /**
@@ -30,6 +28,8 @@ defined('MOODLE_INTERNAL') || die;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class user_lookup_step extends base_lookup_step {
+
+    use \tool_trigger\helper\datafield_manager;
 
     /**
      * The data field to get the user id from.
@@ -55,7 +55,7 @@ class user_lookup_step extends base_lookup_step {
      */
     public function execute($step, $trigger, $event, $stepresults) {
 
-        $allfields = workflow_manager::get_datafields($event, $stepresults);
+        $allfields = $this->get_datafields($event, $stepresults);
 
         if (!array_key_exists($this->useridfield, $allfields)) {
             throw new \invalid_parameter_exception("Specified userid field not present in the workflow data: "
