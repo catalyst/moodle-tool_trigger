@@ -44,16 +44,9 @@ class user_lookup_step extends base_lookup_step {
      */
     private $outputprefix = null;
 
-    /**
-     * {@inheritDoc}
-     * @see \tool_trigger\steps\base\base_step::__construct()
-     */
-    public function __construct($jsondata = null) {
-        parent::__construct($jsondata);
-        if ($jsondata) {
-            $this->useridfield = $this->data['useridfield'];
-            $this->outputprefix = $this->data['outputprefix'];
-        }
+    protected function init() {
+        $this->useridfield = $this->data['useridfield'];
+        $this->outputprefix = $this->data['outputprefix'];
     }
 
     /**

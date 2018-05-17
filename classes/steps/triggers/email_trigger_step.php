@@ -62,14 +62,11 @@ class email_trigger_step extends base_trigger_step {
      * {@inheritDoc}
      * @see \tool_trigger\steps\base\base_step::__construct()
      */
-    public function __construct($jsondata = null) {
-        parent::__construct($jsondata);
-        if ($jsondata) {
-            $this->emailto = $this->data->emailto;
-            $this->emailsubject = $this->data->emailsubject;
-            $this->emailcontent = $this->data->emailcontent;
-            $this->messageplain = $this->data->emailcontent;
-        }
+    protected function init() {
+        $this->emailto = $this->data['emailto'];
+        $this->emailsubject = $this->data['emailsubject'];
+        $this->emailcontent = $this->data['emailcontent'];
+        $this->messageplain = $this->data['emailcontent'];
     }
 
     /**

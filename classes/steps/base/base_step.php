@@ -40,7 +40,14 @@ abstract class base_step {
     public function __construct($jsondata = null) {
         if ($jsondata) {
             $this->data = json_decode($jsondata, true);
+            $this->init();
         }
+    }
+
+    /**
+     * Set up instance variables based on jsondata.
+     */
+    protected function init() {
     }
 
     /**

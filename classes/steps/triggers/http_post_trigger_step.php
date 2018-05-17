@@ -41,13 +41,10 @@ class http_post_trigger_step extends base_trigger_step {
     protected $headers;
     protected $params;
 
-    public function __construct($jsondata) {
-        parent::__construct($jsondata);
-        if ($this->data) {
-            $this->url = $this->data->url;
-            $this->headers = $this->data->httpheaders;
-            $this->params = $this->data->httpparams;
-        }
+    protected function init() {
+        $this->url = $this->data['url'];
+        $this->headers = $this->data['httpheaders'];
+        $this->params = $this->data['httpparams'];
     }
 
     /**
