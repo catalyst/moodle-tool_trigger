@@ -82,7 +82,33 @@ class tool_trigger_workflow_manager_testcase extends advanced_testcase {
         );
 
         $this->assertContains($expected, $steps);
-
     }
 
+    /**
+     * Test the code for validating the name of a step class and instantiating it.
+     *
+     * (This is an important security feature, because we take the step class names from form input. We have to make sure that
+     * a user can't modify the form submission data and cause us to instantiate an arbitrary class.)
+     */
+    public function test_validate_step_class_good() {
+        $wfm = new \tool_trigger\workflow_manager();
+
+        $goodstepclassname = '\tool_trigger\steps\filters\fail_filter_step';
+        $this->assertTrue($wfm->validate_step_class($goodstepclassname));
+        $goodstepobj = $wfm->validate_and_make_step($goodstepclassname);
+        $this->assertInstanceOf($goodstepclassname, $goodstepobj);
+    }
+
+    /**
+     * Test that the validation code will reject a bad step class name, and throw an exception when asked to instantiate it.
+     */
+    public function test_validate_step_class_bad() {
+        $wfm = new \tool_trigger\workflow_manager();
+
+        $badstepclassname = '\core\task\password_reset_cleanup_task';
+        $this->assertFalse($wfm->validate_step_class($badstepclassname));
+
+        $this->expectException('invalid_parameter_exception');
+        $wfm->validate_and_make_step($badstepclassname);
+    }
 }
