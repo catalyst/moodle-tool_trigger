@@ -54,6 +54,7 @@ class user_lookup_step extends base_lookup_step {
      * @see \tool_trigger\steps\base\base_step::execute()
      */
     public function execute($step, $trigger, $event, $stepresults) {
+        global $CFG;
 
         $allfields = $this->get_datafields($event, $stepresults);
 
@@ -63,11 +64,14 @@ class user_lookup_step extends base_lookup_step {
         }
 
         $user = \core_user::get_user($allfields[$this->useridfield]);
-        if (!$user) {
-            throw new \invalid_response_exception("Specified userid not found in the database.");
+        if (!$user || $user->deleted) {
+            // If the user has been deleted, there's no point re-running the task.
+            return [false, $stepresults];
         }
 
+        require_once($CFG->dirroot.'/user/lib.php');
         $userdata = user_get_user_details($user);
+
         foreach ($userdata as $key => $value) {
             if (is_scalar($value)) {
                 $stepresults[$this->outputprefix . $key] = $value;
