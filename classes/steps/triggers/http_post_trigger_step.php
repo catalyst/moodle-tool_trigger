@@ -65,6 +65,35 @@ class http_post_trigger_step extends base_trigger_step {
         return get_string('httpposttriggerstepdesc', 'tool_trigger');
     }
 
+    private $httphandler = null;
+
+    /**
+     * Kinda hacky... unit testing requires us to specify a different http handler for guzzle to use.
+     * That's really the only reason we need this method!
+     *
+     * @param callable $handler
+     */
+    public function set_http_client_handler($handler) {
+        $this->httphandler = $handler;
+    }
+
+    /**
+     * Instantiate an http client.
+     *
+     * @return \GuzzleHttp\Client
+     */
+    public function get_http_client() {
+        global $CFG;
+        require_once($CFG->dirroot . '/admin/tool/trigger/guzzle/autoloader.php');
+
+        $clientconfig = [];
+        if ($this->httphandler) {
+            $clientconfig['handler'] = $this->httphandler;
+        }
+
+        return new \GuzzleHttp\Client($clientconfig);
+    }
+
     /**
      * @param $step
      * @param $trigger
@@ -73,14 +102,11 @@ class http_post_trigger_step extends base_trigger_step {
      * @return array if execution was succesful and the response from the execution.
      */
     public function execute($step, $trigger, $event, $stepresults) {
-        $c = new \curl();
         $this->update_datafields($event, $stepresults);
 
         $headers = $this->render_datafields($this->headers);
-
-        // Need to send the headers as an array.
         $headers = explode("\n", str_replace("\r\n", "\n", $headers));
-        $c->setHeader($headers);
+        $headers = \GuzzleHttp\headers_from_lines($headers);
 
         // ... urlencode the values of any substitutions being placed into the URL
         // or the POST params.
@@ -90,19 +116,24 @@ class http_post_trigger_step extends base_trigger_step {
 
         $url = $this->render_datafields($this->url, null, null, $urlencodecallback);
 
-        // TODO: This may need some tweaking. The "params" that Moodle sends
-        // to curl are via the CURLOPT_POSTFIELDS setting. Which means that
-        // it either needs to be a urlencoded string "para1=val1&para2=val2",
-        // or it needs to be an associative array. Since we're just taking
-        // a block of text from the user, that means they'll need to write that
-        // annoying urlencoded string themselves.
+        // TODO: This may need some tweaking. If this is going to just be a normal POST
+        // request, then the user has to provide us with something like
+        // "val1={tag1}&val2={tag2}&val3=something", which is not great to type.
         $params = $this->render_datafields($this->params, null, null, $urlencodecallback);
 
-        $response = $c->post($url, $params);
-        if ($response) {
-            $stepresults['http_response'] = implode("\n", $c->getResponse());
+        $request = new \GuzzleHttp\Psr7\Request('POST', $url, $headers, $params);
+        $client = $this->get_http_client();
+
+        try {
+            $response = $client->send($request);
+        } catch (\GuzzleHttp\Exception\BadResponseException $e) {
+            $response = $e->getResponse();
         }
-        return array($response, $stepresults);
+
+        $stepresults['http_response_status_code'] = $response->getStatusCode();
+        $stepresults['http_response_status_message'] = $response->getReasonPhrase();
+        $stepresults['http_response_body'] = $response->getBody();
+        return array(true, $stepresults);
     }
 
     /**
@@ -122,14 +153,12 @@ class http_post_trigger_step extends base_trigger_step {
         $attributes = array('cols' => '50', 'rows' => '5');
         $mform->addElement('textarea', 'httpheaders', get_string ('httposttriggerheaders', 'tool_trigger'), $attributes);
         $mform->setType('httpheaders', PARAM_RAW_TRIMMED);
-        $mform->addRule('httpheaders', get_string('required'), 'required');
         $mform->addHelpButton('httpheaders', 'httposttriggerheaders', 'tool_trigger');
 
         // Params.
         $attributes = array('cols' => '50', 'rows' => '5');
         $mform->addElement('textarea', 'httpparams', get_string ('httposttriggerparams', 'tool_trigger'), $attributes);
         $mform->setType('httpparams', PARAM_RAW_TRIMMED);
-        $mform->addRule('httpparams', get_string('required'), 'required');
         $mform->addHelpButton('httpparams', 'httposttriggerparams', 'tool_trigger');
     }
 }
