@@ -82,7 +82,7 @@ class tool_datafield_manager_testcase extends advanced_testcase {
         );
 
         // A field from the event's "other" array (with its name prefaced
-        // with "other_")!
+        // with "other_").
         $this->assertEquals(
             $this->course->fullname,
             $datafields['other_coursefullname']

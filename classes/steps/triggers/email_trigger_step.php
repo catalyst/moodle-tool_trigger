@@ -133,7 +133,23 @@ class email_trigger_step extends base_trigger_step {
             $eventdata->name = 'tool_trigger';
             $eventdata->component = 'tool_trigger';
 
-            message_send($eventdata);
+            $msgid = message_send($eventdata);
+            if (!$msgid) {
+                throw new \invalid_response_exception('Tried but failed to send message.');
+            }
+
+            $stepresults['email_trigger_messageid'] = $msgid;
+            foreach ((array)$eventdata as $key => $value) {
+                if (is_scalar($value)) {
+                    $stepresults['email_trigger_' . $key] = $value;
+                }
+            }
+            $stepresults['email_trigger_userfrom->id'] = $eventdata->userfrom->id;
+            $stepresults['email_trigger_userfrom_email'] = $eventdata->userfrom->email;
+            $stepresults['email_trigger_userto_id'] = $eventdata->userto->id;
+            $stepresults['email_trigger_userto_email'] = $eventdata->userto->email;
+        } else {
+            $stepresults['email_trigger_messageid'] = false;
         }
 
         return array(true, $stepresults);
