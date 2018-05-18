@@ -145,19 +145,19 @@ class email_trigger_step extends base_trigger_step {
      */
     public function form_definition_extra($form, $mform, $customdata) {
 
-        // To
+        // To!
         $mform->addElement('text', 'emailto', get_string ('emailto', 'tool_trigger'));
         $mform->setType('emailto', PARAM_RAW_TRIMMED);
         $mform->addRule('emailto', get_string('required'), 'required');
         $mform->addHelpButton('emailto', 'emailto', 'tool_trigger');
 
-        // Subject
+        // Subject!
         $mform->addElement('text', 'emailsubject', get_string ('emailsubject', 'tool_trigger'));
         $mform->setType('emailsubject', PARAM_RAW_TRIMMED);
         $mform->addRule('emailsubject', get_string('required'), 'required');
         $mform->addHelpButton('emailsubject', 'emailsubject', 'tool_trigger');
 
-        // Params.
+        // Params!
         $attributes = array('cols' => '50', 'rows' => '5');
         $mform->addElement('textarea', 'emailcontent', get_string ('emailcontent', 'tool_trigger'), $attributes);
         $mform->setType('emailcontent', PARAM_RAW_TRIMMED);

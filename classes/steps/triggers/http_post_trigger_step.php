@@ -82,9 +82,11 @@ class http_post_trigger_step extends base_trigger_step {
         $headers = explode("\n", str_replace("\r\n", "\n", $headers));
         $c->setHeader($headers);
 
-        // urlencode the values of any substitutions being placed into the URL
-        // or the POST params
-        $urlencodecallback = function($v) { return urlencode($v); };
+        // ... urlencode the values of any substitutions being placed into the URL
+        // or the POST params.
+        $urlencodecallback = function($v) {
+            return urlencode($v);
+        };
 
         $url = $this->render_datafields($this->url, null, null, $urlencodecallback);
 
