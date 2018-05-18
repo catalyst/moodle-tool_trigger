@@ -130,7 +130,7 @@ trait datafield_manager {
                 // If we've been supplied with a $transformcallback function, then
                 // pass the datafield value through $transformcallback, and use the
                 // return value.
-                if (null === $transformcallback) {
+                if (null !== $transformcallback) {
                     $value = $transformcallback($value, $matches[1]);
                 }
 
@@ -142,7 +142,7 @@ trait datafield_manager {
         };
 
         return preg_replace_callback(
-            '/\{([-_A-Za-z0-9]+\)}/',
+            '/\{([-_A-Za-z0-9]+)\}/',
             $callback,
             $templatestr
         );
