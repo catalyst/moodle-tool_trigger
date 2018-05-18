@@ -103,7 +103,7 @@ class tool_trigger_user_lookup_testcase extends advanced_testcase {
         );
 
         $this->expectException('\moodle_exception');
-        list($status, $stepresults) = $step->execute(null, null, $this->event, []);
+        $step->execute(null, null, $this->event, []);
     }
 
     /**
@@ -119,7 +119,7 @@ class tool_trigger_user_lookup_testcase extends advanced_testcase {
             ])
         );
 
-        list($status, $stepresults) = $step->execute(null, null, $this->event, []);
+        list($status) = $step->execute(null, null, $this->event, []);
         $this->assertFalse($status);
     }
 }

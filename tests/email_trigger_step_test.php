@@ -70,7 +70,7 @@ class tool_trigger_email_trigger_step_testcase extends advanced_testcase {
         $step = new \tool_trigger\steps\triggers\email_trigger_step(json_encode($settings));
 
         // Run the step.
-        list($status, $stepresults) = $step->execute(null, null, $this->event, []);
+        list($status) = $step->execute(null, null, $this->event, []);
         $this->assertTrue($status);
 
         // Retrieve the messages sent (should be just one).
@@ -141,7 +141,7 @@ class tool_trigger_email_trigger_step_testcase extends advanced_testcase {
         ];
 
         // Run the step.
-        list($status, $stepresults) = $step->execute(null, null, $this->event, $prevstepresults);
+        list($status) = $step->execute(null, null, $this->event, $prevstepresults);
         $this->assertTrue($status);
 
         // Retrieve the messages sent (should be just one).
