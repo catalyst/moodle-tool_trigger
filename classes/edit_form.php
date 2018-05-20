@@ -124,7 +124,7 @@ class edit_form extends \moodleform {
         // validation).
 
         // Add processing step button.
-        $mform->addElement('button', 'step_modal_button', get_string('step_modal_button', 'tool_trigger'));
+        $mform->addElement('button', 'stepmodalbutton', get_string('stepmodalbutton', 'tool_trigger'));
 
         $this->add_action_buttons();
     }
@@ -154,7 +154,7 @@ class edit_form extends \moodleform {
                 'html',
                 '<div id="steps-table">' . $stepstable . '</div>'
             ),
-            'step_modal_button'
+            'stepmodalbutton'
         );
     }
 
@@ -168,7 +168,7 @@ class edit_form extends \moodleform {
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);
         if (empty($data['stepjson'])) {
-            $errors['step_modal_button'] = get_string('steprequired', 'tool_trigger');
+            $errors['stepmodalbutton'] = get_string('steprequired', 'tool_trigger');
         }
         return $errors;
     }

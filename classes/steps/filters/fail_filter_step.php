@@ -50,9 +50,7 @@ class fail_filter_step extends base_filter_step {
      * @see \tool_trigger\steps\base\base_step::get_step_desc()
      */
     public static function get_step_desc() {
-        // TODO: Replace this with a language string (or just remove this step from the code,
-        // since it's useful during development but may have no use for production.
-        return "A step that always fails. (Mostly useful for testing.)";
+        return get_string('step_filter_fail_desc', 'tool_trigger');
     }
 
     /**
@@ -60,7 +58,7 @@ class fail_filter_step extends base_filter_step {
      * @see \tool_trigger\steps\base\base_step::get_step_name()
      */
     public static function get_step_name() {
-        return "Fail step";
+        return get_string('step_filter_fail_name', 'tool_trigger');
     }
 
     /**
@@ -68,6 +66,6 @@ class fail_filter_step extends base_filter_step {
      * @see \tool_trigger\steps\base\base_step::add_extra_form_fields()
      */
     public function form_definition_extra($form, $mform, $customdata) {
-        $mform->addElement('html', 'This step always fails.');
+        $mform->addElement('html', self::get_step_desc());
     }
 }

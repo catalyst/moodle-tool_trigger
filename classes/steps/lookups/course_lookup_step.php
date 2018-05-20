@@ -81,14 +81,12 @@ class course_lookup_step extends base_lookup_step {
      * @see \tool_trigger\steps\base\base_step::form_definition_extra()
      */
     public function form_definition_extra($form, $mform, $customdata) {
-        // TODO: lang string!
-        $mform->addElement('text', 'courseidfield', "Course id data field");
+        $mform->addElement('text', 'courseidfield', get_string('step_lookup_course_courseidfield', 'tool_trigger'));
         $mform->setType('courseidfield', PARAM_ALPHANUMEXT);
         $mform->addRule('courseidfield', get_string('required'), 'required');
         $mform->setDefault('courseidfield', 'courseid');
 
-        // TODO: lang string!
-        $mform->addElement('text', 'outputprefix', "Prefix for added fields");
+        $mform->addElement('text', 'outputprefix', get_string('outputprefix', 'tool_trigger'));
         $mform->setType('outputprefix', PARAM_ALPHANUMEXT);
         $mform->addRule('outputprefix', get_string('required'), 'required');
         $mform->setDefault('outputprefix', 'course_');
@@ -99,8 +97,7 @@ class course_lookup_step extends base_lookup_step {
      * @see \tool_trigger\steps\base\base_step::get_step_desc()
      */
     public static function get_step_desc() {
-        // TODO: lang string!
-        return "This step looks up data about a course.";
+        return get_string('step_lookup_course_desc', 'tool_trigger');
     }
 
     /**
@@ -108,8 +105,7 @@ class course_lookup_step extends base_lookup_step {
      * @see \tool_trigger\steps\base\base_step::get_step_name()
      */
     public static function get_step_name() {
-        // TODO: lang string!
-        return "Course lookup";
+        return get_string('step_lookup_course_name', 'tool_trigger');
     }
 
 

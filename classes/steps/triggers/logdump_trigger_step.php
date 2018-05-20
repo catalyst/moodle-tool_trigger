@@ -31,18 +31,15 @@ class logdump_trigger_step extends base_trigger_step {
                                         $form,
                                         $mform,
                                         $customdata) {
-        // TODO: lang string!
-        $mform->addElement('html', "This step dumps all workflow data to the cron log.");
+        $mform->addElement('html', self::get_step_desc());
     }
 
     public static function get_step_desc() {
-        // TODO: lang string!
-        return 'log dump step';
+        return get_string('step_trigger_logdump_desc', 'tool_trigger');
     }
 
     public static function get_step_name() {
-        // TODO: lang string!
-        return 'log dump step';
+        return get_string('step_trigger_logdump_name', 'tool_trigger');
     }
 
     public function execute($step, $trigger, $event, $stepresults) {

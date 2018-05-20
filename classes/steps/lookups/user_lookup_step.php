@@ -85,14 +85,12 @@ class user_lookup_step extends base_lookup_step {
      * @see \tool_trigger\steps\base\base_step::form_definition_extra()
      */
     public function form_definition_extra($form, $mform, $customdata) {
-        // TODO: lang string!
-        $mform->addElement('text', 'useridfield', "User id data field");
+        $mform->addElement('text', 'useridfield', get_string('step_lookup_user_useridfield', 'tool_trigger'));
         $mform->setType('useridfield', PARAM_ALPHANUMEXT);
         $mform->addRule('useridfield', get_string('required'), 'required');
         $mform->setDefault('useridfield', 'userid');
 
-        // TODO: lang string!
-        $mform->addElement('text', 'outputprefix', "Prefix for added fields");
+        $mform->addElement('text', 'outputprefix', get_string('outputprefix', 'tool_trigger'));
         $mform->setType('outputprefix', PARAM_ALPHANUMEXT);
         $mform->addRule('outputprefix', get_string('required'), 'required');
         $mform->setDefault('outputprefix', 'user_');
@@ -103,8 +101,7 @@ class user_lookup_step extends base_lookup_step {
      * @see \tool_trigger\steps\base\base_step::get_step_desc()
      */
     public static function get_step_desc() {
-        // TODO: lang string!
-        return "This step looks up data about a user.";
+        return get_string('step_lookup_user_desc', 'tool_trigger');
     }
 
     /**
@@ -112,8 +109,7 @@ class user_lookup_step extends base_lookup_step {
      * @see \tool_trigger\steps\base\base_step::get_step_name()
      */
     public static function get_step_name() {
-        // TODO: lang string!
-        return "User lookup";
+        return get_string('step_lookup_user_name', 'tool_trigger');
     }
 
 

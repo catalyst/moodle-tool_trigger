@@ -95,9 +95,6 @@ trait datafield_manager {
      * e.g.: {firstname}. If there's a matching data field with the same name, we replace
      * the placeholder with the value of the data field.
      *
-     * TODO: Refactor this to someplace that makes more OO sense. Maybe in
-     * an object that represents the current workflow process being executed?
-     *
      * @param string $templatestr
      * @param \core\event\base $event (Optional) If supplied (along with $stepresults), then update the datafields before rendering.
      * @param array $stepresults If supplied (along with $event), then update the fields before rendering.

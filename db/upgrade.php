@@ -85,44 +85,5 @@ function xmldb_tool_trigger_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2018050702, 'tool', 'trigger');
     }
 
-    if ($oldversion < 2018050703) {
-
-        // Invalid Type set on theses fields (binary) should be int. unfortunately change_type is a bit hard, easier to drop field
-        // and recreate.
-        // TODO: We should remove this block before production release as it's only needed for us testing with older code.
-
-        // Changing type of field async on table tool_trigger_workflows to int.
-        $table = new xmldb_table('tool_trigger_workflows');
-
-        $field = new xmldb_field('enabled', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, 1, 'async');
-        if ($dbman->field_exists($table, $field)) {
-            $dbman->drop_field($table, $field);
-        }
-        $dbman->add_field($table, $field);
-
-        $field = new xmldb_field('draft', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, 0, 'enabled');
-        if ($dbman->field_exists($table, $field)) {
-            $dbman->drop_field($table, $field);
-        }
-        $dbman->add_field($table, $field);
-
-        // Trigger savepoint reached.
-        upgrade_plugin_savepoint(true, 2018050703, 'tool', 'trigger');
-    }
-
-    // TODO: remove this block before production release.
-    if ($oldversion < 2018050704) {
-        // Major refactoring of the tool_trigger_events table, so it's easier
-        // just to drop it and re-create it.
-        $table = new xmldb_table('tool_trigger_events');
-        $dbman->drop_table($table);
-        $dbman->create_table($table);
-
-        // Also delete any records in the workflow queue, because the event IDs
-        // will no longer match up.
-        $DB->delete_records('tool_trigger_queue');
-        upgrade_plugin_savepoint(true, 2018050704, 'tool', 'trigger');
-    }
-
     return true;
 }

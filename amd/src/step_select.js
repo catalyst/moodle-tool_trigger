@@ -404,7 +404,7 @@ define(
                 title: title,
                 body: spinner,
                 large: true
-            }, $('#id_step_modal_button'))
+            }, $('#id_stepmodalbutton'))
             .done(function(modal) {
                 modalObj = modal;
                 modalObj.getRoot().on(ModalEvents.save, processModalForm);
