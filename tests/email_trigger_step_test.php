@@ -26,35 +26,17 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
+require_once(__DIR__.'/fixtures/user_event_fixture.php');
 
 class tool_trigger_email_trigger_step_testcase extends advanced_testcase {
+    use \tool_trigger_user_event_fixture;
+
     /**
      * Create a "user_profile_viewed" event, of user1 viewing user2's
      * profile. And then run everything else as the cron user.
      */
     public function setup() {
-        $this->resetAfterTest(true);
-        $this->user1 = $this->getDataGenerator()->create_user();
-        $this->user2 = $this->getDataGenerator()->create_user();
-        $this->course = $this->getDataGenerator()->create_course();
-
-        $this->setUser($this->user1);
-
-        $this->event = \core\event\user_profile_viewed::create([
-            'objectid' => $this->user2->id,
-            'relateduserid' => $this->user2->id,
-            'context' => context_user::instance($this->user2->id),
-            'other' => [
-                'courseid' => $this->course->id,
-                'courseshortname' => $this->course->shortname,
-                'coursefullname' => $this->course->fullname
-            ]
-        ]);
-
-        $this->event->trigger();
-
-        // Run as the cron user  .
-        cron_setup_user();
+        $this->setup_user_event();
 
         // Set up the email sync.
         unset_config('noemailever');
