@@ -64,8 +64,8 @@ class renderable extends \table_sql implements \renderable {
                 'name',
                 'description',
                 'eventname',
-                'numsteps',
                 'active',
+                'numsteps',
                 'lasttriggered',
                 'manage'
         ));
