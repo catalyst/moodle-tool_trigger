@@ -146,24 +146,24 @@ class numcompare_filter_step extends base_filter_step {
     public function form_definition_extra($form, $mform, $customdata) {
         $fields = [];
         // TODO: lang string!
-        $fields[] =& $mform->createElement('field1', 'text', 'Field 1', ['placeholder' => 'fieldname']);
+        $fields[] = $mform->createElement('text', 'field1', 'Field 1', ['placeholder' => 'fieldname']);
         $mform->setType('field1', PARAM_ALPHANUMEXT);
 
         // TODO: lang strings!
-        $fields[] =& $mform->createElement('operator', 'select', 'Operator', [
-            OPERATOR_EQUAL => '=',
-            OPERATOR_NOTEQUAL => '!=',
-            OPERATOR_LTE => '<',
-            OPERATOR_LT => '<=',
-            OPERATOR_GT => '>',
-            OPERATOR_GTE => '>='
+        $fields[] =& $mform->createElement('select', 'operator', 'Operator', [
+            self::OPERATOR_EQUAL => '=',
+            self::OPERATOR_NOTEQUAL => '!=',
+            self::OPERATOR_LTE => '<',
+            self::OPERATOR_LT => '<=',
+            self::OPERATOR_GT => '>',
+            self::OPERATOR_GTE => '>='
         ]);
 
         // TODO: lang string!
-        $fields[] =& $mform->createElement('field2', 'text', 'Field 2', ['placeholder' => '1000']);
+        $fields[] =& $mform->createElement('text', 'field2', 'Field 2', ['placeholder' => '1000']);
         $mform->setType('field2', PARAM_ALPHANUMEXT);
 
-        $mform->addGroup($fields, 'numcomparegroup', '', ' ', false);
+        $mform->addGroup($fields, 'numcomparegroup', '', [' '], false);
         $mform->addRule('numcomparegroup', get_string('required'), 'required');
     }
 }
