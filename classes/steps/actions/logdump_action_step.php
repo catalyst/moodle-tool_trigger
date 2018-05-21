@@ -14,19 +14,19 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace tool_trigger\steps\triggers;
+namespace tool_trigger\steps\actions;
 
 defined('MOODLE_INTERNAL') || die;
 
 /**
- * Trigger step that just does a var_dump to the logs.
+ * Action step that just does a var_dump to the logs.
  *
  * @package    tool_trigger
  * @author     Aaron Wells <aaronw@catalyst.net.nz>
  * @copyright  Catalyst IT, 2018
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class logdump_trigger_step extends base_trigger_step {
+class logdump_action_step extends base_action_step {
     public function form_definition_extra(
                                         $form,
                                         $mform,
@@ -35,11 +35,11 @@ class logdump_trigger_step extends base_trigger_step {
     }
 
     public static function get_step_desc() {
-        return get_string('step_trigger_logdump_desc', 'tool_trigger');
+        return get_string('step_action_logdump_desc', 'tool_trigger');
     }
 
     public static function get_step_name() {
-        return get_string('step_trigger_logdump_name', 'tool_trigger');
+        return get_string('step_action_logdump_name', 'tool_trigger');
     }
 
     public function execute($step, $trigger, $event, $stepresults) {

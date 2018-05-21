@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Test of the email trigger
+ * Test of the email action
  *
  * @package    tool_trigger
  * @author     Aaron Wells <aaronw@catalyst.net.nz>
@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once(__DIR__.'/fixtures/user_event_fixture.php');
 
-class tool_trigger_email_trigger_step_testcase extends advanced_testcase {
+class tool_trigger_email_action_step_testcase extends advanced_testcase {
     use \tool_trigger_user_event_fixture;
 
     /**
@@ -49,7 +49,7 @@ class tool_trigger_email_trigger_step_testcase extends advanced_testcase {
             'emailsubject' => 'Subject of the email',
             'emailcontent' => 'Content of the email'
         ];
-        $step = new \tool_trigger\steps\triggers\email_trigger_step(json_encode($settings));
+        $step = new \tool_trigger\steps\actions\email_action_step(json_encode($settings));
 
         // Run the step.
         list($status) = $step->execute(null, null, $this->event, []);
@@ -85,7 +85,7 @@ class tool_trigger_email_trigger_step_testcase extends advanced_testcase {
             'emailsubject' => 'Subject of the email',
             'emailcontent' => 'Content of the email'
         ];
-        $step = new \tool_trigger\steps\triggers\email_trigger_step(json_encode($settings));
+        $step = new \tool_trigger\steps\actions\email_action_step(json_encode($settings));
 
         // Execute the step.
         list($status, $stepresults) = $step->execute(null, null, $this->event, []);
@@ -105,7 +105,7 @@ class tool_trigger_email_trigger_step_testcase extends advanced_testcase {
         // The to email should be visible in the fields added to stepresults.
         $this->assertEquals(
             $settings['emailto'],
-            $stepresults['email_trigger_userto_email']
+            $stepresults['email_action_userto_email']
         );
     }
 
@@ -115,7 +115,7 @@ class tool_trigger_email_trigger_step_testcase extends advanced_testcase {
             'emailsubject' => 'User {userid} looked at your profile',
             'emailcontent' => 'user {userid}, in course {other_courseid} aka "{other_courseshortname}" aka "{other_coursefullname}"'
         ];
-        $step = new \tool_trigger\steps\triggers\email_trigger_step(json_encode($settings));
+        $step = new \tool_trigger\steps\actions\email_action_step(json_encode($settings));
 
         $prevstepresults = [
             // In practice, this value would have been added by a previous user_lookup step.

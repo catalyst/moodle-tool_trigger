@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Base trigger step class.
+ * Base action step class.
  *
- * A trigger is a workflow step that executes an external API, or performs
+ * An action is a workflow step that executes an external API, or performs
  * some other "output" action.
  *
  * @package    tool_trigger
@@ -25,18 +25,18 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace tool_trigger\steps\triggers;
+namespace tool_trigger\steps\actions;
 
 use tool_trigger\steps\base\base_step;
 
 defined('MOODLE_INTERNAL') || die;
 
 /**
- * Base trigger step class.
+ * Base action step class.
  *
  * @package    tool_trigger
  * @copyright  Matt Porritt <mattp@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class base_trigger_step extends base_step {
+abstract class base_action_step extends base_step {
 }

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * email trigger step class.
+ * email action step class.
  *
  * @package    tool_trigger
  * @copyright  Catalyst IT
@@ -23,18 +23,18 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace tool_trigger\steps\triggers;
+namespace tool_trigger\steps\actions;
 
 defined('MOODLE_INTERNAL') || die;
 
 /**
- * email trigger step class.
+ * email action step class.
  *
  * @package    tool_trigger
  * @copyright  Matt Porritt <mattp@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class email_trigger_step extends base_trigger_step {
+class email_action_step extends base_action_step {
 
     use \tool_trigger\helper\datafield_manager;
 
@@ -75,7 +75,7 @@ class email_trigger_step extends base_trigger_step {
      * @return string human readable step name.
      */
     static public function get_step_name() {
-        return get_string('emailtriggerstepname', 'tool_trigger');
+        return get_string('emailactionstepname', 'tool_trigger');
     }
 
     /**
@@ -84,7 +84,7 @@ class email_trigger_step extends base_trigger_step {
      * @return string human readable step name.
      */
     static public function get_step_desc() {
-        return get_string('emailtriggerstepdesc', 'tool_trigger');
+        return get_string('emailactionstepdesc', 'tool_trigger');
     }
 
     /**
@@ -138,18 +138,18 @@ class email_trigger_step extends base_trigger_step {
                 throw new \invalid_response_exception('Tried but failed to send message.');
             }
 
-            $stepresults['email_trigger_messageid'] = $msgid;
+            $stepresults['email_action_messageid'] = $msgid;
             foreach ((array)$eventdata as $key => $value) {
                 if (is_scalar($value)) {
-                    $stepresults['email_trigger_' . $key] = $value;
+                    $stepresults['email_action_' . $key] = $value;
                 }
             }
-            $stepresults['email_trigger_userfrom->id'] = $eventdata->userfrom->id;
-            $stepresults['email_trigger_userfrom_email'] = $eventdata->userfrom->email;
-            $stepresults['email_trigger_userto_id'] = $eventdata->userto->id;
-            $stepresults['email_trigger_userto_email'] = $eventdata->userto->email;
+            $stepresults['email_action_userfrom->id'] = $eventdata->userfrom->id;
+            $stepresults['email_action_userfrom_email'] = $eventdata->userfrom->email;
+            $stepresults['email_action_userto_id'] = $eventdata->userto->id;
+            $stepresults['email_action_userto_email'] = $eventdata->userto->email;
         } else {
-            $stepresults['email_trigger_messageid'] = false;
+            $stepresults['email_action_messageid'] = false;
         }
 
         return array(true, $stepresults);

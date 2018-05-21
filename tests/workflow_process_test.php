@@ -50,7 +50,7 @@ class tool_trigger_workflow_process_testcase extends advanced_testcase {
         $mdata->workflowactive = 1;
         $mdata->draftmode = 0;
         $mdata->isstepschanged = 1;
-        $mdata->stepjson = '[{"id":"0","type":"trigger","stepclass":"/steps/trigger/log_step",'
+        $mdata->stepjson = '[{"id":"0","type":"action","stepclass":"/steps/action/log_step",'
                             .'"steporder":"0","name":"test step","description":"test step description"}]';
 
         $workflowprocess = new \tool_trigger\workflow_process($mdata);
@@ -70,7 +70,7 @@ class tool_trigger_workflow_process_testcase extends advanced_testcase {
      */
     public function test_processjson() {
         $mdata = new \stdClass();
-        $json = '[{"id":"0","type":"trigger","stepclass":"/steps/trigger/log_step","steporder":"0"'
+        $json = '[{"id":"0","type":"action","stepclass":"/steps/action/log_step","steporder":"0"'
             . ',"name":"test step","description":"test step description"}]';
         $now = 1521773594;
 
@@ -79,8 +79,8 @@ class tool_trigger_workflow_process_testcase extends advanced_testcase {
         $expected->workflowid = 1;
         $expected->timecreated = $now;
         $expected->timemodified = $now;
-        $expected->type = 'trigger';
-        $expected->stepclass = '/steps/trigger/log_step';
+        $expected->type = 'action';
+        $expected->stepclass = '/steps/action/log_step';
         $expected->steporder = 0;
         $expected->name = 'test step';
         $expected->description = 'test step description';
@@ -98,9 +98,9 @@ class tool_trigger_workflow_process_testcase extends advanced_testcase {
     public function test_processjson_multiple_steps() {
         $mdata = new \stdClass();
         $json = '['
-                . '{"id":"0","type":"trigger","stepclass":"/steps/trigger/log_step",'
+                . '{"id":"0","type":"action","stepclass":"/steps/action/log_step",'
                 . '"steporder":"0","name":"step 1 name","description":"step 1 description"}'
-                . ',{"id":"0","type":"trigger","stepclass":"/steps/trigger/log_step",'
+                . ',{"id":"0","type":"action","stepclass":"/steps/action/log_step",'
                 . '"steporder":"1","name":"step 2 name","description":"step 2 description"}'
                 . ']';
         $now = 1521773594;
@@ -110,8 +110,8 @@ class tool_trigger_workflow_process_testcase extends advanced_testcase {
         $expected1->workflowid = 1;
         $expected1->timecreated = $now;
         $expected1->timemodified = $now;
-        $expected1->type = 'trigger';
-        $expected1->stepclass = '/steps/trigger/log_step';
+        $expected1->type = 'action';
+        $expected1->stepclass = '/steps/action/log_step';
         $expected1->steporder = 0;
         $expected1->name = 'step 1 name';
         $expected1->description = 'step 1 description';
@@ -122,8 +122,8 @@ class tool_trigger_workflow_process_testcase extends advanced_testcase {
         $expected2->workflowid = 1;
         $expected2->timecreated = $now;
         $expected2->timemodified = $now;
-        $expected2->type = 'trigger';
-        $expected2->stepclass = '/steps/trigger/log_step';
+        $expected2->type = 'action';
+        $expected2->stepclass = '/steps/action/log_step';
         $expected2->steporder = 1;
         $expected2->name = 'step 2 name';
         $expected2->description = 'step 2 description';

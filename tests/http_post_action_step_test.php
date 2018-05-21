@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * "Fail" filter step's unit tests.
+ * Test of the HTTP POST action step.
  *
  * @package    tool_trigger
  * @author     Aaron Wells <aaronw@catalyst.net.nz>
@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once($CFG->dirroot . '/admin/tool/trigger/guzzle/autoloader.php');
 
-class tool_trigger_http_post_trigger_step_testcase extends advanced_testcase {
+class tool_trigger_http_post_action_step_testcase extends advanced_testcase {
 
     public function setup() {
         $this->resetAfterTest(true);
@@ -67,11 +67,11 @@ class tool_trigger_http_post_trigger_step_testcase extends advanced_testcase {
      */
     public function test_execute_200() {
         $stepsettings = [
-            'url' => 'http://http_post_trigger_step.example.com',
+            'url' => 'http://http_post_action_step.example.com',
             'httpheaders' => '',
             'httpparams' => ''
         ];
-        $step = new \tool_trigger\steps\triggers\http_post_trigger_step(json_encode($stepsettings));
+        $step = new \tool_trigger\steps\actions\http_post_action_step(json_encode($stepsettings));
 
         $response = new \GuzzleHttp\Psr7\Response(200, [], 'OK', 1.1, 'All good');
         $step->set_http_client_handler($this->make_mock_http_handler($response));
@@ -87,15 +87,15 @@ class tool_trigger_http_post_trigger_step_testcase extends advanced_testcase {
 
     /**
      * Test that we properly handle a 404 response. Guzzle will throw an exception in this
-     * case, but the trigger step should catch the exception and handle it.
+     * case, but the action step should catch the exception and handle it.
      */
     public function test_execute_404() {
         $stepsettings = [
-            'url' => 'http://http_post_trigger_step.example.com/badurl',
+            'url' => 'http://http_post_action_step.example.com/badurl',
             'httpheaders' => '',
             'httpparams' => ''
         ];
-        $step = new \tool_trigger\steps\triggers\http_post_trigger_step(json_encode($stepsettings));
+        $step = new \tool_trigger\steps\actions\http_post_action_step(json_encode($stepsettings));
 
         $response = new \GuzzleHttp\Psr7\Response(404, [], json_encode(false), 1.1, 'Huh?');
         $step->set_http_client_handler($this->make_mock_http_handler($response));
@@ -120,7 +120,7 @@ class tool_trigger_http_post_trigger_step_testcase extends advanced_testcase {
             'httpheaders' => 'My-Special-Header: {headervalue}',
             'httpparams' => 'a={a}&b={b}&c={c}&d=1'
         ];
-        $step = new \tool_trigger\steps\triggers\http_post_trigger_step(json_encode($stepsettings));
+        $step = new \tool_trigger\steps\actions\http_post_action_step(json_encode($stepsettings));
 
         $response = new \GuzzleHttp\Psr7\Response(200, [], 'OK', 1.1, 'All good');
         $step->set_http_client_handler($this->make_mock_http_handler($response));

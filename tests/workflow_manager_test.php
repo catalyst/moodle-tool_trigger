@@ -39,11 +39,11 @@ class tool_trigger_workflow_manager_testcase extends advanced_testcase {
      * Test getting step class names by step type.
      */
     public function test_get_step_class_names() {
-        $steptype = 'triggers';
+        $steptype = 'actions';
         $stepobj = new \tool_trigger\workflow_manager();
         $steps = $stepobj->get_step_class_names($steptype);
 
-        $expected = '\tool_trigger\steps\triggers\http_post_trigger_step';
+        $expected = '\tool_trigger\steps\actions\http_post_action_step';
 
         $this->assertContains($expected, $steps);
 
@@ -54,13 +54,13 @@ class tool_trigger_workflow_manager_testcase extends advanced_testcase {
      */
     public function test_get_steps_with_names() {
 
-        $stepclasses = array('\tool_trigger\steps\triggers\http_post_trigger_step');
+        $stepclasses = array('\tool_trigger\steps\actions\http_post_action_step');
         $stepobj = new \tool_trigger\workflow_manager();
         $steps = $stepobj->get_steps_with_names($stepclasses);
 
         $expected = array(
-                'class' => '\tool_trigger\steps\triggers\http_post_trigger_step',
-                'name' => get_string('httpposttriggerstepname', 'tool_trigger')
+                'class' => '\tool_trigger\steps\actions\http_post_action_step',
+                'name' => get_string('httppostactionstepname', 'tool_trigger')
         );
 
         $this->assertContains($expected, $steps);
@@ -72,13 +72,13 @@ class tool_trigger_workflow_manager_testcase extends advanced_testcase {
      */
     public function test_get_steps_by_type() {
 
-        $steptype = 'triggers';
+        $steptype = 'actions';
         $stepobj = new \tool_trigger\workflow_manager();
         $steps = $stepobj->get_steps_by_type($steptype);
 
         $expected = array(
-                'class' => '\tool_trigger\steps\triggers\http_post_trigger_step',
-                'name' => get_string('httpposttriggerstepname', 'tool_trigger')
+                'class' => '\tool_trigger\steps\actions\http_post_action_step',
+                'name' => get_string('httppostactionstepname', 'tool_trigger')
         );
 
         $this->assertContains($expected, $steps);

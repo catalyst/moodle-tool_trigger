@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Unit tests for logdump_trigger_step
+ * Unit tests for logdump_action_step
  *
  * @package    tool_trigger
  * @author     Aaron Wells <aaronw@catalyst.net.nz>
@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-class tool_trigger_logdump_trigger_step_testcase extends basic_testcase {
+class tool_trigger_logdump_action_step_testcase extends basic_testcase {
     public function test_execute() {
 
         $user = \core_user::get_user_by_username('admin');
@@ -73,7 +73,7 @@ array(2) {
 }
 EOD;
 
-        $step = new \tool_trigger\steps\triggers\logdump_trigger_step();
+        $step = new \tool_trigger\steps\actions\logdump_action_step();
         // Look for the var_dump of the event object and the stepresults object, in the output.
         $this->expectOutputRegex('/' . preg_quote($eventdump) . '.*' . preg_quote($stepresultsdump) . '/ms', '/');
         list($status, $stepresults) = $step->execute((object)['name' => 'logdump step'], null, $event, $prevstepresults);

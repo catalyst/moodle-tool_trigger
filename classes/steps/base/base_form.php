@@ -74,7 +74,7 @@ class base_form extends \moodleform {
         // Step type.
         $steptype = array(
             '' => get_string('choosedots'),
-            'triggers' => get_string('trigger', 'tool_trigger'),
+            'actions' => get_string('action', 'tool_trigger'),
             'filters' => get_string('filter', 'tool_trigger'),
             'lookups' => get_string('lookup', 'tool_trigger'),
         );

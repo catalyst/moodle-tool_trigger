@@ -15,25 +15,25 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * HTTP Post trigger step class.
+ * HTTP Post action step class.
  *
  * @package    tool_trigger
  * @copyright  Matt Porritt <mattp@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace tool_trigger\steps\triggers;
+namespace tool_trigger\steps\actions;
 
 defined('MOODLE_INTERNAL') || die;
 
 /**
- * HTTP Post trigger step class.
+ * HTTP Post action step class.
  *
  * @package    tool_trigger
  * @copyright  Matt Porritt <mattp@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class http_post_trigger_step extends base_trigger_step {
+class http_post_action_step extends base_action_step {
 
     use \tool_trigger\helper\datafield_manager;
 
@@ -53,7 +53,7 @@ class http_post_trigger_step extends base_trigger_step {
      * @return string human readable step name.
      */
     static public function get_step_name() {
-        return get_string('httpposttriggerstepname', 'tool_trigger');
+        return get_string('httppostactionstepname', 'tool_trigger');
     }
 
     /**
@@ -62,7 +62,7 @@ class http_post_trigger_step extends base_trigger_step {
      * @return string human readable step name.
      */
     static public function get_step_desc() {
-        return get_string('httpposttriggerstepdesc', 'tool_trigger');
+        return get_string('httppostactionstepdesc', 'tool_trigger');
     }
 
     private $httphandler = null;
@@ -144,21 +144,21 @@ class http_post_trigger_step extends base_trigger_step {
 
         // URL.
         $attributes = array('size' => '50', 'placeholder' => 'https://www.example.com/api', 'type' => 'url');
-        $mform->addElement('text', 'url', get_string ('httposttriggerurl', 'tool_trigger'), $attributes);
+        $mform->addElement('text', 'url', get_string ('httpostactionurl', 'tool_trigger'), $attributes);
         $mform->setType('url', PARAM_URL);
         $mform->addRule('url', get_string('required'), 'required');
-        $mform->addHelpButton('url', 'httposttriggerurl', 'tool_trigger');
+        $mform->addHelpButton('url', 'httpostactionurl', 'tool_trigger');
 
         // Headers.
         $attributes = array('cols' => '50', 'rows' => '5');
-        $mform->addElement('textarea', 'httpheaders', get_string ('httposttriggerheaders', 'tool_trigger'), $attributes);
+        $mform->addElement('textarea', 'httpheaders', get_string ('httpostactionheaders', 'tool_trigger'), $attributes);
         $mform->setType('httpheaders', PARAM_RAW_TRIMMED);
-        $mform->addHelpButton('httpheaders', 'httposttriggerheaders', 'tool_trigger');
+        $mform->addHelpButton('httpheaders', 'httpostactionheaders', 'tool_trigger');
 
         // Params.
         $attributes = array('cols' => '50', 'rows' => '5');
-        $mform->addElement('textarea', 'httpparams', get_string ('httposttriggerparams', 'tool_trigger'), $attributes);
+        $mform->addElement('textarea', 'httpparams', get_string ('httpostactionparams', 'tool_trigger'), $attributes);
         $mform->setType('httpparams', PARAM_RAW_TRIMMED);
-        $mform->addHelpButton('httpparams', 'httposttriggerparams', 'tool_trigger');
+        $mform->addHelpButton('httpparams', 'httpostactionparams', 'tool_trigger');
     }
 }
