@@ -79,6 +79,7 @@ $string['modaltitle'] = 'Add workflow step.';
 $string['movestepup'] = 'Move step towards start';
 $string['movestepdown'] = 'Move step towards end';
 $string['name'] = 'Name';
+$string['numsteps'] = 'Steps';
 $string['outputprefix'] = 'Prefix for added fields';
 $string['stepclass'] = 'Step';
 $string['stepclass_help'] = 'Choose the step to apply.';

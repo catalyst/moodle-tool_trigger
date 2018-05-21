@@ -91,8 +91,16 @@ class workflow_manager {
     public static function get_workflows_paginated($limitfrom = 0, $limitto = 0) {
         global $DB;
 
-        $orderby = 'name ASC';
-        $records = $DB->get_records('tool_trigger_workflows', null, $orderby, '*', $limitfrom, $limitto);
+        $records = $DB->get_records_sql("
+            select
+                *,
+                (select count(*) from {tool_trigger_steps} s where s.workflowid = w.id) as numsteps
+            from {tool_trigger_workflows} w
+            order by name ASC",
+            null,
+            $limitfrom,
+            $limitto
+        );
         $workflows = self::get_instances($records);
 
         return $workflows;

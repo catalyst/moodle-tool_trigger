@@ -76,6 +76,11 @@ class workflow {
     public $descriptionformat;
 
     /**
+     * @var int
+     */
+    public $numsteps;
+
+    /**
      * Constructor.
      *
      * @param \stdClass $rule A rule object from database.
@@ -91,6 +96,11 @@ class workflow {
         $description = json_decode($workflow->description);
         $this->descriptiontext = $description->text;
         $this->descriptionformat = $description->format;
+
+        // Optional extra field for storing the steps count.
+        if (isset($workflow->numsteps)) {
+            $this->numsteps = $workflow->numsteps;
+        }
     }
 
     /**

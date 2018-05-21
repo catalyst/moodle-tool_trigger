@@ -63,18 +63,18 @@ class renderable extends \table_sql implements \renderable {
         $this->define_columns(array(
                 'name',
                 'description',
-                'event',
+                'eventname',
+                'numsteps',
                 'active',
-             // 'draft',
                 'lasttriggered',
-                'manage')
-                );
+                'manage'
+        ));
         $this->define_headers(array(
                 get_string('name', 'tool_trigger'),
                 get_string('description', 'tool_trigger'),
                 get_string('event', 'tool_trigger'),
                 get_string('active', 'tool_trigger'),
-                // get_string('draft', 'tool_trigger'),
+                get_string('numsteps', 'tool_trigger'),
                 get_string('lasttriggered', 'tool_trigger'),
                 get_string('manage', 'tool_trigger'),
             )
@@ -111,17 +111,7 @@ class renderable extends \table_sql implements \renderable {
     }
 
     /**
-     * Generate content for plugin column.
-     *
-     * @param \tool_trigger\workflow $workflow rule object
-     * @return string html used to display the column field.
-     */
-    public function col_plugin(\tool_trigger\workflow $workflow) {
-        return $workflow->get_plugin_name();
-    }
-
-    /**
-     * Generate content for plugin column.
+     * Generate content for "last triggered" column.
      *
      * @param \tool_trigger\workflow $workflow rule object
      * @return string html used to display the column field.
@@ -139,17 +129,11 @@ class renderable extends \table_sql implements \renderable {
      * @return string html used to display the column field.
      */
     public function col_eventname(\tool_trigger\workflow $workflow) {
-        return $workflow->get_event_name();
-    }
-
-    /**
-     * Generate content for filters column.
-     *
-     * @param \tool_trigger\workflow $workflow rule object
-     * @return string html used to display the filters column field.
-     */
-    public function col_filters(\tool_trigger\workflow $workflow) {
-        return $workflow->get_filters_description();
+        if (class_exists($workflow->event, true) && is_subclass_of($workflow->event, '\core\event\base')) {
+            return $workflow->event::get_name();
+        } else {
+            return $workflow->event;
+        }
     }
 
     /**
