@@ -43,8 +43,8 @@ class renderer extends \plugin_renderer_base {
      * @return string to display on the mangerules page.
      */
     protected function render_renderable(renderable $renderable) {
-        $o = $this->render_table($renderable);
-        $o .= $this->render_add_button($renderable->workflowid);
+        $o = $this->render_add_button($renderable->workflowid);
+        $o .= $this->render_table($renderable);
 
         return $o;
     }
