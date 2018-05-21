@@ -80,9 +80,9 @@ define(
         var rows = stepData.map(
             function(step, stepidx) {
                 return {
-                    type: step.type,
                     name: step.name,
-                    step: step.step,
+                    typedesc: step.typedesc,
+                    stepdesc: step.stepdesc,
                     steporder: stepidx
                 };
             }
@@ -122,9 +122,10 @@ define(
             {}
         );
 
-        // Add the description string for the stepclass, in order to make later rendering
+        // Add the description string for the step class and type, in order to make later rendering
         // easier...
-        curstep['step'] = $('[name=stepclass] option:selected').text();
+        curstep['stepdesc'] = $('[name=stepclass] option:selected').text();
+        curstep['typedesc'] = $('[name=type] option:selected').text();
 
         // Submit form via ajax to do server side validation.
         ajax.call([{

@@ -39,4 +39,19 @@ defined('MOODLE_INTERNAL') || die;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 abstract class base_action_step extends base_step {
+    /**
+     * {@inheritDoc}
+     * @see \tool_trigger\steps\base\base_step::get_step_type()
+     */
+    public static function get_step_type() {
+        return base_step::STEPTYPE_ACTION;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @see \tool_trigger\steps\base\base_step::get_step_type_desc()
+     */
+    public static function get_step_type_desc() {
+        return get_string('action', 'tool_trigger');
+    }
 }

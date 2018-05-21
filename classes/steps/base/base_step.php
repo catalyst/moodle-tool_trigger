@@ -65,6 +65,36 @@ abstract class base_step {
     abstract static public function get_step_desc();
 
     /**
+     * @var string
+     */
+    const STEPTYPE_ACTION = 'actions';
+
+    /**
+     * @var string
+     */
+    const STEPTYPE_LOOKUP = 'lookups';
+
+    /**
+     * @var string
+     */
+    const STEPTYPE_FILTER = 'filters';
+
+    /**
+     * Returns which type of step it is. This must match be "actions", "lookups", or "filters",
+     * and the way its' currently implemented, it must also match the classes's namespace and the directory it's in.
+     *
+     * @return string
+     */
+    abstract static public function get_step_type();
+
+    /**
+     * Returns a language string with the printable description of the type of step.
+     *
+     * @return string
+     */
+    abstract static public function get_step_type_desc();
+
+    /**
      * @param \stdClass $step The `tool_trigger_steps` record for this step instance
      * @param \stdClass $trigger The `tool_trigger_queue` record for this execution
      * of the workflow.

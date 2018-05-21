@@ -108,14 +108,23 @@ class renderer extends \plugin_renderer_base {
         if ($stepdata === null || !is_array($stepdata)) {
             return '';
         }
+        $wfm = new \tool_trigger\workflow_manager();
 
         // Extract only the fields needed for the template.
         $rows = [];
         foreach ($stepdata as $step) {
-            $rows[] = array_intersect_key(
-                $step,
-                array_flip(['type', 'name', 'step', 'steporder'])
-            );
+            $row = [
+                'name' => $step['name'],
+                'steporder' => $step['steporder']
+            ];
+            if ($wfm->validate_step_class($step['stepclass'])) {
+                $row['typedesc'] = $step['stepclass']::get_step_type_desc();
+                $row['stepdesc'] = $step['stepclass']::get_step_name();
+            } else {
+                $row['typedesc'] = '(' . $step['type'] . ')';
+                $row['stepdesc'] = '(' . $step['step'] . ')';
+            }
+            $rows[] = $row;
         }
 
         return $this->render_from_template('tool_trigger/workflow_steps', ['rows' => array_values($rows)]);
