@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
-class tool_trigger_course_lookup_testcase extends advanced_testcase {
+class tool_trigger_course_lookup_step_testcase extends advanced_testcase {
     /**
      * Create a "user_profile_viewed" event, of user1 viewing user2's
      * profile. And then run everything else as the cron user.
