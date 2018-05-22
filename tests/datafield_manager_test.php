@@ -28,14 +28,6 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once(__DIR__.'/fixtures/user_event_fixture.php');
 
-/**
- * We can't instantiate a trait directly, so declare a class that does
- * nothing except use the trait.
- */
-class datafield_class {
-    use \tool_trigger\helper\datafield_manager;
-}
-
 class tool_trigger_datafield_manager_testcase extends advanced_testcase {
     use \tool_trigger_user_event_fixture;
 
@@ -53,7 +45,9 @@ class tool_trigger_datafield_manager_testcase extends advanced_testcase {
     public function test_get_datafields() {
         $stepdata = ['foo' => 'bar'];
 
-        $dfprovider = new datafield_class();
+        // Tell PHPUnit to create a generic object that uses this trait. Handy!
+        $dfprovider = $this->getMockForTrait('\tool_trigger\helper\datafield_manager');
+
         $dfprovider->update_datafields($this->event, $stepdata);
         $datafields = $dfprovider->get_datafields();
 
@@ -105,7 +99,7 @@ class tool_trigger_datafield_manager_testcase extends advanced_testcase {
 Bad tag: {nosuchtag}.
 Good tag again: {tagexists}.';
 
-        $dfprovider = new datafield_class();
+        $dfprovider = $this->getMockForTrait('\tool_trigger\helper\datafield_manager');
         $dfprovider->update_datafields($this->event, $stepdata);
 
         $populatedstring = $dfprovider->render_datafields($templatestring);
@@ -136,7 +130,7 @@ Good tag again: tagvalue.', $populatedstring);
 
         $templatestring = 'Tag: {tagexists}';
 
-        $dfprovider = new datafield_class();
+        $dfprovider = $this->getMockForTrait('\tool_trigger\helper\datafield_manager');
         $dfprovider->update_datafields($this->event, $stepdata);
 
         $transformcallback = function($v, $k) {
