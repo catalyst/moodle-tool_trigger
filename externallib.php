@@ -43,7 +43,7 @@ class tool_trigger_external extends external_api {
             array(
                 'steptype' => new external_value(PARAM_ALPHA, 'The type of step to get.'),
             )
-            );
+        );
     }
 
     /**
@@ -72,8 +72,18 @@ class tool_trigger_external extends external_api {
         $wfmanager = new \tool_trigger\workflow_manager();
         $steps = $wfmanager->get_steps_by_type($params['steptype']);
 
-        return $steps;
-
+        // Turn this into a nested array, so that the ordering can survive JSON-encoding.
+        // (Because a PHP associative array becomes a JSON object, and according to the
+        // specification, the order of the keys in a JS/JSON object is not meant to be
+        // meaningful, while the order of the elements in a JS/JSON array is.)
+        $output = [];
+        foreach ($steps as $class => $namestr) {
+            $output[] = [
+                'class' => $class,
+                'name' => $namestr
+            ];
+        }
+        return $output;
     }
 
     /**

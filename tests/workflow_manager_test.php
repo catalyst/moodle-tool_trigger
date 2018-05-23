@@ -52,15 +52,14 @@ class tool_trigger_workflow_manager_testcase extends advanced_testcase {
     /**
      * Test getting step human readable names by class name.
      */
-    public function test_get_steps_with_names() {
+    public function test_lookup_step_names() {
 
         $stepclasses = array('\tool_trigger\steps\actions\http_post_action_step');
         $stepobj = new \tool_trigger\workflow_manager();
-        $steps = $stepobj->get_steps_with_names($stepclasses);
+        $steps = $stepobj->lookup_step_names($stepclasses);
 
         $expected = array(
-                'class' => '\tool_trigger\steps\actions\http_post_action_step',
-                'name' => get_string('httppostactionstepname', 'tool_trigger')
+            '\tool_trigger\steps\actions\http_post_action_step' => get_string('httppostactionstepname', 'tool_trigger')
         );
 
         $this->assertContains($expected, $steps);
@@ -77,8 +76,7 @@ class tool_trigger_workflow_manager_testcase extends advanced_testcase {
         $steps = $stepobj->get_steps_by_type($steptype);
 
         $expected = array(
-                'class' => '\tool_trigger\steps\actions\http_post_action_step',
-                'name' => get_string('httppostactionstepname', 'tool_trigger')
+            '\tool_trigger\steps\actions\http_post_action_step' => get_string('httppostactionstepname', 'tool_trigger')
         );
 
         $this->assertContains($expected, $steps);

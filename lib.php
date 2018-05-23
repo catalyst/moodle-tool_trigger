@@ -73,7 +73,8 @@ function tool_trigger_output_fragment_new_step_form($args) {
     $customdata = array(
         'type'      => $steptype,
         'stepclass' => $stepclass,
-        'steptext'  => $stepclass::get_step_name()
+        'steptext'  => $stepclass::get_step_name(),
+        'steps' => $workflowmanager->get_steps_by_type($steptype)
     );
 
     $ajaxformdata = array();

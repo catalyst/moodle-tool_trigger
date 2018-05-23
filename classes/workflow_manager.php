@@ -141,29 +141,41 @@ class workflow_manager {
 
     }
 
-    public function get_steps_with_names($stepclasses) {
+    /**
+     * Given a list of step classes, gets the human-readable name for each one.
+     *
+     * @param string[] $stepclasses
+     * @return string[] An array with the classes as the keys, and the name strings as the values.
+     */
+    public function lookup_step_names($stepclasses) {
         $stepnames = array();
 
         foreach ($stepclasses as $stepclass) {
             if ($this->validate_step_class($stepclass)) {
-                $stepnames[] = array(
-                    'class' => $stepclass,
-                    'name' => $stepclass::get_step_name()
-                );
+                $stepnames[$stepclass] = $stepclass::get_step_name();
             }
         }
 
+        // Sort them alphabetically by name.
+        natsort($stepclasses);
         return $stepnames;
 
     }
 
+    /**
+     * Get all the steps of a specified type, along with their human-readable name strings.
+     *
+     * @param string $steptype
+     * @throws \invalid_parameter_exception
+     * @return string[] An array with the step classes as the keys, and the name strings as the values.
+     */
     public function get_steps_by_type($steptype) {
         if (!in_array($steptype, self::STEPTYPES)) {
             throw new \invalid_parameter_exception('badsteptype', 'tool_trigger', '');
         }
 
         $matchedsteps = $this->get_step_class_names($steptype);
-        $stepswithnames = $this->get_steps_with_names($matchedsteps);
+        $stepswithnames = $this->lookup_step_names($matchedsteps);
 
         return $stepswithnames;
     }

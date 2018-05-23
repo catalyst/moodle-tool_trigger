@@ -92,6 +92,9 @@ class base_form extends \moodleform {
         if (isset($this->_customdata['stepclass'])) {
             $steps[$this->_customdata['stepclass']] = $this->_customdata['steptext'];
         }
+        if (isset($this->_customdata['steps'])) {
+            $steps = array_merge($steps, $this->_customdata['steps']);
+        }
 
         $mform->addElement('select', 'stepclass', get_string('stepclass', 'tool_trigger'), $steps);
         $mform->addHelpButton('stepclass', 'stepclass', 'tool_trigger');
