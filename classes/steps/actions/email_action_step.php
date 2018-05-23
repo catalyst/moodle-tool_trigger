@@ -181,4 +181,15 @@ class email_action_step extends base_action_step {
         $mform->addHelpButton('emailcontent', 'emailcontent', 'tool_trigger');
     }
 
+    /**
+     * {@inheritDoc}
+     * @see \tool_trigger\steps\base\base_step::add_privacy_metadata()
+     */
+    public static function add_privacy_metadata($collection, $privacyfields) {
+        return $collection->add_external_location_link(
+            'email_action_step',
+            $privacyfields,
+            'step_action_email:privacy:desc'
+        );
+    }
 }

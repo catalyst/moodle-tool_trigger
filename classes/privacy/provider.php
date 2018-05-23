@@ -33,6 +33,11 @@ use core_privacy\local\request\approved_contextlist;
 /**
  * Provider for the tool_trigger plugin.
  *
+ * TODO: Currently this class has made the get_metadata() method extensible by step classes,
+ * but not any of the other methods. This is fine as long as none of the steps store data,
+ * but if we do implement steps that store data, we'll need to make the methods related to that
+ * be extensible as well.
+ *
  * @author     Aaron Wells <aaronw@catalyst.net.nz>
  * @copyright  2018 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -41,25 +46,30 @@ class provider implements
 \core_privacy\local\metadata\provider, \core_privacy\local\request\plugin\provider {
 
     /**
-     * Returns metadata about this system.
+     * Returns metadata about this plugin's privacy policy.
      *
      * @param   collection $collection The initialised collection to add items to.
      * @return  collection     A listing of user data stored through this system.
      */
     public static function get_metadata(collection $collection) : collection {
+        $wfm = new \tool_trigger\workflow_manager();
+        $steplist = $wfm->get_step_class_names();
 
-        // TODO: Allow the steps themselves to provide privacy data.
-        $collection->add_external_location_link(
-            'Email action',
-            ['data' => 'privacy:general_data'],
-            'privacy:step_action_email'
-        );
+        // The plugin itself provides the data from the event.
+        $datafields = ['moodle_events' => 'privacy:eventdata_desc'];
 
-        $collection->add_external_location_link(
-            'HTTP POST action',
-            ['data' => 'privacy:general_data'],
-            'privacy:step_action_httppost'
-        );
+        // Get a list of the sensitive data that each step provides.
+        foreach ($steplist as $stepclass) {
+            $stepfields = $stepclass::get_privacyfields();
+            if (null !== $stepfields) {
+                $datafields = array_merge($stepfields, $datafields);
+            }
+        }
+
+        // Allow each step to declare anything it does with that data.
+        foreach ($steplist as $stepclass) {
+            $stepclass::add_privacy_metadata($collection, $datafields);
+        }
 
         return $collection;
     }

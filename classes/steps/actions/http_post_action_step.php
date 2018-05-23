@@ -163,4 +163,16 @@ class http_post_action_step extends base_action_step {
         $mform->setType('httpparams', PARAM_RAW_TRIMMED);
         $mform->addHelpButton('httpparams', 'httpostactionparams', 'tool_trigger');
     }
+
+    /**
+     * {@inheritDoc}
+     * @see \tool_trigger\steps\base\base_step::add_privacy_metadata()
+     */
+    public static function add_privacy_metadata($collection, $privacyfields) {
+        return $collection->add_external_location_link(
+            'http_post_action_step',
+            $privacyfields,
+            'step_action_httppost:privacy:desc'
+        );
+    }
 }

@@ -108,5 +108,11 @@ class course_lookup_step extends base_lookup_step {
         return get_string('step_lookup_course_name', 'tool_trigger');
     }
 
-
+    /**
+     * {@inheritDoc}
+     * @see \tool_trigger\steps\base\base_step::get_privacyfields()
+     */
+    public static function get_privacyfields() {
+        return ['course_lookup_step' => 'step_lookup_course:privacy:coursedata_desc'];
+    }
 }

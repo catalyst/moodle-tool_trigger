@@ -134,4 +134,29 @@ abstract class base_step {
      * @param mixed $customdata
      */
     abstract public function form_definition_extra($form, $mform, $customdata);
+
+    /**
+     * For the privacy API, return a brief description of the types of data this step makes available for export to external
+     * systems.
+     *
+     * This return value should be in the same format as the "privacyfields" used in
+     * \core_privacy\local\metadata\collection::add_external_location_link()
+     *
+     * @return null|array
+     */
+    public static function get_privacyfields() {
+        return null;
+    }
+
+    /**
+     * For the privacy API, add any privacy metadata about how this step sends data to external sources, to other Moodle plugins,
+     * or saves data.
+     * @param \core_privacy\local\metadata\collection $collection
+     * @param array $privacyfields A list of the fields of privacy data made available for export by tool_trigger and all
+     * registered steps.
+     * @return \core_privacy\local\metadata\collection
+     */
+    public static function add_privacy_metadata($collection, $privacyfields) {
+        return $collection;
+    }
 }

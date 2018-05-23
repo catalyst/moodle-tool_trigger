@@ -112,5 +112,11 @@ class user_lookup_step extends base_lookup_step {
         return get_string('step_lookup_user_name', 'tool_trigger');
     }
 
-
+    /**
+     * {@inheritDoc}
+     * @see \tool_trigger\steps\base\base_step::get_privacyfields()
+     */
+    public static function get_privacyfields() {
+        return ['user_lookup_step' => 'step_lookup_user:privacy:userdata_desc'];
+    }
 }
