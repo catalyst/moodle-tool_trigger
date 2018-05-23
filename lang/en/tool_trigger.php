@@ -81,7 +81,6 @@ $string['movestepdown'] = 'Move step towards end';
 $string['name'] = 'Name';
 $string['numsteps'] = 'Steps';
 $string['outputprefix'] = 'Prefix for added fields';
-$string['privacy:eventdata_name'] = 'moodle events';
 $string['privacy:eventdata_desc'] = 'Data about events logged by the Moodle events API.';
 $string['stepclass'] = 'Step';
 $string['stepclass_help'] = 'Choose the step to apply.';
