@@ -192,6 +192,8 @@ class process_workflows extends \core\task\scheduled_task {
             mtrace('Execute workflow step: ' . $step->id . ', ' . $step->stepclass);
 
             try {
+                $outertransaction = $DB->is_transaction_started();
+
                 $stepobj = $workflowmanager->validate_and_make_step($step->stepclass, $step->data);
 
                 list($success, $stepresults) = $stepobj->execute($step, $trigger, $event, $stepresults);
@@ -217,8 +219,9 @@ class process_workflows extends \core\task\scheduled_task {
                 return;
 
             } finally {
-                if ($DB->is_transaction_started()) {
-                    mtrace('WARNING: Database transaction aborted automatically in ' . $step->stepclass);
+                if (!$outertransaction && $DB->is_transaction_started()) {
+                    mtrace('WARNING: Database transaction left uncommitted in '
+                        . $step->stepclass . '; performing automatic rollback.');
                     $DB->force_transaction_rollback();
                 }
             }
