@@ -62,8 +62,7 @@ class tool_trigger_workflow_manager_testcase extends advanced_testcase {
             '\tool_trigger\steps\actions\http_post_action_step' => get_string('httppostactionstepname', 'tool_trigger')
         );
 
-        $this->assertContains($expected, $steps);
-
+        $this->assertArraySubset($expected, $steps);
     }
 
     /**
@@ -79,7 +78,7 @@ class tool_trigger_workflow_manager_testcase extends advanced_testcase {
             '\tool_trigger\steps\actions\http_post_action_step' => get_string('httppostactionstepname', 'tool_trigger')
         );
 
-        $this->assertContains($expected, $steps);
+        $this->assertArraySubset($expected, $steps);
     }
 
     /**
