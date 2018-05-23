@@ -145,7 +145,9 @@ class http_post_action_step extends base_action_step {
         // URL.
         $attributes = array('size' => '50', 'placeholder' => 'https://www.example.com/api', 'type' => 'url');
         $mform->addElement('text', 'url', get_string ('httpostactionurl', 'tool_trigger'), $attributes);
-        $mform->setType('url', PARAM_URL);
+        // PARAM_URL will reject some templated urls.
+        // TODO: Put some validation on this field?
+        $mform->setType('url', PARAM_RAW_TRIMMED);
         $mform->addRule('url', get_string('required'), 'required');
         $mform->addHelpButton('url', 'httpostactionurl', 'tool_trigger');
 
