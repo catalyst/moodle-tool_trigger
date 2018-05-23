@@ -83,9 +83,6 @@ class http_post_action_step extends base_action_step {
      * @return \GuzzleHttp\Client
      */
     public function get_http_client() {
-        global $CFG;
-        require_once($CFG->dirroot . '/admin/tool/trigger/guzzle/autoloader.php');
-
         $clientconfig = [];
         if ($this->httphandler) {
             $clientconfig['handler'] = $this->httphandler;
@@ -102,6 +99,9 @@ class http_post_action_step extends base_action_step {
      * @return array if execution was succesful and the response from the execution.
      */
     public function execute($step, $trigger, $event, $stepresults) {
+        global $CFG;
+        require_once($CFG->dirroot . '/admin/tool/trigger/guzzle/autoloader.php');
+
         $this->update_datafields($event, $stepresults);
 
         $headers = $this->render_datafields($this->headers);
