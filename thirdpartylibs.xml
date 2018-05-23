@@ -2,7 +2,7 @@
 <libraries>
     <library>
         <location>guzzle</location>
-        <name>Guzzle, an extensible PHP HTTP clien</name>
+        <name>Guzzle, an extensible PHP HTTP client</name>
         <version>6.3.0</version>
         <license>MIT</license>
         <licenseversion>1.0</licenseversion>
