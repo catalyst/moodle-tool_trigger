@@ -139,7 +139,7 @@ trait datafield_manager {
         };
 
         return preg_replace_callback(
-            '/\{([-_A-Za-z0-9]+)\}/',
+            '/\{([-_A-Za-z0-9]+)\}/u',
             $callback,
             $templatestr
         );
