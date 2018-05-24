@@ -43,7 +43,10 @@ use core_privacy\local\request\approved_contextlist;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class provider implements
-\core_privacy\local\metadata\provider, \core_privacy\local\request\plugin\provider {
+    \core_privacy\local\metadata\provider,
+    \core_privacy\local\request\plugin\provider {
+
+    use \tool_log\local\privacy\moodle_database_export_and_delete;
 
     /**
      * Returns metadata about this plugin's privacy policy.
@@ -55,14 +58,31 @@ class provider implements
         $wfm = new \tool_trigger\workflow_manager();
         $steplist = $wfm->get_step_class_names();
 
+        // Information about the tool_trigger_events table, which logs events.
+        $collection->add_database_table(
+            'tool_trigger_events',
+            [
+                'eventname' => 'privacy:metadata:events:eventname',
+                'userid' => 'privacy:metadata:events:userid',
+                'relateduserid' => 'privacy:metadata:events:relateduserid',
+                'anonymous' => 'privacy:metadata:events:anonymous',
+                'other' => 'privacy:metadata:events:other',
+                'timecreated' => 'privacy:metadata:events:timecreated',
+                'origin' => 'privacy:metadata:events:origin',
+                'ip' => 'privacy:metadata:events:ip',
+                'realuserid' => 'privacy:metadata:events:realuserid',
+            ],
+            'privacy:metadata:events'
+        );
+
         // The plugin itself provides the data from the event.
-        $datafields = ['moodle_events' => 'privacy:eventdata_desc'];
+        $datafields = ['tool_trigger_events' => 'privacy:metadata:events'];
 
         // Get a list of the sensitive data that each step provides.
         foreach ($steplist as $stepclass) {
             $stepfields = $stepclass::get_privacyfields();
             if (null !== $stepfields) {
-                $datafields = array_merge($stepfields, $datafields);
+                $datafields = array_merge($datafields, $stepfields);
             }
         }
 
@@ -77,34 +97,44 @@ class provider implements
     /**
      * Get the list of contexts that contain user information for the specified user.
      *
-     * @param   int $userid The user to search.
+     * @param   int         $userid     The user to search.
      * @return  contextlist   $contextlist  The contextlist containing the list of contexts used in this plugin.
      */
     public static function get_contexts_for_userid(int $userid) : contextlist {
-        return new contextlist();
+        $contextlist = new \core_privacy\local\request\contextlist();
+
+        $sql = "
+            SELECT l.contextid
+              FROM {tool_trigger_events} l
+             WHERE l.userid = :userid1
+                OR l.relateduserid = :userid2
+                OR l.realuserid = :userid3";
+
+        $contextlist->add_from_sql($sql, [
+            'userid1' => $userid,
+            'userid2' => $userid,
+            'userid3' => $userid,
+        ]);
+
+        return $contextlist;
     }
 
     /**
-     * Export all user data for the specified user, in the specified contexts.
+     * Get the database object.
      *
-     * @param   approved_contextlist $contextlist The approved contexts to export information for.
+     * @return array Containing moodle_database, string, or null values.
      */
-    public static function export_user_data(approved_contextlist $contextlist) {
+    protected static function get_database_and_table() {
+        global $DB;
+        return [$DB, 'tool_trigger_events'];
     }
 
     /**
-     * Delete all data for all users in the specified context.
+     * Get the path to export the logs to.
      *
-     * @param   \context $context The specific context to delete data for.
+     * @return array
      */
-    public static function delete_data_for_all_users_in_context(\context $context) {
-    }
-
-    /**
-     * Delete all user data for the specified user, in the specified contexts.
-     *
-     * @param   approved_contextlist $contextlist The approved contexts and user information to delete information for.
-     */
-    public static function delete_data_for_user(approved_contextlist $contextlist) {
+    protected static function get_export_subcontext() {
+        return [get_string('pluginname', 'tool_trigger')];
     }
 }
