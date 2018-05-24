@@ -136,12 +136,4 @@ class tool_trigger_user_lookup_testcase extends advanced_testcase {
             $stepresults2
         );
     }
-
-    /**
-     * Test the functionality of the "nodeleted" flag, which indicates whether or not
-     * to halt execution if the user has been deleted.
-     */
-    public function test_nodeleted() {
-
-    }
 }
