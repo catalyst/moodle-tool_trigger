@@ -40,8 +40,17 @@ trait tool_trigger_user_event_fixture {
      */
     public function setup_user_event() {
         $this->resetAfterTest(true);
-        $this->user1 = $this->getDataGenerator()->create_user();
-        $this->user2 = $this->getDataGenerator()->create_user();
+
+        // Data for fields that are not automatically filled in by the data generator.
+        $extrauserdata = [
+            'description' => '<p>My description</p>',
+            'descriptionformat' => FORMAT_HTML,
+            'url' => 'https://www.example.com',
+            'picture' => 1
+        ];
+
+        $this->user1 = $this->getDataGenerator()->create_user($extrauserdata);
+        $this->user2 = $this->getDataGenerator()->create_user($extrauserdata);
         $this->course = $this->getDataGenerator()->create_course();
 
         $this->setUser($this->user1);

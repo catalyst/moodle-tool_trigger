@@ -44,9 +44,24 @@ class user_lookup_step extends base_lookup_step {
      */
     private $outputprefix = null;
 
+
+    /**
+     * Whether to halt execution of the workflow, if the user has been marked "deleted".
+     *
+     * @var bool
+     */
+    private $nodeleted;
+
     protected function init() {
         $this->useridfield = $this->data['useridfield'];
         $this->outputprefix = $this->data['outputprefix'];
+
+        // This is a new field, so it's possible that stored workflow steps may not have a setting for it.
+        if (array_key_exists('nodeleted', $this->data)) {
+            $this->nodeleted = (bool) $this->data['nodeleted'];
+        } else {
+            $this->nodeleted = true;
+        }
     }
 
     /**
@@ -54,29 +69,43 @@ class user_lookup_step extends base_lookup_step {
      * @see \tool_trigger\steps\base\base_step::execute()
      */
     public function execute($step, $trigger, $event, $stepresults) {
-        global $CFG;
+        $datafields = $this->get_datafields($event, $stepresults);
 
-        $allfields = $this->get_datafields($event, $stepresults);
-
-        if (!array_key_exists($this->useridfield, $allfields)) {
+        if (!array_key_exists($this->useridfield, $datafields)) {
             throw new \invalid_parameter_exception("Specified userid field not present in the workflow data: "
                     . $this->useridfield);
         }
 
-        $user = \core_user::get_user($allfields[$this->useridfield]);
-        if (!$user || $user->deleted) {
-            // If the user has been deleted, there's no point re-running the task.
-            return [false, $stepresults];
+        // The fields to fetch from the user table.
+        // Pretty much everything except "password" and "secret".
+        $userfields = 'id, auth, confirmed, policyagreed, deleted, suspended, mnethostid, username, idnumber, firstname, lastname'
+            . ', email, emailstop, icq, skype, yahoo, aim, msn, phone1, phone2, institution, department, address, city, country'
+            . ', lang, calendartype, theme, timezone, firstaccess, lastaccess, lastlogin, currentlogin, lastip, picture, url'
+            . ', description, descriptionformat, mailformat, maildigest, maildisplay, autosubscribe, trackforums, timecreated'
+            . ', timemodified, trustbitmask, imagealt, lastnamephonetic, firstnamephonetic, middlename, alternatename';
+
+        $userdata = \core_user::get_user($datafields[$this->useridfield], $userfields);
+
+        // Users are not typically deleted from the database on deletion; they're just flagged as "deleted".
+        // So if no user with that ID is found, then throw an exception.
+        if (!$userdata) {
+            throw new \invalid_parameter_exception('User not found with id ' . $datafields[$this->useridfield]);
         }
 
-        require_once($CFG->dirroot.'/user/lib.php');
-        $userdata = user_get_user_details($user);
+        // Have we been asked to exclude deleted users?
+        if ($this->nodeleted && $userdata->deleted) {
+            return [false, $stepresults];
+        }
 
         foreach ($userdata as $key => $value) {
             if (is_scalar($value)) {
                 $stepresults[$this->outputprefix . $key] = $value;
             }
         }
+
+        // Also fetch the user's fullname.
+        $stepresults[$this->outputprefix . 'fullname'] = fullname($userdata);
+
         return [true, $stepresults];
     }
 
@@ -94,6 +123,9 @@ class user_lookup_step extends base_lookup_step {
         $mform->setType('outputprefix', PARAM_ALPHANUMEXT);
         $mform->addRule('outputprefix', get_string('required'), 'required');
         $mform->setDefault('outputprefix', 'user_');
+
+        $mform->addElement('selectyesno', 'nodeleted', get_string('step_lookup_user_nodeleted', 'tool_trigger'));
+        $mform->setDefault('nodeleted', 1);
     }
 
     /**

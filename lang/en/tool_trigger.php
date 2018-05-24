@@ -100,6 +100,7 @@ $string['step_lookup_course_name'] = 'Course lookup';
 $string['step_lookup_course_courseidfield'] = 'Course id data field';
 $string['step_lookup_user:privacy:userdata_desc'] = 'Personal data about users, such as usernames, names, email addresses, etc.';
 $string['step_lookup_user_desc'] = 'This step looks up data about a user.';
+$string['step_lookup_user_nodeleted'] = 'Exit if user has been deleted?';
 $string['step_lookup_user_name'] = 'User lookup';
 $string['step_lookup_user_useridfield'] = 'User id data field';
 $string['step_action_email:privacy:desc'] = 'This plugin may be configured to send emails containing data from Moodle. It does not store data locally.';

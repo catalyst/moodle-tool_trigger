@@ -26,29 +26,17 @@
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
+require_once(__DIR__.'/fixtures/user_event_fixture.php');
 
 class tool_trigger_user_lookup_testcase extends advanced_testcase {
+    use \tool_trigger_user_event_fixture;
+
     /**
      * Create a "user_profile_viewed" event, of user1 viewing user2's
      * profile. And then run everything else as the cron user.
      */
     public function setup() {
-        $this->resetAfterTest(true);
-        $this->user1 = $this->getDataGenerator()->create_user();
-        $this->user2 = $this->getDataGenerator()->create_user();
-
-        $this->setUser($this->user1);
-
-        $this->event = \core\event\user_profile_viewed::create([
-            'objectid' => $this->user2->id,
-            'relateduserid' => $this->user2->id,
-            'context' => context_user::instance($this->user2->id)
-        ]);
-
-        $this->event->trigger();
-
-        // Run as the cron user  .
-        cron_setup_user();
+        $this->setup_user_event();
     }
 
     /**
@@ -60,7 +48,8 @@ class tool_trigger_user_lookup_testcase extends advanced_testcase {
         $step = new \tool_trigger\steps\lookups\user_lookup_step(
             json_encode([
                 'useridfield' => 'userid',
-                'outputprefix' => 'user_'
+                'outputprefix' => 'user_',
+                'nodeleted' => '1'
             ])
         );
 
@@ -80,7 +69,8 @@ class tool_trigger_user_lookup_testcase extends advanced_testcase {
         $step = new \tool_trigger\steps\lookups\user_lookup_step(
             json_encode([
                 'useridfield' => 'relateduserid',
-                'outputprefix' => 'vieweduser_'
+                'outputprefix' => 'vieweduser_',
+                'nodeleted' => '1'
             ])
         );
 
@@ -98,7 +88,8 @@ class tool_trigger_user_lookup_testcase extends advanced_testcase {
         $step = new \tool_trigger\steps\lookups\user_lookup_step(
             json_encode([
                 'useridfield' => 'nosuchfield',
-                'outputprefix' => 'user_'
+                'outputprefix' => 'user_',
+                'nodeleted' => '1'
             ])
         );
 
@@ -109,17 +100,48 @@ class tool_trigger_user_lookup_testcase extends advanced_testcase {
     /**
      * Test for failure if a user is no longer present in the database.
      */
-    public function test_execute_nosuchuser() {
+    public function test_execute_deleted_user() {
+        // Delete one of our users.
         delete_user($this->user1);
 
+        // With the default "nodeleted = 1", we should see a false return status
+        // if the user has been deleted.
         $step = new \tool_trigger\steps\lookups\user_lookup_step(
             json_encode([
                 'useridfield' => 'userid',
-                'outputprefix' => 'user_'
+                'outputprefix' => 'user_',
+                'nodeleted' => '1'
             ])
         );
 
         list($status) = $step->execute(null, null, $this->event, []);
         $this->assertFalse($status);
+
+        // With "nodeleted = 0", we should see a true return status, and data
+        // about the deleted user.
+        $step2 = new \tool_trigger\steps\lookups\user_lookup_step(
+            json_encode([
+                'useridfield' => 'userid',
+                'outputprefix' => 'user_',
+                'nodeleted' => '0'
+            ])
+        );
+        list($status2, $stepresults2) = $step2->execute(null, null, $this->event, []);
+        $this->assertTrue($status2);
+        $this->assertArraySubset(
+            [
+                'user_id' => $this->user1->id,
+                'user_deleted' => '1'
+            ],
+            $stepresults2
+        );
+    }
+
+    /**
+     * Test the functionality of the "nodeleted" flag, which indicates whether or not
+     * to halt execution if the user has been deleted.
+     */
+    public function test_nodeleted() {
+
     }
 }
