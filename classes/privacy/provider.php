@@ -46,7 +46,10 @@ class provider implements
     \core_privacy\local\metadata\provider,
     \core_privacy\local\request\plugin\provider {
 
-    use \tool_log\local\privacy\moodle_database_export_and_delete;
+    use \tool_log\local\privacy\moodle_database_export_and_delete {
+        delete_data_for_all_users_in_context as trait_delete_data_for_all_users_in_context;
+        delete_data_for_user as trait_delete_data_for_user;
+    }
 
     /**
      * Returns metadata about this plugin's privacy policy.
@@ -117,6 +120,49 @@ class provider implements
         ]);
 
         return $contextlist;
+    }
+
+    /**
+     * We want to let the \moodle_database_export_and_delete trait take care of finding
+     * the event records to delete. But once that's done, we also need to delete any
+     * workflow queue entries for those events.
+     *
+     * @param \context $context
+     */
+    public static function delete_data_for_all_users_in_context(\context $context) {
+        self::trait_delete_data_for_all_users_in_context($context);
+        self::delete_orphaned_queue_entries();
+    }
+
+    /**
+     * We want to let the \moodle_database_export_and_delete trait take care of finding
+     * the event records to delete. But once that's done, we also need to delete any
+     * workflow queue entries for those events.
+     *
+     * @param approved_contextlist $contextlist
+     */
+    public static function delete_data_for_user(approved_contextlist $contextlist) {
+        self::trait_delete_data_for_user($contextlist);
+        self::delete_orphaned_queue_entries();
+    }
+
+    /**
+     * Delete workflow queue entries that point to event records that have been deleted.
+     * We have to do a blind "delete all orphaned records" query, because
+     * \moodle_database_export_and_delete doesn't give us a list of the IDs of the
+     * records it's about to delete.
+     */
+    private static function delete_orphaned_queue_entries() {
+        global $DB;
+        $DB->execute("
+            DELETE
+              FROM {tool_trigger_queue} q
+             WHERE NOT EXISTS (
+                SELECT 1
+                  FROM {tool_trigger_events} e
+                 WHERE q.eventid = e.id
+            )"
+        );
     }
 
     /**
