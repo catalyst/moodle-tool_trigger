@@ -45,27 +45,37 @@ class cleanup extends \core\task\scheduled_task {
      */
     public function execute() {
         global $DB;
-        $timetocleanup = get_config('timetocleanup', 'tool_trigger');
+        $timetocleanup = get_config('tool_trigger', 'timetocleanup');
         if (empty($timetocleanup)) {
             return;
         }
         $timetocleanup = time() - $timetocleanup;
 
         // Delete events first so that we don't accidentally create new queue items.
+        // Only delete events that do not have an unfinished queue still waiting.
+        $sql = "
+            DELETE
+              FROM {tool_trigger_events} e
+             WHERE NOT EXISTS (
+                       SELECT 1
+                         FROM {tool_trigger_queue} q
+                        WHERE q.eventid = e.id
+                              AND q.status = :statusready
+                   )
+                   AND e.timecreated < :timetocleanup";
+        $DB->execute($sql, [
+            'statusready' => \tool_trigger\task\process_workflows::STATUS_READY_TO_RUN,
+            'timetocleanup' => $timetocleanup
+        ]);
 
-        // Sql to get ids of events that are linked to an incomplete trigger.
-        $activesql = "SELECT e.id FROM {tool_trigger_events} e
-                        JOIN {tool_trigger_queue} q ON q.eventid = e.id
-                       WHERE q.status <> 1";
-
-        // First get all events that are older than the timeframe and do not have an open trigger.
-        $sql = "DELETE FROM {tool_trigger_events}
-                 WHERE id NOT IN (".$activesql.") AND timecreated < ?";
-        $DB->execute($sql, array($timetocleanup));
-
-        // Now cleanup processed queue older than the timeframe.
-        $sql = "DELETE FROM {tool_trigger_queue}
-                 WHERE q.status = 1 AND timemodified < ?";
-        $DB->execute($sql, array($timetocleanup));
+        // Now delete processed queue items.
+        $sql = "DELETE
+                  FROM {tool_trigger_queue} q
+                 WHERE q.status <> :statusready
+                   AND q.timemodified < :timetocleanup";
+        $DB->execute($sql, [
+            'statusready' => \tool_trigger\task\process_workflows::STATUS_READY_TO_RUN,
+            'timetocleanup' => $timetocleanup
+        ]);
     }
 }
