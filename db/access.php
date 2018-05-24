@@ -29,7 +29,7 @@ defined('MOODLE_INTERNAL') || die();
 $capabilities = array(
 
     'tool/trigger:manageworkflows' => array(
-        'riskbitmask' => RISK_CONFIG,
+        'riskbitmask' => RISK_CONFIG | RISK_PERSONAL | RISK_SPAM,
         'captype' => 'write',
         'contextlevel' => CONTEXT_SYSTEM,
         'archetypes' => array(
