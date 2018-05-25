@@ -69,7 +69,8 @@ class tool_trigger_http_post_action_step_testcase extends advanced_testcase {
         $stepsettings = [
             'url' => 'http://http_post_action_step.example.com',
             'httpheaders' => '',
-            'httpparams' => ''
+            'httpparams' => '',
+            'jsonencode' => '0'
         ];
         $step = new \tool_trigger\steps\actions\http_post_action_step(json_encode($stepsettings));
 
@@ -93,7 +94,8 @@ class tool_trigger_http_post_action_step_testcase extends advanced_testcase {
         $stepsettings = [
             'url' => 'http://http_post_action_step.example.com/badurl',
             'httpheaders' => '',
-            'httpparams' => ''
+            'httpparams' => '',
+            'jsonencode' => '0'
         ];
         $step = new \tool_trigger\steps\actions\http_post_action_step(json_encode($stepsettings));
 
@@ -116,9 +118,10 @@ class tool_trigger_http_post_action_step_testcase extends advanced_testcase {
      */
     public function test_execute_with_datafields() {
         $stepsettings = [
-            'url' => 'http://api.example.com/?returnurl={returnurl}&lang=en',
-            'httpheaders' => 'My-Special-Header: {headervalue}',
-            'httpparams' => 'a={a}&b={b}&c={c}&d=1'
+                'url' => 'http://api.example.com/?returnurl={returnurl}&lang=en',
+                'httpheaders' => 'My-Special-Header: {headervalue}',
+                'httpparams' => 'a={a}&b={b}&c={c}&d=1',
+                'jsonencode' => '0'
         ];
         $step = new \tool_trigger\steps\actions\http_post_action_step(json_encode($stepsettings));
 
@@ -161,6 +164,63 @@ class tool_trigger_http_post_action_step_testcase extends advanced_testcase {
             "a=1005&b=%3F.%26%3D%3B&c=c&d=1",
             $request->getBody()->getContents()
         );
+
+    }
+
+    /**
+     * Test that datafield placeholders in the step's settings are handled properly
+     * and that the parameters data is correctly converted into JSON.
+     * Placeholders in the "http headers" setting can go in as-is, but placeholders
+     * in the url and http params need to be urlencoded.
+     */
+    public function test_execute_with_datafields_json() {
+        $stepsettings = [
+                'url' => 'http://api.example.com/?returnurl={returnurl}&lang=en',
+                'httpheaders' => 'My-Special-Header: {headervalue}',
+                'httpparams' => 'a={a}&b={b}&c={c}&d=1',
+                'jsonencode' => '1'
+        ];
+        $step = new \tool_trigger\steps\actions\http_post_action_step(json_encode($stepsettings));
+
+        $response = new \GuzzleHttp\Psr7\Response(200, [], 'OK', 1.1, 'All good');
+        $step->set_http_client_handler($this->make_mock_http_handler($response));
+
+        // In actual use, these might be datafields added by previous workflow steps.
+        $prevstepresults = [
+                'headervalue' => 'Check check 1 2 1 2',
+                // Check that this gets properly urlencoded.
+                'returnurl' => 'http://returnurl.example.com?id=35&lang=en',
+                // Check that these get properly urlencoded.
+                'a' => '1005',
+                'b' => '?.&=;',
+                'c' => 'c'
+        ];
+
+        list($status) = $step->execute(null, null, $this->event, $prevstepresults);
+
+        $this->assertTrue($status);
+        $this->assertEquals(1, count($this->requests_sent));
+
+        // Inspect the (mock) requests sent, to check that the substitutions were successful.
+        $request = $this->requests_sent[0]['request'];
+
+        // The datafield in the header line didn't need to be urlencoded, so it should be exactly the same.
+        $this->assertEquals(
+                $prevstepresults['headervalue'],
+                $request->getHeaderLine('My-Special-Header')
+                );
+
+        // The "returnurl" datafield in the request URL should be urlencoded.
+        $this->assertEquals(
+                "http://api.example.com/?returnurl=http%3A%2F%2Freturnurl.example.com%3Fid%3D35%26lang%3Den&lang=en",
+                (string) $request->getUri()
+                );
+
+        // The datafields in the request body should be JSON encoded.
+        $this->assertEquals(
+                '{"a":"1005","b":"?.","c":"c","d":"1"}',
+                $request->getBody()->getContents()
+                );
 
     }
 }

@@ -45,6 +45,7 @@ class http_post_action_step extends base_action_step {
         $this->url = $this->data['url'];
         $this->headers = $this->data['httpheaders'];
         $this->params = $this->data['httpparams'];
+        $this->jsonencode = $this->data['jsonencode'];
     }
 
     /**
@@ -119,7 +120,13 @@ class http_post_action_step extends base_action_step {
         // TODO: This may need some tweaking. If this is going to just be a normal POST
         // request, then the user has to provide us with something like
         // "val1={tag1}&val2={tag2}&val3=something", which is not great to type.
-        $params = $this->render_datafields($this->params, null, null, $urlencodecallback);
+        if ($this->jsonencode == 0) { // Optionally JSON encode parameters.
+            $params = $this->render_datafields($this->params, null, null, $urlencodecallback);
+        } else {
+            $formparams = $this->render_datafields($this->params, null, null, null);
+            parse_str($formparams, $output);
+            $params = json_encode($output);
+        }
 
         $request = new \GuzzleHttp\Psr7\Request('POST', $url, $headers, $params);
         $client = $this->get_http_client();
@@ -162,6 +169,13 @@ class http_post_action_step extends base_action_step {
         $mform->addElement('textarea', 'httpparams', get_string ('httpostactionparams', 'tool_trigger'), $attributes);
         $mform->setType('httpparams', PARAM_RAW_TRIMMED);
         $mform->addHelpButton('httpparams', 'httpostactionparams', 'tool_trigger');
+
+        // Params as JSON.
+        $mform->addElement('advcheckbox', 'jsonencode', get_string ('jsonencode', 'tool_trigger'),
+                'Enable', array(), array(0, 1));
+        $mform->setType('jsonencode', PARAM_INT);
+        $mform->addHelpButton('jsonencode', 'jsonencode', 'tool_trigger');
+        $mform->setDefault('jsonencode', 0);
     }
 
     /**
