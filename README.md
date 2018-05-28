@@ -1,21 +1,51 @@
-# Event Trigger #
+# Event Trigger
 
-TODO Describe the plugin shortly here.
+## Supported Moodle Versions
+This plugin currently supports Moodle:
 
-TODO Provide more detailed description here.
+* 3.1
+* 3.2
+* 3.3
+* 3.4
+* 3.5
 
-## License ##
+## Moodle Plugin Installation
+The following sections outline how to install the Moodle plugin.
 
-Matt Porritt <mattp@catalyst-au.net>
+### Command Line Installation
+To install the plugin in Moodle via the command line: (assumes a Linux based system)
 
-This program is free software: you can redistribute it and/or modify it under
-the terms of the GNU General Public License as published by the Free Software
-Foundation, either version 3 of the License, or (at your option) any later
-version.
+1. Get the code from GitHub or the Moodle Plugin Directory.
+2. Copy or clone code into: `<moodledir>/admin/tool/trigger`
+3. Run the upgrade: `sudo -u www-data php admin/cli/upgrade` **Note:** the user may be different to www-data on your system.
 
-This program is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
-PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+### User Interface Installation
+To install the plugin in Moodle via the Moodle User Interface:
 
-You should have received a copy of the GNU General Public License along with
-this program.  If not, see <http://www.gnu.org/licenses/>.
+1. Log into your Moodle as an Administrator.
+2. Navigate to: *Site administration > Plugins > Install Plugins*
+3. Install plugin from Moodle Plugin directory or via zip upload.
+
+## Plugin Setup
+Plugin setup and configuration documentation can be found at the following link: https://github.com/catalyst/moodle-tool_trigger/wiki
+
+
+# Crafted by Catalyst IT
+
+This plugin was developed by Catalyst IT Australia:
+
+https://www.catalyst-au.net/
+
+![Catalyst IT](/pix/catalyst-logo.png?raw=true)
+
+
+# Contributing and Support
+
+Issues, and pull requests using github are welcome and encouraged! 
+
+https://github.com/catalyst/moodle-webservice_restful/issues
+
+If you would like commercial support or would like to sponsor additional improvements
+to this plugin please contact us:
+
+https://www.catalyst-au.net/contact-us
