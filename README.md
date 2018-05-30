@@ -1,5 +1,21 @@
 # Event Trigger
 
+The Event Trigger allows [Moodle Events](https://docs.moodle.org/dev/Event_2) to be monitored and a *workflow* to be triggered when that event occurs.<br/>
+One of the main use cases of this plugin is to allow Moodle events to trigger actions in external systems. 
+
+Each workflow is made up of a series of *steps*. Steps can be things like:
+* Using event data to *lookup* user and course information
+* *Filtering* data based on a set of conditions
+* Performing an *action* like sending an email or Posting data to a HTTP endpoint or external API.
+
+More configuration documentation can be found at the following link: 
+
+* https://github.com/catalyst/moodle-tool_trigger/wiki
+
+More Information on Moodle events can be found in the Moodle documentation at the following link:
+
+* https://docs.moodle.org/dev/Event_2
+
 ## Supported Moodle Versions
 This plugin currently supports Moodle:
 
@@ -27,8 +43,9 @@ To install the plugin in Moodle via the Moodle User Interface:
 3. Install plugin from Moodle Plugin directory or via zip upload.
 
 ## Plugin Setup
-Plugin setup and configuration documentation can be found at the following link: https://github.com/catalyst/moodle-tool_trigger/wiki
+Plugin setup and configuration documentation can be found at the following link: 
 
+* https://github.com/catalyst/moodle-tool_trigger/wiki
 
 # Crafted by Catalyst IT
 
