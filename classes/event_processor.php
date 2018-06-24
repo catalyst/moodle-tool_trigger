@@ -42,8 +42,11 @@ class event_processor {
     protected static $singleton;
 
     protected function __construct() {
+
         // Register shutdown handler - this is useful for buffering, processing events, etc.
         \core_shutdown_manager::register_function(array($this, 'flush'));
+
+        $this->islearning = (bool)get_config('tool_trigger', 'learning');
     }
 
     /**
@@ -62,6 +65,60 @@ class event_processor {
         self::$singleton->write($event);
 
         return false;
+
+    }
+
+    /**
+     *
+     * @param \core\event\base $event
+     * @param boolean $islearning
+     * @return string
+     */
+    public function prepare_event($event, $islearning=false) {
+        global $PAGE;
+
+        // We need to capture current info at this moment,
+        // at the same time this lowers memory use because
+        // snapshots and custom objects may be garbage collected.
+        $entry = $event->get_data();
+        $entry['origin'] = $PAGE->requestorigin;
+        $entry['ip'] = $PAGE->requestip;
+        $entry['realuserid'] = \core\session\manager::is_loggedinas() ? $GLOBALS['USER']->realuser : null;
+
+        if (!$islearning) {
+            $entry['other'] = serialize($entry['other']);
+        }
+
+        return $entry;
+    }
+
+    /**
+     * Write event in the store with buffering. Method insert_event_entries() must be
+     * defined.
+     *
+     * @param \core\event\base $event
+     *
+     * @return void
+     */
+    public function write(\core\event\base $event) {
+        global $PAGE;
+
+        if (!$this->is_event_ignored($event)) { // If is not an ignore event then process
+
+            $entry = $this->prepare_event($event);
+
+            $this->buffer[] = $entry;
+            $this->count++;
+
+            $this->flush();
+        }
+
+        if ($this->islearning) { // If in learning mode then store event details.
+            $entry = $this->prepare_event($event, true);
+            $this->insert_learn_event($entry);
+        }
+
+        return;
 
     }
 
@@ -114,16 +171,10 @@ class event_processor {
         $DB->insert_records('tool_trigger_events', $evententries);
     }
 
-    /**
-     * Used by the \tool_log\helper\buffered_writer trait.
-     *
-     * @param string $name Config name
-     * @param mixed $default default value
-     *
-     * @return mixed config value if set, else the default value.
-     */
-    protected function get_config($name, $default = null) {
-        // We don't actually need to return any config values for our purposes.
-        return false;
+    public function insert_learn_event($entry) {
+        global $DB;
+
+        $record = new \stdClass();
     }
+
 }
