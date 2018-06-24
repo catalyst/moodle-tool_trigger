@@ -35,6 +35,8 @@ $string['areatomonitor'] = 'Area to monitor';
 $string['areatomonitor_help'] = 'The Moodle area that contains the event to trigger workflow on.';
 $string['badsteptype'] = 'Incorrect step type';
 $string['badstepclass'] = 'Incorrect step class name';
+$string['cleanupsettings'] = 'Clean up settings';
+$string['cleanupsettingsdesc'] = 'The following settings control the cleanup tasks for this plugin.';
 $string['core'] = 'Core';
 $string['deleterule'] = 'Delete rule';
 $string['deletestep'] = 'Delete step';
@@ -73,6 +75,14 @@ $string['httppostactionstepdesc'] = 'A step to allow Moodle workflows to send da
 $string['jsonencode'] = 'JSON encode parameters';
 $string['jsonencode_help'] = 'If enabled values in the Parameter field will be JSON encoded.';
 $string['lasttriggered'] = 'Last triggered';
+$string['learning'] = 'Enable learning mode';
+$string['learning_help'] = 'Learning mode will collect data about available fields for fired events';
+$string['learningsettings'] = 'Learning mode settings';
+$string['learningsettingsdesc'] = 'Every Moodle event provides a set of fields that can be used as placeholders in the workflow that is triggered for that event.<br/>
+This plugin comes with a predefined set of placeholders for some Moodle core events. Enabling learning mode dynamically updates the list of placeholders availble for Moodle events.<br/><br/>
+This setting can cause Moodle performance issues and should only be enabled when there are events such as those in plugins that do not have existing
+placeholder definitions available. <br/>
+Please refer to the plugin documentation for more information.';
 $string['lookup'] = 'Lookup';
 $string['manage'] = 'Manage';
 $string['manageworkflow'] = 'Manage workflow';
@@ -83,6 +93,7 @@ $string['movestepdown'] = 'Move step towards end';
 $string['name'] = 'Name';
 $string['numsteps'] = 'Steps';
 $string['outputprefix'] = 'Prefix for added fields';
+$string['pluginsettings'] = 'Plugin Settings';
 $string['privacy:path:events'] = '';
 $string['privacy:metadata:events'] = 'Data from monitored Moodle events';
 $string['privacy:metadata:events:anonymous'] = 'Whether the event was flagged as anonymous';
@@ -123,6 +134,7 @@ $string['taskcleanup'] = 'Delete old processed events';
 $string['taskprocessworkflows'] = 'Process workflows scheduled task.';
 $string['trigger:manageworkflows'] = 'Create and configure automatic event-triggered workflows';
 $string['timetocleanup'] = 'Time to cleanup old events';
+$string['timetocleanup_help'] = 'This setting sets the time sucessfully executed workflows remain in the Moodle database prior to being removed.';
 $string['workflowactive'] = 'Workflow active';
 $string['workflowactive_help'] = 'Only active workflows will be processed when an event is triggered.';
 $string['workflowcopysuccess'] = 'Workflow successfully duplicated';

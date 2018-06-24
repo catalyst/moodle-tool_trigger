@@ -27,24 +27,23 @@ require_once($CFG->libdir . '/adminlib.php');
 
 defined('MOODLE_INTERNAL') || die();
 
-admin_externalpage_setup('tool_trigger_settings');
+require_login();
 
+admin_externalpage_setup('tool_trigger_settings', '', null, '', array('pagelayout' => 'report'));
 
-$config = get_config('tool_trigger');
-$form = new \tool_trigger\index_form();
+$context = context_system::instance();
 
-if ($data = $form->get_data()) {
-
-    // Save plugin config.
-    foreach ($data as $name => $value) {
-        set_config($name, $value, 'tool_trigger');
-    }
-
-    redirect(new moodle_url('/admin/tool/trigger/index.php'), get_string('changessaved'));
-}
+// Check for caps.
+require_capability('tool/trigger:manageworkflows', $context);
 
 // Build the page output.
 echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('pluginsettings', 'tool_trigger'));
-$form->display();
+echo $OUTPUT->heading(get_string('workflowoverview', 'tool_trigger'));
+
+// Render the rule list.
+$manageurl = new moodle_url('/admin/tool/trigger/manage.php');
+$renderable = new \tool_trigger\output\manageworkflows\renderable('tooltrigger', $manageurl);
+$renderer = $PAGE->get_renderer('tool_trigger', 'manageworkflows');
+echo $renderer->render($renderable);
+
 echo $OUTPUT->footer();
