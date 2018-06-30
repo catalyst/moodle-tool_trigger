@@ -38,10 +38,7 @@ class event_processor {
     /** @var  static a reference to an instance of this class (using late static binding). */
     protected static $singleton;
 
-    /** @var int $count Counter. */
-    protected $count = 0;
-
-    protected function __construct() {
+    public function __construct() {
 
         // Register shutdown handler - this is useful for buffering, processing events, etc.
         \core_shutdown_manager::register_function(array($this, 'flush'));
@@ -74,7 +71,7 @@ class event_processor {
      * @param boolean $islearning
      * @return string
      */
-    public function prepare_event($event, $islearning=false) {
+    private function prepare_event($event, $islearning) {
         global $PAGE;
 
         // We need to capture current info at this moment,
@@ -101,38 +98,19 @@ class event_processor {
      * @return void
      */
     public function write(\core\event\base $event) {
-        global $PAGE;
-
         if (!$this->is_event_ignored($event)) { // If is not an ignore event then process
 
-            $entry = $this->prepare_event($event);
-
-            $this->buffer[] = $entry;
-            $this->count++;
-
-            $this->flush();
+            $entry = $this->prepare_event($event, false);
+            $this->insert_event_entry($entry);
         }
 
         if ($this->islearning) { // If in learning mode then store event details.
             $entry = $this->prepare_event($event, true);
-            $this->insert_learn_event($entry);
+            $this->insert_learn_event_entry($entry);
         }
 
         return;
 
-    }
-
-    /**
-     * Flush event buffer.
-     */
-    public function flush() {
-        if ($this->count == 0) {
-            return;
-        }
-        $events = $this->buffer;
-        $this->count = 0;
-        $this->buffer = array();
-        $this->insert_event_entries($events);
     }
 
     /**
@@ -174,20 +152,23 @@ class event_processor {
     }
 
     /**
-     * Used by the \tool_log\helper\buffered_writer trait to insert records
-     * into the database.
+     * Insert event data into the database.
      *
-     * @param array $evententries raw event data
+     * @param \stdClass $evententry Event data.
      */
-    protected function insert_event_entries($evententries) {
+    private function insert_event_entry($evententry) {
         global $DB;
-        $DB->insert_records('tool_trigger_events', $evententries);
+        $DB->insert_record('tool_trigger_events', $evententry);
     }
 
-    public function insert_learn_event($entry) {
+    /**
+     * Insert event data into the database for learning.
+     *
+     * @param \stdClass $learnentry Event data.
+     */
+    private function insert_learn_event_entry($learnentry) {
         global $DB;
-
-        $record = new \stdClass();
+        $DB->insert_record('tool_trigger_learn_events', $learnentry);
     }
 
 }
