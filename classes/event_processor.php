@@ -67,7 +67,7 @@ class event_processor {
      * @param boolean $islearning
      * @return string
      */
-    private function prepare_event($event, $islearning) {
+    private function prepare_event($event) {
         global $PAGE, $USER;
 
         // We need to capture current info at this moment,
@@ -77,10 +77,7 @@ class event_processor {
         $entry['origin'] = $PAGE->requestorigin;
         $entry['ip'] = $PAGE->requestip;
         $entry['realuserid'] = \core\session\manager::is_loggedinas() ? $USER->realuser : null;
-
-        if (!$islearning) {
-            $entry['other'] = serialize($entry['other']);
-        }
+        $entry['other'] = serialize($entry['other']);
 
         return $entry;
     }
@@ -94,14 +91,13 @@ class event_processor {
      * @return void
      */
     public function write(\core\event\base $event) {
-        if (!$this->is_event_ignored($event)) { // If is not an ignore event then process
+        $entry = $this->prepare_event($event);
 
-            $entry = $this->prepare_event($event, false);
+        if (!$this->is_event_ignored($event)) { // If is not an ignore event then process
             $this->insert_event_entry($entry);
         }
 
         if ($this->islearning) { // If in learning mode then store event details.
-            $entry = $this->prepare_event($event, true);
             $this->insert_learn_event_entry($entry);
         }
 
@@ -164,7 +160,6 @@ class event_processor {
      */
     private function insert_learn_event_entry($learnentry) {
         global $DB;
-        // TODO: prepare data.
         $DB->insert_record('tool_trigger_learn_events', $learnentry);
     }
 

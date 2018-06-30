@@ -85,5 +85,57 @@ function xmldb_tool_trigger_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2018050702, 'tool', 'trigger');
     }
 
+    if ($oldversion < 2018063003) {
+
+        // Add new index to table tool_trigger_events.
+        $table = new xmldb_table('tool_trigger_events');
+        $table->add_index('eventname', XMLDB_INDEX_NOTUNIQUE, array('eventname'));
+
+        // Conditionally launch create table for tool_trigger_events.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Add table tool_trigger_learn_events.
+        $table = new xmldb_table('tool_trigger_learn_events');
+
+        // Adding fields to table tool_trigger_learn_events.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('eventname', XMLDB_TYPE_CHAR, '254', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('component', XMLDB_TYPE_CHAR, '100', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('action', XMLDB_TYPE_CHAR, '100', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('target', XMLDB_TYPE_CHAR, '100', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('objecttable', XMLDB_TYPE_CHAR, '50', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('objectid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('crud', XMLDB_TYPE_CHAR, '1', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('edulevel', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('contextid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('contextlevel', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('contextinstanceid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('userid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('courseid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('relateduserid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('anonymous', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, 0);
+        $table->add_field('other', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('origin', XMLDB_TYPE_CHAR, '10', null, null, null, null);
+        $table->add_field('ip', XMLDB_TYPE_CHAR, '45', null, null, null, null);
+        $table->add_field('realuserid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('contextid', XMLDB_KEY_FOREIGN, array('contextid'), 'context', array('id'));
+
+        $table->add_index('timecreated', XMLDB_INDEX_NOTUNIQUE, array('timecreated'));
+        $table->add_index('eventname', XMLDB_INDEX_NOTUNIQUE, array('eventname'));
+
+        // Conditionally launch create table for tool_trigger_events.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Trigger savepoint reached.
+        upgrade_plugin_savepoint(true, 2018063004, 'tool', 'trigger');
+    }
+
     return true;
 }

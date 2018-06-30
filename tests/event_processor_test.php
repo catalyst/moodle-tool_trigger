@@ -152,23 +152,8 @@ class tool_trigger_event_processor_testcase extends advanced_testcase {
         // We're testing a protected method, so we need to setup reflector magic.
         $method = new ReflectionMethod('tool_trigger\event_processor', 'prepare_event');
         $method->setAccessible(true); // Allow accessing of private method.
-        $proxy = $method->invoke(new \tool_trigger\event_processor, $event, false); // Get result of invoked method.
+        $proxy = $method->invoke(new \tool_trigger\event_processor, $event); // Get result of invoked method.
         $expected = unserialize($proxy['other']);
-
-        $this->assertEquals($this->eventarr['other'], $expected);
-    }
-
-    /**
-     * Test is prepare event data when learning mode is true.
-     */
-    public function test_prepare_event_learning() {
-        $event = \core\event\user_loggedin::create($this->eventarr);
-
-        // We're testing a protected method, so we need to setup reflector magic.
-        $method = new ReflectionMethod('tool_trigger\event_processor', 'prepare_event');
-        $method->setAccessible(true); // Allow accessing of private method.
-        $proxy = $method->invoke(new \tool_trigger\event_processor, $event, true); // Get result of invoked method.
-        $expected = $proxy['other'];
 
         $this->assertEquals($this->eventarr['other'], $expected);
     }
