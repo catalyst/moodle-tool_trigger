@@ -47,7 +47,6 @@ function xmldb_tool_trigger_upgrade($oldversion) {
         $table->add_field('contextid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
         $table->add_field('contextlevel', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
         $table->add_field('contextinstanceid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
-        $table->add_field('link', XMLDB_TYPE_CHAR, '254', null, XMLDB_NOTNULL, null, null);
         $table->add_field('courseid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
         $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
 
@@ -85,7 +84,7 @@ function xmldb_tool_trigger_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2018050702, 'tool', 'trigger');
     }
 
-    if ($oldversion < 2018063003) {
+    if ($oldversion < 2018063004) {
 
         // Add new index to table tool_trigger_events.
         $table = new xmldb_table('tool_trigger_events');
