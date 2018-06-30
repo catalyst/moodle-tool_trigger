@@ -39,10 +39,6 @@ class event_processor {
     protected static $singleton;
 
     public function __construct() {
-
-        // Register shutdown handler - this is useful for buffering, processing events, etc.
-        \core_shutdown_manager::register_function(array($this, 'flush'));
-
         $this->islearning = (bool)get_config('tool_trigger', 'learning');
     }
 
@@ -72,7 +68,7 @@ class event_processor {
      * @return string
      */
     private function prepare_event($event, $islearning) {
-        global $PAGE;
+        global $PAGE, $USER;
 
         // We need to capture current info at this moment,
         // at the same time this lowers memory use because
@@ -80,7 +76,7 @@ class event_processor {
         $entry = $event->get_data();
         $entry['origin'] = $PAGE->requestorigin;
         $entry['ip'] = $PAGE->requestip;
-        $entry['realuserid'] = \core\session\manager::is_loggedinas() ? $GLOBALS['USER']->realuser : null;
+        $entry['realuserid'] = \core\session\manager::is_loggedinas() ? $USER->realuser : null;
 
         if (!$islearning) {
             $entry['other'] = serialize($entry['other']);
@@ -168,6 +164,7 @@ class event_processor {
      */
     private function insert_learn_event_entry($learnentry) {
         global $DB;
+        // TODO: prepare data.
         $DB->insert_record('tool_trigger_learn_events', $learnentry);
     }
 
