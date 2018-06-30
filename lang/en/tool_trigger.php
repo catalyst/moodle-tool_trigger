@@ -131,6 +131,7 @@ $string['step_action_httppost:privacy:desc'] = 'This plugin may be configured to
 $string['step_action_logdump_desc'] = 'This step prints the event and workflow steps data to the cron log. (Mostly useful for testing.)';
 $string['step_action_logdump_name'] = 'Cron log';
 $string['taskcleanup'] = 'Delete old processed events';
+$string['tasklearn'] = 'Learn about the fields in stored events.';
 $string['taskprocessworkflows'] = 'Process workflows scheduled task.';
 $string['trigger:manageworkflows'] = 'Create and configure automatic event-triggered workflows';
 $string['timetocleanup'] = 'Time to cleanup old events';

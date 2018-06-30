@@ -15,18 +15,35 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * Task to learn from processed events.
  *
- * @package     tool_trigger
- * @copyright   Matt Porritt <mattp@catalyst-au.net>
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    tool_trigger
+ * @copyright  Matt Porritt <mattp@catalyst-au.net>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+namespace tool_trigger\task;
 
-$plugin->component = 'tool_trigger';
-$plugin->release = '2018063006';
-$plugin->version = 2018063006;
-$plugin->requires = 2016052300;
-$plugin->maturity = MATURITY_BETA;
-$plugin->dependencies = array('tool_monitor' => 2015051101);
+defined('MOODLE_INTERNAL') || die();
+/**
+ * Task to learn from processed events.
+ */
+class learn extends \core\task\scheduled_task {
+
+    /**
+     * Get a descriptive name for this task.
+     *
+     * @return string
+     */
+    public function get_name() {
+        return get_string('tasklearn', 'tool_trigger');
+    }
+
+    /**
+     * Processes events.
+     */
+    public function execute() {
+        global $DB;
+
+    }
+}
