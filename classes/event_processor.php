@@ -35,11 +35,11 @@ defined('MOODLE_INTERNAL') || die();
  */
 class event_processor {
 
-    // This class works basically the same as a logstore writer plugin.
-    use \tool_log\helper\buffered_writer;
-
     /** @var  static a reference to an instance of this class (using late static binding). */
     protected static $singleton;
+
+    /** @var int $count Counter. */
+    protected $count = 0;
 
     protected function __construct() {
 
@@ -120,6 +120,19 @@ class event_processor {
 
         return;
 
+    }
+
+    /**
+     * Flush event buffer.
+     */
+    public function flush() {
+        if ($this->count == 0) {
+            return;
+        }
+        $events = $this->buffer;
+        $this->count = 0;
+        $this->buffer = array();
+        $this->insert_event_entries($events);
     }
 
     /**
