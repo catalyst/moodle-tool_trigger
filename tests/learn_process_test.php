@@ -42,13 +42,9 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
 
 
     /**
-     * Test is event ignored.
-     * Test event with no associated workflow is ignored.
+     * Helper function to creat learnt event object.
      */
-    public function test_get_learnt_events() {
-        global $DB;
-
-        // Add event records to database.
+    public function create_learnt_event_object() {
         $learntevent = new \stdClass();
         $learntevent->eventname = '\core\event\user_loggedin';
         $learntevent->component = 'core';
@@ -71,6 +67,17 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
         $learntevent->ip = '';
         $learntevent->realuserid ='';
 
+        return $learntevent;
+    }
+
+    /**
+     * Test learnt events names are retrieved from database.
+     */
+    public function test_get_learnt_events() {
+        global $DB;
+
+        // Add event records to database.
+        $learntevent = $this->create_learnt_event_object();
         $learntevent2 = $learntevent;
         $learntevent2->eventname = '\core\event\user_loggedout';
         $learntevent2->action = 'loggedout';
@@ -85,6 +92,37 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
         $proxy = $method->invoke(new \tool_trigger\learn_process); // Get result of invoked method.
 
         $this->assertEquals(sort($expected), sort($proxy));  // Order of returned array is not important, just values.
+    }
+
+    /**
+     * Test learnt event records are retrieved from database.
+     */
+    public function test_get_learnt_records() {
+        global $DB;
+        $count = 0;
+        $eventnames = array();
+
+        // Add event records to database.
+        $learntevent = $this->create_learnt_event_object();
+
+        $DB->insert_records('tool_trigger_learn_events', array($learntevent, $learntevent));
+
+        $expected = array('\core\event\user_loggedin', '\core\event\user_loggedin');  // Expected result.
+
+        // We're testing a private method, so we need to setup reflector magic.
+        $method = new ReflectionMethod('tool_trigger\learn_process', 'get_learnt_records');
+        $method->setAccessible(true); // Allow accessing of private method.
+        $proxy = $method->invoke(new \tool_trigger\learn_process, '\core\event\user_loggedin'); // Get result of invoked method.
+
+        foreach ($proxy as $value) {
+            $eventnames[] = $value->eventname;
+            $count++;
+        }
+
+        $this->assertEquals(sort($expected), sort($eventnames));
+        $this->assertEquals(2, $count);
+
+        $proxy->close();
     }
 
 }

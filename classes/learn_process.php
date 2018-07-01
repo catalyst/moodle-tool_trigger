@@ -29,7 +29,11 @@ defined('MOODLE_INTERNAL') || die();
  */
 class learn_process {
 
-
+    /**
+     * Get a list of all the distinct events names in the learning table.
+     *
+     * @return array $learntevents An array of the distinct event names in table.
+     */
     private function get_learnt_events() {
         global $DB;
 
@@ -40,13 +44,36 @@ class learn_process {
         return $learntevents;
     }
 
+    /**
+     * Get all the records for the learning table
+     * for a specific event name.
+     *
+     * @param string $learntevent The name of the event to get the records for.
+     * @return moodle_recordset $learntrecords The recordset of results.
+     */
+    private function get_learnt_records($learntevent) {
+        global $DB;
+
+        $learntrecords = $DB->get_recordset('tool_trigger_learn_events', array('eventname' => $learntevent));
+
+        return $learntrecords;
+    }
+
+    /**
+     * Process the learnt events and extract the field names.
+     */
     public function process () {
         // Get a list of the event types from the learn table.
         $learntevents = $this->get_learnt_events();
 
         // For each type of event get all the entries for that event from the learn table.
         foreach ($learntevents as $learntevent) {
-            $learntrecords = $this->get_learnt_records;
+            $learntrecords = $this->get_learnt_records($learntevent);
+
+            foreach ($learntrecords as $record) {
+                // Do whatever you want with this record
+            }
+            $learntrecords->close(); // Don't forget to close the recordset!
         }
 
         // Convert each record into an array where key is field name and value is type.
