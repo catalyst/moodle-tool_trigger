@@ -125,4 +125,44 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
         $proxy->close();
     }
 
+
+    /**
+     * Test learnt event records are retrieved from database.
+     */
+    public function test_convert_record_type() {
+
+        $learntevent = $this->create_learnt_event_object();
+
+        $expected = array(
+            'eventname' => 'string',
+            'component' => 'string',
+            'action' => 'string',
+            'target' => 'string',
+            'objecttable' => 'string',
+            'objectid' => 'integer',
+            'crud' => 'string',
+            'edulevel' => 'integer',
+            'contextid' => 'integer',
+            'contextlevel' => 'integer',
+            'contextinstanceid' => 'integer',
+            'userid' => 'integer',
+            'courseid' => 'integer',
+            'relateduserid' => 'string',
+            'anonymous' => 'integer',
+            'other_username' => 'string',
+            'timecreated' => 'integer',
+            'origin' => 'string',
+            'ip' => 'string',
+            'realuserid' => 'string'
+        );  // Expected result.
+
+        // We're testing a private method, so we need to setup reflector magic.
+        $method = new ReflectionMethod('tool_trigger\learn_process', 'convert_record_type');
+        $method->setAccessible(true); // Allow accessing of private method.
+        $proxy = $method->invoke(new \tool_trigger\learn_process, $learntevent, false); // Get result of invoked method.
+
+        $this->assertEquals($expected, $proxy);
+
+    }
+
 }

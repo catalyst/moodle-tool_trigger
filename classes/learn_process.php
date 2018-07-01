@@ -29,6 +29,8 @@ defined('MOODLE_INTERNAL') || die();
  */
 class learn_process {
 
+    private $typearray = array();
+
     /**
      * Get a list of all the distinct events names in the learning table.
      *
@@ -60,9 +62,44 @@ class learn_process {
     }
 
     /**
+     * This method takes an entry for the learnt events table and returns an array
+     * of the fields for that event record.
+     * The array is flat with the array keys being the field names and the array values
+     * being the data type of the field.
+     * Keys contained in the 'other' event field are prefixed with 'other_'.
+     *
+     * @param object $record
+     * @param bool $isother
+     * @return array $typearray
+     */
+    private function convert_record_type($record, $isother) {
+
+        foreach ($record as $key => $value) {  // Iterate through record fields.
+
+            if ($key == 'other') {  // Treat the 'other' field as special.
+                $other =  unserialize($value);  // Convert back to PHP array.
+                $this->convert_record_type($other, true);  // Call this function recursively to process fileds contained in other.
+            } else {
+
+                if ($isother) { // If this key was a child of 'other' give it a prefix.
+                    $otherkey = 'other_' . $key;
+                    $this->typearray[$otherkey] = gettype($value);  // Update result array with result.
+                } else {
+                    $this->typearray[$key] = gettype($value); // Update result array with result.
+                }
+
+            }
+        }
+
+        return $this->typearray;
+    }
+
+    /**
      * Process the learnt events and extract the field names.
      */
     public function process () {
+        $processedrecords = array();
+
         // Get a list of the event types from the learn table.
         $learntevents = $this->get_learnt_events();
 
@@ -71,18 +108,18 @@ class learn_process {
             $learntrecords = $this->get_learnt_records($learntevent);
 
             foreach ($learntrecords as $record) {
-                // Do whatever you want with this record
+                $this->typearray = array(); // Reset typearray before calling convert_record_type.
+                // Convert each record into an array where key is field name and value is type.
+                $processedrecords[] = $this->convert_record_type($record, false);
             }
             $learntrecords->close(); // Don't forget to close the recordset!
+
+            // Merge all entries into one array.
+
+            // convert collated fields to json.
+
+            // store collated field json in db.
         }
-
-        // Convert each record into an array where key is field name and value is type.
-
-        // Merge all entries into one array.
-
-        // convert collated fields to json.
-
-        // store collated field json in db.
     }
 
 }
