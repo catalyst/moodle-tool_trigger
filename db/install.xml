@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="admin/tool/trigger/db" VERSION="20180511" COMMENT="XMLDB file for Moodle admin/tool/trigger"
+<XMLDB PATH="admin/tool/trigger/db" VERSION="20180701" COMMENT="XMLDB file for Moodle admin/tool/trigger"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../../lib/xmldb/xmldb.xsd"
 >
@@ -126,6 +126,19 @@
       <INDEXES>
         <INDEX NAME="timecreated" UNIQUE="false" FIELDS="timecreated"/>
         <INDEX NAME="eventname" UNIQUE="false" FIELDS="eventname"/>
+      </INDEXES>
+    </TABLE>
+    <TABLE NAME="tool_trigger_event_fields" COMMENT="Table stores the available fields for am event. Fields and their data types ares tored in JSON">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="eventname" TYPE="char" LENGTH="255" NOTNULL="true" SEQUENCE="false" COMMENT="the name of the event"/>
+        <FIELD NAME="jsonfields" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="The fields available for this event in JSON"/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+      </KEYS>
+      <INDEXES>
+        <INDEX NAME="eventname" UNIQUE="true" FIELDS="eventname"/>
       </INDEXES>
     </TABLE>
   </TABLES>

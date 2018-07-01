@@ -112,6 +112,42 @@ class learn_process {
     }
 
     /**
+     * Store the available fields for an event as JSON in the database.
+     *
+     * @param string $learntevent The name of the event the fields relate to.
+     * @param string $jsonfields JSON string of the event fields and their data types.
+     */
+    private function store_json_fields($learntevent, $jsonfields) {
+        global $DB;
+
+        $record = new \stdClass();
+        $record->eventname = $learntevent;
+        $record->jsonfields = $jsonfields;
+
+        // We only want one set of fields per event in the database.
+        // Therefore we need to follow an "upsert" pattern.
+        $DB->start_delegated_transaction();
+
+        try {
+            $transaction = $DB->start_delegated_transaction();
+
+            // Check for existing record in DB.
+            $exists = $DB->get_record('tool_trigger_event_fields', array('eventname'=>$learntevent), IGNORE_MISSING);
+
+            if ($exists) {  // If record exists update
+                $record->id = $exists->id;
+                $DB->update_record('tool_trigger_event_fields', $record);
+            } else {  // If not insert.
+                $DB->insert_record('tool_trigger_event_fields', $record);
+            }
+
+            $transaction->allow_commit();
+        } catch(\Exception $e) {
+            $transaction->rollback($e);
+        }
+    }
+
+    /**
      * Process the learnt events and extract the field names.
      */
     public function process () {
@@ -132,11 +168,13 @@ class learn_process {
             $learntrecords->close(); // Don't forget to close the recordset!
 
             // Merge all entries into one array.
-            $mergedrecords = $this->merge_records($processedrecords);
+            $mergedfields = $this->merge_records($processedrecords);
 
             // convert collated fields to json.
+            $jsonfields = json_encode($mergedfields);
 
             // store collated field json in db.
+            $this->store_json_fields($learntevent, $jsonfields);
         }
     }
 

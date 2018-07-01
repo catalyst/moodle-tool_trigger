@@ -136,5 +136,30 @@ function xmldb_tool_trigger_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2018063004, 'tool', 'trigger');
     }
 
+    if ($oldversion < 2018070101) {
+
+        // Define table tool_trigger_event_fields to be created.
+        $table = new xmldb_table('tool_trigger_event_fields');
+
+        // Adding fields to table tool_trigger_event_fields.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('eventname', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('jsonfields', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null, null);
+
+        // Adding keys to table tool_trigger_event_fields.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+
+        // Adding indexes to table tool_trigger_event_fields.
+        $table->add_index('eventname', XMLDB_INDEX_UNIQUE, ['eventname']);
+
+        // Conditionally launch create table for tool_trigger_event_fields.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Trigger savepoint reached.
+        upgrade_plugin_savepoint(true, 2018070101, 'tool', 'trigger');
+    }
+
     return true;
 }
