@@ -33,14 +33,21 @@ class learn_process {
     private function get_learnt_events() {
         global $DB;
 
+        $sql = 'SELECT DISTINCT(eventname) FROM {tool_trigger_learn_events}';
+        $learntrecords = $DB->get_records_sql($sql);
+        $learntevents = array_keys($learntrecords);
 
-
+        return $learntevents;
     }
 
     public function process () {
         // Get a list of the event types from the learn table.
+        $learntevents = $this->get_learnt_events();
 
         // For each type of event get all the entries for that event from the learn table.
+        foreach ($learntevents as $learntevent) {
+            $learntrecords = $this->get_learnt_records;
+        }
 
         // Convert each record into an array where key is field name and value is type.
 
