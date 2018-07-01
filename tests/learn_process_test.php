@@ -165,4 +165,47 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
 
     }
 
+    /**
+     * Test processed records are merged successfully.
+     */
+    public function test_merge_records() {
+
+        $processedrecord = array(
+            'eventname' => 'string',
+            'component' => 'string',
+            'action' => 'string',
+            'target' => 'string',
+            'objecttable' => 'string',
+            'objectid' => 'integer',
+            'crud' => 'string',
+            'edulevel' => 'integer',
+            'contextid' => 'integer',
+            'contextlevel' => 'integer',
+            'contextinstanceid' => 'integer',
+            'userid' => 'integer',
+            'courseid' => 'integer',
+            'relateduserid' => 'string',
+            'anonymous' => 'integer',
+            'other_username' => 'string',
+            'timecreated' => 'integer',
+            'origin' => 'string',
+            'ip' => 'string',
+            'realuserid' => 'string'
+        );
+        $processedrecord2 = $processedrecord;
+        $processedrecord2['oher_foo'] = 'string';
+        $processedrecords = array($processedrecord, $processedrecord2);
+
+        $expected = $processedrecord;
+        $expected['oher_foo'] = 'string';
+
+        // We're testing a private method, so we need to setup reflector magic.
+        $method = new ReflectionMethod('tool_trigger\learn_process', 'merge_records');
+        $method->setAccessible(true); // Allow accessing of private method.
+        $proxy = $method->invoke(new \tool_trigger\learn_process, $processedrecords); // Get result of invoked method.
+
+        $this->assertEquals($expected, $proxy);
+
+    }
+
 }

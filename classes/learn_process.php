@@ -95,6 +95,23 @@ class learn_process {
     }
 
     /**
+     * This method takes an array of all the processed learnt records and merges
+     * them together. Returning a deduplicated list of all the available fields
+     * for the captured events.
+     * We do this because the same event might have different fields each time it
+     * is triggered, this is because not all fields are required and may change
+     * based on differing initial conditions.
+     *
+     * @param array $processedrecords Array of processed record arrays.
+     * @return array $mergedrecords Array of results with all source arrays merged together.
+     */
+    private function merge_records($processedrecords) {
+        $mergedrecords = array_merge(...$processedrecords);
+
+        return $mergedrecords;
+    }
+
+    /**
      * Process the learnt events and extract the field names.
      */
     public function process () {
@@ -115,6 +132,7 @@ class learn_process {
             $learntrecords->close(); // Don't forget to close the recordset!
 
             // Merge all entries into one array.
+            $mergedrecords = $this->merge_records($processedrecords);
 
             // convert collated fields to json.
 
