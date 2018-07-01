@@ -132,6 +132,7 @@ $string['step_action_logdump_desc'] = 'This step prints the event and workflow s
 $string['step_action_logdump_name'] = 'Cron log';
 $string['taskcleanup'] = 'Delete old processed events';
 $string['tasklearn'] = 'Learn about the fields in stored events.';
+$string['tasklearnstart'] = 'Starting event field extraction processing...';
 $string['taskprocessworkflows'] = 'Process workflows scheduled task.';
 $string['trigger:manageworkflows'] = 'Create and configure automatic event-triggered workflows';
 $string['timetocleanup'] = 'Time to cleanup old events';

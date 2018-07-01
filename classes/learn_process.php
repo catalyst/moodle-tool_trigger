@@ -15,37 +15,40 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Task to learn from processed events.
+ * Process learnt events.
  *
  * @package    tool_trigger
  * @copyright  Matt Porritt <mattp@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace tool_trigger\task;
-
+namespace tool_trigger;
 defined('MOODLE_INTERNAL') || die();
 /**
- * Task to learn from processed events.
+ * Process learnt events.
  */
-class learn extends \core\task\scheduled_task {
+class learn_process {
 
-    /**
-     * Get a descriptive name for this task.
-     *
-     * @return string
-     */
-    public function get_name() {
-        return get_string('tasklearn', 'tool_trigger');
-    }
 
-    /**
-     * Processes events.
-     */
-    public function execute() {
-        mtrace(get_string('tasklearnstart', 'tool_trigger'));
-        $processor = new \tool_trigger\learn_process();
-        $processor->process();
+    private function get_learnt_events() {
+        global $DB;
+
+
 
     }
+
+    public function process () {
+        // Get a list of the event types from the learn table.
+
+        // For each type of event get all the entries for that event from the learn table.
+
+        // Convert each record into an array where key is field name and value is type.
+
+        // Merge all entries into one array.
+
+        // convert collated fields to json.
+
+        // store collated field json in db.
+    }
+
 }
