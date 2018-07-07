@@ -159,7 +159,7 @@ class http_post_action_step extends base_action_step {
         $mform->addHelpButton('url', 'httpostactionurl', 'tool_trigger');
 
         // Headers.
-        $attributes = array('cols' => '50', 'rows' => '5');
+        $attributes = array('cols' => '50', 'rows' => '2');
         $mform->addElement('textarea', 'httpheaders', get_string ('httpostactionheaders', 'tool_trigger'), $attributes);
         $mform->setType('httpheaders', PARAM_RAW_TRIMMED);
         $mform->addHelpButton('httpheaders', 'httpostactionheaders', 'tool_trigger');

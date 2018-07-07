@@ -57,10 +57,25 @@ class base_form extends \moodleform {
         parent::__construct($action, $customdata, $method, $target, $attributes, $editable, $ajaxformdata);
     }
 
+    private function get_trigger_fields() {
+        $fields = array(
+            'field1',
+            'field2',
+            'field3'
+        );
+
+        // Get all fields for this workflows event.
+
+        // Get all fields from previous steps in this workflow.
+
+        return array('fields' => $fields);
+    }
+
     /**
      * Build form.
      */
     public function definition() {
+        global $OUTPUT;
         $mform = $this->_form;
 
         $mform->addElement('hidden', 'id');
@@ -113,11 +128,18 @@ class base_form extends \moodleform {
             $mform->addHelpButton('name', 'stepname', 'tool_trigger');
 
             // Description.
-            $attributes = array('cols' => '50', 'rows' => '5');
+            $attributes = array('cols' => '50', 'rows' => '2');
             $mform->addElement('textarea', 'description', get_string ('stepdescription', 'tool_trigger'), $attributes);
             $mform->setType('description', PARAM_ALPHAEXT);
             $mform->addRule('description', get_string('required'), 'required');
             $mform->addHelpButton('description', 'stepdescription', 'tool_trigger');
+
+            // Get available fields.
+            // If this is the first step in the workflow it will just be the events fields.
+            // Otherwise it will also have the fields from all the prvious steps.
+            $triggerfields = $this->get_trigger_fields();
+            $fieldhtml = $OUTPUT->render_from_template('tool_trigger/trigger_fields', $triggerfields);
+            $mform->addElement('html', $fieldhtml);
 
             // Additional fields specific to the step type.
             $this->step->form_definition_extra($this, $this->_form, $this->_customdata);
