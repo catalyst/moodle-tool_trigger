@@ -42,7 +42,9 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
 
 
     /**
-     * Helper function to creat learnt event object.
+     * Helper function to create learnt event object.
+     *
+     * @return object $learntevent The learnt event object.
      */
     public function create_learnt_event_object() {
         $learntevent = new \stdClass();
@@ -68,6 +70,38 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
         $learntevent->realuserid ='';
 
         return $learntevent;
+    }
+
+    /**
+     * Helper method to get event fields.
+     *
+     * @return array $fields The event fields.
+     */
+    public function get_event_fields() {
+        $fields = array(
+            'eventname' => 'string',
+            'component' => 'string',
+            'action' => 'string',
+            'target' => 'string',
+            'objecttable' => 'string',
+            'objectid' => 'integer',
+            'crud' => 'string',
+            'edulevel' => 'integer',
+            'contextid' => 'integer',
+            'contextlevel' => 'integer',
+            'contextinstanceid' => 'integer',
+            'userid' => 'integer',
+            'courseid' => 'integer',
+            'relateduserid' => 'string',
+            'anonymous' => 'integer',
+            'other_username' => 'string',
+            'timecreated' => 'integer',
+            'origin' => 'string',
+            'ip' => 'string',
+            'realuserid' => 'string'
+        );
+
+        return $fields;
     }
 
     /**
@@ -133,28 +167,7 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
 
         $learntevent = $this->create_learnt_event_object();
 
-        $expected = array(
-            'eventname' => 'string',
-            'component' => 'string',
-            'action' => 'string',
-            'target' => 'string',
-            'objecttable' => 'string',
-            'objectid' => 'integer',
-            'crud' => 'string',
-            'edulevel' => 'integer',
-            'contextid' => 'integer',
-            'contextlevel' => 'integer',
-            'contextinstanceid' => 'integer',
-            'userid' => 'integer',
-            'courseid' => 'integer',
-            'relateduserid' => 'string',
-            'anonymous' => 'integer',
-            'other_username' => 'string',
-            'timecreated' => 'integer',
-            'origin' => 'string',
-            'ip' => 'string',
-            'realuserid' => 'string'
-        );  // Expected result.
+        $expected = $this->get_event_fields();  // Expected result.
 
         // We're testing a private method, so we need to setup reflector magic.
         $method = new ReflectionMethod('tool_trigger\learn_process', 'convert_record_type');
@@ -170,28 +183,7 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
      */
     public function test_merge_records() {
 
-        $processedrecord = array(
-            'eventname' => 'string',
-            'component' => 'string',
-            'action' => 'string',
-            'target' => 'string',
-            'objecttable' => 'string',
-            'objectid' => 'integer',
-            'crud' => 'string',
-            'edulevel' => 'integer',
-            'contextid' => 'integer',
-            'contextlevel' => 'integer',
-            'contextinstanceid' => 'integer',
-            'userid' => 'integer',
-            'courseid' => 'integer',
-            'relateduserid' => 'string',
-            'anonymous' => 'integer',
-            'other_username' => 'string',
-            'timecreated' => 'integer',
-            'origin' => 'string',
-            'ip' => 'string',
-            'realuserid' => 'string'
-        );
+        $processedrecord = $this->get_event_fields();
         $processedrecord2 = $processedrecord;
         $processedrecord2['oher_foo'] = 'string';
         $processedrecords = array($processedrecord, $processedrecord2);
@@ -214,28 +206,7 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
     public function test_merge_db_record() {
 
         // Simulate learnt event.
-        $processedrecord = array(
-            'eventname' => 'string',
-            'component' => 'string',
-            'action' => 'string',
-            'target' => 'string',
-            'objecttable' => 'string',
-            'objectid' => 'integer',
-            'crud' => 'string',
-            'edulevel' => 'integer',
-            'contextid' => 'integer',
-            'contextlevel' => 'integer',
-            'contextinstanceid' => 'integer',
-            'userid' => 'integer',
-            'courseid' => 'integer',
-            'relateduserid' => 'string',
-            'anonymous' => 'integer',
-            'other_username' => 'string',
-            'timecreated' => 'integer',
-            'origin' => 'string',
-            'ip' => 'string',
-            'realuserid' => 'string'
-        );
+        $processedrecord = $this->get_event_fields();
 
         // Adjust DB record mock to have one record less and one record more than the learnt event.
         $processedrecord2 = $processedrecord;
@@ -273,28 +244,7 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
         global $DB;
 
         // Simulate learnt event.
-        $processedrecord = array(
-            'eventname' => 'string',
-            'component' => 'string',
-            'action' => 'string',
-            'target' => 'string',
-            'objecttable' => 'string',
-            'objectid' => 'integer',
-            'crud' => 'string',
-            'edulevel' => 'integer',
-            'contextid' => 'integer',
-            'contextlevel' => 'integer',
-            'contextinstanceid' => 'integer',
-            'userid' => 'integer',
-            'courseid' => 'integer',
-            'relateduserid' => 'string',
-            'anonymous' => 'integer',
-            'other_username' => 'string',
-            'timecreated' => 'integer',
-            'origin' => 'string',
-            'ip' => 'string',
-            'realuserid' => 'string'
-        );
+        $processedrecord = $this->get_event_fields();
 
         $learntevent = '\core\event\user_loggedin';
         $jsonfields = json_encode($processedrecord);
@@ -319,28 +269,7 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
         global $DB;
 
         // Simulate learnt event.
-        $processedrecord = array(
-            'eventname' => 'string',
-            'component' => 'string',
-            'action' => 'string',
-            'target' => 'string',
-            'objecttable' => 'string',
-            'objectid' => 'integer',
-            'crud' => 'string',
-            'edulevel' => 'integer',
-            'contextid' => 'integer',
-            'contextlevel' => 'integer',
-            'contextinstanceid' => 'integer',
-            'userid' => 'integer',
-            'courseid' => 'integer',
-            'relateduserid' => 'string',
-            'anonymous' => 'integer',
-            'other_username' => 'string',
-            'timecreated' => 'integer',
-            'origin' => 'string',
-            'ip' => 'string',
-            'realuserid' => 'string'
-        );
+        $processedrecord = $this->get_event_fields();
 
         $learntevent = '\core\event\user_loggedin';
         $jsonfields = json_encode($processedrecord);
