@@ -154,9 +154,10 @@ class learn_process {
             $transaction = $DB->start_delegated_transaction();
 
             // Check for existing record in DB.
-            $exists = $DB->get_record('tool_trigger_event_fields', array('eventname'=>$learntevent), IGNORE_MISSING);
+            $exists = $DB->get_record('tool_trigger_event_fields', array('eventname'=>$learntevent), '*', IGNORE_MISSING);
 
             if ($exists) {  // If record exists update
+                error_log(print_r($exists, true));
                 $record->id = $exists->id;
                 $record = $this->merge_json_fields($record, $exists);  // Merge records before update.
                 $DB->update_record('tool_trigger_event_fields', $record);

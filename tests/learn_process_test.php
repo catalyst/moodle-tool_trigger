@@ -266,4 +266,102 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
 
     }
 
+    /**
+     * Test learnt fields are correctly inserted in the database.
+     */
+    public function test_store_json_fields_insert() {
+        global $DB;
+
+        // Simulate learnt event.
+        $processedrecord = array(
+            'eventname' => 'string',
+            'component' => 'string',
+            'action' => 'string',
+            'target' => 'string',
+            'objecttable' => 'string',
+            'objectid' => 'integer',
+            'crud' => 'string',
+            'edulevel' => 'integer',
+            'contextid' => 'integer',
+            'contextlevel' => 'integer',
+            'contextinstanceid' => 'integer',
+            'userid' => 'integer',
+            'courseid' => 'integer',
+            'relateduserid' => 'string',
+            'anonymous' => 'integer',
+            'other_username' => 'string',
+            'timecreated' => 'integer',
+            'origin' => 'string',
+            'ip' => 'string',
+            'realuserid' => 'string'
+        );
+
+        $learntevent = '\core\event\user_loggedin';
+        $jsonfields = json_encode($processedrecord);
+
+        // We're testing a private method, so we need to setup reflector magic.
+        $method = new ReflectionMethod('tool_trigger\learn_process', 'store_json_fields');
+        $method->setAccessible(true); // Allow accessing of private method.
+        $method->invoke(new \tool_trigger\learn_process, $learntevent, $jsonfields); // Get result of invoked method.
+
+        // Get record form DB
+        $result = $DB->get_record('tool_trigger_event_fields', array('eventname'=>$learntevent));
+
+        $this->assertEquals($result->eventname, $learntevent);
+        $this->assertEquals($result->jsonfields, $jsonfields);
+
+    }
+
+    /**
+     * Test learnt fields are correctly updated in the database.
+     */
+    public function test_store_json_fields_update() {
+        global $DB;
+
+        // Simulate learnt event.
+        $processedrecord = array(
+            'eventname' => 'string',
+            'component' => 'string',
+            'action' => 'string',
+            'target' => 'string',
+            'objecttable' => 'string',
+            'objectid' => 'integer',
+            'crud' => 'string',
+            'edulevel' => 'integer',
+            'contextid' => 'integer',
+            'contextlevel' => 'integer',
+            'contextinstanceid' => 'integer',
+            'userid' => 'integer',
+            'courseid' => 'integer',
+            'relateduserid' => 'string',
+            'anonymous' => 'integer',
+            'other_username' => 'string',
+            'timecreated' => 'integer',
+            'origin' => 'string',
+            'ip' => 'string',
+            'realuserid' => 'string'
+        );
+
+        $learntevent = '\core\event\user_loggedin';
+        $jsonfields = json_encode($processedrecord);
+
+        // Manually insert a record into database;
+        $record = new \stdClass();
+        $record->eventname = $learntevent;
+        $record->jsonfields = $jsonfields;
+        $DB->insert_record('tool_trigger_event_fields', $record);
+
+        // We're testing a private method, so we need to setup reflector magic.
+        $method = new ReflectionMethod('tool_trigger\learn_process', 'store_json_fields');
+        $method->setAccessible(true); // Allow accessing of private method.
+        $method->invoke(new \tool_trigger\learn_process, $learntevent, $jsonfields); // Get result of invoked method.
+
+        // Get record form DB
+        $result = $DB->get_record('tool_trigger_event_fields', array('eventname'=>$learntevent));
+
+        $this->assertEquals($result->eventname, $learntevent);
+        $this->assertEquals($result->jsonfields, $jsonfields);
+
+    }
+
 }
