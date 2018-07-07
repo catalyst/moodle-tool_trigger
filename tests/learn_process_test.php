@@ -208,4 +208,62 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
 
     }
 
+    /**
+     * Test db record is merged successfully before updating.
+     */
+    public function test_merge_db_record() {
+
+        // Simulate learnt event.
+        $processedrecord = array(
+            'eventname' => 'string',
+            'component' => 'string',
+            'action' => 'string',
+            'target' => 'string',
+            'objecttable' => 'string',
+            'objectid' => 'integer',
+            'crud' => 'string',
+            'edulevel' => 'integer',
+            'contextid' => 'integer',
+            'contextlevel' => 'integer',
+            'contextinstanceid' => 'integer',
+            'userid' => 'integer',
+            'courseid' => 'integer',
+            'relateduserid' => 'string',
+            'anonymous' => 'integer',
+            'other_username' => 'string',
+            'timecreated' => 'integer',
+            'origin' => 'string',
+            'ip' => 'string',
+            'realuserid' => 'string'
+        );
+
+        // Adjust DB record mock to have one record less and one record more than the learnt event.
+        $processedrecord2 = $processedrecord;
+        $processedrecord2['other_foo'] = 'string';
+        unset($processedrecord2['other_username']);
+
+        //  Format objects ready for DB insertion prior to merging.
+        $record = new \stdClass();
+        $record->eventname = '\core\event\user_loggedin';
+        $record->jsonfields = json_encode($processedrecord);
+        $record->id = 2;
+
+        $exists = new \stdClass();
+        $exists->eventname = '\core\event\user_loggedin';
+        $exists->jsonfields = json_encode($processedrecord2);
+        $exists->id = 2;
+
+        $expected = array_merge($processedrecord, $processedrecord2);
+
+        // We're testing a private method, so we need to setup reflector magic.
+        $method = new ReflectionMethod('tool_trigger\learn_process', 'merge_json_fields');
+        $method->setAccessible(true); // Allow accessing of private method.
+        $proxy = $method->invoke(new \tool_trigger\learn_process, $record, $exists); // Get result of invoked method.
+
+        $result = json_decode($proxy->jsonfields, true);
+
+        $this->assertEquals($expected, $result);
+
+    }
+
 }

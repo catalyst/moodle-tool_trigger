@@ -112,6 +112,28 @@ class learn_process {
     }
 
     /**
+     * Merge the json fields from the captured event with the
+     * learnt fields in the database.
+     * We do this because the same event might have different fields each time it
+     * is triggered, this is because not all fields are required and may change
+     * based on differing initial conditions.
+     *
+     * @param object $record The captured event record
+     * @param object $exists The existing record of learnt fields
+     * @return object $record The updated record to be inserted.
+     */
+    private function merge_json_fields($record, $exists) {
+        $recordfields = json_decode($record->jsonfields, true);
+        $existsfields = json_decode($exists->jsonfields, true);
+
+        $mergedrecords = array_merge($recordfields, $existsfields);
+
+        $record->jsonfields = json_encode($mergedrecords);
+
+        return $record;
+    }
+
+    /**
      * Store the available fields for an event as JSON in the database.
      *
      * @param string $learntevent The name of the event the fields relate to.
@@ -136,6 +158,7 @@ class learn_process {
 
             if ($exists) {  // If record exists update
                 $record->id = $exists->id;
+                $record = $this->merge_json_fields($record, $exists);  // Merge records before update.
                 $DB->update_record('tool_trigger_event_fields', $record);
             } else {  // If not insert.
                 $DB->insert_record('tool_trigger_event_fields', $record);
