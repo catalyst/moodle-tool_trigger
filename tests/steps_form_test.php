@@ -40,6 +40,38 @@ class tool_trigger_steps_form_testcase extends advanced_testcase {
     }
 
     /**
+     * Helper method to get event fields.
+     *
+     * @return array $fields The event fields.
+     */
+    public function get_event_fields() {
+        $fields = array(
+            'eventname' => 'string',
+            'component' => 'string',
+            'action' => 'string',
+            'target' => 'string',
+            'objecttable' => 'string',
+            'objectid' => 'integer',
+            'crud' => 'string',
+            'edulevel' => 'integer',
+            'contextid' => 'integer',
+            'contextlevel' => 'integer',
+            'contextinstanceid' => 'integer',
+            'userid' => 'integer',
+            'courseid' => 'integer',
+            'relateduserid' => 'string',
+            'anonymous' => 'integer',
+            'other_username' => 'string',
+            'timecreated' => 'integer',
+            'origin' => 'string',
+            'ip' => 'string',
+            'realuserid' => 'string'
+        );
+
+        return $fields;
+    }
+
+    /**
      * Test the display of the starting form (with just the "type" and "step" menus).
      */
     public function test_base_form() {
@@ -71,7 +103,8 @@ class tool_trigger_steps_form_testcase extends advanced_testcase {
         $html = tool_trigger_output_fragment_new_step_form([
             'context' => \context_system::instance(),
             'steptype' => $steptype,
-            'stepclass' => $stepclass
+            'stepclass' => $stepclass,
+            'event' => '\core\event\user_loggedin'
         ]);
 
         // We mostly want to test that it renders with no errors thrown.
@@ -85,15 +118,133 @@ class tool_trigger_steps_form_testcase extends advanced_testcase {
      * Test getting the available fields from database.
      */
     public function test_get_trigger_fields() {
+        $this->resetAfterTest();
+        global $DB;
+
+        // Simulate learnt event.
+        $processedrecord = $this->get_event_fields();
+
+        $learntevent = '\core\event\user_loggedin';
+        $jsonfields = json_encode($processedrecord);
+
+        // Manually insert a record into database;
+        $record = new \stdClass();
+        $record->eventname = $learntevent;
+        $record->jsonfields = $jsonfields;
+        $DB->insert_record('tool_trigger_event_fields', $record);
 
         // We're testing a private method, so we need to setup reflector magic.
         $method = new ReflectionMethod('tool_trigger\steps\base\base_form', 'get_trigger_fields');
         $method->setAccessible(true); // Allow accessing of private method.
-        $proxy = $method->invoke(new \tool_trigger\steps\base\base_form); // Get result of invoked method.
+        $proxy = $method->invoke(new \tool_trigger\steps\base\base_form, '\core\event\user_loggedin'); // Get result of invoked method.
 
-        error_log(print_r($proxy, true));
+        $expected = array (
+            'fields' =>
+            array (
+                0 =>
+                array (
+                    'field' => 'eventname',
+                    'type' => 'string',
+                ),
+                1 =>
+                array (
+                    'field' => 'component',
+                    'type' => 'string',
+                ),
+                2 =>
+                array (
+                    'field' => 'action',
+                    'type' => 'string',
+                ),
+                3 =>
+                array (
+                    'field' => 'target',
+                    'type' => 'string',
+                ),
+                4 =>
+                array (
+                    'field' => 'objecttable',
+                    'type' => 'string',
+                ),
+                5 =>
+                array (
+                    'field' => 'objectid',
+                    'type' => 'integer',
+                ),
+                6 =>
+                array (
+                    'field' => 'crud',
+                    'type' => 'string',
+                ),
+                7 =>
+                array (
+                    'field' => 'edulevel',
+                    'type' => 'integer',
+                ),
+                8 =>
+                array (
+                    'field' => 'contextid',
+                    'type' => 'integer',
+                ),
+                9 =>
+                array (
+                    'field' => 'contextlevel',
+                    'type' => 'integer',
+                ),
+                10 =>
+                array (
+                    'field' => 'contextinstanceid',
+                    'type' => 'integer',
+                ),
+                11 =>
+                array (
+                    'field' => 'userid',
+                    'type' => 'integer',
+                ),
+                12 =>
+                array (
+                    'field' => 'courseid',
+                    'type' => 'integer',
+                ),
+                13 =>
+                array (
+                    'field' => 'relateduserid',
+                    'type' => 'string',
+                ),
+                14 =>
+                array (
+                    'field' => 'anonymous',
+                    'type' => 'integer',
+                ),
+                15 =>
+                array (
+                    'field' => 'other_username',
+                    'type' => 'string',
+                ),
+                16 =>
+                array (
+                    'field' => 'timecreated',
+                    'type' => 'integer',
+                ),
+                17 =>
+                array (
+                    'field' => 'origin',
+                    'type' => 'string',
+                ),
+                18 =>
+                array (
+                    'field' => 'ip',
+                    'type' => 'string',
+                ),
+                19 =>
+                array (
+                    'field' => 'realuserid',
+                    'type' => 'string',
+                ),
+            ),
+        );
 
-        //$this->assertEquals($result->jsonfields, $jsonfields);
+        $this->assertEquals($proxy, $expected);
 
     }
 

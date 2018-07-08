@@ -43,6 +43,12 @@ class learn extends \core\task\scheduled_task {
      * Processes events.
      */
     public function execute() {
+        // Only run task if plugin learning mode is set.
+        $islearning = get_config('tool_trigger', 'learning');
+        if (!$islearning) {
+            return;
+        }
+
         mtrace(get_string('tasklearnstart', 'tool_trigger'));
         $processor = new \tool_trigger\learn_process();
         $processor->process();

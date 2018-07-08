@@ -202,25 +202,29 @@ class learn_process {
     }
 
     /**
+     * Retrieve fields and field types from the database.
      *
-     * @param unknown $eventname
-     * @return array
+     * @param string $eventname The name of the event to get fields for.
+     * @return array $eventfields Event fields and types from database.
      */
     public function get_event_fields ($eventname) {
         global $DB;
+        $fieldarray = array();
 
         $jsonfields = $DB->get_record(
             'tool_trigger_event_fields',
             array('eventname'=>$eventname), 'jsonfields', IGNORE_MISSING);
 
-        $fields = json_decode($jsonfields->jsonfields, true);
-        $fieldarray = array();
-        foreach ($fields as $field => $type){
-            $fieldarray[] = array(
-                'field' => $field,
-                'type' => $type
-            );
+        if ($jsonfields) {
+            $fields = json_decode($jsonfields->jsonfields, true);
+            foreach ($fields as $field => $type){
+                $fieldarray[] = array(
+                    'field' => $field,
+                    'type' => $type
+                );
+            }
         }
+
         $eventfields = array('fields' => $fieldarray);
 
         return $eventfields;

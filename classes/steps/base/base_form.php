@@ -57,19 +57,14 @@ class base_form extends \moodleform {
         parent::__construct($action, $customdata, $method, $target, $attributes, $editable, $ajaxformdata);
     }
 
-    private function get_trigger_fields($event) {
-        $fields = array(
-            'field1',
-            'field2',
-            'field3'
-        );
-
+    private function get_trigger_fields($eventname) {
         // Get all fields for this workflows event.
+        $learnprocess = new \tool_trigger\learn_process();
+        $fields = $learnprocess->get_event_fields($eventname);
 
+        // TODO: Get all fields from previous steps in this workflow.
 
-        // Get all fields from previous steps in this workflow.
-
-        return array('fields' => $fields);
+        return $fields;
     }
 
     /**
