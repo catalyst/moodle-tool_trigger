@@ -82,6 +82,22 @@ class tool_trigger_steps_form_testcase extends advanced_testcase {
     }
 
     /**
+     * Test getting the available fields from database.
+     */
+    public function test_get_trigger_fields() {
+
+        // We're testing a private method, so we need to setup reflector magic.
+        $method = new ReflectionMethod('tool_trigger\steps\base\base_form', 'get_trigger_fields');
+        $method->setAccessible(true); // Allow accessing of private method.
+        $proxy = $method->invoke(new \tool_trigger\steps\base\base_form); // Get result of invoked method.
+
+        error_log(print_r($proxy, true));
+
+        //$this->assertEquals($result->jsonfields, $jsonfields);
+
+    }
+
+    /**
      * Data provider for test_step_form(). Simply gets a list of all known step classes.
      *
      * @return array

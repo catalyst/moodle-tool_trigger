@@ -64,6 +64,7 @@ function tool_trigger_output_fragment_new_step_form($args) {
     $context = $args['context'];
     require_capability('tool/trigger:manageworkflows', $context);
 
+    $event = clean_param($args['event'], PARAM_RAW_TRIMMED);
     $steptype = clean_param($args['steptype'], PARAM_ALPHA);
 
     $stepclass = clean_param($args['stepclass'], PARAM_RAW);
@@ -74,7 +75,8 @@ function tool_trigger_output_fragment_new_step_form($args) {
         'type'      => $steptype,
         'stepclass' => $stepclass,
         'steptext'  => $stepclass::get_step_name(),
-        'steps' => $workflowmanager->get_steps_by_type($steptype)
+        'steps' => $workflowmanager->get_steps_by_type($steptype),
+        'event' => $event
     );
 
     $ajaxformdata = array();

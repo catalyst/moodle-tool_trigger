@@ -199,6 +199,17 @@ define(
     }
 
     /**
+     * Get the event name that triggers this workflow.
+     *
+     * @return {string} The event name.
+     */
+    function getEventName() {
+        var eventname = $('[name=eventtomonitor]').val();
+
+        return eventname;
+    }
+
+    /**
      * Render the correct form for a particular step (or type of step)
      *
      * @param {string} steptype The step category (triggers, filters, lookups)
@@ -225,7 +236,8 @@ define(
                     'steptype' : steptype,
                     'stepclass' : stepclass,
                     'defaults': JSON.stringify(formdefaults),
-                    'ajaxformdata': formsubmission
+                    'ajaxformdata': formsubmission,
+                    'event': getEventName()
                 }
             )
         );

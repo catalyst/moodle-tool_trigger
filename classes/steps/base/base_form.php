@@ -57,7 +57,7 @@ class base_form extends \moodleform {
         parent::__construct($action, $customdata, $method, $target, $attributes, $editable, $ajaxformdata);
     }
 
-    private function get_trigger_fields() {
+    private function get_trigger_fields($event) {
         $fields = array(
             'field1',
             'field2',
@@ -137,7 +137,7 @@ class base_form extends \moodleform {
             // Get available fields.
             // If this is the first step in the workflow it will just be the events fields.
             // Otherwise it will also have the fields from all the prvious steps.
-            $triggerfields = $this->get_trigger_fields();
+            $triggerfields = $this->get_trigger_fields($this->_customdata['event']);
             $fieldhtml = $OUTPUT->render_from_template('tool_trigger/trigger_fields', $triggerfields);
             $mform->addElement('html', $fieldhtml);
 
