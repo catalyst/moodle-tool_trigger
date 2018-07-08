@@ -73,14 +73,15 @@ class learn_process {
      * @return array $typearray
      */
     private function convert_record_type($record, $isother) {
-
         foreach ($record as $key => $value) {  // Iterate through record fields.
 
             if ($key == 'other') {  // Treat the 'other' field as special.
                 $other =  unserialize($value);  // Convert back to PHP array.
-                $this->convert_record_type($other, true);  // Call this function recursively to process fileds contained in other.
-            } else {
-
+                if ($other) {
+                    // Call this function recursively to process fileds contained in other.
+                   $this->convert_record_type($other, true);
+                }
+           } else {
                 if ($isother) { // If this key was a child of 'other' give it a prefix.
                     $otherkey = 'other_' . $key;
                     $this->typearray[$otherkey] = gettype($value);  // Update result array with result.
@@ -148,8 +149,6 @@ class learn_process {
 
         // We only want one set of fields per event in the database.
         // Therefore we need to follow an "upsert" pattern.
-        $DB->start_delegated_transaction();
-
         try {
             $transaction = $DB->start_delegated_transaction();
 
@@ -199,6 +198,8 @@ class learn_process {
             // store collated field json in db.
             $this->store_json_fields($learntevent, $jsonfields);
         }
+
+        // TODO: remove old events from DB.
     }
 
     /**
