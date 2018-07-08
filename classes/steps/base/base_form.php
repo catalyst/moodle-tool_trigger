@@ -66,6 +66,7 @@ class base_form extends \moodleform {
 
         // Get all fields for this workflows event.
 
+
         // Get all fields from previous steps in this workflow.
 
         return array('fields' => $fields);

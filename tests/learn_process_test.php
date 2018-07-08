@@ -293,4 +293,136 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
 
     }
 
+    /**
+     * Test learnt fields are correctly retrieved from database for step form.
+     */
+    public function test_get_event_fields() {
+        global $DB;
+
+        // Simulate learnt event.
+        $processedrecord = $this->get_event_fields();
+
+        $learntevent = '\core\event\user_loggedin';
+        $jsonfields = json_encode($processedrecord);
+
+        // Manually insert a record into database;
+        $record = new \stdClass();
+        $record->eventname = $learntevent;
+        $record->jsonfields = $jsonfields;
+        $DB->insert_record('tool_trigger_event_fields', $record);
+
+        $eventname = '\core\event\user_loggedin';
+        $learnprocess = new \tool_trigger\learn_process();
+        $eventfields = $learnprocess->get_event_fields($eventname);
+
+        $expected = array (
+            'fields' =>
+            array (
+                0 =>
+                array (
+                    'field' => 'eventname',
+                    'type' => 'string',
+                ),
+                1 =>
+                array (
+                    'field' => 'component',
+                    'type' => 'string',
+                ),
+                2 =>
+                array (
+                    'field' => 'action',
+                    'type' => 'string',
+                ),
+                3 =>
+                array (
+                    'field' => 'target',
+                    'type' => 'string',
+                ),
+                4 =>
+                array (
+                    'field' => 'objecttable',
+                    'type' => 'string',
+                ),
+                5 =>
+                array (
+                    'field' => 'objectid',
+                    'type' => 'integer',
+                ),
+                6 =>
+                array (
+                    'field' => 'crud',
+                    'type' => 'string',
+                ),
+                7 =>
+                array (
+                    'field' => 'edulevel',
+                    'type' => 'integer',
+                ),
+                8 =>
+                array (
+                    'field' => 'contextid',
+                    'type' => 'integer',
+                ),
+                9 =>
+                array (
+                    'field' => 'contextlevel',
+                    'type' => 'integer',
+                ),
+                10 =>
+                array (
+                    'field' => 'contextinstanceid',
+                    'type' => 'integer',
+                ),
+                11 =>
+                array (
+                    'field' => 'userid',
+                    'type' => 'integer',
+                ),
+                12 =>
+                array (
+                    'field' => 'courseid',
+                    'type' => 'integer',
+                ),
+                13 =>
+                array (
+                    'field' => 'relateduserid',
+                    'type' => 'string',
+                ),
+                14 =>
+                array (
+                    'field' => 'anonymous',
+                    'type' => 'integer',
+                ),
+                15 =>
+                array (
+                    'field' => 'other_username',
+                    'type' => 'string',
+                ),
+                16 =>
+                array (
+                    'field' => 'timecreated',
+                    'type' => 'integer',
+                ),
+                17 =>
+                array (
+                    'field' => 'origin',
+                    'type' => 'string',
+                ),
+                18 =>
+                array (
+                    'field' => 'ip',
+                    'type' => 'string',
+                ),
+                19 =>
+                array (
+                    'field' => 'realuserid',
+                    'type' => 'string',
+                ),
+            ),
+        );
+
+        $this->assertEquals($eventfields, $expected);
+
+    }
+
 }

@@ -51,7 +51,7 @@ class learn_process {
      * for a specific event name.
      *
      * @param string $learntevent The name of the event to get the records for.
-     * @return moodle_recordset $learntrecords The recordset of results.
+     * @return \moodle_recordset $learntrecords The recordset of results.
      */
     private function get_learnt_records($learntevent) {
         global $DB;
@@ -199,6 +199,31 @@ class learn_process {
             // store collated field json in db.
             $this->store_json_fields($learntevent, $jsonfields);
         }
+    }
+
+    /**
+     *
+     * @param unknown $eventname
+     * @return array
+     */
+    public function get_event_fields ($eventname) {
+        global $DB;
+
+        $jsonfields = $DB->get_record(
+            'tool_trigger_event_fields',
+            array('eventname'=>$eventname), 'jsonfields', IGNORE_MISSING);
+
+        $fields = json_decode($jsonfields->jsonfields, true);
+        $fieldarray = array();
+        foreach ($fields as $field => $type){
+            $fieldarray[] = array(
+                'field' => $field,
+                'type' => $type
+            );
+        }
+        $eventfields = array('fields' => $fieldarray);
+
+        return $eventfields;
     }
 
 }
