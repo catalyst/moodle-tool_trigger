@@ -35,7 +35,10 @@
 }}
 <p>Available fields</p> {{! TODO: make this a lang string and wrap in a parent element. }}
 <div class="fieldcontainer">
+    {{#nofields}}
+        <p>No fields available, consider turning on learn mode.</p>{{! TODO: make this a lang string and wrap in a parent element. }}
+    {{/nofields}}
 {{#fields}}
-<span class="tag tag-info mb-3 mr-1">{{{.}}}</span>
+    <span class="tag tag-info mb-3 mr-1">{{ field }}</span>
 {{/fields}}
 </div>
