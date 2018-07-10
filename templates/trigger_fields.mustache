@@ -33,12 +33,16 @@
     }
 
 }}
-<p>Available fields</p> {{! TODO: make this a lang string and wrap in a parent element. }}
-<div class="fieldcontainer">
-    {{#nofields}}
-        <p>No fields available, consider turning on learn mode.</p>{{! TODO: make this a lang string and wrap in a parent element. }}
-    {{/nofields}}
-{{#fields}}
-    <span class="tag tag-info mb-3 mr-1">{{ field }}</span>
-{{/fields}}
+<div class="form-group row">
+    <div class="col-md-3">
+        <p>Available fields</p> {{! TODO: make this a lang string. }}
+    </div>
+    <div class="fieldcontainer col-md-9 form-inline felement">
+        {{#nofields}}
+            <p>No fields available, consider turning on learning mode.</p>{{! TODO: make this a lang stringt. }}
+        {{/nofields}}
+        {{#fields}}
+            <span class="tag tag-info mb-3 mr-1">{{ field }}</span>
+        {{/fields}}
+    </div>
 </div>

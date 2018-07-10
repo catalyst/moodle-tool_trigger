@@ -63,7 +63,7 @@ class base_form extends \moodleform {
         $fields = $learnprocess->get_event_fields($eventname);
 
         // Add notification for empty fields
-        if (empty($fields)) {
+        if (empty($fields['fields'])) {
             $fields = array('nofields' => true);
         }
 
