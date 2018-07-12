@@ -35,11 +35,11 @@
 }}
 <div class="form-group row">
     <div class="col-md-3">
-        <p>Available fields</p> {{! TODO: make this a lang string. }}
+        <p>{{# str }} availablefields, tool_trigger {{/ str }}</p>
     </div>
     <div class="fieldcontainer col-md-9 form-inline felement">
         {{#nofields}}
-            <p>No fields available, consider turning on learning mode.</p>{{! TODO: make this a lang stringt. }}
+            <p>{{# str }} noavailablefields, tool_trigger {{/ str }}</p>
         {{/nofields}}
         {{#fields}}
             <span class="tag tag-info mb-3 mr-1">{{ field }}</span>
