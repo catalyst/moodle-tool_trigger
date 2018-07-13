@@ -421,4 +421,29 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
 
     }
 
+    /**
+     * Test retrieve all the event names we have stored fields for
+     */
+    public function test_get_event_fields_events() {
+        global $DB;
+
+        // Simulate learnt event.
+        $processedrecord = $this->get_event_fields();
+
+        $learntevent = '\core\event\user_loggedin';
+        $jsonfields = json_encode($processedrecord);
+
+        // Manually insert a record into database;
+        $record = new \stdClass();
+        $record->eventname = $learntevent;
+        $record->jsonfields = $jsonfields;
+        $DB->insert_record('tool_trigger_event_fields', $record);
+
+        $learnprocess = new \tool_trigger\learn_process();
+        $result = $learnprocess->get_event_fields_events();
+
+        $this->assertEquals($result[0], $learntevent);
+
+    }
+
 }

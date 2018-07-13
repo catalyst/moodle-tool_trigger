@@ -203,6 +203,21 @@ class learn_process {
     }
 
     /**
+     *  Retrieve all the event names we have stored fields for.
+     *
+     * @return array $eventnames Unique names of the events that we have fields for.
+     */
+    public function get_event_fields_events() {
+        global $DB;
+
+        $sql = 'SELECT DISTINCT(eventname) FROM {tool_trigger_event_fields}';
+        $eventnamerecords = $DB->get_records_sql($sql);
+        $eventnames = array_keys($eventnamerecords);
+
+        return $eventnames;
+    }
+
+    /**
      * Retrieve fields and field types from the database.
      *
      * @param string $eventname The name of the event to get fields for.
