@@ -249,10 +249,8 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
         $learntevent = '\core\event\user_loggedin';
         $jsonfields = json_encode($processedrecord);
 
-        // We're testing a private method, so we need to setup reflector magic.
-        $method = new ReflectionMethod('tool_trigger\learn_process', 'store_json_fields');
-        $method->setAccessible(true); // Allow accessing of private method.
-        $method->invoke(new \tool_trigger\learn_process, $learntevent, $jsonfields); // Get result of invoked method.
+        $learnprocess = new \tool_trigger\learn_process();
+        $learnprocess->store_json_fields($learntevent, $jsonfields);
 
         // Get record form DB
         $result = $DB->get_record('tool_trigger_event_fields', array('eventname'=>$learntevent));
@@ -280,10 +278,8 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
         $record->jsonfields = $jsonfields;
         $DB->insert_record('tool_trigger_event_fields', $record);
 
-        // We're testing a private method, so we need to setup reflector magic.
-        $method = new ReflectionMethod('tool_trigger\learn_process', 'store_json_fields');
-        $method->setAccessible(true); // Allow accessing of private method.
-        $method->invoke(new \tool_trigger\learn_process, $learntevent, $jsonfields); // Get result of invoked method.
+        $learnprocess = new \tool_trigger\learn_process();
+        $learnprocess->store_json_fields($learntevent, $jsonfields);
 
         // Get record form DB
         $result = $DB->get_record('tool_trigger_event_fields', array('eventname'=>$learntevent));

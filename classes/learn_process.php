@@ -140,7 +140,7 @@ class learn_process {
      * @param string $learntevent The name of the event the fields relate to.
      * @param string $jsonfields JSON string of the event fields and their data types.
      */
-    private function store_json_fields($learntevent, $jsonfields) {
+    public function store_json_fields($learntevent, $jsonfields) {
         global $DB;
 
         $record = new \stdClass();
