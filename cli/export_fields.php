@@ -24,8 +24,9 @@
 
 define('CLI_SCRIPT', 1);
 
-require(__DIR__.'/../../config.php');
+require(__DIR__.'/../../../../config.php');
 require_once($CFG->libdir.'/clilib.php');
+//require_once($CFG->dirroot . '/admint/tool/trigger/');
 
 // Get cli options.
 list($options, $unrecognized) = cli_get_params(array('help' => false), array('h' => 'help'));
@@ -52,6 +53,27 @@ EOL;
     die;
 }
 
-// Do the stuff
+// Get the events we have stored fields for.
+$learnprocess = new \tool_trigger\learn_process();
+$eventnames = $learnprocess->get_event_fields_events();
+$results = array();
+
+// Iterrate through each event getting fields.
+foreach ($eventnames as $eventname) {
+    // Convert fields from JSON and add to array indexed by event name.
+    $fieldsjson = $learnprocess->get_event_fields_json($eventname);
+    $fields = json_decode($fieldsjson->jsonfields, true);
+    $results[$eventname] = $fields;
+}
+
+// Convert results into JSON
+$resultsjson = json_encode($results, JSON_PRETTY_PRINT);
+error_log($resultsjson);
+
+// Write results to file.
+$filename = $CFG->dirroot . '/admin/tool/trigger/db/fixtures/event_fields.json';
+$fp = fopen($filename, 'w');
+fwrite($fp, $resultsjson);
+fclose($fp);
 
 exit(0);

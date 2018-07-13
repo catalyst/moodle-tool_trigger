@@ -292,7 +292,7 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
     /**
      * Test learnt fields are correctly retrieved from database for step form.
      */
-    public function test_get_event_fields() {
+    public function test_get_event_fields_with_type() {
         global $DB;
 
         // Simulate learnt event.
@@ -309,7 +309,7 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
 
         $eventname = '\core\event\user_loggedin';
         $learnprocess = new \tool_trigger\learn_process();
-        $eventfields = $learnprocess->get_event_fields($eventname);
+        $eventfields = $learnprocess->get_event_fields_with_type($eventname);
 
         $expected = array (
             'fields' =>
@@ -422,7 +422,7 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
     }
 
     /**
-     * Test retrieve all the event names we have stored fields for
+     * Test retrieve all the event names we have stored fields for.
      */
     public function test_get_event_fields_events() {
         global $DB;
@@ -443,6 +443,31 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
         $result = $learnprocess->get_event_fields_events();
 
         $this->assertEquals($result[0], $learntevent);
+
+    }
+
+    /**
+     * Test get the stored JSON fields for that event.
+     */
+    public function test_get_event_fields_json() {
+        global $DB;
+
+        // Simulate learnt event.
+        $processedrecord = $this->get_event_fields();
+
+        $learntevent = '\core\event\user_loggedin';
+        $jsonfields = json_encode($processedrecord);
+
+        // Manually insert a record into database;
+        $record = new \stdClass();
+        $record->eventname = $learntevent;
+        $record->jsonfields = $jsonfields;
+        $DB->insert_record('tool_trigger_event_fields', $record);
+
+        $learnprocess = new \tool_trigger\learn_process();
+        $result = $learnprocess->get_event_fields_json($learntevent);
+
+        $this->assertEquals($result->jsonfields, $jsonfields);
 
     }
 

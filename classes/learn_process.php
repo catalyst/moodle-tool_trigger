@@ -218,12 +218,27 @@ class learn_process {
     }
 
     /**
+     * Given an event name get the stored JSON fields for that event.
+     *
+     * @param string $eventname The name of the event to get the fields for.
+     * @return mixed|\stdClass|false $jsonfields The JSON stored feilds for the event in JSON format.
+     */
+    public function get_event_fields_json($eventname) {
+        global $DB;
+        $jsonfields = $DB->get_record(
+                'tool_trigger_event_fields',
+                array('eventname'=>$eventname), 'jsonfields', IGNORE_MISSING);
+
+        return $jsonfields;
+    }
+
+    /**
      * Retrieve fields and field types from the database.
      *
      * @param string $eventname The name of the event to get fields for.
      * @return array $eventfields Event fields and types from database.
      */
-    public function get_event_fields ($eventname) {
+    public function get_event_fields_with_type($eventname) {
         global $DB;
         $fieldarray = array();
 

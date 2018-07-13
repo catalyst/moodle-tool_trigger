@@ -60,7 +60,7 @@ class base_form extends \moodleform {
     private function get_trigger_fields($eventname) {
         // Get all fields for this workflows event.
         $learnprocess = new \tool_trigger\learn_process();
-        $fields = $learnprocess->get_event_fields($eventname);
+        $fields = $learnprocess->get_event_fields_with_type($eventname);
 
         // Add notification for empty fields
         if (empty($fields['fields'])) {
