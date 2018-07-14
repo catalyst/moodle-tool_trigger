@@ -173,13 +173,13 @@ class learn_process {
      * Process the learnt events and extract the field names.
      */
     public function process () {
-        $processedrecords = array();
 
         // Get a list of the event types from the learn table.
         $learntevents = $this->get_learnt_events();
 
         // For each type of event get all the entries for that event from the learn table.
         foreach ($learntevents as $learntevent) {
+            $processedrecords = array();
             $learntrecords = $this->get_learnt_records($learntevent);
 
             foreach ($learntrecords as $record) {

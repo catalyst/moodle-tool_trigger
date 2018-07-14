@@ -53,10 +53,14 @@ EOL;
     die;
 }
 
+print_string('cli_extractfields', 'tool_trigger');
+echo "\n";
+
 // Get the events we have stored fields for.
 $learnprocess = new \tool_trigger\learn_process();
 $eventnames = $learnprocess->get_event_fields_events();
 $results = array();
+$count = 0;
 
 // Iterrate through each event getting fields.
 foreach ($eventnames as $eventname) {
@@ -64,16 +68,27 @@ foreach ($eventnames as $eventname) {
     $fieldsjson = $learnprocess->get_event_fields_json($eventname);
     $fields = json_decode($fieldsjson->jsonfields, true);
     $results[$eventname] = $fields;
+    $count++;
 }
 
 // Convert results into JSON
 $resultsjson = json_encode($results, JSON_PRETTY_PRINT);
-error_log($resultsjson);
+
+print_string('cli_writingfile', 'tool_trigger', $count);
+echo "\n";
 
 // Write results to file.
 $filename = $CFG->dirroot . '/admin/tool/trigger/db/fixtures/event_fields.json';
 $fp = fopen($filename, 'w');
-fwrite($fp, $resultsjson);
-fclose($fp);
+
+if ($fp) {
+    fwrite($fp, $resultsjson);
+    fclose($fp);
+    print_string('cli_filesummary', 'tool_trigger', $filename);
+    echo "\n";
+} else {
+    print_string('cli_filefail', 'tool_trigger', $filename);
+    echo "\n";
+}
 
 exit(0);
