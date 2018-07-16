@@ -83,13 +83,13 @@ if ($fp) {
         if ($gotparameters && $gotvalues) {
             // Extract the required data from the fetched fields.
             $parameterarray = explode(',', $parametermatches[1]);
-            $valuesarray = explode(', ', $valuesmatches[1]);
+            $valuesarray = explode(', $', $valuesmatches[1]);
 
             $record = new \stdClass();
             for ($i = 0; $i < count($parameterarray); $i++) {
 
                 //  Do some final formating and converison on values before insert.
-                $value = preg_replace('/\$\d*\s\=\s/', '', $valuesarray[$i]);
+                $value = preg_replace('/\d*\s\=\s/', '', $valuesarray[$i]);
                 $value = str_replace('NULL', '', $value);
                 $value = str_replace('\'', '', $value);
 
@@ -104,7 +104,7 @@ if ($fp) {
 
     }
 
-    echo 'Processed: ' . $count . '$records' . "\n";
+    echo 'Processed: ' . $count . ' records' . "\n";
     fclose($fp);
 } else {
     echo 'Unable to open file at location: ' . $filename;
