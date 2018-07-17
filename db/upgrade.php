@@ -164,7 +164,8 @@ function xmldb_tool_trigger_upgrade($oldversion) {
     if ($oldversion < 2018071700) {
 
         // Add events fields from fixture file to database.
-
+        $learnprocess = new \tool_trigger\learn_process();
+        $learnprocess->process_fixtures();
 
         // Trigger savepoint reached.
         upgrade_plugin_savepoint(true, 2018071700, 'tool', 'trigger');

@@ -25,11 +25,12 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+/**
+ * Add events fields from fixture file to database.
+ */
 function xmldb_tool_trigger_install() {
-    global $CFG, $OUTPUT, $DB;
-
-    // Add events fields from fixture file to database.
-
+    $learnprocess = new \tool_trigger\learn_process();
+    $learnprocess->process_fixtures();
 }
 
 

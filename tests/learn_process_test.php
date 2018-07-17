@@ -472,15 +472,17 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
     }
 
     /**
-     * Test get the stored JSON fields for that event.
+     * Test procesing of JSON fixture file.
      */
     public function test_process_fixtures() {
         $learnprocess = new \tool_trigger\learn_process();
-        $result = $learnprocess->process_fixtures();
+        $learnprocess->process_fixtures();
 
+        // Check that some records have been added to the DB.
+        $fieldsjson = $learnprocess->get_event_fields_json('\core\event\blog_comment_created');
+        $fields = json_decode($fieldsjson->jsonfields, true);
 
-
-        //$this->assertEquals($result->jsonfields, $jsonfields);
+        $this->assertEquals($fields['eventname'], 'string');
 
     }
 }

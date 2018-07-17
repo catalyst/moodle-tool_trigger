@@ -262,7 +262,7 @@ class learn_process {
     }
 
     /**
-     *
+     * Load records from JSON fixture file into database.
      */
     public function process_fixtures() {
         global $CFG;
