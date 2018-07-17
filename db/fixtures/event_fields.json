@@ -1,5 +1,5 @@
 {
-    "$\\core\\event\\blog_comment_created": {
+    "\\core\\event\\blog_comment_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -22,7 +22,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_workshop\\event\\phase_switched": {
+    "\\mod_workshop\\event\\phase_switched": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -45,7 +45,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\assignsubmission_file\\event\\assessable_uploaded": {
+    "\\assignsubmission_file\\event\\assessable_uploaded": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -69,7 +69,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\grouping_deleted": {
+    "\\core\\event\\grouping_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -91,7 +91,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_survey\\event\\response_submitted": {
+    "\\mod_survey\\event\\response_submitted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -114,7 +114,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\badge_listing_viewed": {
+    "\\core\\event\\badge_listing_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -137,7 +137,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\cohort_created": {
+    "\\core\\event\\cohort_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -159,7 +159,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\tool_recyclebin\\event\\course_bin_item_deleted": {
+    "\\tool_recyclebin\\event\\course_bin_item_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -181,7 +181,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_assign\\event\\reveal_identities_confirmation_page_viewed": {
+    "\\mod_assign\\event\\reveal_identities_confirmation_page_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -204,7 +204,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_lesson\\event\\course_module_instance_list_viewed": {
+    "\\mod_lesson\\event\\course_module_instance_list_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -226,7 +226,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\role_capabilities_updated": {
+    "\\core\\event\\role_capabilities_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -248,7 +248,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_assign\\event\\workflow_state_updated": {
+    "\\mod_assign\\event\\workflow_state_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -271,7 +271,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\block_comments\\event\\comment_deleted": {
+    "\\block_comments\\event\\comment_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -294,7 +294,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\enrol_instance_deleted": {
+    "\\core\\event\\enrol_instance_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -317,7 +317,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_wiki\\event\\comment_created": {
+    "\\mod_wiki\\event\\comment_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -364,7 +364,7 @@
         "ip": "string",
         "realuserid": "NULL"
     },
-    "$\\assignsubmission_file\\event\\submission_created": {
+    "\\assignsubmission_file\\event\\submission_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -392,7 +392,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\user_graded": {
+    "\\core\\event\\user_graded": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -417,7 +417,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\competency_template_viewed": {
+    "\\core\\event\\competency_template_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -461,7 +461,7 @@
         "ip": "string",
         "realuserid": "NULL"
     },
-    "$\\core\\event\\blog_entry_deleted": {
+    "\\core\\event\\blog_entry_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -483,7 +483,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\group_created": {
+    "\\core\\event\\group_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -505,7 +505,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_choice\\event\\answer_created": {
+    "\\mod_choice\\event\\answer_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -529,7 +529,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_wiki\\event\\page_diff_viewed": {
+    "\\mod_wiki\\event\\page_diff_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -553,7 +553,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_assign\\event\\submission_form_viewed": {
+    "\\mod_assign\\event\\submission_form_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -576,7 +576,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_quiz\\event\\report_viewed": {
+    "\\mod_quiz\\event\\report_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -600,7 +600,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_wiki\\event\\page_history_viewed": {
+    "\\mod_wiki\\event\\page_history_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -622,7 +622,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\competency_template_deleted": {
+    "\\core\\event\\competency_template_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -644,7 +644,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_assign\\event\\group_override_created": {
+    "\\mod_assign\\event\\group_override_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -668,7 +668,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\tag_unflagged": {
+    "\\core\\event\\tag_unflagged": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -692,7 +692,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\block_comments\\event\\comment_created": {
+    "\\block_comments\\event\\comment_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -715,7 +715,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_page\\event\\course_module_viewed": {
+    "\\mod_page\\event\\course_module_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -737,7 +737,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_assign\\event\\extension_granted": {
+    "\\mod_assign\\event\\extension_granted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -759,7 +759,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_quiz\\event\\group_override_created": {
+    "\\mod_quiz\\event\\group_override_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -783,7 +783,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_quiz\\event\\attempt_deleted": {
+    "\\mod_quiz\\event\\attempt_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -806,7 +806,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_book\\event\\chapter_updated": {
+    "\\mod_book\\event\\chapter_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -828,7 +828,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_glossary\\event\\entry_approved": {
+    "\\mod_glossary\\event\\entry_approved": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -872,7 +872,7 @@
         "ip": "string",
         "realuserid": "NULL"
     },
-    "$\\core\\event\\grade_letter_deleted": {
+    "\\core\\event\\grade_letter_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -894,7 +894,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_feedback\\event\\response_deleted": {
+    "\\mod_feedback\\event\\response_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -919,7 +919,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\tool_recyclebin\\event\\category_bin_item_deleted": {
+    "\\tool_recyclebin\\event\\category_bin_item_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -941,7 +941,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\grouping_group_assigned": {
+    "\\core\\event\\grouping_group_assigned": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -964,7 +964,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\enrol_instance_created": {
+    "\\core\\event\\enrol_instance_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -987,7 +987,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\course_backup_created": {
+    "\\core\\event\\course_backup_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1013,7 +1013,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\tool_usertours\\event\\tour_started": {
+    "\\tool_usertours\\event\\tour_started": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1036,7 +1036,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\dashboards_reset": {
+    "\\core\\event\\dashboards_reset": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1060,7 +1060,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_quiz\\event\\attempt_submitted": {
+    "\\mod_quiz\\event\\attempt_submitted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1084,7 +1084,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_assign\\event\\assessable_submitted": {
+    "\\mod_assign\\event\\assessable_submitted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1107,7 +1107,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\competency_plan_review_request_cancelled": {
+    "\\core\\event\\competency_plan_review_request_cancelled": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1129,7 +1129,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_assign\\event\\submission_locked": {
+    "\\mod_assign\\event\\submission_locked": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1151,7 +1151,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\user_list_viewed": {
+    "\\core\\event\\user_list_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1175,7 +1175,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\competency_framework_viewed": {
+    "\\core\\event\\competency_framework_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1197,7 +1197,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_imscp\\event\\course_module_viewed": {
+    "\\mod_imscp\\event\\course_module_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1219,7 +1219,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_wiki\\event\\course_module_viewed": {
+    "\\mod_wiki\\event\\course_module_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1241,7 +1241,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\tool_usertours\\event\\step_shown": {
+    "\\tool_usertours\\event\\step_shown": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1266,7 +1266,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_forum\\event\\post_updated": {
+    "\\mod_forum\\event\\post_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1291,7 +1291,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_scorm\\event\\course_module_instance_list_viewed": {
+    "\\mod_scorm\\event\\course_module_instance_list_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1313,7 +1313,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\user_loggedinas": {
+    "\\core\\event\\user_loggedinas": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1337,7 +1337,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\gradereport_overview\\event\\grade_report_viewed": {
+    "\\gradereport_overview\\event\\grade_report_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1359,7 +1359,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_data\\event\\record_deleted": {
+    "\\mod_data\\event\\record_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1382,7 +1382,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\booktool_exportimscp\\event\\book_exported": {
+    "\\booktool_exportimscp\\event\\book_exported": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1404,7 +1404,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\blog_entry_updated": {
+    "\\core\\event\\blog_entry_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1426,7 +1426,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_forum\\event\\user_report_viewed": {
+    "\\mod_forum\\event\\user_report_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1449,7 +1449,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\grouping_updated": {
+    "\\core\\event\\grouping_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1471,7 +1471,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\gradereport_history\\event\\grade_report_viewed": {
+    "\\gradereport_history\\event\\grade_report_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1493,7 +1493,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_workshop\\event\\assessment_evaluated": {
+    "\\mod_workshop\\event\\assessment_evaluated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1517,7 +1517,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\tag_added": {
+    "\\core\\event\\tag_added": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1544,7 +1544,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\report_log\\event\\user_report_viewed": {
+    "\\report_log\\event\\user_report_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1567,7 +1567,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\competency_framework_updated": {
+    "\\core\\event\\competency_framework_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1589,7 +1589,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\tag_collection_deleted": {
+    "\\core\\event\\tag_collection_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1611,7 +1611,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\course_category_updated": {
+    "\\core\\event\\course_category_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1633,7 +1633,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\tag_deleted": {
+    "\\core\\event\\tag_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1657,7 +1657,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_workshop\\event\\course_module_viewed": {
+    "\\mod_workshop\\event\\course_module_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1679,7 +1679,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_workshop\\event\\course_module_instance_list_viewed": {
+    "\\mod_workshop\\event\\course_module_instance_list_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1701,7 +1701,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\blog_association_created": {
+    "\\core\\event\\blog_association_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1727,7 +1727,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_wiki\\event\\page_version_viewed": {
+    "\\mod_wiki\\event\\page_version_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1750,7 +1750,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\competency_user_evidence_updated": {
+    "\\core\\event\\competency_user_evidence_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1772,7 +1772,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\competency_framework_created": {
+    "\\core\\event\\competency_framework_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1794,7 +1794,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_lesson\\event\\course_module_viewed": {
+    "\\mod_lesson\\event\\course_module_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1816,7 +1816,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_lti\\event\\course_module_viewed": {
+    "\\mod_lti\\event\\course_module_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1838,7 +1838,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\message_contact_added": {
+    "\\core\\event\\message_contact_added": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1860,7 +1860,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_quiz\\event\\course_module_instance_list_viewed": {
+    "\\mod_quiz\\event\\course_module_instance_list_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1882,7 +1882,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\assignsubmission_comments\\event\\comment_deleted": {
+    "\\assignsubmission_comments\\event\\comment_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1905,7 +1905,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_survey\\event\\course_module_viewed": {
+    "\\mod_survey\\event\\course_module_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1928,7 +1928,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\competency_plan_approved": {
+    "\\core\\event\\competency_plan_approved": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1950,7 +1950,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_wiki\\event\\page_updated": {
+    "\\mod_wiki\\event\\page_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1973,7 +1973,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_wiki\\event\\course_module_instance_list_viewed": {
+    "\\mod_wiki\\event\\course_module_instance_list_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -1995,7 +1995,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_forum\\event\\discussion_moved": {
+    "\\mod_forum\\event\\discussion_moved": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2019,7 +2019,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_choice\\event\\answer_deleted": {
+    "\\mod_choice\\event\\answer_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2043,7 +2043,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_workshop\\event\\assessable_uploaded": {
+    "\\mod_workshop\\event\\assessable_uploaded": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2068,7 +2068,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_book\\event\\chapter_viewed": {
+    "\\mod_book\\event\\chapter_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2090,7 +2090,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\calendar_event_updated": {
+    "\\core\\event\\calendar_event_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2115,7 +2115,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\course_reset_ended": {
+    "\\core\\event\\course_reset_ended": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2162,7 +2162,7 @@
         "ip": "string",
         "realuserid": "NULL"
     },
-    "$\\core\\event\\message_deleted": {
+    "\\core\\event\\message_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2187,7 +2187,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\course_module_created": {
+    "\\core\\event\\course_module_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2212,7 +2212,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_quiz\\event\\user_override_created": {
+    "\\mod_quiz\\event\\user_override_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2235,7 +2235,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\tool_policy\\event\\acceptance_created": {
+    "\\tool_policy\\event\\acceptance_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2260,7 +2260,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_data\\event\\field_created": {
+    "\\mod_data\\event\\field_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2284,7 +2284,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_quiz\\event\\attempt_summary_viewed": {
+    "\\mod_quiz\\event\\attempt_summary_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2307,7 +2307,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\course_completion_updated": {
+    "\\core\\event\\course_completion_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2329,7 +2329,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\calendar_event_deleted": {
+    "\\core\\event\\calendar_event_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2354,7 +2354,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\tag_flagged": {
+    "\\core\\event\\tag_flagged": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2378,7 +2378,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_forum\\event\\assessable_uploaded": {
+    "\\mod_forum\\event\\assessable_uploaded": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2404,7 +2404,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\user_created": {
+    "\\core\\event\\user_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2426,7 +2426,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\user_enrolment_updated": {
+    "\\core\\event\\user_enrolment_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2449,7 +2449,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_glossary\\event\\entry_created": {
+    "\\mod_glossary\\event\\entry_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2472,7 +2472,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\course_module_completion_updated": {
+    "\\core\\event\\course_module_completion_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2497,7 +2497,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\cohort_member_added": {
+    "\\core\\event\\cohort_member_added": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2519,7 +2519,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\blog_entry_created": {
+    "\\core\\event\\blog_entry_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2541,7 +2541,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_quiz\\event\\attempt_preview_started": {
+    "\\mod_quiz\\event\\attempt_preview_started": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2564,7 +2564,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\user_login_failed": {
+    "\\core\\event\\user_login_failed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2588,7 +2588,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\role_unassigned": {
+    "\\core\\event\\role_unassigned": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2613,7 +2613,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_wiki\\event\\page_created": {
+    "\\mod_wiki\\event\\page_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2635,7 +2635,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\group_member_added": {
+    "\\core\\event\\group_member_added": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2659,7 +2659,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_wiki\\event\\page_viewed": {
+    "\\mod_wiki\\event\\page_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2685,7 +2685,7 @@
         "other_group": "integer",
         "other_groupanduser": "integer"
     },
-    "$\\mod_quiz\\event\\attempt_viewed": {
+    "\\mod_quiz\\event\\attempt_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2708,7 +2708,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\role_assigned": {
+    "\\core\\event\\role_assigned": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2733,7 +2733,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_assign\\event\\submission_unlocked": {
+    "\\mod_assign\\event\\submission_unlocked": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2755,7 +2755,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\search_results_viewed": {
+    "\\core\\event\\search_results_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2784,7 +2784,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_lesson\\event\\user_override_created": {
+    "\\mod_lesson\\event\\user_override_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2807,7 +2807,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_forum\\event\\subscription_deleted": {
+    "\\mod_forum\\event\\subscription_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2830,7 +2830,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_folder\\event\\course_module_viewed": {
+    "\\mod_folder\\event\\course_module_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2852,7 +2852,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_lesson\\event\\lesson_ended": {
+    "\\mod_lesson\\event\\lesson_ended": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2874,7 +2874,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\tag_removed": {
+    "\\core\\event\\tag_removed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2901,7 +2901,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\tag_created": {
+    "\\core\\event\\tag_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2925,7 +2925,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_forum\\event\\discussion_deleted": {
+    "\\mod_forum\\event\\discussion_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2948,7 +2948,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\assignsubmission_onlinetext\\event\\submission_updated": {
+    "\\assignsubmission_onlinetext\\event\\submission_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2976,7 +2976,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\role_allow_assign_updated": {
+    "\\core\\event\\role_allow_assign_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -2998,7 +2998,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_workshop\\event\\submission_viewed": {
+    "\\mod_workshop\\event\\submission_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3021,7 +3021,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\group_updated": {
+    "\\core\\event\\group_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3043,7 +3043,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_quiz\\event\\edit_page_viewed": {
+    "\\mod_quiz\\event\\edit_page_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3066,7 +3066,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\course_reset_started": {
+    "\\core\\event\\course_reset_started": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3089,7 +3089,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_feedback\\event\\course_module_instance_list_viewed": {
+    "\\mod_feedback\\event\\course_module_instance_list_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3111,7 +3111,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\course_section_deleted": {
+    "\\core\\event\\course_section_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3135,7 +3135,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\competency_plan_reopened": {
+    "\\core\\event\\competency_plan_reopened": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3181,7 +3181,7 @@
         "ip": "string",
         "realuserid": "NULL"
     },
-    "$\\mod_forum\\event\\post_created": {
+    "\\mod_forum\\event\\post_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3228,7 +3228,7 @@
         "ip": "string",
         "realuserid": "NULL"
     },
-    "$\\mod_quiz\\event\\user_override_updated": {
+    "\\mod_quiz\\event\\user_override_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3275,7 +3275,7 @@
         "ip": "string",
         "realuserid": "NULL"
     },
-    "$\\mod_lesson\\event\\lesson_resumed": {
+    "\\mod_lesson\\event\\lesson_resumed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3297,7 +3297,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_scorm\\event\\course_module_viewed": {
+    "\\mod_scorm\\event\\course_module_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3319,7 +3319,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\tool_monitor\\event\\rule_deleted": {
+    "\\tool_monitor\\event\\rule_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3341,7 +3341,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_glossary\\event\\course_module_instance_list_viewed": {
+    "\\mod_glossary\\event\\course_module_instance_list_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3363,7 +3363,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_lesson\\event\\group_override_updated": {
+    "\\mod_lesson\\event\\group_override_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3387,7 +3387,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\course_deleted": {
+    "\\core\\event\\course_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3412,7 +3412,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_forum\\event\\discussion_subscription_deleted": {
+    "\\mod_forum\\event\\discussion_subscription_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3436,7 +3436,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\competency_plan_created": {
+    "\\core\\event\\competency_plan_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3458,7 +3458,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\user_info_field_created": {
+    "\\core\\event\\user_info_field_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3483,7 +3483,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\booktool_print\\event\\book_printed": {
+    "\\booktool_print\\event\\book_printed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3505,7 +3505,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_assign\\event\\user_override_deleted": {
+    "\\mod_assign\\event\\user_override_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3528,7 +3528,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_data\\event\\course_module_viewed": {
+    "\\mod_data\\event\\course_module_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3550,7 +3550,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\gradeexport_xml\\event\\grade_exported": {
+    "\\gradeexport_xml\\event\\grade_exported": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3572,7 +3572,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\report_log\\event\\report_viewed": {
+    "\\report_log\\event\\report_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3599,7 +3599,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\tool_monitor\\event\\rule_updated": {
+    "\\tool_monitor\\event\\rule_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3621,7 +3621,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_quiz\\event\\course_module_viewed": {
+    "\\mod_quiz\\event\\course_module_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3643,7 +3643,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_book\\event\\course_module_viewed": {
+    "\\mod_book\\event\\course_module_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3665,7 +3665,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_choice\\event\\course_module_instance_list_viewed": {
+    "\\mod_choice\\event\\course_module_instance_list_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3687,7 +3687,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\assignsubmission_onlinetext\\event\\submission_created": {
+    "\\assignsubmission_onlinetext\\event\\submission_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3715,7 +3715,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\course_content_deleted": {
+    "\\core\\event\\course_content_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3740,7 +3740,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_forum\\event\\discussion_updated": {
+    "\\mod_forum\\event\\discussion_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3763,7 +3763,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\grouping_created": {
+    "\\core\\event\\grouping_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3785,7 +3785,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\assignsubmission_onlinetext\\event\\assessable_uploaded": {
+    "\\assignsubmission_onlinetext\\event\\assessable_uploaded": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3810,7 +3810,7 @@
         "other_content": "string",
         "other_format": "string"
     },
-    "$\\mod_forum\\event\\subscribers_viewed": {
+    "\\mod_forum\\event\\subscribers_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3833,7 +3833,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_forum\\event\\post_deleted": {
+    "\\mod_forum\\event\\post_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3858,7 +3858,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\report_participation\\event\\report_viewed": {
+    "\\report_participation\\event\\report_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3885,7 +3885,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\group_deleted": {
+    "\\core\\event\\group_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3907,7 +3907,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\competency_plan_unapproved": {
+    "\\core\\event\\competency_plan_unapproved": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3929,7 +3929,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_glossary\\event\\category_updated": {
+    "\\mod_glossary\\event\\category_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3951,7 +3951,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_chat\\event\\course_module_viewed": {
+    "\\mod_chat\\event\\course_module_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3973,7 +3973,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\tool_recyclebin\\event\\course_bin_item_restored": {
+    "\\tool_recyclebin\\event\\course_bin_item_restored": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -3995,7 +3995,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_lti\\event\\course_module_instance_list_viewed": {
+    "\\mod_lti\\event\\course_module_instance_list_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4017,7 +4017,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\report_outline\\event\\report_viewed": {
+    "\\report_outline\\event\\report_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4040,7 +4040,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_assign\\event\\user_override_updated": {
+    "\\mod_assign\\event\\user_override_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4063,7 +4063,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\assignsubmission_comments\\event\\comment_created": {
+    "\\assignsubmission_comments\\event\\comment_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4086,7 +4086,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_forum\\event\\discussion_viewed": {
+    "\\mod_forum\\event\\discussion_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4108,7 +4108,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_assign\\event\\submission_duplicated": {
+    "\\mod_assign\\event\\submission_duplicated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4130,7 +4130,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\user_password_updated": {
+    "\\core\\event\\user_password_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4153,7 +4153,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\note_created": {
+    "\\core\\event\\note_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4176,7 +4176,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_assign\\event\\submission_confirmation_form_viewed": {
+    "\\mod_assign\\event\\submission_confirmation_form_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4199,7 +4199,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_assign\\event\\identities_revealed": {
+    "\\mod_assign\\event\\identities_revealed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4221,7 +4221,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_forum\\event\\course_module_viewed": {
+    "\\mod_forum\\event\\course_module_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4243,7 +4243,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\report_loglive\\event\\report_viewed": {
+    "\\report_loglive\\event\\report_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4265,7 +4265,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_resource\\event\\course_module_viewed": {
+    "\\mod_resource\\event\\course_module_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4287,7 +4287,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\enrol_instance_updated": {
+    "\\core\\event\\enrol_instance_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4310,7 +4310,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\tool_monitor\\event\\rule_created": {
+    "\\tool_monitor\\event\\rule_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4332,7 +4332,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_quiz\\event\\attempt_reviewed": {
+    "\\mod_quiz\\event\\attempt_reviewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4355,7 +4355,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_forum\\event\\readtracking_disabled": {
+    "\\mod_forum\\event\\readtracking_disabled": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4378,7 +4378,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\message_contact_removed": {
+    "\\core\\event\\message_contact_removed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4400,7 +4400,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\assignsubmission_file\\event\\submission_updated": {
+    "\\assignsubmission_file\\event\\submission_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4428,7 +4428,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_data\\event\\template_viewed": {
+    "\\mod_data\\event\\template_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4451,7 +4451,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\dashboard_viewed": {
+    "\\core\\event\\dashboard_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4473,7 +4473,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_forum\\event\\course_searched": {
+    "\\mod_forum\\event\\course_searched": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4496,7 +4496,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\course_created": {
+    "\\core\\event\\course_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4520,7 +4520,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\notes_viewed": {
+    "\\core\\event\\notes_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4542,7 +4542,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\grade_deleted": {
+    "\\core\\event\\grade_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4567,7 +4567,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_lesson\\event\\content_page_viewed": {
+    "\\mod_lesson\\event\\content_page_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4589,7 +4589,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_choice\\event\\report_viewed": {
+    "\\mod_choice\\event\\report_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4612,7 +4612,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\competency_plan_completed": {
+    "\\core\\event\\competency_plan_completed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4634,7 +4634,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_workshop\\event\\submission_assessed": {
+    "\\mod_workshop\\event\\submission_assessed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4658,7 +4658,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\cohort_updated": {
+    "\\core\\event\\cohort_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4680,7 +4680,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_glossary\\event\\category_deleted": {
+    "\\mod_glossary\\event\\category_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4702,7 +4702,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\user_enrolment_deleted": {
+    "\\core\\event\\user_enrolment_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4726,7 +4726,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\competency_plan_viewed": {
+    "\\core\\event\\competency_plan_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4748,7 +4748,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\user_enrolment_created": {
+    "\\core\\event\\user_enrolment_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4771,7 +4771,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_forum\\event\\readtracking_enabled": {
+    "\\mod_forum\\event\\readtracking_enabled": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4794,7 +4794,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\course_updated": {
+    "\\core\\event\\course_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4818,7 +4818,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\course_module_deleted": {
+    "\\core\\event\\course_module_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4842,7 +4842,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\blog_entries_viewed": {
+    "\\core\\event\\blog_entries_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4872,7 +4872,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\course_restored": {
+    "\\core\\event\\course_restored": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4900,7 +4900,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_data\\event\\record_created": {
+    "\\mod_data\\event\\record_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4923,7 +4923,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\user_loggedout": {
+    "\\core\\event\\user_loggedout": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4946,7 +4946,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\user_loggedin": {
+    "\\core\\event\\user_loggedin": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -4969,7 +4969,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_assign\\event\\group_override_deleted": {
+    "\\mod_assign\\event\\group_override_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5016,7 +5016,7 @@
         "ip": "string",
         "realuserid": "NULL"
     },
-    "$\\mod_data\\event\\course_module_instance_list_viewed": {
+    "\\mod_data\\event\\course_module_instance_list_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5038,7 +5038,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\tool_monitor\\event\\subscription_criteria_met": {
+    "\\tool_monitor\\event\\subscription_criteria_met": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5061,7 +5061,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_lesson\\event\\essay_assessed": {
+    "\\mod_lesson\\event\\essay_assessed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5108,7 +5108,7 @@
         "ip": "string",
         "realuserid": "NULL"
     },
-    "$\\mod_wiki\\event\\page_locks_deleted": {
+    "\\mod_wiki\\event\\page_locks_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5131,7 +5131,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\notification_sent": {
+    "\\core\\event\\notification_sent": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5154,7 +5154,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_workshop\\event\\submission_deleted": {
+    "\\mod_workshop\\event\\submission_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5177,7 +5177,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\competency_evidence_created": {
+    "\\core\\event\\competency_evidence_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5203,7 +5203,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\competency_plan_deleted": {
+    "\\core\\event\\competency_plan_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5225,7 +5225,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_lesson\\event\\question_answered": {
+    "\\mod_lesson\\event\\question_answered": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5248,7 +5248,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\competency_user_evidence_deleted": {
+    "\\core\\event\\competency_user_evidence_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5270,7 +5270,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\user_updated": {
+    "\\core\\event\\user_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5292,7 +5292,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\tool_recyclebin\\event\\course_bin_item_created": {
+    "\\tool_recyclebin\\event\\course_bin_item_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5337,7 +5337,7 @@
         "ip": "string",
         "realuserid": "NULL"
     },
-    "$\\mod_data\\event\\record_updated": {
+    "\\mod_data\\event\\record_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5360,7 +5360,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_lesson\\event\\lesson_started": {
+    "\\mod_lesson\\event\\lesson_started": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5382,7 +5382,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_feedback\\event\\response_submitted": {
+    "\\mod_feedback\\event\\response_submitted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5407,7 +5407,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\report_completion\\event\\report_viewed": {
+    "\\report_completion\\event\\report_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5429,7 +5429,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_quiz\\event\\question_manually_graded": {
+    "\\mod_quiz\\event\\question_manually_graded": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5454,7 +5454,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_assign\\event\\user_override_created": {
+    "\\mod_assign\\event\\user_override_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5477,7 +5477,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_wiki\\event\\comments_viewed": {
+    "\\mod_wiki\\event\\comments_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5499,7 +5499,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_wiki\\event\\comment_deleted": {
+    "\\mod_wiki\\event\\comment_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5522,7 +5522,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\gradereport_user\\event\\grade_report_viewed": {
+    "\\gradereport_user\\event\\grade_report_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5544,7 +5544,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_lesson\\event\\lesson_restarted": {
+    "\\mod_lesson\\event\\lesson_restarted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5566,7 +5566,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\competency_plan_updated": {
+    "\\core\\event\\competency_plan_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5588,7 +5588,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\gradereport_grader\\event\\grade_report_viewed": {
+    "\\gradereport_grader\\event\\grade_report_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5610,7 +5610,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\calendar_event_created": {
+    "\\core\\event\\calendar_event_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5635,7 +5635,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_forum\\event\\discussion_subscription_created": {
+    "\\mod_forum\\event\\discussion_subscription_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5659,7 +5659,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_feedback\\event\\course_module_viewed": {
+    "\\mod_feedback\\event\\course_module_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5682,7 +5682,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_assign\\event\\grading_table_viewed": {
+    "\\mod_assign\\event\\grading_table_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5705,7 +5705,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_glossary\\event\\category_created": {
+    "\\mod_glossary\\event\\category_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5727,7 +5727,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\tag_collection_created": {
+    "\\core\\event\\tag_collection_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5749,7 +5749,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\competency_plan_review_started": {
+    "\\core\\event\\competency_plan_review_started": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5771,7 +5771,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\course_category_created": {
+    "\\core\\event\\course_category_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5793,7 +5793,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_forum\\event\\discussion_created": {
+    "\\mod_forum\\event\\discussion_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5816,7 +5816,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_lesson\\event\\user_override_updated": {
+    "\\mod_lesson\\event\\user_override_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5839,7 +5839,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\competency_plan_review_stopped": {
+    "\\core\\event\\competency_plan_review_stopped": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5861,7 +5861,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\question_category_created": {
+    "\\core\\event\\question_category_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5883,7 +5883,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_forum\\event\\course_module_instance_list_viewed": {
+    "\\mod_forum\\event\\course_module_instance_list_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5905,7 +5905,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\tool_monitor\\event\\subscription_created": {
+    "\\tool_monitor\\event\\subscription_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5927,7 +5927,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_quiz\\event\\attempt_started": {
+    "\\mod_quiz\\event\\attempt_started": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5949,7 +5949,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_glossary\\event\\entry_disapproved": {
+    "\\mod_glossary\\event\\entry_disapproved": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5971,7 +5971,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_forum\\event\\subscription_created": {
+    "\\mod_forum\\event\\subscription_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -5994,7 +5994,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\competency_plan_review_requested": {
+    "\\core\\event\\competency_plan_review_requested": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6016,7 +6016,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\blog_comment_deleted": {
+    "\\core\\event\\blog_comment_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6061,7 +6061,7 @@
         "ip": "string",
         "realuserid": "NULL"
     },
-    "$\\mod_glossary\\event\\course_module_viewed": {
+    "\\mod_glossary\\event\\course_module_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6084,7 +6084,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_lesson\\event\\page_created": {
+    "\\mod_lesson\\event\\page_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6107,7 +6107,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\tool_usertours\\event\\tour_ended": {
+    "\\tool_usertours\\event\\tour_ended": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6132,7 +6132,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\tag_updated": {
+    "\\core\\event\\tag_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6156,7 +6156,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\course_module_updated": {
+    "\\core\\event\\course_module_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6181,7 +6181,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\dashboard_reset": {
+    "\\core\\event\\dashboard_reset": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6205,7 +6205,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\message_sent": {
+    "\\core\\event\\message_sent": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6250,7 +6250,7 @@
         "ip": "string",
         "realuserid": "NULL"
     },
-    "$\\core\\event\\course_user_report_viewed": {
+    "\\core\\event\\course_user_report_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6273,7 +6273,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_assign\\event\\submission_status_viewed": {
+    "\\mod_assign\\event\\submission_status_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6296,7 +6296,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_assign\\event\\grading_form_viewed": {
+    "\\mod_assign\\event\\grading_form_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6319,7 +6319,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_lesson\\event\\essay_attempt_viewed": {
+    "\\mod_lesson\\event\\essay_attempt_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6341,7 +6341,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\grade_letter_created": {
+    "\\core\\event\\grade_letter_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6363,7 +6363,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_choice\\event\\course_module_viewed": {
+    "\\mod_choice\\event\\course_module_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6385,7 +6385,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\competency_template_created": {
+    "\\core\\event\\competency_template_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6407,7 +6407,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\user_deleted": {
+    "\\core\\event\\user_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6434,7 +6434,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_lesson\\event\\question_viewed": {
+    "\\mod_lesson\\event\\question_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6457,7 +6457,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_lesson\\event\\group_override_deleted": {
+    "\\mod_lesson\\event\\group_override_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6481,7 +6481,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_assign\\event\\submission_graded": {
+    "\\mod_assign\\event\\submission_graded": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6503,7 +6503,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\course_section_updated": {
+    "\\core\\event\\course_section_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6526,7 +6526,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_lesson\\event\\user_override_deleted": {
+    "\\mod_lesson\\event\\user_override_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6549,7 +6549,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_folder\\event\\folder_updated": {
+    "\\mod_folder\\event\\folder_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6571,7 +6571,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\competency_user_evidence_created": {
+    "\\core\\event\\competency_user_evidence_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6593,7 +6593,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_assign\\event\\group_override_updated": {
+    "\\mod_assign\\event\\group_override_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6617,7 +6617,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\competency_framework_deleted": {
+    "\\core\\event\\competency_framework_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6639,7 +6639,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\grade_letter_updated": {
+    "\\core\\event\\grade_letter_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6661,7 +6661,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\tool_recyclebin\\event\\category_bin_item_restored": {
+    "\\tool_recyclebin\\event\\category_bin_item_restored": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6683,7 +6683,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\tag_collection_updated": {
+    "\\core\\event\\tag_collection_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6705,7 +6705,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\blog_association_deleted": {
+    "\\core\\event\\blog_association_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6729,7 +6729,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\scale_created": {
+    "\\core\\event\\scale_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6751,7 +6751,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_workshop\\event\\submission_updated": {
+    "\\mod_workshop\\event\\submission_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6774,7 +6774,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\completion_defaults_updated": {
+    "\\core\\event\\completion_defaults_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6797,7 +6797,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\config_log_created": {
+    "\\core\\event\\config_log_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6823,7 +6823,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_url\\event\\course_module_viewed": {
+    "\\mod_url\\event\\course_module_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6845,7 +6845,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_book\\event\\chapter_created": {
+    "\\mod_book\\event\\chapter_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6867,7 +6867,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\user_profile_viewed": {
+    "\\core\\event\\user_profile_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6892,7 +6892,7 @@
         "other_courseshortname": "string",
         "other_coursefullname": "string"
     },
-    "$\\mod_lesson\\event\\group_override_created": {
+    "\\mod_lesson\\event\\group_override_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6916,7 +6916,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_assign\\event\\course_module_instance_list_viewed": {
+    "\\mod_assign\\event\\course_module_instance_list_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6938,7 +6938,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_workshop\\event\\submission_created": {
+    "\\mod_workshop\\event\\submission_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6961,7 +6961,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\gradeexport_txt\\event\\grade_exported": {
+    "\\gradeexport_txt\\event\\grade_exported": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -6983,7 +6983,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_lesson\\event\\page_updated": {
+    "\\mod_lesson\\event\\page_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -7006,7 +7006,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\group_member_removed": {
+    "\\core\\event\\group_member_removed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -7028,7 +7028,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\tool_usertours\\event\\tour_reset": {
+    "\\tool_usertours\\event\\tour_reset": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -7051,7 +7051,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\tool_recyclebin\\event\\category_bin_item_created": {
+    "\\tool_recyclebin\\event\\category_bin_item_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -7073,7 +7073,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\course_viewed": {
+    "\\core\\event\\course_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -7096,7 +7096,7 @@
         "realuserid": "string",
         "other_coursesectionnumber": "integer"
     },
-    "$\\gradereport_singleview\\event\\grade_report_viewed": {
+    "\\gradereport_singleview\\event\\grade_report_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -7118,7 +7118,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\course_completed": {
+    "\\core\\event\\course_completed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -7141,7 +7141,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\tool_monitor\\event\\subscription_deleted": {
+    "\\tool_monitor\\event\\subscription_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -7163,7 +7163,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_chat\\event\\course_module_instance_list_viewed": {
+    "\\mod_chat\\event\\course_module_instance_list_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -7185,7 +7185,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\mod_quiz\\event\\user_override_deleted": {
+    "\\mod_quiz\\event\\user_override_deleted": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -7208,7 +7208,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\competency_template_updated": {
+    "\\core\\event\\competency_template_updated": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -7230,7 +7230,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\course_section_created": {
+    "\\core\\event\\course_section_created": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -7253,7 +7253,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\message_viewed": {
+    "\\core\\event\\message_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -7276,7 +7276,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\course_resources_list_viewed": {
+    "\\core\\event\\course_resources_list_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -7298,7 +7298,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\notification_viewed": {
+    "\\core\\event\\notification_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -7320,7 +7320,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\core\\event\\course_category_viewed": {
+    "\\core\\event\\course_category_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",
@@ -7342,7 +7342,7 @@
         "ip": "string",
         "realuserid": "string"
     },
-    "$\\report_outline\\event\\activity_report_viewed": {
+    "\\report_outline\\event\\activity_report_viewed": {
         "id": "string",
         "eventname": "string",
         "component": "string",

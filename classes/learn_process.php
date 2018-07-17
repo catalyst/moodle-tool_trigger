@@ -261,4 +261,23 @@ class learn_process {
         return $eventfields;
     }
 
+    /**
+     *
+     */
+    public function process_fixtures() {
+        global $CFG;
+        // Load fixtures from JSON file.
+        $filename = $CFG->dirroot . '/admin/tool/trigger/db/fixtures/event_fields.json';
+        $fixturejson = file_get_contents($filename);
+
+        // Turn JSON into PHP array so it can be iterated over.
+        $fixtures = json_decode($fixturejson);
+
+        // Pass event anme and object as JSON to strore json fields method.
+        foreach ($fixtures as $eventname => $values) {
+            $jsonfields = json_encode($values);
+            $this->store_json_fields($eventname, $jsonfields);
+        }
+    }
+
 }

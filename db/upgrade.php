@@ -161,5 +161,14 @@ function xmldb_tool_trigger_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2018070101, 'tool', 'trigger');
     }
 
+    if ($oldversion < 2018071700) {
+
+        // Add events fields from fixture file to database.
+
+
+        // Trigger savepoint reached.
+        upgrade_plugin_savepoint(true, 2018071700, 'tool', 'trigger');
+    }
+
     return true;
 }

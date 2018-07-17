@@ -471,4 +471,16 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
 
     }
 
+    /**
+     * Test get the stored JSON fields for that event.
+     */
+    public function test_process_fixtures() {
+        $learnprocess = new \tool_trigger\learn_process();
+        $result = $learnprocess->process_fixtures();
+
+
+
+        //$this->assertEquals($result->jsonfields, $jsonfields);
+
+    }
 }

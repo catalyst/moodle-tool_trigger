@@ -15,18 +15,21 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * Post installation steps for trigger plugin.
  *
  * @package     tool_trigger
- * @copyright   Matt Porritt <mattp@catalyst-au.net>
+ * @copyright   Catalyst IT
+ * @author      Matt Porritt <mattp@catalyst-au.net>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+defined('MOODLE_INTERNAL') || die;
 
-$plugin->component = 'tool_trigger';
-$plugin->release = '2018071700';
-$plugin->version = 2018071700;
-$plugin->requires = 2016052300;
-$plugin->maturity = MATURITY_BETA;
-$plugin->dependencies = array('tool_monitor' => 2015051101);
+function xmldb_tool_trigger_install() {
+    global $CFG, $OUTPUT, $DB;
+
+    // Add events fields from fixture file to database.
+
+}
+
+
