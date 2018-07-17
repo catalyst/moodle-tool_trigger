@@ -237,7 +237,8 @@ define(
                     'stepclass' : stepclass,
                     'defaults': JSON.stringify(formdefaults),
                     'ajaxformdata': formsubmission,
-                    'event': getEventName()
+                    'event': getEventName(),
+                    'existingsteps': JSON.stringify(getParentFormSteps()),
                 }
             )
         );

@@ -44,6 +44,64 @@ class user_lookup_step extends base_lookup_step {
      */
     private $outputprefix = null;
 
+    /**
+     * The fields suplied by this step.
+     * Pretty much everything except "password" and "secret".
+     *
+     * @var array
+     */
+    private $stepfields = array(
+            'id',
+            'auth',
+            'confirmed',
+            'policyagreed',
+            'deleted',
+            'suspended',
+            'mnethostid',
+            'username',
+            'idnumber',
+            'firstname',
+            'lastname',
+            'email',
+            'emailstop',
+            'icq',
+            'skype',
+            'yahoo',
+            'aim',
+            'msn',
+            'phone1',
+            'phone2',
+            'institution',
+            'department',
+            'address',
+            'city',
+            'country',
+            'lang',
+            'calendartype',
+            'theme',
+            'timezone',
+            'firstaccess',
+            'lastaccess',
+            'lastlogin',
+            'currentlogin',
+            'lastip',
+            'picture',
+            'url',
+            'description',
+            'descriptionformat',
+            'mailformat',
+            'maildigest',
+            'maildisplay',
+            'autosubscribe',
+            'trackforums',
+            'timecreated',
+            'timemodified',
+            'trustbitmask',
+            'imagealt',
+            'lastnamephonetic',
+            'firstnamephonetic',
+            'middlename',
+            'alternatename');
 
     /**
      * Whether to halt execution of the workflow, if the user has been marked "deleted".
@@ -76,14 +134,7 @@ class user_lookup_step extends base_lookup_step {
                     . $this->useridfield);
         }
 
-        // The fields to fetch from the user table.
-        // Pretty much everything except "password" and "secret".
-        $userfields = 'id, auth, confirmed, policyagreed, deleted, suspended, mnethostid, username, idnumber, firstname, lastname'
-            . ', email, emailstop, icq, skype, yahoo, aim, msn, phone1, phone2, institution, department, address, city, country'
-            . ', lang, calendartype, theme, timezone, firstaccess, lastaccess, lastlogin, currentlogin, lastip, picture, url'
-            . ', description, descriptionformat, mailformat, maildigest, maildisplay, autosubscribe, trackforums, timecreated'
-            . ', timemodified, trustbitmask, imagealt, lastnamephonetic, firstnamephonetic, middlename, alternatename';
-
+        $userfields = implode(',', $this->stepfields);
         $userdata = \core_user::get_user($datafields[$this->useridfield], $userfields);
 
         // Users are not typically deleted from the database on deletion; they're just flagged as "deleted".
@@ -150,5 +201,9 @@ class user_lookup_step extends base_lookup_step {
      */
     public static function get_privacyfields() {
         return ['user_lookup_step' => 'step_lookup_user:privacy:userdata_desc'];
+    }
+
+    public static function get_fields() {
+
     }
 }

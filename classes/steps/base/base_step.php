@@ -37,6 +37,8 @@ abstract class base_step {
 
     protected $data = [];
 
+    private $stepfields = array();
+
     public function __construct($jsondata = null) {
         if ($jsondata) {
             $this->data = json_decode($jsondata, true);
@@ -63,6 +65,13 @@ abstract class base_step {
      * @return string human readable step description.
      */
     abstract static public function get_step_desc();
+
+    /**
+     * Returns the fields that the step provides.
+     *
+     * @return array steps that the step provides.
+     */
+   // abstract static public function get_fields();
 
     /**
      * @var string
