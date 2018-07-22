@@ -64,6 +64,7 @@ $string['emailcontent_help'] = 'The content to use in the email';
 $string['emailactionstepname'] = 'Email';
 $string['emailactionstepdesc'] = 'A step to allow an e-mail to be sent';
 $string['event'] = 'Event';
+$string['eventfields'] = 'Event fields';
 $string['eventtomonitor'] = 'Event to monitor';
 $string['eventtomonitor_help'] = 'The Moodle event to trigger workflow on.';
 $string['erroreditstep'] = 'Something went wrong while attempting to save the workflow step. Please try again.';

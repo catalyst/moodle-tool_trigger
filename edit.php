@@ -75,7 +75,7 @@ $mform = new \tool_trigger\edit_form(
 if ($mform->is_cancelled()) {
     // Handle form cancel operation.
     // Redirect back to workflow page.
-    redirect(new moodle_url('/admin/tool/trigger/index.php'));
+    redirect(new moodle_url('/admin/tool/trigger/manage.php'));
 
 } else if ($mdata = $mform->get_data()) {
     // Process validated data.
@@ -87,9 +87,9 @@ if ($mform->is_cancelled()) {
 
     // Redirect back to workflow page and show success or failure.
     if ($result) {
-        redirect(new moodle_url('/admin/tool/trigger/index.php'), get_string('changessaved'));
+        redirect(new moodle_url('/admin/tool/trigger/manage.php'), get_string('changessaved'));
     } else {
-        redirect(new moodle_url('/admin/tool/trigger/index.php'), get_tring('errorsavingworkflow'));
+        redirect(new moodle_url('/admin/tool/trigger/manage.php'), get_tring('errorsavingworkflow'));
     }
 
 } else {

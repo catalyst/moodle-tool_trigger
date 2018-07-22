@@ -236,7 +236,7 @@ class learn_process {
      * Retrieve fields and field types from the database.
      *
      * @param string $eventname The name of the event to get fields for.
-     * @return array $eventfields Event fields and types from database.
+     * @return array $fieldarray Event fields and types from database.
      */
     public function get_event_fields_with_type($eventname) {
         global $DB;
@@ -256,9 +256,7 @@ class learn_process {
             }
         }
 
-        $eventfields = array('fields' => $fieldarray);
-
-        return $eventfields;
+        return $fieldarray;
     }
 
     /**

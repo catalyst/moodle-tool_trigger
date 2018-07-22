@@ -41,8 +41,21 @@
         {{#nofields}}
             <p>{{# str }} noavailablefields, tool_trigger {{/ str }}</p>
         {{/nofields}}
-        {{#fields}}
-            <span class="tag tag-info mb-3 mr-1">{{ field }}</span>
-        {{/fields}}
+        {{^nofields}}
+            <div class="fieldtitle">{{# str }} eventfields, tool_trigger {{/ str }}:</div>
+        {{/nofields}}
+        <div class="fieldgroup">
+            {{#fields}}
+                <span class="tag tag-info mb-1 mr-1">{{ field }}</span>
+            {{/fields}}
+        </div>
+        {{#steps}}
+            <div class="fieldtitle">{{ stepname }}:</div>
+            <div class="fieldgroup">
+                {{#fields}}
+                    <span class="tag tag-info mb-1 mr-1">{{ field }}</span>
+                {{/fields}}
+            </div>
+        {{/steps}}
     </div>
 </div>

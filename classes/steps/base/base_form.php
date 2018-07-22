@@ -57,17 +57,82 @@ class base_form extends \moodleform {
         parent::__construct($action, $customdata, $method, $target, $attributes, $editable, $ajaxformdata);
     }
 
-    private function get_trigger_fields($eventname) {
-        // Get all fields for this workflows event.
-        $learnprocess = new \tool_trigger\learn_process();
-        $fields = $learnprocess->get_event_fields_with_type($eventname);
+    /**
+     * Determine if the step being added or edited it the first
+     * step for the workflow.
+     * If existing steps is empty this is the first step.
+     * If there is only one existing step and it is the
+     * same as the $stepclass then there is only one step
+     * and we are editing it.
+     *
+     * @param string $stepclass The name of the step being added or edited.
+     * @param array $existingsteps The existing steps for the workflow.
+     * @return bool $isfirst Is this the first step or not.
+     */
+    private function is_first_step($stepclass, $existingsteps) {
+        $isfirst = false;
+        $existingstepscount = count($existingsteps);
 
-        // Add notification for empty fields
-        if (empty($fields['fields'])) {
-            $fields = array('nofields' => true);
+        if ($existingstepscount == 0 ) {
+            $isfirst = true;
+        }
+        if ($existingstepscount == 1 && $existingsteps[0]['stepclass'] == $stepclass) {
+            $isfirst = true;
         }
 
-        // TODO: Get all fields from previous steps in this workflow.
+        return $isfirst;
+    }
+
+    /**
+     * Format the fields retrieved from the stpe class
+     * for use in the mustache template.
+     *
+     * @param array $stepfields The fields returned from the step class.
+     * @param string $outputprefix The prefix to prepend to the fields.
+     * @return array $explodedfields The formatted fields.
+     */
+    private function explode_fields($stepfields, $outputprefix) {
+        $explodedfields = array();
+        foreach ($stepfields as $field) {
+            $explodedfields[] = array('field' => $outputprefix.$field);
+        }
+
+        return $explodedfields;
+    }
+
+    /**
+     * Get the avialble fields for all steps in this workflow.
+     *
+     * @param string $eventname The eventname the workflow listens for
+     * @param string $stepclass The class of the step being added or edited.
+     * @param array $existingsteps The array of existing steps in workflow.
+     * @return array $fields The returned fields available.
+     */
+    private function get_trigger_fields($eventname, $stepclass, $existingsteps) {
+        // Get all fields for this workflows event.
+        $fields = array();
+        $learnprocess = new \tool_trigger\learn_process();
+        $fields['fields'] = $learnprocess->get_event_fields_with_type($eventname);
+        $fields['steps'] = array();
+
+        // Add notification for no event fields.
+        if (empty($fields['fields'])) {
+            $fields['fields'] = array('nofields' => true);
+        }
+
+        $isfirst = $this->is_first_step($stepclass, $existingsteps);
+        if (!$isfirst) {
+            foreach($existingsteps as $step) {
+                $stepfields = $step['stepclass']::get_fields();
+                $stepfieldarray = $this->explode_fields($stepfields, $step['outputprefix']);
+                $steparray = array(
+                    'stepname' => $step['stepdesc'],
+                    'fields' => $stepfieldarray
+                );
+                $fields['steps'][] = $steparray;
+            }
+
+        }
 
         return $fields;
     }
@@ -138,7 +203,11 @@ class base_form extends \moodleform {
             // Get available fields.
             // If this is the first step in the workflow it will just be the events fields.
             // Otherwise it will also have the fields from all the prvious steps.
-            $triggerfields = $this->get_trigger_fields($this->_customdata['event']);
+            $triggerfields = $this->get_trigger_fields(
+                $this->_customdata['event'],
+                $this->_customdata['stepclass'],
+                $this->_customdata['existingsteps']
+                );
             $fieldhtml = $OUTPUT->render_from_template('tool_trigger/trigger_fields', $triggerfields);
             $mform->addElement('html', $fieldhtml);
 

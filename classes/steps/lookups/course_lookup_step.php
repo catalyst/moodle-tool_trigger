@@ -44,6 +44,45 @@ class course_lookup_step extends base_lookup_step {
      */
     private $outputprefix = null;
 
+    /**
+     * The fields suplied by this step.
+     *
+     * @var array
+     */
+    private static $stepfields = array(
+        'id',
+        'category',
+        'sortorder',
+        'fullname',
+        'shortname',
+        'idnumber',
+        'summary',
+        'summaryformat',
+        'format',
+        'showgrades',
+        'newsitems',
+        'startdate',
+        'enddate',
+        'marker',
+        'maxbytes',
+        'legacyfiles',
+        'showreports',
+        'visible',
+        'visibleold',
+        'groupmode',
+        'groupmodeforce',
+        'defaultgroupingid',
+        'lang',
+        'calendartype',
+        'theme',
+        'timecreated',
+        'timemodified',
+        'requested',
+        'enablecompletion',
+        'completionnotify',
+        'cacherev'
+    );
+
     protected function init() {
         $this->courseidfield = $this->data['courseidfield'];
         $this->outputprefix = $this->data['outputprefix'];
@@ -114,5 +153,15 @@ class course_lookup_step extends base_lookup_step {
      */
     public static function get_privacyfields() {
         return ['course_lookup_step' => 'step_lookup_course:privacy:coursedata_desc'];
+    }
+
+    /**
+     * Get a list of fields this step provides.
+     *
+     * @return array $stepfields The fields this step provides.
+     */
+    public static function get_fields() {
+        return self::$stepfields;
+
     }
 }

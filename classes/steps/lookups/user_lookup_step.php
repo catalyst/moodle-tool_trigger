@@ -50,7 +50,7 @@ class user_lookup_step extends base_lookup_step {
      *
      * @var array
      */
-    private $stepfields = array(
+    private static $stepfields = array(
             'id',
             'auth',
             'confirmed',
@@ -203,7 +203,13 @@ class user_lookup_step extends base_lookup_step {
         return ['user_lookup_step' => 'step_lookup_user:privacy:userdata_desc'];
     }
 
+    /**
+     * Get a list of fields this step provides.
+     *
+     * @return array $stepfields The fields this step provides.
+     */
     public static function get_fields() {
+        return self::$stepfields;
 
     }
 }
