@@ -218,12 +218,17 @@ define(
      * @param {string} formsubmission Serialized (via jQuery().serialize()) form submission values to load
      * into the form, when re-displaying a form that has failed validation.
      */
-    function renderStepForm(steptype, stepclass, formdefaults, formsubmission) {
+    function renderStepForm(steptype, stepclass, formdefaults, formsubmission, steporder) {
         if (formdefaults === undefined) {
             formdefaults = '';
         }
+
         if (formsubmission === undefined) {
             formsubmission = '';
+        }
+
+        if (steporder === undefined) {
+            steporder = 0;
         }
 
         modalObj.setBody(spinner);
@@ -239,6 +244,7 @@ define(
                     'ajaxformdata': formsubmission,
                     'event': getEventName(),
                     'existingsteps': JSON.stringify(getParentFormSteps()),
+                    'steporder': steporder,
                 }
             )
         );
@@ -369,7 +375,8 @@ define(
             renderStepForm(
                 step['type'],
                 step['stepclass'],
-                step
+                step,
+                steporder
             );
         });
 

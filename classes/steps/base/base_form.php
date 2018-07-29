@@ -123,6 +123,7 @@ class base_form extends \moodleform {
         $isfirst = $this->is_first_step($stepclass, $existingsteps);
         if (!$isfirst) {
             foreach($existingsteps as $step) {
+
                 $stepfields = $step['stepclass']::get_fields();
                 $stepfieldarray = $this->explode_fields($stepfields, $step['outputprefix']);
                 $steparray = array(
