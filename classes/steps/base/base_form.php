@@ -108,7 +108,7 @@ class base_form extends \moodleform {
      * @param array $existingsteps The array of existing steps in workflow.
      * @return array $fields The returned fields available.
      */
-    private function get_trigger_fields($eventname, $stepclass, $existingsteps) {
+    private function get_trigger_fields($eventname, $stepclass, $existingsteps, $steporder) {
         // Get all fields for this workflows event.
         $fields = array();
         $learnprocess = new \tool_trigger\learn_process();
@@ -121,8 +121,14 @@ class base_form extends \moodleform {
         }
 
         $isfirst = $this->is_first_step($stepclass, $existingsteps);
+
         if (!$isfirst) {
             foreach($existingsteps as $step) {
+
+                // Don't show fields for steps that may exist after this one.
+                if ($step['steporder'] >= $steporder && $steporder != -1) {
+                    break;
+                }
 
                 $stepfields = $step['stepclass']::get_fields();
                 $stepfieldarray = $this->explode_fields($stepfields, $step['outputprefix']);
@@ -207,7 +213,8 @@ class base_form extends \moodleform {
             $triggerfields = $this->get_trigger_fields(
                 $this->_customdata['event'],
                 $this->_customdata['stepclass'],
-                $this->_customdata['existingsteps']
+                $this->_customdata['existingsteps'],
+                $this->_customdata['steporder']
                 );
             $fieldhtml = $OUTPUT->render_from_template('tool_trigger/trigger_fields', $triggerfields);
             $mform->addElement('html', $fieldhtml);

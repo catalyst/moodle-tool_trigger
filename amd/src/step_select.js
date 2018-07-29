@@ -263,7 +263,7 @@ define(
         $('body').on('change', '[name=stepclass]', function() {
             var steptype = $('[name=type]').val();
             var stepclass = this.value;
-            renderStepForm(steptype, stepclass);
+            renderStepForm(steptype, stepclass, '', '', -1);
         });
     }
 
@@ -366,6 +366,7 @@ define(
         $('.tool-trigger-step-edit')
         .removeClass('tool-trigger-initial-hidden')
         .on('click', function() {
+
             modalObj.setBody(spinner);
             modalObj.show();
             var steps = getParentFormSteps();
@@ -376,6 +377,7 @@ define(
                 step['type'],
                 step['stepclass'],
                 step,
+                undefined,
                 steporder
             );
         });
