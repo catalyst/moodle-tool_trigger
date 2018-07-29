@@ -210,14 +210,17 @@ class base_form extends \moodleform {
             // Get available fields.
             // If this is the first step in the workflow it will just be the events fields.
             // Otherwise it will also have the fields from all the prvious steps.
-            $triggerfields = $this->get_trigger_fields(
-                $this->_customdata['event'],
-                $this->_customdata['stepclass'],
-                $this->_customdata['existingsteps'],
-                $this->_customdata['steporder']
-                );
-            $fieldhtml = $OUTPUT->render_from_template('tool_trigger/trigger_fields', $triggerfields);
-            $mform->addElement('html', $fieldhtml);
+
+            if (isset($this->_customdata['event'])) {
+                $triggerfields = $this->get_trigger_fields(
+                    $this->_customdata['event'],
+                    $this->_customdata['stepclass'],
+                    $this->_customdata['existingsteps'],
+                    $this->_customdata['steporder']
+                    );
+                $fieldhtml = $OUTPUT->render_from_template('tool_trigger/trigger_fields', $triggerfields);
+                $mform->addElement('html', $fieldhtml);
+            }
 
             // Additional fields specific to the step type.
             $this->step->form_definition_extra($this, $this->_form, $this->_customdata);
