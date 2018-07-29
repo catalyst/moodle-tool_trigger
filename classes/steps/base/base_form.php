@@ -123,7 +123,7 @@ class base_form extends \moodleform {
         $isfirst = $this->is_first_step($stepclass, $existingsteps);
 
         if (!$isfirst) {
-            foreach($existingsteps as $step) {
+            foreach ($existingsteps as $step) {
 
                 // Don't show fields for steps that may exist after this one.
                 if ($step['steporder'] >= $steporder && $steporder != -1) {

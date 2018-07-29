@@ -26,7 +26,6 @@ define('CLI_SCRIPT', 1);
 
 require(__DIR__.'/../../../../config.php');
 require_once($CFG->libdir.'/clilib.php');
-//require_once($CFG->dirroot . '/admint/tool/trigger/');
 
 // Get cli options.
 list($options, $unrecognized) = cli_get_params(array('help' => false), array('h' => 'help'));
@@ -71,7 +70,7 @@ foreach ($eventnames as $eventname) {
     $count++;
 }
 
-// Convert results into JSON
+// Convert results into JSON.
 $resultsjson = json_encode($results, JSON_PRETTY_PRINT);
 
 print_string('cli_writingfile', 'tool_trigger', $count);

@@ -67,13 +67,6 @@ abstract class base_step {
     abstract static public function get_step_desc();
 
     /**
-     * Returns the fields that the step provides.
-     *
-     * @return array steps that the step provides.
-     */
-   // abstract static public function get_fields();
-
-    /**
      * @var string
      */
     const STEPTYPE_ACTION = 'actions';

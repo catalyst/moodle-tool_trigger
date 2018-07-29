@@ -93,7 +93,7 @@ class event_processor {
     public function write(\core\event\base $event) {
         $entry = $this->prepare_event($event);
 
-        if (!$this->is_event_ignored($event)) { // If is not an ignore event then process
+        if (!$this->is_event_ignored($event)) { // If is not an ignore event then process.
             $this->insert_event_entry($entry);
         }
 

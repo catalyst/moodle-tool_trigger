@@ -88,7 +88,7 @@ if ($fp) {
             $record = new \stdClass();
             for ($i = 0; $i < count($parameterarray); $i++) {
 
-                //  Do some final formating and converison on values before insert.
+                // Do some final formating and converison on values before insert.
                 $value = preg_replace('/\d*\s\=\s/', '', $valuesarray[$i]);
                 $value = str_replace('NULL', '', $value);
                 $value = str_replace('\'', '', $value);

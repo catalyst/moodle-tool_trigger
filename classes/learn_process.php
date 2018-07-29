@@ -76,12 +76,12 @@ class learn_process {
         foreach ($record as $key => $value) {  // Iterate through record fields.
 
             if ($key == 'other') {  // Treat the 'other' field as special.
-                $other =  unserialize($value);  // Convert back to PHP array.
+                $other = unserialize($value);  // Convert back to PHP array.
                 if ($other) {
                     // Call this function recursively to process fileds contained in other.
-                   $this->convert_record_type($other, true);
+                    $this->convert_record_type($other, true);
                 }
-           } else {
+            } else {
                 if ($isother) { // If this key was a child of 'other' give it a prefix.
                     $otherkey = 'other_' . $key;
                     $this->typearray[$otherkey] = gettype($value);  // Update result array with result.
@@ -153,9 +153,9 @@ class learn_process {
             $transaction = $DB->start_delegated_transaction();
 
             // Check for existing record in DB.
-            $exists = $DB->get_record('tool_trigger_event_fields', array('eventname'=>$learntevent), '*', IGNORE_MISSING);
+            $exists = $DB->get_record('tool_trigger_event_fields', array('eventname' => $learntevent), '*', IGNORE_MISSING);
 
-            if ($exists) {  // If record exists update
+            if ($exists) {  // If record exists update.
                 $record->id = $exists->id;
                 $record = $this->merge_json_fields($record, $exists);  // Merge records before update.
                 $DB->update_record('tool_trigger_event_fields', $record);
@@ -164,7 +164,7 @@ class learn_process {
             }
 
             $transaction->allow_commit();
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $transaction->rollback($e);
         }
     }
@@ -192,10 +192,10 @@ class learn_process {
             // Merge all entries into one array.
             $mergedfields = $this->merge_records($processedrecords);
 
-            // convert collated fields to json.
+            // Convert collated fields to json.
             $jsonfields = json_encode($mergedfields);
 
-            // store collated field json in db.
+            // Store collated field json in db.
             $this->store_json_fields($learntevent, $jsonfields);
         }
 
@@ -227,7 +227,7 @@ class learn_process {
         global $DB;
         $jsonfields = $DB->get_record(
                 'tool_trigger_event_fields',
-                array('eventname'=>$eventname), 'jsonfields', IGNORE_MISSING);
+                array('eventname' => $eventname), 'jsonfields', IGNORE_MISSING);
 
         return $jsonfields;
     }
@@ -244,11 +244,11 @@ class learn_process {
 
         $jsonfields = $DB->get_record(
             'tool_trigger_event_fields',
-            array('eventname'=>$eventname), 'jsonfields', IGNORE_MISSING);
+            array('eventname' => $eventname), 'jsonfields', IGNORE_MISSING);
 
         if ($jsonfields) {
             $fields = json_decode($jsonfields->jsonfields, true);
-            foreach ($fields as $field => $type){
+            foreach ($fields as $field => $type) {
                 $fieldarray[] = array(
                     'field' => $field,
                     'type' => $type
