@@ -26,9 +26,18 @@ namespace tool_trigger;
 defined('MOODLE_INTERNAL') || die();
 /**
  * Process learnt events.
+ *
+ * @package    tool_trigger
+ * @copyright  Matt Porritt <mattp@catalyst-au.net>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class learn_process {
 
+    /**
+     * An array of the fields for that event record.
+     *
+     * @var array
+     */
     private $typearray = array();
 
     /**

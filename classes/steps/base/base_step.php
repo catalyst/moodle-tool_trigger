@@ -97,6 +97,8 @@ abstract class base_step {
     abstract static public function get_step_type_desc();
 
     /**
+     * Execute.
+     *
      * @param \stdClass $step The `tool_trigger_steps` record for this step instance
      * @param \stdClass $trigger The `tool_trigger_queue` record for this execution
      * of the workflow.

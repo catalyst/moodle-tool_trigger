@@ -7,7 +7,7 @@
 // (at your option) any later version.
 //
 // Moodle is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY, without even the implied warranty of
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
@@ -69,7 +69,7 @@ class tool_trigger_event_processor_testcase extends advanced_testcase {
      *
      * @return int $workflowid The id of the created workflow.
      */
-    public function create_workflow(){
+    public function create_workflow() {
         $mdata = new \stdClass();
         $mdata->workflowid = 0;
         $mdata->workflowname = 'Email me about login';

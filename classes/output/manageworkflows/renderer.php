@@ -69,6 +69,7 @@ class renderer extends \plugin_renderer_base {
     /**
      * Html to add a button for adding a new workflow.
      *
+     * @param int $workflowid The workflow the button applies too.
      * @return string html for the button.
      */
     protected function render_add_button($workflowid) {

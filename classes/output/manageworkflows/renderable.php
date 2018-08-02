@@ -50,9 +50,8 @@ class renderable extends \table_sql implements \renderable {
     /**
      * Sets up the table_log parameters.
      *
-     * @param string $uniqueid unique id of form.
-     * @param \moodle_url $url url where this table is displayed.
-     * @param int $courseid course id.
+     * @param string $uniqueid Unique id of form.
+     * @param \moodle_url $url Url where this table is displayed.
      * @param int $perpage Number of rules to display per page.
      */
     public function __construct($uniqueid, \moodle_url $url, $perpage = 100) {

@@ -37,6 +37,7 @@ defined('MOODLE_INTERNAL') || die;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class fail_filter_step extends base_filter_step {
+
     /**
      * {@inheritDoc}
      * @see \tool_trigger\steps\base\base_step::execute()

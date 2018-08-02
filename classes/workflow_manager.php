@@ -251,8 +251,19 @@ class workflow_manager {
         return true;
     }
 
+    /**
+     * The step classes.
+     *
+     * @var array $stepclasses
+     */
     protected $stepclasses = null;
 
+    /**
+     * Validate the given step class.
+     *
+     * @param string $stepclass
+     * @return boolean
+     */
     public function validate_step_class($stepclass) {
         if ($this->stepclasses === null) {
             $this->stepclasses = $this->get_step_class_names();

@@ -38,6 +38,9 @@ class event_processor {
     /** @var  static a reference to an instance of this class (using late static binding). */
     protected static $singleton;
 
+    /**
+     * Class constructor method.
+     */
     public function __construct() {
         $this->islearning = (bool)get_config('tool_trigger', 'learning');
     }
@@ -62,17 +65,16 @@ class event_processor {
     }
 
     /**
+     * We need to capture current info at this moment,
+     * at the same time this lowers memory use because
+     * snapshots and custom objects may be garbage collected.
      *
-     * @param \core\event\base $event
-     * @param boolean $islearning
-     * @return string
+     * @param \core\event\base $event The event.
+     * @return array $entry The event entry.
      */
     private function prepare_event($event) {
         global $PAGE, $USER;
 
-        // We need to capture current info at this moment,
-        // at the same time this lowers memory use because
-        // snapshots and custom objects may be garbage collected.
         $entry = $event->get_data();
         $entry['origin'] = $PAGE->requestorigin;
         $entry['ip'] = $PAGE->requestip;

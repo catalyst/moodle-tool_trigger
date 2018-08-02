@@ -153,8 +153,10 @@ class edit_form extends \moodleform {
      * Validation. For now it just makes sure that the stepjson hidden field isn't
      * empty. If it is, it puts an error flag on the "add workflow steps" button.
      *
-     * {@inheritDoc}
-     * @see \moodleform::validation()
+     * @param array $data array of ("fieldname"=>value) of submitted data
+     * @param array $files array of uploaded files "element_name"=>tmp_file_path
+     * @return array of "element_name"=>"error_description" if there are errors,
+     *         or an empty array if everything is OK (true allowed for backwards compatibility too).
      */
     public function validation($data, $files) {
         $errors = parent::validation($data, $files);

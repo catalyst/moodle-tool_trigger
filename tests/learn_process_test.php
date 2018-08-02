@@ -7,7 +7,7 @@
 // (at your option) any later version.
 //
 // Moodle is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY, without even the implied warranty of
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
 //
@@ -67,7 +67,7 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
         $learntevent->timecreated = 1530406950;
         $learntevent->origin = 'cli';
         $learntevent->ip = '';
-        $learntevent->realuserid ='';
+        $learntevent->realuserid = '';
 
         return $learntevent;
     }
@@ -213,7 +213,7 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
         $processedrecord2['other_foo'] = 'string';
         unset($processedrecord2['other_username']);
 
-        //  Format objects ready for DB insertion prior to merging.
+        // Format objects ready for DB insertion prior to merging.
         $record = new \stdClass();
         $record->eventname = '\core\event\user_loggedin';
         $record->jsonfields = json_encode($processedrecord);
@@ -252,8 +252,8 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
         $learnprocess = new \tool_trigger\learn_process();
         $learnprocess->store_json_fields($learntevent, $jsonfields);
 
-        // Get record form DB
-        $result = $DB->get_record('tool_trigger_event_fields', array('eventname'=>$learntevent));
+        // Get record form DB.
+        $result = $DB->get_record('tool_trigger_event_fields', array('eventname' => $learntevent));
 
         $this->assertEquals($result->eventname, $learntevent);
         $this->assertEquals($result->jsonfields, $jsonfields);
@@ -272,7 +272,7 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
         $learntevent = '\core\event\user_loggedin';
         $jsonfields = json_encode($processedrecord);
 
-        // Manually insert a record into database;
+        // Manually insert a record into database.
         $record = new \stdClass();
         $record->eventname = $learntevent;
         $record->jsonfields = $jsonfields;
@@ -281,8 +281,8 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
         $learnprocess = new \tool_trigger\learn_process();
         $learnprocess->store_json_fields($learntevent, $jsonfields);
 
-        // Get record form DB
-        $result = $DB->get_record('tool_trigger_event_fields', array('eventname'=>$learntevent));
+        // Get record form DB.
+        $result = $DB->get_record('tool_trigger_event_fields', array('eventname' => $learntevent));
 
         $this->assertEquals($result->eventname, $learntevent);
         $this->assertEquals($result->jsonfields, $jsonfields);
@@ -301,7 +301,7 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
         $learntevent = '\core\event\user_loggedin';
         $jsonfields = json_encode($processedrecord);
 
-        // Manually insert a record into database;
+        // Manually insert a record into database.
         $record = new \stdClass();
         $record->eventname = $learntevent;
         $record->jsonfields = $jsonfields;
@@ -433,7 +433,7 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
         $learntevent = '\core\event\user_loggedin';
         $jsonfields = json_encode($processedrecord);
 
-        // Manually insert a record into database;
+        // Manually insert a record into database.
         $record = new \stdClass();
         $record->eventname = $learntevent;
         $record->jsonfields = $jsonfields;
@@ -458,7 +458,7 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
         $learntevent = '\core\event\user_loggedin';
         $jsonfields = json_encode($processedrecord);
 
-        // Manually insert a record into database;
+        // Manually insert a record into database.
         $record = new \stdClass();
         $record->eventname = $learntevent;
         $record->jsonfields = $jsonfields;

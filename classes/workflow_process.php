@@ -67,7 +67,7 @@ class workflow_process {
      * Converts a workflow object into the data structure needed to fill in the
      * default values in the "edit workflow" form.
      *
-     * @param \tool_trigger\workflow $workflow
+     * @param int $workflowid
      * @return array
      */
     public function to_form_defaults($workflowid) {
@@ -134,6 +134,7 @@ class workflow_process {
      *
      * @param string $formjson The JSON from the form.
      * @param int $workflowid The id for the workflow to associte step records to.
+     * @param int $now the current timestamp.
      * @return array $records The array of record objects ready for DB insertion.
      */
     public function processjson($formjson, $workflowid, $now=0) {
@@ -173,6 +174,12 @@ class workflow_process {
         return $records;
     }
 
+    /**
+     * Process the form.
+     *
+     * @param int $now
+     * @return boolean
+     */
     public function processform($now=0) {
         global $DB;
 

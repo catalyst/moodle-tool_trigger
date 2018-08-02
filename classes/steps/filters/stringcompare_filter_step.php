@@ -39,10 +39,39 @@ defined('MOODLE_INTERNAL') || die;
 class stringcompare_filter_step extends base_filter_step {
     use \tool_trigger\helper\datafield_manager;
 
+    /**
+     * Constant exactly matches.
+     *
+     * @var string
+     */
     const OPERATOR_EQUAL = 'exactly matches';
+
+    /**
+     * Constant starts with.
+     *
+     * @var string
+     */
     const OPERATOR_STARTS_WITH = 'starts with';
+
+    /**
+     * Constant ends with.
+     *
+     * @var string
+     */
     const OPERATOR_ENDS_WITH = 'ends with';
+
+    /**
+     * Constant contains.
+     *
+     * @var string
+     */
     const OPERATOR_CONTAINS = 'contains';
+
+    /**
+     * Constant matches regex.
+     *
+     * @var string
+     */
     const OPERATOR_REGEX = 'matches regex';
 
     /**

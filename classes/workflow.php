@@ -83,7 +83,7 @@ class workflow {
     /**
      * Constructor.
      *
-     * @param \stdClass $rule A rule object from database.
+     * @param \stdClass $workflow
      */
     public function __construct($workflow) {
         $this->workflow = $workflow;
@@ -107,7 +107,7 @@ class workflow {
      * Get name of workflow.
      *
      * @param \stdClass $context
-     * @returns \string
+     * @return \string
      */
     public function get_name($context) {
         return format_text($this->workflow->name, FORMAT_HTML, array('context' => $context));
@@ -117,7 +117,7 @@ class workflow {
      * Get description of workflow.
      *
      * @param \stdClass $context
-     * @returns \string
+     * @return \string
      */
     public function get_description($context) {
         return format_text($this->descriptiontext, $this->descriptionformat, array('context' => $context));

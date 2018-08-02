@@ -127,7 +127,7 @@ class tool_trigger_steps_form_testcase extends advanced_testcase {
         $learntevent = '\core\event\user_loggedin';
         $jsonfields = json_encode($processedrecord);
 
-        // Manually insert a record into database;
+        // Manually insert a record into database.
         $record = new \stdClass();
         $record->eventname = $learntevent;
         $record->jsonfields = $jsonfields;
@@ -136,7 +136,10 @@ class tool_trigger_steps_form_testcase extends advanced_testcase {
         // We're testing a private method, so we need to setup reflector magic.
         $method = new ReflectionMethod('tool_trigger\steps\base\base_form', 'get_trigger_fields');
         $method->setAccessible(true); // Allow accessing of private method.
-        $proxy = $method->invoke(new \tool_trigger\steps\base\base_form, '\core\event\user_loggedin'); // Get result of invoked method.
+        $proxy = $method->invoke(
+                new \tool_trigger\steps\base\base_form,
+                '\core\event\user_loggedin'
+                );  // Get result of invoked method.
 
         $expected = array (
             'fields' =>
