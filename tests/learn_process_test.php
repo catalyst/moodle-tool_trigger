@@ -48,7 +48,7 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
      */
     public function create_learnt_event_object() {
         $learntevent = new \stdClass();
-        $learntevent->eventname = '\core\event\user_loggedin';
+        $learntevent->eventname = '\core\event\fake_event';
         $learntevent->component = 'core';
         $learntevent->action = 'loggedin';
         $learntevent->target = 'user';
@@ -118,7 +118,7 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
 
         $DB->insert_records('tool_trigger_learn_events', array($learntevent, $learntevent2));
 
-        $expected = array('\core\event\user_loggedin', '\core\event\user_loggedout');  // Expected result.
+        $expected = array('\core\event\fake_event', '\core\event\user_loggedout');  // Expected result.
 
         // We're testing a private method, so we need to setup reflector magic.
         $method = new ReflectionMethod('tool_trigger\learn_process', 'get_learnt_events');
@@ -141,12 +141,12 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
 
         $DB->insert_records('tool_trigger_learn_events', array($learntevent, $learntevent));
 
-        $expected = array('\core\event\user_loggedin', '\core\event\user_loggedin');  // Expected result.
+        $expected = array('\core\event\fake_event', '\core\event\fake_event');  // Expected result.
 
         // We're testing a private method, so we need to setup reflector magic.
         $method = new ReflectionMethod('tool_trigger\learn_process', 'get_learnt_records');
         $method->setAccessible(true); // Allow accessing of private method.
-        $proxy = $method->invoke(new \tool_trigger\learn_process, '\core\event\user_loggedin'); // Get result of invoked method.
+        $proxy = $method->invoke(new \tool_trigger\learn_process, '\core\event\fake_event'); // Get result of invoked method.
 
         foreach ($proxy as $value) {
             $eventnames[] = $value->eventname;
@@ -215,12 +215,12 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
 
         // Format objects ready for DB insertion prior to merging.
         $record = new \stdClass();
-        $record->eventname = '\core\event\user_loggedin';
+        $record->eventname = '\core\event\fake_event';
         $record->jsonfields = json_encode($processedrecord);
         $record->id = 2;
 
         $exists = new \stdClass();
-        $exists->eventname = '\core\event\user_loggedin';
+        $exists->eventname = '\core\event\fake_event';
         $exists->jsonfields = json_encode($processedrecord2);
         $exists->id = 2;
 
@@ -246,7 +246,7 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
         // Simulate learnt event.
         $processedrecord = $this->get_event_fields();
 
-        $learntevent = '\core\event\user_loggedin';
+        $learntevent = '\core\event\fake_event';
         $jsonfields = json_encode($processedrecord);
 
         $learnprocess = new \tool_trigger\learn_process();
@@ -269,7 +269,7 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
         // Simulate learnt event.
         $processedrecord = $this->get_event_fields();
 
-        $learntevent = '\core\event\user_loggedin';
+        $learntevent = '\core\event\fake_event';
         $jsonfields = json_encode($processedrecord);
 
         // Manually insert a record into database.
@@ -298,7 +298,7 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
         // Simulate learnt event.
         $processedrecord = $this->get_event_fields();
 
-        $learntevent = '\core\event\user_loggedin';
+        $learntevent = '\core\event\fake_event';
         $jsonfields = json_encode($processedrecord);
 
         // Manually insert a record into database.
@@ -307,13 +307,11 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
         $record->jsonfields = $jsonfields;
         $DB->insert_record('tool_trigger_event_fields', $record);
 
-        $eventname = '\core\event\user_loggedin';
+        $eventname = '\core\event\fake_event';
         $learnprocess = new \tool_trigger\learn_process();
         $eventfields = $learnprocess->get_event_fields_with_type($eventname);
 
         $expected = array (
-            'fields' =>
-            array (
                 0 =>
                 array (
                     'field' => 'eventname',
@@ -414,8 +412,7 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
                     'field' => 'realuserid',
                     'type' => 'string',
                 ),
-            ),
-        );
+            );
 
         $this->assertEquals($eventfields, $expected);
 
@@ -430,7 +427,7 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
         // Simulate learnt event.
         $processedrecord = $this->get_event_fields();
 
-        $learntevent = '\core\event\user_loggedin';
+        $learntevent = '\core\event\fake_event';
         $jsonfields = json_encode($processedrecord);
 
         // Manually insert a record into database.
@@ -442,7 +439,7 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
         $learnprocess = new \tool_trigger\learn_process();
         $result = $learnprocess->get_event_fields_events();
 
-        $this->assertEquals($result[0], $learntevent);
+        $this->assertContains($learntevent, $result);
 
     }
 
@@ -455,7 +452,7 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
         // Simulate learnt event.
         $processedrecord = $this->get_event_fields();
 
-        $learntevent = '\core\event\user_loggedin';
+        $learntevent = '\core\event\fake_event';
         $jsonfields = json_encode($processedrecord);
 
         // Manually insert a record into database.

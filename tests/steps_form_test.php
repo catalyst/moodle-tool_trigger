@@ -104,7 +104,9 @@ class tool_trigger_steps_form_testcase extends advanced_testcase {
             'context' => \context_system::instance(),
             'steptype' => $steptype,
             'stepclass' => $stepclass,
-            'event' => '\core\event\user_loggedin'
+            'event' => '\core\event\user_loggedin',
+            'existingsteps' => '{}',
+            'steporder' => 0
         ]);
 
         // We mostly want to test that it renders with no errors thrown.
@@ -124,7 +126,7 @@ class tool_trigger_steps_form_testcase extends advanced_testcase {
         // Simulate learnt event.
         $processedrecord = $this->get_event_fields();
 
-        $learntevent = '\core\event\user_loggedin';
+        $learntevent = '\core\event\fake_event';
         $jsonfields = json_encode($processedrecord);
 
         // Manually insert a record into database.
@@ -138,7 +140,10 @@ class tool_trigger_steps_form_testcase extends advanced_testcase {
         $method->setAccessible(true); // Allow accessing of private method.
         $proxy = $method->invoke(
                 new \tool_trigger\steps\base\base_form,
-                '\core\event\user_loggedin'
+                '\core\event\fake_event',
+                '',
+                '{}',
+                0
                 );  // Get result of invoked method.
 
         $expected = array (
