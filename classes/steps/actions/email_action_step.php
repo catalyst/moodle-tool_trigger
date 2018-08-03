@@ -59,6 +59,25 @@ class email_action_step extends base_action_step {
     protected $messageplain;
 
     /**
+     * The fields suplied by this step.
+     *
+     * @var array
+     */
+    private static $stepfields = array(
+            'email_action_messageid',
+            'email_action_courseid',
+            'email_action_subject',
+            'email_action_fullmessage',
+            'email_action_fullmessageformat',
+            'email_action_fullmessagehtml',
+            'email_action_smallmessage',
+            'email_action_userfrom_id',
+            'email_action_userfrom_email',
+            'email_action_userto_id',
+            'email_action_userto_email'
+    );
+
+    /**
      * {@inheritDoc}
      * @see \tool_trigger\steps\base\base_step::__construct()
      */
@@ -121,7 +140,6 @@ class email_action_step extends base_action_step {
 
             $eventdata = new \core\message\message();
             $eventdata->courseid = $event->courseid;
-            $eventdata->modulename = 'reengagement';
             $eventdata->userfrom = $from;
             $eventdata->userto = $user;
             $eventdata->subject = $emailsubject;
@@ -144,7 +162,7 @@ class email_action_step extends base_action_step {
                     $stepresults['email_action_' . $key] = $value;
                 }
             }
-            $stepresults['email_action_userfrom->id'] = $eventdata->userfrom->id;
+            $stepresults['email_action_userfrom_id'] = $eventdata->userfrom->id;
             $stepresults['email_action_userfrom_email'] = $eventdata->userfrom->email;
             $stepresults['email_action_userto_id'] = $eventdata->userto->id;
             $stepresults['email_action_userto_email'] = $eventdata->userto->email;
@@ -191,5 +209,15 @@ class email_action_step extends base_action_step {
             $privacyfields,
             'step_action_email:privacy:desc'
         );
+    }
+
+    /**
+     * Get a list of fields this step provides.
+     *
+     * @return array $stepfields The fields this step provides.
+     */
+    public static function get_fields() {
+        return self::$stepfields;
+
     }
 }
