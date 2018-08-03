@@ -134,7 +134,7 @@ class user_lookup_step extends base_lookup_step {
                     . $this->useridfield);
         }
 
-        $userfields = implode(',', $this->stepfields);
+        $userfields = implode(',', $this->get_fields());
         $userdata = \core_user::get_user($datafields[$this->useridfield], $userfields);
 
         // Users are not typically deleted from the database on deletion; they're just flagged as "deleted".
