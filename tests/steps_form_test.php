@@ -105,7 +105,7 @@ class tool_trigger_steps_form_testcase extends advanced_testcase {
             'steptype' => $steptype,
             'stepclass' => $stepclass,
             'event' => '\core\event\user_loggedin',
-            'existingsteps' => '{}',
+            'existingsteps' => '[]',
             'steporder' => 0
         ]);
 
@@ -140,10 +140,10 @@ class tool_trigger_steps_form_testcase extends advanced_testcase {
         $method->setAccessible(true); // Allow accessing of private method.
         $proxy = $method->invoke(
                 new \tool_trigger\steps\base\base_form,
-                '\core\event\fake_event',
-                '',
-                '{}',
-                0
+                '\core\event\user_login_failed',
+                '\tool_trigger\steps\lookups\course_lookup_step',
+                array(),
+                -1
                 );  // Get result of invoked method.
 
         $expected = array (
@@ -151,105 +151,116 @@ class tool_trigger_steps_form_testcase extends advanced_testcase {
             array (
                 0 =>
                 array (
-                    'field' => 'eventname',
+                    'field' => 'id',
                     'type' => 'string',
                 ),
                 1 =>
                 array (
-                    'field' => 'component',
+                    'field' => 'eventname',
                     'type' => 'string',
                 ),
                 2 =>
                 array (
-                    'field' => 'action',
+                    'field' => 'component',
                     'type' => 'string',
                 ),
                 3 =>
                 array (
-                    'field' => 'target',
+                    'field' => 'action',
                     'type' => 'string',
                 ),
                 4 =>
                 array (
-                    'field' => 'objecttable',
+                    'field' => 'target',
                     'type' => 'string',
                 ),
                 5 =>
                 array (
-                    'field' => 'objectid',
-                    'type' => 'integer',
+                    'field' => 'objecttable',
+                    'type' => 'string',
                 ),
                 6 =>
                 array (
-                    'field' => 'crud',
+                    'field' => 'objectid',
                     'type' => 'string',
                 ),
                 7 =>
                 array (
-                    'field' => 'edulevel',
-                    'type' => 'integer',
+                    'field' => 'crud',
+                    'type' => 'string',
                 ),
                 8 =>
                 array (
-                    'field' => 'contextid',
-                    'type' => 'integer',
+                    'field' => 'edulevel',
+                    'type' => 'string',
                 ),
                 9 =>
                 array (
-                    'field' => 'contextlevel',
-                    'type' => 'integer',
+                    'field' => 'contextid',
+                    'type' => 'string',
                 ),
                 10 =>
                 array (
-                    'field' => 'contextinstanceid',
-                    'type' => 'integer',
+                    'field' => 'contextlevel',
+                    'type' => 'string',
                 ),
                 11 =>
                 array (
-                    'field' => 'userid',
-                    'type' => 'integer',
+                    'field' => 'contextinstanceid',
+                    'type' => 'string',
                 ),
                 12 =>
                 array (
-                    'field' => 'courseid',
-                    'type' => 'integer',
+                    'field' => 'userid',
+                    'type' => 'string',
                 ),
                 13 =>
                 array (
-                    'field' => 'relateduserid',
+                    'field' => 'courseid',
                     'type' => 'string',
                 ),
                 14 =>
                 array (
-                    'field' => 'anonymous',
-                    'type' => 'integer',
+                    'field' => 'relateduserid',
+                    'type' => 'string',
                 ),
                 15 =>
                 array (
-                    'field' => 'other_username',
+                    'field' => 'anonymous',
                     'type' => 'string',
                 ),
                 16 =>
                 array (
-                    'field' => 'timecreated',
-                    'type' => 'integer',
+                    'field' => 'other_username',
+                    'type' => 'string',
                 ),
                 17 =>
+                array (
+                    'field' => 'other_reason',
+                    'type' => 'integer',
+                ),
+                18 =>
+                array (
+                    'field' => 'timecreated',
+                    'type' => 'string',
+                ),
+                19 =>
                 array (
                     'field' => 'origin',
                     'type' => 'string',
                 ),
-                18 =>
+                20 =>
                 array (
                     'field' => 'ip',
                     'type' => 'string',
                 ),
-                19 =>
+                21 =>
                 array (
                     'field' => 'realuserid',
                     'type' => 'string',
                 ),
             ),
+            'steps' => array()
         );
 
         $this->assertEquals($proxy, $expected);

@@ -110,6 +110,10 @@ class base_form extends \moodleform {
      */
     private function get_trigger_fields($eventname, $stepclass, $existingsteps, $steporder) {
         // Get all fields for this workflows event.
+//         error_log($eventname);
+//         error_log($stepclass);
+//         error_log(print_r($existingsteps, true));
+//         error_log($steporder);
         $fields = array();
         $learnprocess = new \tool_trigger\learn_process();
         $fields['fields'] = $learnprocess->get_event_fields_with_type($eventname);
