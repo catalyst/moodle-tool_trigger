@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/catalyst/moodle-tool_trigger.svg?branch=master)](https://travis-ci.org/catalyst/moodle-tool_trigger)
+
 # Event Trigger
 
 The Event Trigger allows [Moodle Events](https://docs.moodle.org/dev/Event_2) to be monitored and a *workflow* to be triggered when that event occurs.<br/>
@@ -21,8 +23,6 @@ More Information on Moodle events can be found in the Moodle documentation at th
 ## Supported Moodle Versions
 This plugin currently supports Moodle:
 
-* 3.1
-* 3.3
 * 3.4
 * 3.5
 
@@ -51,10 +51,6 @@ Plugin setup and configuration documentation can be found at the following link:
 ## Roadmap
 
 Please see the current GitHub issues for the project roadmap: https://github.com/catalyst/moodle-tool_trigger/issues
-
-### Event Fields
-
-We understand that the current way of finding out which "fields" are available for each Moodle event is not ideal. This is somethign that we will be paying particular attention to in future development.
 
 # Crafted by Catalyst IT
 
