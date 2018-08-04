@@ -131,12 +131,14 @@ class base_form extends \moodleform {
                 }
 
                 $stepfields = $step['stepclass']::get_fields();
-                $stepfieldarray = $this->explode_fields($stepfields, $step['outputprefix']);
-                $steparray = array(
-                    'stepname' => $step['stepdesc'],
-                    'fields' => $stepfieldarray
-                );
-                $fields['steps'][] = $steparray;
+                if ($stepfields) {
+                    $stepfieldarray = $this->explode_fields($stepfields, $step['outputprefix']);
+                    $steparray = array(
+                        'stepname' => $step['stepdesc'],
+                        'fields' => $stepfieldarray
+                    );
+                    $fields['steps'][] = $steparray;
+                }
             }
 
         }

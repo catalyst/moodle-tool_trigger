@@ -30,7 +30,7 @@ namespace tool_trigger\steps\filters;
 defined('MOODLE_INTERNAL') || die;
 
 /**
- * Base filter step class.
+ * Fail filter step class.
  *
  * @package    tool_trigger
  * @copyright  Matt Porritt <mattp@catalyst-au.net>
@@ -68,5 +68,15 @@ class fail_filter_step extends base_filter_step {
      */
     public function form_definition_extra($form, $mform, $customdata) {
         $mform->addElement('html', self::get_step_desc());
+    }
+
+    /**
+     * Get a list of fields this step provides.
+     *
+     * @return array $stepfields The fields this step provides.
+     */
+    public static function get_fields() {
+        return false;
+
     }
 }

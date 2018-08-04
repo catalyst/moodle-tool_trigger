@@ -27,6 +27,16 @@ defined('MOODLE_INTERNAL') || die;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class logdump_action_step extends base_action_step {
+
+    /**
+     * The fields suplied by this step.
+     *
+     * @var array
+     */
+    private static $stepfields = array(
+        'vardump',
+    );
+
     public function form_definition_extra(
                                         $form,
                                         $mform,
@@ -55,5 +65,14 @@ class logdump_action_step extends base_action_step {
         return [true, $stepresults];
     }
 
+    /**
+     * Get a list of fields this step provides.
+     *
+     * @return array $stepfields The fields this step provides.
+     */
+    public static function get_fields() {
+        return self::$stepfields;
+
+    }
 
 }

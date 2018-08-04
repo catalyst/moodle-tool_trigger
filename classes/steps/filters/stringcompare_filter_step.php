@@ -213,4 +213,14 @@ class stringcompare_filter_step extends base_filter_step {
         $mform->addGroup($fields, 'stringcomparegroup', '', [' '], false);
         $mform->addRule('stringcomparegroup', get_string('required'), 'required');
     }
+
+    /**
+     * Get a list of fields this step provides.
+     *
+     * @return array $stepfields The fields this step provides.
+     */
+    public static function get_fields() {
+        return false;
+
+    }
 }

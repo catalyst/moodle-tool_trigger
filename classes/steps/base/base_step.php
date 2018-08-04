@@ -163,4 +163,16 @@ abstract class base_step {
     public static function add_privacy_metadata($collection, $privacyfields) {
         return $collection;
     }
+
+    /**
+     * Get a list of fields this step provides.
+     * Needs to be overriden in each step class
+     * otherwise exception is thrown.
+     *
+     * @throws \Exception
+     */
+    public static function get_fields() {
+        throw new \Exception('Not implemented');
+
+    }
 }

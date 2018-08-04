@@ -41,6 +41,17 @@ class http_post_action_step extends base_action_step {
     protected $headers;
     protected $params;
 
+    /**
+     * The fields suplied by this step.
+     *
+     * @var array
+     */
+    private static $stepfields = array(
+        'http_response_status_code',
+        'http_response_status_message',
+        'http_response_body',
+    );
+
     protected function init() {
         $this->url = $this->data['url'];
         $this->headers = $this->data['httpheaders'];
@@ -188,5 +199,15 @@ class http_post_action_step extends base_action_step {
             $privacyfields,
             'step_action_httppost:privacy:desc'
         );
+    }
+
+    /**
+     * Get a list of fields this step provides.
+     *
+     * @return array $stepfields The fields this step provides.
+     */
+    public static function get_fields() {
+        return self::$stepfields;
+
     }
 }
