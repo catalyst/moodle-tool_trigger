@@ -46,6 +46,7 @@ $string['core'] = 'Core';
 $string['deleterule'] = 'Delete rule';
 $string['deletestep'] = 'Delete step';
 $string['description'] = 'Description';
+$string['downloadrule'] = 'Download rule';
 $string['draft'] = 'Draft';
 $string['draftmode'] = 'Draft mode';
 $string['draftmode_help'] = 'Use draft mode to test workflow with firing triggers.';
