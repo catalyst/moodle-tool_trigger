@@ -182,6 +182,7 @@ class learn_process {
      * Process the learnt events and extract the field names.
      */
     public function process () {
+        global $DB;
 
         // Get a list of the event types from the learn table.
         $learntevents = $this->get_learnt_events();
@@ -195,7 +196,11 @@ class learn_process {
                 $this->typearray = array(); // Reset typearray before calling convert_record_type.
                 // Convert each record into an array where key is field name and value is type.
                 $processedrecords[] = $this->convert_record_type($record, false);
+
+                // Remove learnt event from DB.
+                $DB->delete_records('tool_trigger_learn_events', array('id' => $record->id));
             }
+
             $learntrecords->close(); // Don't forget to close the recordset!
 
             // Merge all entries into one array.
@@ -208,7 +213,6 @@ class learn_process {
             $this->store_json_fields($learntevent, $jsonfields);
         }
 
-        // TODO: remove old events from DB.
     }
 
     /**
