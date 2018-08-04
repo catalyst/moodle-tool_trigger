@@ -49,7 +49,7 @@ $tasks = array(
         'blocking' => 0,
         'minute' => 'R',
         'hour' => 'R',
-        'day' => 'R',
+        'day' => '*',
         'dayofweek' => '*',
         'month' => '*'
     )
