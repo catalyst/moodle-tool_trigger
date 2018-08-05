@@ -15,18 +15,39 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * JSON export unit tests.
+ *
+ * @package    tool_trigger
+ * @copyright  Matt Porritt <mattp@catalyst-au.net>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+defined('MOODLE_INTERNAL') || die();
+
+global $CFG;
+
+/**
+ * JSON export unit tests.
  *
  * @package     tool_trigger
  * @copyright   Matt Porritt <mattp@catalyst-au.net>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+class tool_trigger_json_export_testcase extends advanced_testcase {
 
-$plugin->component = 'tool_trigger';
-$plugin->release = '2018080500';
-$plugin->version = 2018080500;
-$plugin->requires = 2016052300;
-$plugin->maturity = MATURITY_BETA;
-$plugin->dependencies = array('tool_monitor' => 2015051101);
+    public function setup() {
+        $this->resetAfterTest(true);
+    }
+
+    /**
+     * Test download headers are correctly sent
+     *
+     * @runInSeparateProcess.
+     */
+    public function test_send_header() {
+
+
+    }
+
+}

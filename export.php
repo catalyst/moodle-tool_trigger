@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,18 +16,19 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin version and other meta-data are defined here.
+ * This page lets admins download workflows to JSON.
  *
- * @package     tool_trigger
- * @copyright   Matt Porritt <mattp@catalyst-au.net>
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    tool_trigger
+ * @copyright  Matt Porritt <mattp@catalyst-au.net>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+require_once(__DIR__ . '/../../../config.php');
+require_once($CFG->libdir.'/adminlib.php');
 
-$plugin->component = 'tool_trigger';
-$plugin->release = '2018080500';
-$plugin->version = 2018080500;
-$plugin->requires = 2016052300;
-$plugin->maturity = MATURITY_BETA;
-$plugin->dependencies = array('tool_monitor' => 2015051101);
+require_login();
+$context = context_system::instance();
+require_capability('tool/trigger:manageworkflows', $context);
+
+$workflowid = required_param('workflowid', PARAM_INT);
+

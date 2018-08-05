@@ -161,7 +161,7 @@ class renderable extends \table_sql implements \renderable {
         $icon = $OUTPUT->render(new \pix_icon('t/delete', get_string('deleterule', 'tool_trigger')));
         $manage .= \html_writer::link($deleteurl, $icon, array('class' => 'action-icon'));
 
-        $downloadurl = new \moodle_url($CFG->wwwroot. '/admin/tool/trigger/manageworkflow.php', array('workflowid' => $workflow->id,
+        $downloadurl = new \moodle_url($CFG->wwwroot. '/admin/tool/trigger/export.php', array('workflowid' => $workflow->id,
             'action' => 'download', 'sesskey' => sesskey()));
         $icon = $OUTPUT->render(new \pix_icon('t/download', get_string('downloadrule', 'tool_trigger')));
         $manage .= \html_writer::link($downloadurl, $icon, array('class' => 'action-icon'));
