@@ -41,12 +41,21 @@ class tool_trigger_json_export_testcase extends advanced_testcase {
     }
 
     /**
-     * Test download headers are correctly sent
-     *
-     * @runInSeparateProcess.
+     * Test filename creations
      */
-    public function test_send_header() {
+    public function test_set_filename() {
+        $workflowname = 'foo bar';
+        $now = 1533446590;
+        $expected = 'foo_bar_20180805_0523.json';
 
+        $jsonclass = new \tool_trigger\json\json_export($workflowname);
+
+        // We're testing a private method, so we need to setup reflector magic.
+        $method = new ReflectionMethod('\tool_trigger\json\json_export', 'get_filename');
+        $method->setAccessible(true); // Allow accessing of private method.
+        $proxy = $method->invoke($jsonclass, $workflowname, $now); // Get result of invoked method.
+
+        $this->assertEquals($expected, $proxy);
 
     }
 

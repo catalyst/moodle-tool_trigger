@@ -23,7 +23,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace tool_trigger;
+namespace tool_trigger\json;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -40,20 +40,20 @@ class json_export {
 
     private $filename;
 
-    private $workflowid;
+    private $workflowname;
 
-    public function __construct($workflowid) {
-        $this->workflowid = $workflowid;
+    public function __construct($workflowname) {
+        $this->workflowname = $workflowname;
     }
 
 
     /**
      * Output file headers to initialise the download of the file.
      */
-    protected function send_header() {
+    private function send_header($filename) {
         global $CFG;
 
-        if (defined('BEHAT_SITE_RUNNING')) {
+        if (defined('BEHAT_SITE_RUNNING') || PHPUNIT_TEST) {
             // For text based formats - we cannot test the output with behat if we force a file download.
             return;
         }
@@ -66,15 +66,36 @@ class json_export {
         }
         header('Expires: '. gmdate('D, d M Y H:i:s', 0) .' GMT');
         header("Content-Type: $this->mimetype\n");
-        header("Content-Disposition: attachment; filename=\"$this->filename\"");
+        header("Content-Disposition: attachment; filename=\"$filename\"");
+    }
+
+    /**
+     * Set the filename for the JSON file
+     *
+     * @param int $workflowid The ID of the workflow.
+     * @param int $now  The Unix timestamp to use in the file name.
+     */
+    private function get_filename($workflowname, $now=null) {
+
+        if (!$now) {
+            $now = time();
+        }
+
+        $filename = str_replace(' ', '_', $workflowname);
+        $filename = clean_filename($filename);
+        $filename .= clean_filename('_' . gmdate("Ymd_Hi", $now));
+        $filename .= '.json';
+
+        return $filename;
     }
 
     /**
      * Download the JSON file.
      */
     public function download_file() {
-        $his->set_filename();
-        $this->send_header();
+        $workflowname = $this->workflowname;
+        $filename = $his->get_filename($workflowname);
+        $this->send_header($filename);
         $this->print_json_data(true);
         exit;
     }
