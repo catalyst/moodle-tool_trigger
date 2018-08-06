@@ -32,7 +32,7 @@ require_capability('tool/trigger:manageworkflows', $context);
 
 $workflowid = required_param('workflowid', PARAM_INT);
 
-$workflow = \tool_trigger\workflow_manager::get_workflow_with_steps($workflowid);
+$workflow = \tool_trigger\workflow_manager::get_workflow_data_with_steps($workflowid);
 if (!$workflow) {
     print_error('invaliditemid');
 }

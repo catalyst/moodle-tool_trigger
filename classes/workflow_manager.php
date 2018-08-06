@@ -82,6 +82,23 @@ class workflow_manager {
     }
 
     /**
+     * Retrieve the workflow data and associated steps for that workflow.
+     * This does not return a workflow object.
+     *
+     * @param int $workflowid
+     * @return boolean|object
+     */
+    public static function get_workflow_data_with_steps($workflowid) {
+        global $DB;
+        $record = $DB->get_record('tool_trigger_workflows', ['id' => $workflowid], '*', IGNORE_MISSING);
+        if (!$record) {
+            return false;
+        } else {
+            return new workflow($record);
+        }
+    }
+
+    /**
      * Get all the created workflows, to show them in a table.
      *
      * @param int $limitfrom Limit from which to fetch worklfows.
