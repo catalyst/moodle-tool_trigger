@@ -90,12 +90,29 @@ class workflow_manager {
      */
     public static function get_workflow_data_with_steps($workflowid) {
         global $DB;
-        $record = $DB->get_record('tool_trigger_workflows', ['id' => $workflowid], '*', IGNORE_MISSING);
-        if (!$record) {
-            return false;
-        } else {
-            return new workflow($record);
+        $workflowrecord = false;
+
+        try {
+            // Start transaction.
+            $transaction = $DB->start_delegated_transaction();
+
+            // Get workflow record.
+            $workflowrecord = $DB->get_record('tool_trigger_workflows', ['id' => $workflowid], '*', MUST_EXIST);
+
+            // Get step records.
+            $workflowsteps = $DB->get_records('tool_trigger_steps', ['workflowid' => $workflowid]);
+
+            // Add step records to workflow record.
+            $workflowrecord->steps = $workflowsteps;
+
+            // Stop transaction.
+            $transaction->allow_commit();
+        } catch(\Exception $e) {
+            $transaction->rollback($e);
         }
+
+        return $workflowrecord;
+
     }
 
     /**
