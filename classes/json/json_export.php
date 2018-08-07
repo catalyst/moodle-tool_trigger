@@ -35,14 +35,38 @@ defined('MOODLE_INTERNAL') || die();
  */
 class json_export {
 
+    /**
+     * Mime type for the downloaded file.
+     *
+     * @var string $mimetype
+     */
     private $mimetype = 'application/json';
 
+    /**
+     * File name of the file.
+     *
+     * @var string $filename
+     */
     private $filename;
 
+    /**
+     * Workflow name.
+     *
+     * @var string $workflowname
+     */
     private $workflowname;
 
+    /**
+     *
+     * @var unknown
+     */
     private $workflowrecord;
 
+    /**
+     * Class constructor
+     *
+     * @param object $workflowrecord The workflow object with step data.
+     */
     public function __construct($workflowrecord) {
         $this->workflowname = $workflowrecord->name;
         $this->workflowrecord = $workflowrecord;
@@ -51,6 +75,8 @@ class json_export {
 
     /**
      * Output file headers to initialise the download of the file.
+     *
+     * @param string $filename The name of the file.
      */
     private function send_header($filename) {
         global $CFG;
@@ -74,7 +100,7 @@ class json_export {
     /**
      * Set the filename for the JSON file.
      *
-     * @param int $workflowid The ID of the workflow.
+     * @param string $workflowname The ID of the workflow.
      * @param int $now  The Unix timestamp to use in the file name.
      */
     private function get_filename($workflowname, $now=null) {
