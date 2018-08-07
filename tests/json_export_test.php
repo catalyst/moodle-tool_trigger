@@ -44,16 +44,44 @@ class tool_trigger_json_export_testcase extends advanced_testcase {
      * Test filename creations
      */
     public function test_set_filename() {
-        $workflowname = 'foo bar';
-        $now = 1533446590;
-        $expected = 'foo_bar_20180805_0523.json';
+        $workflowobj = new \stdClass();  // Create workflow object.
+        $workflowobj->name = '__testworkflow__';
+        $workflowobj->description = 'test workflow description';
+        $workflowobj->event = '\mod_scorm\event\user_report_viewed';
+        $workflowobj->steps = array (
+            358000 => array(
+                'id' => 358000,
+                'name' => 'a',
+                'description' => 's',
+                'type' => 'lookups',
+                'stepclass' => '/tool_trigger/steps/lookups/user_lookup_step',
+                'data' => '{"useridfield":"userid","outputprefix":"user_","nodeleted":"1",'
+                           .'"stepdesc":"User lookup","typedesc":"Lookup"}',
+                'steporder' => 0,
+            ),
+            358001 => array(
+                'id' => 358001,
+                'name' => 's',
+                'description' => 's',
+                'type' => 'lookups',
+                'stepclass' => '/tool_trigger/steps/lookups/course_lookup_step',
+                'data' => '{"courseidfield":"courseid","outputprefix":"course_","stepdesc":"Course lookup","typedesc":"Lookup"}',
+                'steporder' => 1
+            )
 
-        $jsonclass = new \tool_trigger\json\json_export($workflowname);
+        );
+        $workflowobj->moodleversion = 2018080300;
+        $workflowobj->pluginversion = 2018080500;
+
+        $now = 1533446590;
+        $expected = '__testworkflow___20180805_0523.json';
+
+        $jsonclass = new \tool_trigger\json\json_export($workflowobj);
 
         // We're testing a private method, so we need to setup reflector magic.
         $method = new ReflectionMethod('\tool_trigger\json\json_export', 'get_filename');
         $method->setAccessible(true); // Allow accessing of private method.
-        $proxy = $method->invoke($jsonclass, $workflowname, $now); // Get result of invoked method.
+        $proxy = $method->invoke($jsonclass, $workflowobj->name, $now); // Get result of invoked method.
 
         $this->assertEquals($expected, $proxy);
 

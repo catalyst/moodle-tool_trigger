@@ -86,7 +86,7 @@ class workflow_manager {
      * This does not return a workflow object.
      *
      * @param int $workflowid
-     * @return boolean|object
+     * @return boolean|object $workflowrecord The workflow with steps and version info.
      */
     public static function get_workflow_data_with_steps($workflowid) {
         global $DB;
@@ -115,7 +115,7 @@ class workflow_manager {
 
             // Stop transaction.
             $transaction->allow_commit();
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $transaction->rollback($e);
         }
 

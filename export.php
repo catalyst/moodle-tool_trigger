@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -32,12 +31,10 @@ require_capability('tool/trigger:manageworkflows', $context);
 
 $workflowid = required_param('workflowid', PARAM_INT);
 
-$workflow = \tool_trigger\workflow_manager::get_workflow_data_with_steps($workflowid);
-if (!$workflow) {
+$workflowrecord = \tool_trigger\workflow_manager::get_workflow_data_with_steps($workflowid);
+if (!$workflowrecord) {
     print_error('invaliditemid');
 }
 
-$workflowname = $workflow->get_name($context);
-
-
-
+$jsonexporter = new \tool_trigger\json\json_export($workflowrecord);
+$jsonexporter->download_file();

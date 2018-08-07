@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -42,8 +41,11 @@ class json_export {
 
     private $workflowname;
 
-    public function __construct($workflowname) {
-        $this->workflowname = $workflowname;
+    private $workflowrecord;
+
+    public function __construct($workflowrecord) {
+        $this->workflowname = $workflowrecord->name;
+        $this->workflowrecord = $workflowrecord;
     }
 
 
@@ -60,7 +62,7 @@ class json_export {
         if (is_https()) { // HTTPS sites - watch out for IE! KB812935 and KB316431.
             header('Cache-Control: max-age=10');
             header('Pragma: ');
-        } else { //normal http - prevent caching at all cost
+        } else { // Normal http - prevent caching at all cost.
             header('Cache-Control: private, must-revalidate, pre-check=0, post-check=0, max-age=0');
             header('Pragma: no-cache');
         }
@@ -70,7 +72,7 @@ class json_export {
     }
 
     /**
-     * Set the filename for the JSON file
+     * Set the filename for the JSON file.
      *
      * @param int $workflowid The ID of the workflow.
      * @param int $now  The Unix timestamp to use in the file name.
@@ -90,13 +92,36 @@ class json_export {
     }
 
     /**
+     * Takes the workflow record and converts it into JSON.
+     *
+     * @param object $workflowrecord The workflow record.
+     * @return string $workflowjson The record converted to JSON.
+     */
+    private function get_workflow_json($workflowrecord) {
+        $workflowjson = json_encode($workflowrecord);
+
+        return $workflowjson;
+    }
+
+    /**
+     * Prints the JSON.
+     *
+     * @param string $workflowjson
+     */
+    private function print_json_data ($workflowjson) {
+        echo $workflowjson;
+    }
+
+    /**
      * Download the JSON file.
      */
     public function download_file() {
         $workflowname = $this->workflowname;
-        $filename = $his->get_filename($workflowname);
+        $filename = $this->get_filename($workflowname);
+        $workflowjson = $this->get_workflow_json($this->workflowrecord);
+
         $this->send_header($filename);
-        $this->print_json_data(true);
+        $this->print_json_data($workflowjson);
         exit;
     }
 
