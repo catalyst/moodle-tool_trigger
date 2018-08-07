@@ -125,9 +125,12 @@ class tool_trigger_workflow_manager_testcase extends advanced_testcase {
         $mdata->workflowactive = 1;
         $mdata->draftmode = 0;
         $mdata->isstepschanged = 1;
-        $mdata->stepjson = '[{"useridfield":"userid","outputprefix":"user_","nodeleted":"1","stepdesc":"User lookup","typedesc":"Lookup","id":"7","type":"lookups","stepclass":"/tool_trigger/steps/lookups/user_lookup_step","name":"a","description":"s","steporder":"0"},{"courseidfield":"courseid","outputprefix":"course_","stepdesc":"Course lookup","typedesc":"Lookup","id":"6","type":"lookups","stepclass":"/tool_trigger/steps/lookups/course_lookup_step","name":"s","description":"s","steporder":"1"}]';
+        $mdata->stepjson = '[{"useridfield":"userid","outputprefix":"user_","nodeleted":"1","stepdesc":"User lookup",'
+            .'"typedesc":"Lookup","id":"7","type":"lookups","stepclass":"/tool_trigger/steps/lookups/user_lookup_step",'
+            .'"name":"a","description":"s","steporder":"0"},{"courseidfield":"courseid","outputprefix":"course_",'
+            .'"stepdesc":"Course lookup","typedesc":"Lookup","id":"6","type":"lookups",'
+            .'"stepclass":"/tool_trigger/steps/lookups/course_lookup_step","name":"s","description":"s","steporder":"1"}]';
 
-         //
         $workflowprocess = new \tool_trigger\workflow_process($mdata);
         $workflowprocess->processform();
         $workflow = $DB->get_record('tool_trigger_workflows', array('name' => '__testworkflow__'), '*', MUST_EXIST);
@@ -135,7 +138,10 @@ class tool_trigger_workflow_manager_testcase extends advanced_testcase {
 
         $workflowdata = \tool_trigger\workflow_manager::get_workflow_data_with_steps($workflowid);
 
-        error_log(print_r($workflowdata, true));
+        $this->assertEquals('__testworkflow__', $workflowdata->name);
+        $this->assertEquals('"test workflow description"', $workflowdata->description);
 
     }
+
+
 }

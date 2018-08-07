@@ -97,13 +97,21 @@ class workflow_manager {
             $transaction = $DB->start_delegated_transaction();
 
             // Get workflow record.
-            $workflowrecord = $DB->get_record('tool_trigger_workflows', ['id' => $workflowid], '*', MUST_EXIST);
+            $worflowfields = 'name, description, event';
+            $workflowrecord = $DB->get_record('tool_trigger_workflows', ['id' => $workflowid], $worflowfields, MUST_EXIST);
 
             // Get step records.
-            $workflowsteps = $DB->get_records('tool_trigger_steps', ['workflowid' => $workflowid]);
+            $stepfields = 'id, name, description, type, stepclass, data, steporder';
+            $workflowsteps = $DB->get_records('tool_trigger_steps', ['workflowid' => $workflowid], 'steporder', $stepfields);
 
             // Add step records to workflow record.
             $workflowrecord->steps = $workflowsteps;
+
+            // Get Moodle version.
+            $workflowrecord->moodleversion = get_config('core', 'version');
+
+            // Get plugin version.
+            $workflowrecord->pluginversion = get_config('tool_trigger', 'version');
 
             // Stop transaction.
             $transaction->allow_commit();
