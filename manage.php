@@ -36,6 +36,9 @@ $context = context_system::instance();
 // Check for caps.
 require_capability('tool/trigger:manageworkflows', $context);
 
+// Load the javascript.
+$PAGE->requires->js_call_amd('tool_trigger/import_workflow', 'init', array($context->id));
+
 // Build the page output.
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('workflowoverview', 'tool_trigger'));

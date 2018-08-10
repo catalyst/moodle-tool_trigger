@@ -79,6 +79,7 @@ $string['httpostactionparams'] = 'Parameters';
 $string['httpostactionparams_help'] = 'The parameters to send with the request.';
 $string['httppostactionstepname'] = 'HTTP Post';
 $string['httppostactionstepdesc'] = 'A step to allow Moodle workflows to send data to a HTTP/S endpoint.';
+$string['importmodaltitle'] = 'Import workflow from file';
 $string['importworkflow'] = 'Import a workflow';
 $string['jsonencode'] = 'JSON encode parameters';
 $string['jsonencode_help'] = 'If enabled values in the Parameter field will be JSON encoded.';
