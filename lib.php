@@ -23,6 +23,7 @@
  */
 
 use tool_trigger\steps\base\base_form;
+use tool_trigger\import_form;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -100,6 +101,25 @@ function tool_trigger_output_fragment_new_step_form($args) {
         // If we were passed non-empty form data we want the mform to call validation functions and show errors.
         $mform->is_validated();
     }
+
+    ob_start();
+    $mform->display();
+    $o = ob_get_contents();
+    ob_end_clean();
+
+    return $o;
+}
+
+/**
+ * Renders the import workflow from file form.
+ *
+ * @param array $args
+ * @return string
+ */
+function tool_trigger_output_fragment_new_import_form($args) {
+    require_capability('tool/trigger:manageworkflows', $args['context']);
+
+    $mform = new import_form();
 
     ob_start();
     $mform->display();

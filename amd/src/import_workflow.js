@@ -129,6 +129,7 @@ define(
                         modalObj = modal;
                         modalObj.getRoot().on(ModalEvents.save, processModalForm);
                         modalObj.getRoot().on(ModalEvents.hidden, updateModalBody);
+                        updateModalBody();
                     });
                 });
 
