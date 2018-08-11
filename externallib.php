@@ -161,4 +161,59 @@ class tool_trigger_external extends external_api {
         return new external_value(PARAM_RAW, 'form errors');
     }
 
+
+    /**
+     * Describes the parameters for validate_form webservice.
+     * @return external_function_parameters
+     */
+    public static function validate_import_form_parameters() {
+        return new external_function_parameters(
+            array(
+                'jsonformdata' => new external_value(PARAM_RAW, 'The data from the create group form, encoded as a json array')
+            )
+            );
+    }
+
+    /**
+     * Validate the form.
+     *
+     * @param string stepclass The step class being validated
+     * @param string $jsonformdata The data from the form, encoded as a json array.
+     * @return int new group id.
+     */
+    public static function validate_import_form($jsonformdata) {
+        global $USER;
+
+        // Context validation.
+        $context = context_user::instance($USER->id);
+        self::validate_context($context);
+
+        // We always must pass webservice params through validate_parameters.
+        $params = self::validate_parameters(self::validate_form_parameters(),
+            ['jsonformdata' => $jsonformdata]);
+
+        $data = array();
+        if (!empty($params['jsonformdata'])) {
+            $serialiseddata = json_decode($params['jsonformdata']);
+            parse_str($serialiseddata, $data);
+        }
+
+        // Create the form and trigger validation.
+        $mform = new \tool_trigger\import_form(null, $data);
+
+        if (!$mform->is_validated()) {
+            // Generate a warning.
+            throw new moodle_exception('erroreditstep', 'tool_trigger');
+        }
+        return true;
+    }
+
+    /**
+     * Returns description of method result value.
+     *
+     * @return external_description
+     */
+    public static function validate_import_form_returns() {
+        return new external_value(PARAM_RAW, 'form errors');
+    }
 }

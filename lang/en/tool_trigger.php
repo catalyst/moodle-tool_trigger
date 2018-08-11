@@ -154,6 +154,7 @@ $string['workflowdeleteareyousure'] = 'Are you sure you want to delete the workf
 $string['workflowdeletesuccess'] = 'Workflow successfully deleted';
 $string['workflowdescription'] = 'Description';
 $string['workflowdescription_help'] = 'A short description of this workflows purpose.';
+$string['workflowfile'] = 'Workflow file';
 $string['workflowname'] = 'Name';
 $string['workflowname_help'] = 'The human readable name for this workflow.';
 $string['workflowoverview'] = 'Workflow overview';

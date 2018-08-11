@@ -38,7 +38,7 @@ require_once("$CFG->libdir/formslib.php");
 class import_form extends \moodleform {
 
     /**
-     * Build form for the general setting admin page for plugin.
+     * Build form for importing woekflows.
      *
      * {@inheritDoc}
      * @see \moodleform::definition()
@@ -47,10 +47,8 @@ class import_form extends \moodleform {
 
         $mform = $this->_form;
 
-        // Workflow name.
-        $mform->addElement('text', 'workflowname', get_string ('workflowname', 'tool_trigger'), 'size="50"');
-        $mform->setType('workflowname', PARAM_TEXT);
-        $mform->addRule('workflowname', get_string('required'), 'required');
-        $mform->addHelpButton('workflowname', 'workflowname', 'tool_trigger');
+        // Workflow file.
+        $mform->addElement('filepicker', 'userfile', get_string('workflowfile', 'tool_trigger'), null,
+            array('maxbytes' => 256000, 'accepted_types' => '.json'));
     }
 }
