@@ -59,51 +59,28 @@ define(
                 e.preventDefault(); // Stop modal from closing.
 
                 // Form data.
-                var $stepform = modalObj.getRoot().find('form');
-                // Use jQuery().serializeArray() to collect the values of all the form fields.
-                // Then convert from its array-of-objects output format into a single object.
-                var curstep = $stepform.serializeArray().reduce(
-                    function(finalobj, field) {
-
-                        // Filter out the sesskey and formslib system fields.
-                        if (field.name !== 'sesskey' && !field.name.startsWith('_qf__')) {
-                            finalobj[field.name] = field.value;
-                        }
-                        return finalobj;
-                    },
-                    {}
-                );
+                var fileform = modalObj.getRoot().find('form').serialize();
+                window.console.log('sending file via ajax');
 
                 // Submit form via ajax to do server side validation.
                 ajax.call([{
-                    methodname: 'tool_trigger_validate_form',
+                    methodname: 'tool_trigger_process_import_form',
                     args: {
-                        stepclass: curstep['stepclass'],
-                        jsonformdata: JSON.stringify($stepform.serialize())
+                        jsonformdata: JSON.stringify(fileform)
                     },
                 }])[0].done(function() {
+                    window.console.log('file validation succeeded');
+                    // Validation succeeded! Update the list of workflows.
 
-                    // Validation succeeded! Update the parent form's hidden steps data, and update
-                    // the table.
-                    var steps = getParentFormSteps();
-
-                    if (curstep.steporder >= 0) {
-                        // If we were editing an existing step, swap it into place in the list.
-                        steps[curstep.steporder] = curstep;
-                    } else {
-                        // If we were creating a new step, add it to the end of the list.
-                        steps.push(curstep);
-                        curstep.steporder = steps.length - 1;
-                    }
-
-                    updateTable(steps); // Update table in workflow form.
                     modalObj.hide(); // Hide the modal.
 
-                }).fail(function() {
-
-                    // Validation failed! Don't close the modal, don't update anything on the parent
-                    // form.
-                    renderStepForm(curstep['type'], curstep['stepclass'], '', $stepform.serialize());
+                }).fail(function(formdata) {
+                    window.console.log('file validation failed');
+                    window.console.log(formdata);
+                    // Validation failed! Don't close the modal, display the error.
+                    var params = {jsonformdata: JSON.stringify(formdata)};
+                    modalObj.setBody(spinner);
+                    modalObj.setBody(Fragment.loadFragment('tool_trigger', 'new_import_form', contextid, params));
                 });
             }
 

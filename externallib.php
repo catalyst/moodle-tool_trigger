@@ -166,7 +166,7 @@ class tool_trigger_external extends external_api {
      * Describes the parameters for validate_form webservice.
      * @return external_function_parameters
      */
-    public static function validate_import_form_parameters() {
+    public static function process_import_form_parameters() {
         return new external_function_parameters(
             array(
                 'jsonformdata' => new external_value(PARAM_RAW, 'The data from the create group form, encoded as a json array')
@@ -181,7 +181,7 @@ class tool_trigger_external extends external_api {
      * @param string $jsonformdata The data from the form, encoded as a json array.
      * @return int new group id.
      */
-    public static function validate_import_form($jsonformdata) {
+    public static function process_import_form($jsonformdata) {
         global $USER;
 
         // Context validation.
@@ -189,7 +189,7 @@ class tool_trigger_external extends external_api {
         self::validate_context($context);
 
         // We always must pass webservice params through validate_parameters.
-        $params = self::validate_parameters(self::validate_form_parameters(),
+        $params = self::validate_parameters(self::process_import_form_parameters(),
             ['jsonformdata' => $jsonformdata]);
 
         $data = array();
@@ -198,13 +198,23 @@ class tool_trigger_external extends external_api {
             parse_str($serialiseddata, $data);
         }
 
+        error_log(print_r($data, true));
+
         // Create the form and trigger validation.
         $mform = new \tool_trigger\import_form(null, $data);
+        $content = $mform->get_file_content('userfile');
+        error_log($content);
 
         if (!$mform->is_validated()) {
             // Generate a warning.
             throw new moodle_exception('erroreditstep', 'tool_trigger');
+        } else {  // Form is valid process.
+            // Use submitted JSON file to create a new workflow.
+            $content = $mform->get_file_content('userfile');
+            error_log('got file content');
+            error_log($content);
         }
+
         return true;
     }
 
@@ -213,7 +223,7 @@ class tool_trigger_external extends external_api {
      *
      * @return external_description
      */
-    public static function validate_import_form_returns() {
+    public static function process_import_form_returns() {
         return new external_value(PARAM_RAW, 'form errors');
     }
 }

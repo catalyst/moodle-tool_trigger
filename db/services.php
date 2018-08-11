@@ -43,5 +43,14 @@ $functions = array(
             'type'        => 'read',
             'capabilities'  => 'tool/trigger:manageworkflows',
             'ajax' => true
-    ),
+        ),
+        'tool_trigger_process_import_form' => array(
+            'classname'   => 'tool_trigger_external',
+            'methodname'  => 'process_import_form',
+            'classpath'   => 'admin/tool/trigger/externallib.php',
+            'description' => 'Creates a new workflow.',
+            'type'        => 'write',
+            'capabilities'  => 'tool/trigger:manageworkflows',
+            'ajax' => true
+        ),
 );

@@ -50,5 +50,6 @@ class import_form extends \moodleform {
         // Workflow file.
         $mform->addElement('filepicker', 'userfile', get_string('workflowfile', 'tool_trigger'), null,
             array('maxbytes' => 256000, 'accepted_types' => '.json'));
+        $mform->addRule('userfile', get_string('required'), 'required');
     }
 }
