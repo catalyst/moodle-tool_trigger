@@ -245,6 +245,32 @@ class workflow_process {
     }
 
     /**
+     *
+     * @param unknown $filejson
+     * @return \stdClass
+     */
+    static public function import_prep($filejson) {
+        $content = json_decode($filejson, true);
+
+        $data = new \stdClass();
+        $data->workflowid = 0;
+        $data->workflowname = $content['name'];
+        $data->workflowdescription = json_decode($content['description']);
+        $data->eventtomonitor = $content['event'];
+        $data->workflowactive = 0;
+        $data->draftmode = 0;
+        $data->isstepschanged = 1;
+
+        $cleansteps = array();
+        foreach ($content['steps'] as $step){
+            $cleansteps[] = $step;
+        }
+        $data->stepjson = json_encode($cleansteps);
+
+        return $data;
+    }
+
+    /**
      * When making changes to an existing workflow, compare the workflow's current steps in the database, to the steps that came
      * from the form submission, and figure out what changes we need to make to the DB records.
      * @param int $workflowid

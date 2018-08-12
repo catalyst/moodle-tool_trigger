@@ -206,14 +206,13 @@ class tool_trigger_external extends external_api {
             throw new moodle_exception('errorimportworkflow', 'tool_trigger');
         } else {  // Form is valid process.
             // Use submitted JSON file to create a new workflow.
-            $contentjson = $mform->get_file_content('userfile');
-            $content = json_decode($contentjson);
+            $filecontent = $mform->get_file_content('userfile');
+            $workflowobj = \tool_trigger\workflow_process::import_prep($filecontent);
 
-            $workflowprocess = new \tool_trigger\workflow_process($content);
-            $workflowprocess->importprep();  // Additional preperation required for files.
+            $workflowprocess = new \tool_trigger\workflow_process($workflowobj);
             $result = $workflowprocess->processform();  // Add the workflow.
 
-            // TODO: handle the result.
+            // TODO: handle the result, good or bad
 
             $cache = \cache::make('tool_trigger', 'eventsubscriptions');
             $cache->purge();
