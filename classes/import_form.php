@@ -52,4 +52,9 @@ class import_form extends \moodleform {
             array('maxbytes' => 256000, 'accepted_types' => '.json'));
         $mform->addRule('userfile', get_string('required'), 'required');
     }
+
+    //Custom validation should be added here
+    function validation($data, $files) {
+        return array();
+    }
 }

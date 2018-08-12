@@ -69,6 +69,7 @@ $string['eventfields'] = 'Event fields';
 $string['eventtomonitor'] = 'Event to monitor';
 $string['eventtomonitor_help'] = 'The Moodle event to trigger workflow on.';
 $string['erroreditstep'] = 'Something went wrong while attempting to save the workflow step. Please try again.';
+$string['errorimportworkflow'] = 'Something went wrong while importing the workflow. Please try again.';
 $string['errorsavingworkflow'] = 'Something went wrong while attempting to save the workflow. Please try again.';
 $string['filter'] = 'Filter';
 $string['httpostactionurl'] = 'URL';

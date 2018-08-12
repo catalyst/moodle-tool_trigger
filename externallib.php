@@ -198,21 +198,25 @@ class tool_trigger_external extends external_api {
             parse_str($serialiseddata, $data);
         }
 
-        error_log(print_r($data, true));
-
         // Create the form and trigger validation.
-        $mform = new \tool_trigger\import_form(null, $data);
-        $content = $mform->get_file_content('userfile');
-        error_log($content);
+        $mform = new \tool_trigger\import_form(null, null, 'post', '', null, true, $data);;
 
         if (!$mform->is_validated()) {
             // Generate a warning.
-            throw new moodle_exception('erroreditstep', 'tool_trigger');
+            throw new moodle_exception('errorimportworkflow', 'tool_trigger');
         } else {  // Form is valid process.
             // Use submitted JSON file to create a new workflow.
-            $content = $mform->get_file_content('userfile');
-            error_log('got file content');
-            error_log($content);
+            $contentjson = $mform->get_file_content('userfile');
+            $content = json_decode($contentjson);
+
+            $workflowprocess = new \tool_trigger\workflow_process($content);
+            $workflowprocess->importprep();  // Additional preperation required for files.
+            $result = $workflowprocess->processform();  // Add the workflow.
+
+            // TODO: handle the result.
+
+            $cache = \cache::make('tool_trigger', 'eventsubscriptions');
+            $cache->purge();
         }
 
         return true;
