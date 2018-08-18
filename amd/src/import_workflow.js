@@ -71,7 +71,7 @@ define(
                 }])[0].done(function() {
                     window.console.log('file validation succeeded');
                     // Validation succeeded! Update the list of workflows.
-
+                    location.reload(true);  // We're lazy so we'll just reload the page.
 
                     modalObj.hide(); // Hide the modal.
 

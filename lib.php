@@ -119,7 +119,7 @@ function tool_trigger_output_fragment_new_step_form($args) {
 function tool_trigger_output_fragment_new_import_form($args) {
     require_capability('tool/trigger:manageworkflows', $args['context']);
 
-    $mform = new import_form();
+    $mform = new import_form(null, null, 'post', '', ['class' => 'ignoredirty']);
 
     ob_start();
     $mform->display();
