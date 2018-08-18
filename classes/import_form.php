@@ -55,6 +55,13 @@ class import_form extends \moodleform {
 
     //Custom validation should be added here
     function validation($data, $files) {
-        return array();
+        return array('userfile' => 'you are all fuckers');
+    }
+
+    public function get_errors() {
+        $form = $this->_form;
+        $errors = $form->_errors;
+
+        return $errors;
     }
 }

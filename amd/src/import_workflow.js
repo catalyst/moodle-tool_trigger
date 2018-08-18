@@ -69,19 +69,24 @@ define(
                         jsonformdata: JSON.stringify(fileform)
                     },
                 }])[0].done(function() {
-                    window.console.log('file validation succeeded');
                     // Validation succeeded! Update the list of workflows.
                     location.reload(true);  // We're lazy so we'll just reload the page.
 
                     modalObj.hide(); // Hide the modal.
 
-                }).fail(function(formdata) {
+                }).fail(function(errorobj) {
                     window.console.log('file validation failed');
-                    window.console.log(formdata);
-                    // Validation failed! Don't close the modal, display the error.
-                    var params = {jsonformdata: JSON.stringify(formdata)};
+                    // Validation failed!
+                    Notification.addNotification({
+                        message: 'fooo',
+                        type: 'error'
+                    });
+
                     modalObj.setBody(spinner);
-                    modalObj.setBody(Fragment.loadFragment('tool_trigger', 'new_import_form', contextid, params));
+                    modalObj.hide(); // Hide the modal.
+
+
+
                 });
             }
 

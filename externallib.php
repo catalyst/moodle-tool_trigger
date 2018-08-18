@@ -203,6 +203,7 @@ class tool_trigger_external extends external_api {
 
         if (!$mform->is_validated()) {
             // Generate a warning.
+            error_log(print_r($mform->get_errors(), true));
             throw new moodle_exception('errorimportworkflow', 'tool_trigger');
         } else {  // Form is valid process.
             // Use submitted JSON file to create a new workflow.
