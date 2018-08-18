@@ -72,6 +72,7 @@ define(
                     window.console.log('file validation succeeded');
                     // Validation succeeded! Update the list of workflows.
 
+
                     modalObj.hide(); // Hide the modal.
 
                 }).fail(function(formdata) {
