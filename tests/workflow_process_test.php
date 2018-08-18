@@ -175,7 +175,6 @@ class tool_trigger_workflow_process_testcase extends advanced_testcase {
 
         $expectedsteps = array(
             array(
-                'id' => '7',
                 'name' => 'a',
                 'description' => 's',
                 'type' => 'lookups',
@@ -185,7 +184,6 @@ class tool_trigger_workflow_process_testcase extends advanced_testcase {
                 'steporder' => '0'
             ),
             array(
-                'id' => '6',
                 'name' => 's',
                 'description' => 's',
                 'type' => 'lookups',
