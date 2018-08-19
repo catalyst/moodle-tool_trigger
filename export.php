@@ -15,38 +15,26 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Trigger workflow settings.
+ * This page lets admins download workflows to JSON.
  *
  * @package    tool_trigger
  * @copyright  Matt Porritt <mattp@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once(dirname(__FILE__) . '/../../../config.php');
-require_once($CFG->libdir . '/adminlib.php');
-
-defined('MOODLE_INTERNAL') || die();
+require_once(__DIR__ . '/../../../config.php');
+require_once($CFG->libdir.'/adminlib.php');
 
 require_login();
-
-admin_externalpage_setup('tool_trigger_settings', '', null, '', array('pagelayout' => 'report'));
-
 $context = context_system::instance();
-
-// Check for caps.
 require_capability('tool/trigger:manageworkflows', $context);
 
-// Load the javascript.
-$PAGE->requires->js_call_amd('tool_trigger/import_workflow', 'init', array($context->id));
+$workflowid = required_param('workflowid', PARAM_INT);
 
-// Build the page output.
-echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('workflowoverview', 'tool_trigger'));
+$workflowrecord = \tool_trigger\workflow_manager::get_workflow_data_with_steps($workflowid);
+if (!$workflowrecord) {
+    print_error('invaliditemid');
+}
 
-// Render the rule list.
-$manageurl = new moodle_url('/admin/tool/trigger/manage.php');
-$renderable = new \tool_trigger\output\manageworkflows\renderable('tooltrigger', $manageurl);
-$renderer = $PAGE->get_renderer('tool_trigger', 'manageworkflows');
-echo $renderer->render($renderable);
-
-echo $OUTPUT->footer();
+$jsonexporter = new \tool_trigger\json\json_export($workflowrecord);
+$jsonexporter->download_file();

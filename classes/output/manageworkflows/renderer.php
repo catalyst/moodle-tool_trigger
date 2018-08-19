@@ -44,6 +44,8 @@ class renderer extends \plugin_renderer_base {
      */
     protected function render_renderable(renderable $renderable) {
         $o = $this->render_add_button($renderable->workflowid);
+        $o .= '&nbsp;';
+        $o .= $this->render_import_button();
         $o .= $this->render_table($renderable);
 
         return $o;
@@ -78,6 +80,18 @@ class renderer extends \plugin_renderer_base {
         $button = \html_writer::tag('button', get_string('addworkflow', 'tool_trigger'), ['class' => 'btn btn-primary']);
         $addurl = new \moodle_url($CFG->wwwroot. '/admin/tool/trigger/edit.php', array('workflowid' => $workflowid));
         return \html_writer::link($addurl, $button);
+    }
+
+    /**
+     * Html to add a button for importing workflow.
+     *
+     * @return string html for the button.
+     */
+    protected function render_import_button() {
+        global $CFG;
+
+        $button = \html_writer::tag('button', get_string('importworkflow', 'tool_trigger'), ['class' => 'btn btn-primary', 'name' => 'importbtn']);
+        return \html_writer::link('#', $button);
     }
 
     /**

@@ -108,4 +108,40 @@ class tool_trigger_workflow_manager_testcase extends advanced_testcase {
         $this->expectException('invalid_parameter_exception');
         $wfm->validate_and_make_step($badstepclassname);
     }
+
+    /**
+     * Test getting workflow data object with step data included.
+     */
+    public function test_get_workflow_data_with_steps() {
+        $this->resetAfterTest();
+        global $DB;
+
+        // Create a workflow with step.
+        $mdata = new \stdClass();
+        $mdata->workflowid = 0;
+        $mdata->workflowname = '__testworkflow__';
+        $mdata->workflowdescription = 'test workflow description';
+        $mdata->eventtomonitor = '\mod_scorm\event\user_report_viewed';
+        $mdata->workflowactive = 1;
+        $mdata->draftmode = 0;
+        $mdata->isstepschanged = 1;
+        $mdata->stepjson = '[{"useridfield":"userid","outputprefix":"user_","nodeleted":"1","stepdesc":"User lookup",'
+            .'"typedesc":"Lookup","id":"7","type":"lookups","stepclass":"/tool_trigger/steps/lookups/user_lookup_step",'
+            .'"name":"a","description":"s","steporder":"0"},{"courseidfield":"courseid","outputprefix":"course_",'
+            .'"stepdesc":"Course lookup","typedesc":"Lookup","id":"6","type":"lookups",'
+            .'"stepclass":"/tool_trigger/steps/lookups/course_lookup_step","name":"s","description":"s","steporder":"1"}]';
+
+        $workflowprocess = new \tool_trigger\workflow_process($mdata);
+        $workflowprocess->processform();
+        $workflow = $DB->get_record('tool_trigger_workflows', array('name' => '__testworkflow__'), '*', MUST_EXIST);
+        $workflowid = $workflow->id;
+
+        $workflowdata = \tool_trigger\workflow_manager::get_workflow_data_with_steps($workflowid);
+
+        $this->assertEquals('__testworkflow__', $workflowdata->name);
+        $this->assertEquals('"test workflow description"', $workflowdata->description);
+
+    }
+
+
 }

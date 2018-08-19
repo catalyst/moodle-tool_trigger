@@ -161,4 +161,86 @@ class tool_trigger_external extends external_api {
         return new external_value(PARAM_RAW, 'form errors');
     }
 
+
+    /**
+     * Describes the parameters for validate_form webservice.
+     * @return external_function_parameters
+     */
+    public static function process_import_form_parameters() {
+        return new external_function_parameters(
+            array(
+                'jsonformdata' => new external_value(PARAM_RAW, 'The data from the create group form, encoded as a json array')
+            )
+            );
+    }
+
+    /**
+     * Validate the form.
+     *
+     * @param string stepclass The step class being validated
+     * @param string $jsonformdata The data from the form, encoded as a json array.
+     * @return int new group id.
+     */
+    public static function process_import_form($jsonformdata) {
+        global $USER;
+
+        // Context validation.
+        $context = context_user::instance($USER->id);
+        self::validate_context($context);
+
+        // We always must pass webservice params through validate_parameters.
+        $params = self::validate_parameters(self::process_import_form_parameters(),
+            ['jsonformdata' => $jsonformdata]);
+
+        $data = array();
+        if (!empty($params['jsonformdata'])) {
+            $serialiseddata = json_decode($params['jsonformdata']);
+            parse_str($serialiseddata, $data);
+        }
+
+        // Create the form and trigger validation.
+        $mform = new \tool_trigger\import_form(null, null, 'post', '', null, true, $data);
+
+        $returnmsg = new \stdClass();
+
+        if (!$mform->is_validated()) {
+            // Generate a warning.
+            error_log(print_r($mform->get_errors(), true));
+            $returnmsg->message = $mform->get_errors();
+            $returnmsg->errorcode = 'errorimportworkflow';
+
+        } else {  // Form is valid process.
+            // Use submitted JSON file to create a new workflow.
+            $filecontent = $mform->get_file_content('userfile');
+            $workflowobj = \tool_trigger\workflow_process::import_prep($filecontent);
+
+            $workflowprocess = new \tool_trigger\workflow_process($workflowobj);
+            $result = $workflowprocess->processform();  // Add the workflow.
+
+            if ($result) { // Sucessfully imported workflow.
+
+                $cache = \cache::make('tool_trigger', 'eventsubscriptions');
+                $cache->purge();
+
+                $returnmsg->message = array('success' => get_string('worklfowimported', 'tool_trigger'));
+                $returnmsg->errorcode = 'success';
+
+            } else { // Processing failure.
+                // Throw a proper error, here as this shouldn't fail.
+                throw new moodle_exception('errorimportworkflow', 'tool_trigger');
+            }
+
+        }
+
+        return json_encode($returnmsg);
+    }
+
+    /**
+     * Returns description of method result value.
+     *
+     * @return external_description
+     */
+    public static function process_import_form_returns() {
+        return new external_value(PARAM_RAW, 'form errors');
+    }
 }

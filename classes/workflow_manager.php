@@ -82,6 +82,48 @@ class workflow_manager {
     }
 
     /**
+     * Retrieve the workflow data and associated steps for that workflow.
+     * This does not return a workflow object.
+     *
+     * @param int $workflowid
+     * @return boolean|object $workflowrecord The workflow with steps and version info.
+     */
+    public static function get_workflow_data_with_steps($workflowid) {
+        global $DB;
+        $workflowrecord = false;
+
+        try {
+            // Start transaction.
+            $transaction = $DB->start_delegated_transaction();
+
+            // Get workflow record.
+            $worflowfields = 'name, description, event';
+            $workflowrecord = $DB->get_record('tool_trigger_workflows', ['id' => $workflowid], $worflowfields, MUST_EXIST);
+
+            // Get step records.
+            $stepfields = 'id, name, description, type, stepclass, data, steporder';
+            $workflowsteps = $DB->get_records('tool_trigger_steps', ['workflowid' => $workflowid], 'steporder', $stepfields);
+
+            // Add step records to workflow record.
+            $workflowrecord->steps = $workflowsteps;
+
+            // Get Moodle version.
+            $workflowrecord->moodleversion = get_config('core', 'version');
+
+            // Get plugin version.
+            $workflowrecord->pluginversion = get_config('tool_trigger', 'version');
+
+            // Stop transaction.
+            $transaction->allow_commit();
+        } catch (\Exception $e) {
+            $transaction->rollback($e);
+        }
+
+        return $workflowrecord;
+
+    }
+
+    /**
      * Get all the created workflows, to show them in a table.
      *
      * @param int $limitfrom Limit from which to fetch worklfows.

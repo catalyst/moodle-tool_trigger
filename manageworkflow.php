@@ -65,7 +65,7 @@ switch ($action) {
     case 'copy':
         $newworkflow = $workflowmanager->copy_workflow($workflow);
         redirect(
-            new moodle_url('/admin/tool/trigger/index.php'),
+            new moodle_url('/admin/tool/trigger/manage.php'),
             get_string('workflowcopysuccess', 'tool_trigger'),
             \core\output\notification::NOTIFY_SUCCESS
         );
@@ -74,7 +74,7 @@ switch ($action) {
         if ($confirm) {
             $workflowmanager->delete_workflow($workflowid);
             redirect(
-                new moodle_url('/admin/tool/trigger/index.php'),
+                new moodle_url('/admin/tool/trigger/manage.php'),
                 get_string('workflowdeletesuccess', 'tool_trigger'),
                 \core\output\notification::NOTIFY_SUCCESS
             );
@@ -90,7 +90,7 @@ switch ($action) {
                     'sesskey' => sesskey()
                 ]
             );
-            $cancelurl = new moodle_url($CFG->wwwroot. '/admin/tool/trigger/index.php');
+            $cancelurl = new moodle_url($CFG->wwwroot. '/admin/tool/trigger/manage.php');
             $strconfirm = get_string('workflowdeleteareyousure', 'tool_trigger', $workflow->get_name($context));
 
             echo $OUTPUT->confirm($strconfirm, $confirmurl, $cancelurl);

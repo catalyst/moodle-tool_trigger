@@ -135,4 +135,77 @@ class tool_trigger_workflow_process_testcase extends advanced_testcase {
         $this->assertEquals ($expected1, $result[0]);
         $this->assertEquals ($expected2, $result[1]);
     }
+
+    public function test_import_prep () {
+        $filecontent = array(
+            'name' => 'invalid login',
+            'description' => '{"text":"<p>invalid user login is detected<br><\\/p>","format":"1"}',
+            'event' => '\\core\\event\\user_login_failed',
+            'steps' => array(
+                7 => array(
+                    'id' => '7',
+                    'name' => 'a',
+                    'description' => 's',
+                    'type' => 'lookups',
+                    'stepclass' => '\\tool_trigger\\steps\\lookups\\user_lookup_step',
+                    'data' =>
+                    '{"useridfield":"userid","outputprefix":"user_","nodeleted":"1","stepdesc":"User lookup","typedesc":"Lookup"}',
+                    'steporder' => '0'
+                ),
+                6 => array(
+                    'id' => '6',
+                    'name' => 's',
+                    'description' => 's',
+                    'type' => 'lookups',
+                    'stepclass' => '\\tool_trigger\\steps\\lookups\\course_lookup_step',
+                    'data' =>
+                    '{"courseidfield":"courseid","outputprefix":"course_","stepdesc":"Course lookup","typedesc":"Lookup"}',
+                    'steporder' => '1'
+                )
+            ),
+            'moodleversion' => '2018081000',
+            'pluginversion' => '2018081002'
+        );
+
+        $filecontentjson = json_encode($filecontent);
+
+        $expecteddescription = new \stdClass();
+        $expecteddescription->text = '<p>invalid user login is detected<br></p>';
+        $expecteddescription->format = '1';
+
+        $expectedsteps = array(
+            array(
+                'name' => 'a',
+                'description' => 's',
+                'type' => 'lookups',
+                'stepclass' => '\\tool_trigger\\steps\\lookups\\user_lookup_step',
+                'data' =>
+                '{"useridfield":"userid","outputprefix":"user_","nodeleted":"1","stepdesc":"User lookup","typedesc":"Lookup"}',
+                'steporder' => '0'
+            ),
+            array(
+                'name' => 's',
+                'description' => 's',
+                'type' => 'lookups',
+                'stepclass' => '\\tool_trigger\\steps\\lookups\\course_lookup_step',
+                'data' =>
+                '{"courseidfield":"courseid","outputprefix":"course_","stepdesc":"Course lookup","typedesc":"Lookup"}',
+                'steporder' => '1'
+            )
+            );
+
+        $expected = new \stdClass ();
+        $expected->workflowid = 0;
+        $expected->workflowname = 'invalid login';
+        $expected->workflowdescription = $expecteddescription;
+        $expected->eventtomonitor = '\core\event\user_login_failed';
+        $expected->workflowactive = 0;
+        $expected->draftmode = 0;
+        $expected->isstepschanged = 1;
+        $expected->stepjson = json_encode($expectedsteps);
+       $workflowobj = \tool_trigger\workflow_process::import_prep($filecontentjson);
+
+       $this->assertEquals ($expected, $workflowobj);
+
+    }
 }
