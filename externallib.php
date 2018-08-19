@@ -199,12 +199,16 @@ class tool_trigger_external extends external_api {
         }
 
         // Create the form and trigger validation.
-        $mform = new \tool_trigger\import_form(null, null, 'post', '', null, true, $data);;
+        $mform = new \tool_trigger\import_form(null, null, 'post', '', null, true, $data);
+
+        $returnmsg = new \stdClass();
 
         if (!$mform->is_validated()) {
             // Generate a warning.
             error_log(print_r($mform->get_errors(), true));
-            throw new moodle_exception('errorimportworkflow', 'tool_trigger');
+            $returnmsg->message = $mform->get_errors();
+            $returnmsg->errorcode = 'errorimportworkflow';
+
         } else {  // Form is valid process.
             // Use submitted JSON file to create a new workflow.
             $filecontent = $mform->get_file_content('userfile');
@@ -213,13 +217,22 @@ class tool_trigger_external extends external_api {
             $workflowprocess = new \tool_trigger\workflow_process($workflowobj);
             $result = $workflowprocess->processform();  // Add the workflow.
 
-            // TODO: handle the result, good or bad
+            if ($result) { // Sucessfully imported workflow.
 
-            $cache = \cache::make('tool_trigger', 'eventsubscriptions');
-            $cache->purge();
+                $cache = \cache::make('tool_trigger', 'eventsubscriptions');
+                $cache->purge();
+
+                $returnmsg->message = array('success' => get_string('worklfowimported', 'tool_trigger'));
+                $returnmsg->errorcode = 'success';
+
+            } else { // Processing failure.
+                // Throw a proper error, here as this shouldn't fail.
+                throw new moodle_exception('errorimportworkflow', 'tool_trigger');
+            }
+
         }
 
-        return true;
+        return json_encode($returnmsg);
     }
 
     /**

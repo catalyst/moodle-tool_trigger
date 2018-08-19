@@ -60,7 +60,7 @@ define(
 
                 // Form data.
                 var fileform = modalObj.getRoot().find('form').serialize();
-                window.console.log('sending file via ajax');
+                modalObj.setBody(spinner);
 
                 // Submit form via ajax to do server side validation.
                 ajax.call([{
@@ -68,25 +68,31 @@ define(
                     args: {
                         jsonformdata: JSON.stringify(fileform)
                     },
-                }])[0].done(function() {
-                    // Validation succeeded! Update the list of workflows.
-                    location.reload(true);  // We're lazy so we'll just reload the page.
+                }])[0].done(function(responsejson) {
+                    responseobj = JSON.parse(responsejson);
+
+                    if (responseobj.errorcode == 'success') {
+                        // Validation succeeded! Update the list of workflows.
+                        location.reload(true);  // We're lazy so we'll just reload the page.
+                    } else {
+                        Object.keys(responseobj.message).forEach(function(key) {
+                            Notification.addNotification({
+                                message: responseobj.message[key],
+                                type: 'error'
+                            });
+                        });
+                    }
 
                     modalObj.hide(); // Hide the modal.
 
-                }).fail(function(errorobj) {
-                    window.console.log('file validation failed');
+                }).fail(function(responsejson) {
                     // Validation failed!
                     Notification.addNotification({
-                        message: 'fooo',
+                        message: Str.get_string('errorimportworkflow', 'tool_trigger'),
                         type: 'error'
                     });
 
-                    modalObj.setBody(spinner);
                     modalObj.hide(); // Hide the modal.
-
-
-
                 });
             }
 
