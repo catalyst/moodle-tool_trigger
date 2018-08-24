@@ -222,7 +222,7 @@ class tool_trigger_external extends external_api {
                 $cache = \cache::make('tool_trigger', 'eventsubscriptions');
                 $cache->purge();
 
-                $returnmsg->message = array('success' => get_string('worklfowimported', 'tool_trigger'));
+                $returnmsg->message = array('success' => get_string('workflowimported', 'tool_trigger'));
                 $returnmsg->errorcode = 'success';
 
             } else { // Processing failure.
