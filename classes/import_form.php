@@ -38,6 +38,15 @@ require_once("$CFG->libdir/formslib.php");
 class import_form extends \moodleform {
 
     /**
+     * Imported worklow JSON files must be at least this version,
+     * to be compatible with the import plugin.
+     * Update this value when the workflow schema changes.
+     *
+     * @var int
+     */
+    private $importversion = 2018082400;
+
+    /**
      * Build form for importing woekflows.
      *
      * {@inheritDoc}
@@ -53,25 +62,70 @@ class import_form extends \moodleform {
         $mform->addRule('userfile', get_string('required'), 'required');
     }
 
-    //Custom validation should be added here
+    /**
+     *
+     * {@inheritDoc}
+     * @see moodleform::validation()
+     */
     function validation($data, $files) {
+        global $USER;
+
         $validationerrors = array();
 
+        // get the file from the filestystem. $files will always be empty.
+        $fs = get_file_storage();
+
+        $context = \context_user::instance($USER->id);
+        $itemid = $data['userfile'];
+
+        // This is how core gets files in this case.
+        if (!$files = $fs->get_area_files($context->id, 'user', 'draft', $itemid, 'id DESC', false)) {
+            $validationerrors['nofile'] = get_string('noworkflowfile', 'tool_trigger');
+            return $validationerrors;
+        }
+        $file = reset($files);
+
         // Check if file is valid JSON.
-        //$content = $this->get_file_content('userfile');
-        //error_log($content);
+        $contentjson = $file->get_content();
+        $contentobj = json_decode($contentjson);
+
+        if (!$contentobj) {
+            $validationerrors['invalidjson'] = get_string('invalidjson', 'tool_trigger');
+            return $validationerrors;
+        }
 
         // Check if file version is compatible.
-
-        //array('userfile' => 'you are all fuckers');
+        $versioncompatible = $this->is_version_compatible($contentobj->pluginversion);
+        if (!$versioncompatible) {
+            $validationerrors['invalidversion'] = get_string('invalidversion', 'tool_trigger');
+            return $validationerrors;
+        }
 
         return $validationerrors;
     }
 
+    /**
+     * Get the errors returned during form validation.
+     *
+     * @return array|mixed
+     */
     public function get_errors() {
         $form = $this->_form;
         $errors = $form->_errors;
 
         return $errors;
+    }
+
+    /**
+     *
+     * @param string $pluginversion
+     * @return boolean
+     */
+    private function is_version_compatible($pluginversion){
+        if ((int)$pluginversion < $this->importversion) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }
