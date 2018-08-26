@@ -264,6 +264,8 @@ class workflow_process {
         $cleansteps = array();
         foreach ($content['steps'] as $step){
             unset($step['id']);
+            $step[] = json_decode($step['data']);
+            unset($step['data']);
             $cleansteps[] = $step;
         }
         $data->stepjson = json_encode($cleansteps);
