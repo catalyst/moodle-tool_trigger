@@ -246,7 +246,7 @@ class workflow_process {
 
     /**
      *
-     * @param unknown $filejson
+     * @param string $filejson
      * @return \stdClass
      */
     static public function import_prep($filejson) {
@@ -261,15 +261,19 @@ class workflow_process {
         $data->draftmode = 0;
         $data->isstepschanged = 1;
 
+        // Format and flatten step data.
         $cleansteps = array();
         foreach ($content['steps'] as $step){
+            $stepdata = json_decode($step['data']);
+            foreach ($stepdata as $key => $value) {
+                $step[$key] = $value;
+            }
             unset($step['id']);
-            $step[] = json_decode($step['data']);
             unset($step['data']);
             $cleansteps[] = $step;
         }
-        $data->stepjson = json_encode($cleansteps);
 
+        $data->stepjson = json_encode($cleansteps);
         return $data;
     }
 

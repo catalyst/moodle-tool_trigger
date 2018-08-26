@@ -145,44 +145,47 @@ class tool_trigger_workflow_process_testcase extends advanced_testcase {
         fclose($fp);
 
 
-//         $expecteddescription = new \stdClass();
-//         $expecteddescription->text = '<p>invalid user login is detected<br></p>';
-//         $expecteddescription->format = '1';
+        $expecteddescription = new \stdClass();
+        $expecteddescription->text = '<p>A workflow to use as a test fixture for the worklfow import process.</p><p>It is triggered on a user login failed event<br></p>';
+        $expecteddescription->format = '1';
 
-//         $expectedsteps = array(
-//             array(
-//                 'name' => 'a',
-//                 'description' => 's',
-//                 'type' => 'lookups',
-//                 'stepclass' => '\\tool_trigger\\steps\\lookups\\user_lookup_step',
-//                 'data' =>
-//                 '{"useridfield":"userid","outputprefix":"user_","nodeleted":"1","stepdesc":"User lookup","typedesc":"Lookup"}',
-//                 'steporder' => '0'
-//             ),
-//             array(
-//                 'name' => 's',
-//                 'description' => 's',
-//                 'type' => 'lookups',
-//                 'stepclass' => '\\tool_trigger\\steps\\lookups\\course_lookup_step',
-//                 'data' =>
-//                 '{"courseidfield":"courseid","outputprefix":"course_","stepdesc":"Course lookup","typedesc":"Lookup"}',
-//                 'steporder' => '1'
-//             )
-//             );
+        $expectedsteps = array(
+            array(
+                 'name' => 'Test fixture user lookup',
+                 'description' => 'A user step that gets user profile imformation',
+                 'type' => 'lookups',
+                 'stepclass' => '\\tool_trigger\\steps\\lookups\\user_lookup_step',
+                 'steporder' => '0',
+                 'useridfield' => 'userid',
+                 'outputprefix' => 'user_',
+                 'nodeleted' => '1',
+                 'stepdesc' => 'User lookup',
+                 'typedesc' => 'Lookup'
+             ),
+             array(
+                 'name' => 'Test fixture cron log',
+                 'description' => 'A step that dumps workflow output to the cron log.',
+                 'type' => 'actions',
+                 'stepclass' => '\\tool_trigger\\steps\\actions\\logdump_action_step',
+                 'steporder' => '1',
+                 'stepdesc' => 'Cron log',
+                 'typedesc' => 'Action'
+             )
+             );
 
-//         $expected = new \stdClass ();
-//         $expected->workflowid = 0;
-//         $expected->workflowname = 'invalid login';
-//         $expected->workflowdescription = $expecteddescription;
-//         $expected->eventtomonitor = '\core\event\user_login_failed';
-//         $expected->workflowactive = 0;
-//         $expected->draftmode = 0;
-//         $expected->isstepschanged = 1;
-//         $expected->stepjson = json_encode($expectedsteps);
-         $workflowobj = \tool_trigger\workflow_process::import_prep($filecontentjson);
-         error_log(print_r($workflowobj, true));
+        $expected = new \stdClass ();
+        $expected->workflowid = 0;
+        $expected->workflowname = 'Test login failed workflow';
+        $expected->workflowdescription = $expecteddescription;
+        $expected->eventtomonitor = '\core\event\user_login_failed';
+        $expected->workflowactive = 0;
+        $expected->draftmode = 0;
+        $expected->isstepschanged = 1;
+        $expected->stepjson = json_encode($expectedsteps);
 
-//        $this->assertEquals ($expected, $workflowobj);
+        $workflowobj = \tool_trigger\workflow_process::import_prep($filecontentjson);
+
+        $this->assertEquals ($expected, $workflowobj);
 
     }
 }
