@@ -88,8 +88,9 @@ class process_workflows extends \core\task\scheduled_task {
         $sql = "SELECT e.*, w.id as workflowid
                 FROM {tool_trigger_events} e
                 JOIN {tool_trigger_workflows} w ON w.event = e.eventname
-                LEFT JOIN {tool_trigger_queue} q ON q.eventid = e.id AND q.workflowid = w.id
-                WHERE w.enabled = 1 AND q.id IS NULL";
+                LEFT JOIN {tool_trigger_queue} q ON q.eventid = e.id
+                WHERE w.enabled = 1 AND q.id IS NULL AND q.status IS NULL;";
+
         $events = $DB->get_recordset_sql($sql);
         foreach ($events as $event) {
             $trigger = new \stdClass();
