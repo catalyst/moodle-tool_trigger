@@ -33,7 +33,7 @@ defined('MOODLE_INTERNAL') || die;
  * @copyright  Matt Porritt <mattp@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class webservice_post_action_step extends base_action_step {
+class webservice_action_step extends base_action_step {
 
     use \tool_trigger\helper\datafield_manager;
 
@@ -86,21 +86,60 @@ class webservice_post_action_step extends base_action_step {
      * @see \tool_trigger\steps\base\base_step::add_extra_form_fields()
      */
     public function form_definition_extra($form, $mform, $customdata) {
+        global $USER, $DB, $CFG;
+        require_once($CFG->dirroot . "/webservice/lib.php");
 
         // Webservice.
-        $attributes = array('size' => '50', 'placeholder' => 'https://www.example.com/api', 'type' => 'url');
-        $mform->addElement('text', 'url', get_string ('httpostactionurl', 'tool_trigger'), $attributes);
-        // PARAM_URL will reject some templated urls.
-        // TODO: Put some validation on this field?
-        $mform->setType('url', PARAM_RAW_TRIMMED);
-        $mform->addRule('url', get_string('required'), 'required');
-        $mform->addHelpButton('url', 'httpostactionurl', 'tool_trigger');
+        $webservicemanager = new \webservice();
+        $functions = $DB->get_records('external_functions', null, 'name ASC');
+
+        // We add the descriptions to the functions.
+        foreach ($functions as $functionid => $functionname) {
+            // Retrieve full function information.
+            $function = \external_api::external_function_info($functionname);
+            if (empty($function->deprecated)) {
+                $functions[$functionid] = $function->name;
+            } else {
+                // Exclude the deprecated ones.
+                unset($functions[$functionid]);
+            }
+        }
+
+        $mform->addElement('searchableselector', 'fids', get_string('name'), $functions);
+        $mform->addRule('fids', get_string('required'), 'required', null, 'client');
 
         // User.
-        $attributes = array('cols' => '50', 'rows' => '2');
-        $mform->addElement('textarea', 'httpheaders', get_string ('httpostactionheaders', 'tool_trigger'), $attributes);
-        $mform->setType('httpheaders', PARAM_RAW_TRIMMED);
-        $mform->addHelpButton('httpheaders', 'httpostactionheaders', 'tool_trigger');
+        if (empty($data->nouserselection)) {
+
+            //check if the number of user is reasonable to be displayed in a select box
+            $usertotal = $DB->count_records('user',
+                array('deleted' => 0, 'suspended' => 0, 'confirmed' => 1));
+
+            if ($usertotal < 500) {
+                list($sort, $params) = users_order_by_sql('u');
+                // User searchable selector - return users who are confirmed, not deleted, not suspended and not a guest.
+                $sql = 'SELECT u.id, ' . get_all_user_name_fields(true, 'u') . '
+                        FROM {user} u
+                        WHERE u.deleted = 0
+                        AND u.confirmed = 1
+                        AND u.suspended = 0
+                        AND u.id != :siteguestid
+                        ORDER BY ' . $sort;
+                $params['siteguestid'] = $CFG->siteguest;
+                $users = $DB->get_records_sql($sql, $params);
+                $options = array();
+                foreach ($users as $userid => $user) {
+                    $options[$userid] = fullname($user);
+                }
+                $mform->addElement('searchableselector', 'user', get_string('user'), $options);
+                $mform->setType('user', PARAM_INT);
+            } else {
+                //simple text box for username or user id (if two username exists, a form error is displayed)
+                $mform->addElement('text', 'user', get_string('usernameorid', 'webservice'));
+                $mform->setType('user', PARAM_RAW_TRIMMED);
+            }
+            $mform->addRule('user', get_string('required'), 'required', null, 'client');
+        }
 
     }
 
