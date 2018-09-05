@@ -144,9 +144,9 @@ class tool_trigger_workflow_process_testcase extends advanced_testcase {
         $filecontentjson = fread($fp, filesize($filename));
         fclose($fp);
 
-
         $expecteddescription = new \stdClass();
-        $expecteddescription->text = '<p>A workflow to use as a test fixture for the worklfow import process.</p><p>It is triggered on a user login failed event<br></p>';
+        $expecteddescription->text = '<p>A workflow to use as a test fixture for the worklfow import process.</p>'
+            .'<p>It is triggered on a user login failed event<br></p>';
         $expecteddescription->format = '1';
 
         $expectedsteps = array(

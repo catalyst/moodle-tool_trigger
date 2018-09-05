@@ -263,7 +263,7 @@ class workflow_process {
 
         // Format and flatten step data.
         $cleansteps = array();
-        foreach ($content['steps'] as $step){
+        foreach ($content['steps'] as $step) {
             $stepdata = json_decode($step['data']);
             foreach ($stepdata as $key => $value) {
                 $step[$key] = $value;

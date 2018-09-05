@@ -316,7 +316,7 @@ class workflow_manager {
     /**
      * Factory method to validate the stepclass name and then instantiate the stepclass.
      *
-     * @param string $stepclass
+     * @param string $stepclass The stepclass to validate.
      * @param mixed ...$params Additional params to pass to the stepclass constructor.
      * @throws \invalid_parameter_exception
      * @return \tool_trigger\steps\base\base_step

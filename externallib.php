@@ -205,7 +205,6 @@ class tool_trigger_external extends external_api {
 
         if (!$mform->is_validated()) {
             // Generate a warning.
-            error_log(print_r($mform->get_errors(), true));
             $returnmsg->message = $mform->get_errors();
             $returnmsg->errorcode = 'errorimportworkflow';
 

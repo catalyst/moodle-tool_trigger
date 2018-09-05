@@ -69,7 +69,7 @@ define(
                         jsonformdata: JSON.stringify(fileform)
                     },
                 }])[0].done(function(responsejson) {
-                    responseobj = JSON.parse(responsejson);
+                    var responseobj = JSON.parse(responsejson);
 
                     if (responseobj.errorcode == 'success') {
                         // Validation succeeded! Update the list of workflows.
@@ -85,7 +85,7 @@ define(
 
                     modalObj.hide(); // Hide the modal.
 
-                }).fail(function(responsejson) {
+                }).fail(function() {
                     // Validation failed!
                     Notification.addNotification({
                         message: Str.get_string('errorimportworkflow', 'tool_trigger'),

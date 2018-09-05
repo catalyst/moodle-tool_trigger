@@ -90,7 +90,11 @@ class renderer extends \plugin_renderer_base {
     protected function render_import_button() {
         global $CFG;
 
-        $button = \html_writer::tag('button', get_string('importworkflow', 'tool_trigger'), ['class' => 'btn btn-primary', 'name' => 'importbtn']);
+        $button = \html_writer::tag(
+            'button',
+            get_string('importworkflow', 'tool_trigger'),
+            ['class' => 'btn btn-primary', 'name' => 'importbtn']
+            );
         return \html_writer::link('#', $button);
     }
 

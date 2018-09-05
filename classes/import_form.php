@@ -63,16 +63,19 @@ class import_form extends \moodleform {
     }
 
     /**
+     * Validate uploaded JSON file.
      *
-     * {@inheritDoc}
-     * @see moodleform::validation()
+     * @param array $data array of ("fieldname"=>value) of submitted data
+     * @param array $files array of uploaded files "element_name"=>tmp_file_path
+     * @return array of "element_name"=>"error_description" if there are errors,
+     *         or an empty array if everything is OK (true allowed for backwards compatibility too).
      */
-    function validation($data, $files) {
+    public function validation($data, $files) {
         global $USER;
 
         $validationerrors = array();
 
-        // get the file from the filestystem. $files will always be empty.
+        // Get the file from the filestystem. $files will always be empty.
         $fs = get_file_storage();
 
         $context = \context_user::instance($USER->id);
@@ -117,11 +120,13 @@ class import_form extends \moodleform {
     }
 
     /**
+     * Check if the version of the workflow import file
+     * is compatible with the installed version of the plugin.
      *
      * @param string $pluginversion
      * @return boolean
      */
-    private function is_version_compatible($pluginversion){
+    private function is_version_compatible($pluginversion) {
         if ((int)$pluginversion < $this->importversion) {
             return false;
         } else {
