@@ -26,6 +26,8 @@ namespace tool_trigger\steps\actions;
 
 defined('MOODLE_INTERNAL') || die;
 
+require_once($CFG->dirroot . "/webservice/lib.php");
+
 /**
  * Webservice action step class.
  *
@@ -82,12 +84,23 @@ class webservice_action_step extends base_action_step {
     }
 
     /**
+     * Given a Moodle webservice method return a Moodle form that matches the methods parameters.
+     *
+     * @param object $functionname The name of the webservice method to get the form for.
+     * @param \moodleform $mform Moodle form.
+     */
+    private function get_webservice_form($function, $mform) {
+        $functioninfo = \external_api::external_function_info($function);
+
+        error_log(print_r($functioninfo->parameters_desc, true));
+    }
+
+    /**
      * {@inheritDoc}
      * @see \tool_trigger\steps\base\base_step::add_extra_form_fields()
      */
     public function form_definition_extra($form, $mform, $customdata) {
         global $USER, $DB, $CFG;
-        require_once($CFG->dirroot . "/webservice/lib.php");
 
         // Webservice.
         $webservicemanager = new \webservice();
