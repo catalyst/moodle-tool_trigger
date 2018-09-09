@@ -56,4 +56,14 @@ class tool_trigger_webservice_action_step_testcase extends advanced_testcase {
             $mform);  // Get result of invoked method.
     }
 
+    /**
+     * Test getting the webservice form elements for the enrol_manual_enrol_users webservice.
+     *
+     * We test the same method for a few different webservices to make sure our logic
+     * works in all cases.
+     */
+    public function test_get_webservice_form_elements_enrol_manual_enrol_users() {
+
+    }
+
 }

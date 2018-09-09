@@ -84,56 +84,24 @@ class webservice_action_step extends base_action_step {
     }
 
 
-    private function construct_webservice_form($params) {
-        // retrieve the description of the description object
-        $paramdesc = "";
-        if (!empty($params->desc)) {
-
-            if ($params->required == VALUE_REQUIRED) {
-                $required = '';
-            }
-            if ($params->required == VALUE_DEFAULT) {
-                if ($params->default === null) {
-                    $params->default = "null";
-                }
-                $required = get_string('default', 'webservice', print_r($params->default, true));
-            }
-            if ($params->required == VALUE_OPTIONAL) {
-                $required = get_string('optional', 'webservice');
-            }
-            $paramdesc .= " " . $required . " ";
-            $paramdesc .= s($params->desc);
-
-        }
-
+    /**
+     *
+     * @param stdClass $params a part of parameter/return description
+     * @param array $resultarray
+     * @return array
+     */
+    private function get_webservice_form_elements($params, $resultarray=array()) {
         // description object is a list
         if ($params instanceof \external_multiple_structure) {
-            return $paramdesc . $this->construct_webservice_form($params->content);
+            return $this->get_webservice_form_elements($params->content, $resultarray);
         } else if ($params instanceof \external_single_structure) {
             // description object is an object
-            $singlestructuredesc = '';
             foreach ($params->keys as $attributname => $attribut) {
-                $singlestructuredesc .= $attributname;
-                $singlestructuredesc .= " " .
-                    $this->construct_webservice_form($params->keys[$attributname]);
-            }
-            return $singlestructuredesc;
-        } else {
-            // description object is a primary type (string, integer)
-            switch ($params->type) {
-                case PARAM_BOOL: // 0 or 1 only for now
-                case PARAM_INT:
-                    $type = 'int';
-                    break;
-                case PARAM_FLOAT;
-                $type = 'double';
-                break;
-                default:
-                    $type = 'string';
-            }
-            return $type . " " . $paramdesc . "\n";
-        }
+                $resultarray[$attributname] = $params->keys[$attributname];
 
+            }
+            return $resultarray;
+        }
     }
 
     /**
@@ -148,8 +116,8 @@ class webservice_action_step extends base_action_step {
 
         foreach ($functioninfo->parameters_desc->keys as $paramname => $paramdesc) {
             error_log($paramname);
-            $foo = $this->construct_webservice_form($paramdesc);
-            error_log(print_r($foo , true));
+            $elements = $this->get_webservice_form_elements($paramdesc);
+            //error_log(print_r($elements , true));
         }
     }
 
