@@ -84,6 +84,10 @@ class webservice_action_step extends base_action_step {
     }
 
 
+    private function create_webservice_form($elements, $mform) {
+
+    }
+
     /**
      *
      * @param stdClass $params a part of parameter/return description
@@ -91,16 +95,17 @@ class webservice_action_step extends base_action_step {
      * @return array
      */
     private function get_webservice_form_elements($params, $resultarray=array()) {
-        // description object is a list
+        // Description object is a list.
         if ($params instanceof \external_multiple_structure) {
             return $this->get_webservice_form_elements($params->content, $resultarray);
         } else if ($params instanceof \external_single_structure) {
-            // description object is an object
+            // Description object is an object.
             foreach ($params->keys as $attributname => $attribut) {
-                $resultarray[$attributname] = $params->keys[$attributname];
-
+                $resultarray[$attributname]= $this->get_webservice_form_elements($params->keys[$attributname]);
             }
             return $resultarray;
+        } else { // Description object is a primary type.
+            return $params;
         }
     }
 
@@ -113,12 +118,15 @@ class webservice_action_step extends base_action_step {
     private function get_webservice_form($function, $mform) {
         $functioninfo = \external_api::external_function_info($function);
 
-
+        // Iterate thorugh the function info and get a formated object with requried data.
         foreach ($functioninfo->parameters_desc->keys as $paramname => $paramdesc) {
             error_log($paramname);
             $elements = $this->get_webservice_form_elements($paramdesc);
-            //error_log(print_r($elements , true));
+            error_log(print_r($elements , true));
         }
+
+        // Use the required data object to make the form for the webservice
+        $this->create_webservice_form($elements, $mform);
     }
 
     /**

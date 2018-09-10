@@ -64,6 +64,27 @@ class tool_trigger_webservice_action_step_testcase extends advanced_testcase {
      */
     public function test_get_webservice_form_elements_enrol_manual_enrol_users() {
 
+        // Function to get form for.
+        $function = new \stdClass();
+        $function->id = 391;
+        $function->name = 'core_user_create_users';
+        $function->classname = 'core_user_external';
+        $function->methodname = 'create_users';
+        $function->classpath = 'user/externallib.php';
+        $function->component = 'moodle';
+        $function->capabilities = 'moodle/user:create';
+        $function->services = '';
+
+        $mform = new tool_trigger\steps\base\base_form();
+
+        // We're testing a private method, so we need to setup reflector magic.
+        $method = new ReflectionMethod('tool_trigger\steps\actions\webservice_action_step', 'get_webservice_form');
+        $method->setAccessible(true); // Allow accessing of private method.
+        $proxy = $method->invoke(
+                new tool_trigger\steps\actions\webservice_action_step,
+                $function,
+                $mform);  // Get result of invoked method.
+
     }
 
 }
