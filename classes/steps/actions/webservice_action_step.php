@@ -86,6 +86,14 @@ class webservice_action_step extends base_action_step {
 
     private function create_webservice_form($elements, $mform) {
 
+        //  Iterate through list of elements and create for entries for each.
+        //  if value or iterator is array instead of external_value Object,
+        //  then this is a special case like custom profile fields or preferences.
+        //  In this case we will start by making the form field a text area, that
+        //  users can enter key value pairs.
+
+        //  TODO: audit some webservices to see if there are different patterns to
+        //  the two webservices we have tests for and adjust accordingly.
     }
 
     /**
@@ -120,9 +128,9 @@ class webservice_action_step extends base_action_step {
 
         // Iterate thorugh the function info and get a formated object with requried data.
         foreach ($functioninfo->parameters_desc->keys as $paramname => $paramdesc) {
-            error_log($paramname);
+//             /error_log($paramname);
             $elements = $this->get_webservice_form_elements($paramdesc);
-            error_log(print_r($elements , true));
+           // error_log(print_r($elements , true));
         }
 
         // Use the required data object to make the form for the webservice

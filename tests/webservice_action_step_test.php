@@ -54,8 +54,9 @@ class tool_trigger_webservice_action_step_testcase extends advanced_testcase {
             new tool_trigger\steps\actions\webservice_action_step,
             $function,
             $mform);  // Get result of invoked method.
-    }
 
+        // TODO: add assertions.
+    }
     /**
      * Test getting the webservice form elements for the enrol_manual_enrol_users webservice.
      *
@@ -64,7 +65,45 @@ class tool_trigger_webservice_action_step_testcase extends advanced_testcase {
      */
     public function test_get_webservice_form_elements_enrol_manual_enrol_users() {
 
-        // Function to get form for.
+        // Function to get form elements for.
+        $function = new \stdClass();
+        $function->id = 391;
+        $function->name = 'enrol_manual_enrol_users';
+        $function->classname = 'enrol_manual_external';
+        $function->methodname = 'enrol_users';
+        $function->classpath = 'enrol/manual/externallib.php';
+        $function->component = 'enrol_manual';
+        $function->capabilities = 'enrol/manual:enrol';
+        $function->services = '';
+
+        $functioninfo = \external_api::external_function_info($function);
+        $paramdesc = $functioninfo->parameters_desc->keys['enrolments'];
+
+        // We're testing a private method, so we need to setup reflector magic.
+        $method = new ReflectionMethod('tool_trigger\steps\actions\webservice_action_step', 'get_webservice_form_elements');
+        $method->setAccessible(true); // Allow accessing of private method.
+        $proxy = $method->invoke(
+                new tool_trigger\steps\actions\webservice_action_step,
+                $paramdesc);  // Get result of invoked method.
+
+        // Assert that the structure returned is what we need.
+        $this->assertEquals('int', $proxy['roleid']->type);
+        $this->assertEquals('int', $proxy['userid']->type);
+        $this->assertEquals('int', $proxy['courseid']->type);
+        $this->assertEquals('int', $proxy['timestart']->type);
+        $this->assertEquals('int', $proxy['timeend']->type);
+
+    }
+
+    /**
+     * Test getting the webservice form elements for the core_user_create_users webservice.
+     *
+     * We test the same method for a few different webservices to make sure our logic
+     * works in all cases.
+     */
+    public function test_get_webservice_form_elements_core_user_create_users() {
+
+        // Function to get form elements for.
         $function = new \stdClass();
         $function->id = 391;
         $function->name = 'core_user_create_users';
@@ -75,16 +114,22 @@ class tool_trigger_webservice_action_step_testcase extends advanced_testcase {
         $function->capabilities = 'moodle/user:create';
         $function->services = '';
 
-        $mform = new tool_trigger\steps\base\base_form();
+        $functioninfo = \external_api::external_function_info($function);
+        $paramdesc = $functioninfo->parameters_desc->keys['users'];
 
         // We're testing a private method, so we need to setup reflector magic.
-        $method = new ReflectionMethod('tool_trigger\steps\actions\webservice_action_step', 'get_webservice_form');
+        $method = new ReflectionMethod('tool_trigger\steps\actions\webservice_action_step', 'get_webservice_form_elements');
         $method->setAccessible(true); // Allow accessing of private method.
         $proxy = $method->invoke(
                 new tool_trigger\steps\actions\webservice_action_step,
-                $function,
-                $mform);  // Get result of invoked method.
+                $paramdesc);  // Get result of invoked method.
 
+        // Assert that the structure returned is what we need.
+        $this->assertEquals('bool', $proxy['createpassword']->type);
+        $this->assertEquals('username', $proxy['username']->type);
+        $this->assertEquals('auth', $proxy['auth']->type);
+        $this->assertEquals('alphanumext', $proxy['customfields']['type']->type);
+        $this->assertEquals('raw', $proxy['preferences']['value']->type);
     }
 
 }
