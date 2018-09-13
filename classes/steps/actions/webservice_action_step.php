@@ -92,8 +92,28 @@ class webservice_action_step extends base_action_step {
         //  In this case we will start by making the form field a text area, that
         //  users can enter key value pairs.
 
-        //  TODO: audit some webservices to see if there are different patterns to
-        //  the two webservices we have tests for and adjust accordingly.
+        foreach ($elements as $elementname => $elementdata) {
+            //  Allownull: null = NULL_NOT_ALLOWED, 1 = NULL_ALLOWED.
+            //  Required: 0 = VALUE_DEFAULT, 1 = VALUE_REQUIRED, 2 = VALUE_OPTIONAL.
+
+            if ($elementdata instanceof \external_value) {
+              //  error_log($elementname);
+               // error_log(print_r($elementdata, true));
+
+                $mform->addElement('text', $elementname, $elementname);
+                $mform->setType($elementname, $elementdata->type);
+
+                if ($elementdata->required == 1 || $elementdata->allownull == 0 || $elementdata->allownull == 1) {
+                    $mform->addRule($elementname, null, 'required', null, 'server');
+                }
+                // Set default value by using a passed parameter
+                $mform->setDefault($elementname, $elementdata->default);
+
+            } else {
+
+            }
+
+        }
     }
 
     /**
@@ -128,13 +148,11 @@ class webservice_action_step extends base_action_step {
 
         // Iterate thorugh the function info and get a formated object with requried data.
         foreach ($functioninfo->parameters_desc->keys as $paramname => $paramdesc) {
-//             /error_log($paramname);
             $elements = $this->get_webservice_form_elements($paramdesc);
-           // error_log(print_r($elements , true));
         }
 
         // Use the required data object to make the form for the webservice
-        $this->create_webservice_form($elements, $mform);
+        //$this->create_webservice_form($elements, $mform);
     }
 
     /**

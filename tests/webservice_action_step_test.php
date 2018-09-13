@@ -132,4 +132,62 @@ class tool_trigger_webservice_action_step_testcase extends advanced_testcase {
         $this->assertEquals('raw', $proxy['preferences']['value']->type);
     }
 
+    /**
+     * Test getting the webservice form elements for the core_user_create_users webservice.
+     *
+     * We test the same method for a few different webservices to make sure our logic
+     * works in all cases.
+     */
+    public function test_create_webservice_form() {
+
+        // Set up the elements to generate the form for.
+        $element1 = new \external_value('text', 'The field desc for help text for type text',2, '', 1);
+        $element2 = new \external_value('bool', 'The field desc for help text for type bool', 1, '', 1);
+        $element3 = new \external_value('username', 'The field desc for help text for type username', 1, '', 1);
+        $element4 = new \external_value('auth', 'The field desc for help text for type auth', 0, 'manual', 1);
+        $element5 = new \external_value('raw', 'The field desc for help text for type raw', 2, '', 1);
+        $element6 = new \external_value('notags', 'The field desc for help text for type notags', 1, '', 1);
+        $element7 = new \external_value('raw_trimmed', 'The field desc for help text for type trimmed', 1, '', 1);
+        $element8 = new \external_value('int', 'The field desc for help text for type int', 2, '', 1);
+        $element9 = new \external_value('alpha', 'The field desc for help text for type alpha', 2, '', 1);
+        $element10 = new \external_value('timezone', 'The field desc for help text for type timezone', 2, '', 1);
+        $element11 = new \external_value('plugin', 'The field desc for help text for type plugin', 0, 'gregorian', 2);
+        $element12 = new \external_value('theme', 'The field desc for help text for type theme', 2, '', 1);
+
+        $element13a = new \external_value('alphanumext', 'The field desc for help text for type type', 1, '', 1);
+        $element13b = new \external_value('raw', 'The field desc for help text for type value', 1, '', 1);
+        $element13 = array (
+                'type' => $element13a,
+                'value' => $element13b
+        );
+
+        $elements = array(
+                'element1name' => $element1,
+                'element2name' => $element2,
+                'element3name' => $element3,
+                'element4name' => $element4,
+                'element5name' => $element5,
+                'element6name' => $element6,
+                'element7name' => $element7,
+                'element8name' => $element8,
+                'element9name' => $element9,
+                'element10name' => $element10,
+                'element11name' => $element11,
+                'element12name' => $element12,
+                'element13name' => $element13,
+        );
+
+        $mform = new tool_trigger\steps\base\base_form();
+
+        // We're testing a private method, so we need to setup reflector magic.
+        $method = new ReflectionMethod('tool_trigger\steps\actions\webservice_action_step', 'create_webservice_form');
+        $method->setAccessible(true); // Allow accessing of private method.
+        $proxy = $method->invoke(
+                new tool_trigger\steps\actions\webservice_action_step,
+                $elements,
+                $mform);  // Get result of invoked method.
+
+
+    }
+
 }
