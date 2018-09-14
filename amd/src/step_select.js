@@ -216,8 +216,10 @@ define(
              * @param {Object} formdefaults Default values to display in a new form
              * @param {string} formsubmission Serialized (via jQuery().serialize()) form submission values to load
              * into the form, when re-displaying a form that has failed validation.
+             * @param {int} steporder The order of this step.
+             * @param {int} functionid The webservice function id.
              */
-            function renderStepForm(steptype, stepclass, formdefaults, formsubmission, steporder) {
+            function renderStepForm(steptype, stepclass, formdefaults, formsubmission, steporder, functionid) {
                 if (formdefaults === undefined) {
                     formdefaults = '';
                 }
@@ -228,6 +230,10 @@ define(
 
                 if (steporder === undefined) {
                     steporder = 0;
+                }
+
+                if (functionid === undefined) {
+                    functionid = 0;
                 }
 
                 modalObj.setBody(spinner);
@@ -244,6 +250,7 @@ define(
                             'event': getEventName(),
                             'existingsteps': JSON.stringify(getParentFormSteps()),
                             'steporder': steporder,
+                            'functionid': functionid,
                         }
                     )
                 );
@@ -258,11 +265,19 @@ define(
                     getStepsOfType(this.value);
                 });
 
-                // Add event listener for step  select onchange.
+                // Add event listener for step select onchange.
                 $('body').on('change', '[name=stepclass]', function() {
                     var steptype = $('[name=type]').val();
                     var stepclass = this.value;
                     renderStepForm(steptype, stepclass, '', '', -1);
+                });
+
+                // Add event listener for webservice select onchange.
+                $('body').on('change', '[name=webservice_function]', function() {
+                    var functionid = $('[name=webservice_function]').val();
+                    var steptype = $('[name=type]').val();
+                    var stepclass = this.value;
+                    renderStepForm(steptype, stepclass, '', '', -1, functionid);
                 });
             }
 

@@ -69,6 +69,7 @@ function tool_trigger_output_fragment_new_step_form($args) {
     $existingsteps = json_decode(clean_param($args['existingsteps'], PARAM_RAW_TRIMMED), true);
     $steptype = clean_param($args['steptype'], PARAM_ALPHA);
     $steporder = clean_param($args['steporder'], PARAM_INT);
+    $functionid = clean_param($args['functionid'], PARAM_INT);
 
     $stepclass = clean_param($args['stepclass'], PARAM_RAW);
     $workflowmanager = new \tool_trigger\workflow_manager();
@@ -81,7 +82,8 @@ function tool_trigger_output_fragment_new_step_form($args) {
         'steps' => $workflowmanager->get_steps_by_type($steptype),
         'event' => $event,
         'existingsteps' => $existingsteps,
-        'steporder' => $steporder
+        'steporder' => $steporder,
+        'functionid' => $functionid
     );
 
     $ajaxformdata = array();

@@ -84,6 +84,11 @@ class webservice_action_step extends base_action_step {
     }
 
 
+    /**
+     *
+     * @param unknown $elements
+     * @param unknown $mform
+     */
     private function create_webservice_form($elements, $mform) {
 
         //  Iterate through list of elements and create for entries for each.
@@ -152,7 +157,7 @@ class webservice_action_step extends base_action_step {
         }
 
         // Use the required data object to make the form for the webservice
-        //$this->create_webservice_form($elements, $mform);
+        $this->create_webservice_form($elements, $mform);
     }
 
     /**
@@ -162,27 +167,7 @@ class webservice_action_step extends base_action_step {
     public function form_definition_extra($form, $mform, $customdata) {
         global $USER, $DB, $CFG;
 
-        // Webservice.
-        $webservicemanager = new \webservice();
-        $functions = $DB->get_records('external_functions', null, 'name ASC');
-
-        // We add the descriptions to the functions.
-        foreach ($functions as $functionid => $functionname) {
-            // Retrieve full function information.
-            $function = \external_api::external_function_info($functionname);
-            if (empty($function->deprecated)) {
-                $functions[$functionid] = $function->name;
-            } else {
-                // Exclude the deprecated ones.
-                unset($functions[$functionid]);
-            }
-        }
-
-        $mform->addElement('searchableselector', 'fids', get_string('name'), $functions);
-        $mform->addRule('fids', get_string('required'), 'required', null, 'client');
-
         // User.
-        if (empty($data->nouserselection)) {
 
             //check if the number of user is reasonable to be displayed in a select box
             $usertotal = $DB->count_records('user',
@@ -212,6 +197,33 @@ class webservice_action_step extends base_action_step {
                 $mform->setType('user', PARAM_RAW_TRIMMED);
             }
             $mform->addRule('user', get_string('required'), 'required', null, 'client');
+
+        // Webservice.
+        $webservicemanager = new \webservice();
+        $functions = $DB->get_records('external_functions', null, 'name ASC');
+
+        // We add the descriptions to the functions.
+        foreach ($functions as $functionid => $functionname) {
+            // Retrieve full function information.
+            $function = \external_api::external_function_info($functionname);
+            if (empty($function->deprecated)) {
+                $functions[$functionid] = $function->name;
+            } else {
+                // Exclude the deprecated ones.
+                unset($functions[$functionid]);
+            }
+        }
+
+        $mform->addElement('searchableselector', 'webservice_function', get_string('name'), $functions);
+        $mform->addRule('webservice_function', get_string('required'), 'required', null, 'client');
+
+        if ($customdata['functionid'] != 0 ) {
+            error_log('here is where we need to get the webservice form');
+        }
+
+        foreach ($customdata as $key => $value){
+            error_log($key);
+            error_log(print_r($value, true));
         }
 
     }

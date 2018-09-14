@@ -45,7 +45,13 @@ class tool_trigger_webservice_action_step_testcase extends advanced_testcase {
         $function->capabilities = 'enrol/manual:enrol';
         $function->services = '';
 
-        $mform = new tool_trigger\steps\base\base_form();
+        // Get the form to use in the test.
+        $class = new ReflectionClass('tool_trigger\steps\base\base_form');
+        $property = $class->getProperty('_form');
+        $property->setAccessible(true);
+
+        $baseform = new tool_trigger\steps\base\base_form();
+        $mform = $property->getValue($baseform);
 
         // We're testing a private method, so we need to setup reflector magic.
         $method = new ReflectionMethod('tool_trigger\steps\actions\webservice_action_step', 'get_webservice_form');
@@ -177,7 +183,13 @@ class tool_trigger_webservice_action_step_testcase extends advanced_testcase {
                 'element13name' => $element13,
         );
 
-        $mform = new tool_trigger\steps\base\base_form();
+        // Get the form to use in the test.
+        $class = new ReflectionClass('tool_trigger\steps\base\base_form');
+        $property = $class->getProperty('_form');
+        $property->setAccessible(true);
+
+        $baseform = new tool_trigger\steps\base\base_form();
+        $mform = $property->getValue($baseform);
 
         // We're testing a private method, so we need to setup reflector magic.
         $method = new ReflectionMethod('tool_trigger\steps\actions\webservice_action_step', 'create_webservice_form');
@@ -187,6 +199,12 @@ class tool_trigger_webservice_action_step_testcase extends advanced_testcase {
                 $elements,
                 $mform);  // Get result of invoked method.
 
+        ob_start();
+        $baseform->display();
+        $o = ob_get_contents();
+        ob_end_clean();
+
+        //error_log($o);
 
     }
 
