@@ -101,14 +101,16 @@ class webservice_action_step extends base_action_step {
             //  Allownull: null = NULL_NOT_ALLOWED, 1 = NULL_ALLOWED.
             //  Required: 0 = VALUE_DEFAULT, 1 = VALUE_REQUIRED, 2 = VALUE_OPTIONAL.
 
+            error_log(print_r($elementname, true));
+            error_log(print_r($elementdata->required, true));
+            error_log(print_r($elementdata->allownull, true));
+
             if ($elementdata instanceof \external_value) {
-              //  error_log($elementname);
-               // error_log(print_r($elementdata, true));
 
                 $mform->addElement('text', $elementname, $elementname);
                 $mform->setType($elementname, $elementdata->type);
 
-                if ($elementdata->required == 1 || $elementdata->allownull == 0 || $elementdata->allownull == 1) {
+                if (($elementdata->required == 1 && $elementdata->allownull == 1) || $elementdata->allownull == 0) {
                     $mform->addRule($elementname, null, 'required', null, 'server');
                 }
                 // Set default value by using a passed parameter
@@ -148,7 +150,10 @@ class webservice_action_step extends base_action_step {
      * @param object $functionname The name of the webservice method to get the form for.
      * @param \moodleform $mform Moodle form.
      */
-    private function get_webservice_form($function, $mform) {
+    private function get_webservice_form($functionid, $mform) {
+        global $DB;
+
+        $function = $DB->get_record('external_functions', array('id' => $functionid), '*', MUST_EXIST);
         $functioninfo = \external_api::external_function_info($function);
 
         // Iterate thorugh the function info and get a formated object with requried data.
@@ -218,14 +223,9 @@ class webservice_action_step extends base_action_step {
         $mform->addRule('webservice_function', get_string('required'), 'required', null, 'client');
 
         if ($customdata['functionid'] != 0 ) {
-            error_log('here is where we need to get the webservice form');
+            error_log('get webservice form fields');
+            $this->get_webservice_form($customdata['functionid'], $mform);
         }
-
-        foreach ($customdata as $key => $value){
-            error_log($key);
-            error_log(print_r($value, true));
-        }
-
     }
 
     /**
