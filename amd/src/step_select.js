@@ -254,6 +254,12 @@ define(
                         }
                     )
                 );
+
+            }
+
+            function renderStepFormTemp(steptype, stepclass, formdefaults, formsubmission, steporder, functionid) {
+                modalObj.setBody(spinner);
+
             }
 
             /**
@@ -269,16 +275,21 @@ define(
                 $('body').on('change', '[name=stepclass]', function() {
                     var steptype = $('[name=type]').val();
                     var stepclass = this.value;
-                    window.console.log('this changed');
                     renderStepForm(steptype, stepclass, '', '', -1);
                 });
 
                 // Add event listener for webservice select onchange.
-                $('body').on('change', '[name=webservice_function]', function() {
+                $('body').on('change', '[name=webservice_function]', function(e) {
                     var functionid = $('[name=webservice_function]').val();
                     var steptype = $('[name=type]').val();
                     var stepclass = $('[name=stepclass]').val();
-               //     renderStepForm(steptype, stepclass, '', '', -1, functionid);
+
+                    // The setTimeout is required to stop events conflicting and
+                    // closing the modal window when the event is updated.
+                    // I tried doing it other ways, this was the only one that worked.
+                    setTimeout(function(){
+                        renderStepForm(steptype, stepclass, '', '', -1, functionid);
+                    }, 100);
                 });
             }
 
@@ -445,6 +456,7 @@ define(
                     }, $('#id_stepmodalbutton'))
                     .done(function(modal) {
                         modalObj = modal;
+                        modalObj.getRoot().attr('name', 'stepmodal');
                         modalObj.getRoot().on(ModalEvents.save, processModalForm);
                         modalObj.getRoot().on(ModalEvents.hidden, updateModalBody);
                         setupModalChangeHandlers();
