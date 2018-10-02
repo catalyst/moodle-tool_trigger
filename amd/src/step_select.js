@@ -250,7 +250,7 @@ define(
                             'event': getEventName(),
                             'existingsteps': JSON.stringify(getParentFormSteps()),
                             'steporder': steporder,
-                            'functionid': functionid,
+                            'functionid': 391,
                         }
                     )
                 );
@@ -269,6 +269,7 @@ define(
                 $('body').on('change', '[name=stepclass]', function() {
                     var steptype = $('[name=type]').val();
                     var stepclass = this.value;
+                    window.console.log('this changed');
                     renderStepForm(steptype, stepclass, '', '', -1);
                 });
 
@@ -276,8 +277,8 @@ define(
                 $('body').on('change', '[name=webservice_function]', function() {
                     var functionid = $('[name=webservice_function]').val();
                     var steptype = $('[name=type]').val();
-                    var stepclass = this.value;
-                    renderStepForm(steptype, stepclass, '', '', -1, functionid);
+                    var stepclass = $('[name=stepclass]').val();
+               //     renderStepForm(steptype, stepclass, '', '', -1, functionid);
                 });
             }
 
