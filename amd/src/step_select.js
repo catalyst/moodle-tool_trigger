@@ -285,7 +285,8 @@ define(
                     var stepclass = $('[name=stepclass]').val();
 
                     // The setTimeout is required to stop events conflicting and
-                    // closing the modal window when the event is updated.
+                    // closing the modal window when the event is updated. It is an
+                    // isolation mechanism, not a timing one.
                     // I tried doing it other ways, this was the only one that worked.
                     setTimeout(function(){
                         renderStepForm(steptype, stepclass, '', '', -1, functionid);
