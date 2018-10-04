@@ -56,7 +56,12 @@ class tool_trigger_webservice_action_step_testcase extends advanced_testcase {
             $functionid,
             $mform);  // Get result of invoked method.
 
-        // TODO: add assertions.
+        ob_start();
+        $mform->display();
+        $html = ob_get_contents();
+        ob_end_clean();
+
+        $this->assertContains('name="courseids"', $html);
     }
 
     //  TODO:  Add webservice form test for manual enrol users testcase.

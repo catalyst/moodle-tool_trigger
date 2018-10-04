@@ -90,7 +90,6 @@ class webservice_action_step extends base_action_step {
      * @param unknown $mform
      */
     private function create_webservice_form($elements, $mform) {
-        error_log(print_r($elements, true));
         //  Iterate through list of elements and create for entries for each.
         //  if value or iterator is array instead of external_value Object,
         //  then this is a special case like custom profile fields or preferences.
@@ -103,7 +102,7 @@ class webservice_action_step extends base_action_step {
 
             if ($elementdata instanceof \external_value) {
 
-                $mform->addElement('text', $elementname, $elementname);
+                $mform->addElement('text', $elementname, ucfirst($elementname));
                 $mform->setType($elementname, $elementdata->type);
 
                 if (($elementdata->required == 1 && $elementdata->allownull == 1) || $elementdata->allownull == 0) {
@@ -161,8 +160,9 @@ class webservice_action_step extends base_action_step {
         //  In the case where there is only one element returned (which means only one form field),
         //  Make the array of elements explicitly.
         if ($elements instanceof \external_value){
-//             /error_log(print_r(reset($functioninfo->parameters_desc->keys), true));
-            $elements = array($elements);
+            reset($functioninfo->parameters_desc->keys);
+            $attributname = key($functioninfo->parameters_desc->keys);
+            $elements = array($attributname => $elements);
         }
 
         // Use the required data object to make the form for the webservice
@@ -227,7 +227,6 @@ class webservice_action_step extends base_action_step {
         $mform->addRule('webservice_function', get_string('required'), 'required', null, 'client');
 
         if ($customdata['functionid'] != 0 ) {
-            error_log('get webservice form fields');
             $this->get_webservice_form($customdata['functionid'], $mform);
         }
     }
