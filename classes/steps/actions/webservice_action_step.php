@@ -101,10 +101,6 @@ class webservice_action_step extends base_action_step {
             //  Allownull: null = NULL_NOT_ALLOWED, 1 = NULL_ALLOWED.
             //  Required: 0 = VALUE_DEFAULT, 1 = VALUE_REQUIRED, 2 = VALUE_OPTIONAL.
 
-            error_log(print_r($elementname, true));
-            error_log(print_r($elementdata->required, true));
-            error_log(print_r($elementdata->allownull, true));
-
             if ($elementdata instanceof \external_value) {
 
                 $mform->addElement('text', $elementname, $elementname);
