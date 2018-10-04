@@ -90,7 +90,7 @@ class webservice_action_step extends base_action_step {
      * @param unknown $mform
      */
     private function create_webservice_form($elements, $mform) {
-
+        error_log(print_r($elements, true));
         //  Iterate through list of elements and create for entries for each.
         //  if value or iterator is array instead of external_value Object,
         //  then this is a special case like custom profile fields or preferences.
@@ -113,6 +113,7 @@ class webservice_action_step extends base_action_step {
                 $mform->setDefault($elementname, $elementdata->default);
 
             } else {
+                error_log('here');
 
             }
 
@@ -155,6 +156,13 @@ class webservice_action_step extends base_action_step {
         // Iterate thorugh the function info and get a formated object with requried data.
         foreach ($functioninfo->parameters_desc->keys as $paramname => $paramdesc) {
             $elements = $this->get_webservice_form_elements($paramdesc);
+        }
+
+        //  In the case where there is only one element returned (which means only one form field),
+        //  Make the array of elements explicitly.
+        if ($elements instanceof \external_value){
+//             /error_log(print_r(reset($functioninfo->parameters_desc->keys), true));
+            $elements = array($elements);
         }
 
         // Use the required data object to make the form for the webservice
