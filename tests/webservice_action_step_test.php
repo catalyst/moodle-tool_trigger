@@ -65,6 +65,42 @@ class tool_trigger_webservice_action_step_testcase extends advanced_testcase {
     }
 
     //  TODO:  Add webservice form test for manual enrol users testcase.
+    /**
+     * Test getting webservice form with array of external objects.
+     */
+    public function test_get_webservice_form_mixed_object() {
+        global $DB;
+
+        // Function to get form for, we use a name because the id's can change.
+        $functionid = $DB->get_field('external_functions', 'id', array('name' => 'enrol_manual_enrol_users'));
+
+
+        // Get the form to use in the test.
+        $class = new ReflectionClass('tool_trigger\steps\base\base_form');
+        $property = $class->getProperty('_form');
+        $property->setAccessible(true);
+
+        $baseform = new tool_trigger\steps\base\base_form();
+        $mform = $property->getValue($baseform);
+
+        // We're testing a private method, so we need to setup reflector magic.
+        $method = new ReflectionMethod('tool_trigger\steps\actions\webservice_action_step', 'get_webservice_form');
+        $method->setAccessible(true); // Allow accessing of private method.
+        $proxy = $method->invoke(
+                new tool_trigger\steps\actions\webservice_action_step,
+                $functionid,
+                $mform);  // Get result of invoked method.
+
+                ob_start();
+                $mform->display();
+                $html = ob_get_contents();
+                ob_end_clean();
+
+                $this->assertContains('name="roleid"', $html);
+                $this->assertContains('name="userid"', $html);
+                $this->assertContains('name="courseid"', $html);
+                $this->assertContains('name="timestart"', $html);
+    }
 
     /**
      * Test getting the webservice form elements for the enrol_manual_enrol_users webservice.
@@ -197,10 +233,10 @@ class tool_trigger_webservice_action_step_testcase extends advanced_testcase {
         // We're testing a private method, so we need to setup reflector magic.
         $method = new ReflectionMethod('tool_trigger\steps\actions\webservice_action_step', 'create_webservice_form');
         $method->setAccessible(true); // Allow accessing of private method.
-//         $proxy = $method->invoke(
-//                 new tool_trigger\steps\actions\webservice_action_step,
-//                 $elements,
-//                 $mform);  // Get result of invoked method.
+        $proxy = $method->invoke(
+                new tool_trigger\steps\actions\webservice_action_step,
+                $elements,
+                $mform);  // Get result of invoked method.
 
         ob_start();
         $baseform->display();
