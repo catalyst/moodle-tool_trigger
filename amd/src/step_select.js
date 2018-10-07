@@ -257,11 +257,6 @@ define(
 
             }
 
-            function renderStepFormTemp(steptype, stepclass, formdefaults, formsubmission, steporder, functionid) {
-                modalObj.setBody(spinner);
-
-            }
-
             /**
              *
              */

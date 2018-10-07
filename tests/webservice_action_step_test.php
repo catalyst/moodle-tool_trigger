@@ -61,7 +61,7 @@ class tool_trigger_webservice_action_step_testcase extends advanced_testcase {
         $html = ob_get_contents();
         ob_end_clean();
 
-        $this->assertContains('name="courseids"', $html);
+        $this->assertContains('name="_courseids"', $html);
     }
 
     //  TODO:  Add webservice form test for manual enrol users testcase.
@@ -96,10 +96,10 @@ class tool_trigger_webservice_action_step_testcase extends advanced_testcase {
                 $html = ob_get_contents();
                 ob_end_clean();
 
-                $this->assertContains('name="roleid"', $html);
-                $this->assertContains('name="userid"', $html);
-                $this->assertContains('name="courseid"', $html);
-                $this->assertContains('name="timestart"', $html);
+                $this->assertContains('name="_roleid"', $html);
+                $this->assertContains('name="_userid"', $html);
+                $this->assertContains('name="_courseid"', $html);
+                $this->assertContains('name="_timestart"', $html);
     }
 
     /**
@@ -243,7 +243,7 @@ class tool_trigger_webservice_action_step_testcase extends advanced_testcase {
         $o = ob_get_contents();
         ob_end_clean();
 
-        //error_log($o);
+        error_log($o);
 
     }
 

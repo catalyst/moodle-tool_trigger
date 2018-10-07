@@ -109,7 +109,7 @@ function tool_trigger_output_fragment_new_step_form($args) {
     $o = ob_get_contents();
     ob_end_clean();
 
-    return $o;
+    return trim($o);
 }
 
 /**

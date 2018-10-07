@@ -100,20 +100,25 @@ class webservice_action_step extends base_action_step {
             //  Allownull: null = NULL_NOT_ALLOWED, 1 = NULL_ALLOWED.
             //  Required: 0 = VALUE_DEFAULT, 1 = VALUE_REQUIRED, 2 = VALUE_OPTIONAL.
 
+            // We add an underscore to deal with fields that are Javascript reserved words.
+            $fieldname = '_' . $elementname;
+
             if ($elementdata instanceof \external_value) {
 
-                $mform->addElement('text', $elementname, ucfirst($elementname));
-                $mform->setType($elementname, $elementdata->type);
+                $mform->addElement('text', $fieldname, ucfirst($elementname));
+                $mform->setType($fieldname, $elementdata->type);
 
                 if (($elementdata->required == 1 && $elementdata->allownull == 1) || $elementdata->allownull == 0) {
-                    $mform->addRule($elementname, null, 'required', null, 'server');
+                    $mform->addRule($fieldname, null, 'required', null, 'server');
                 }
                 // Set default value by using a passed parameter
-                $mform->setDefault($elementname, $elementdata->default);
+                $mform->setDefault($fieldname, $elementdata->default);
 
             } else {
-                error_log('here');
-
+                // We have an array of fields.
+                $attributes = array('cols' => '50', 'rows' => '5');
+                $mform->addElement('textarea', $fieldname, ucfirst($elementname), $attributes);
+                $mform->setType($fieldname, PARAM_RAW_TRIMMED);
             }
 
         }
