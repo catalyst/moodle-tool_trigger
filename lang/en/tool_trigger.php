@@ -36,6 +36,7 @@ $string['areatomonitor_help'] = 'The Moodle area that contains the event to trig
 $string['availablefields'] = 'Available fields';
 $string['badsteptype'] = 'Incorrect step type';
 $string['badstepclass'] = 'Incorrect step class name';
+$string['cachedef_eventsubscriptions'] = 'Tool Trigger event subscription cache';
 $string['cleanupsettings'] = 'Clean up settings';
 $string['cleanupsettingsdesc'] = 'The following settings control the cleanup tasks for this plugin.';
 $string['cli_extractfields'] = 'Extracting fields for learnt events from database...';
