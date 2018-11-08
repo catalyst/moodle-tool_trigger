@@ -78,8 +78,25 @@ class provider implements
             'privacy:metadata:events'
         );
 
+        $collection->add_database_table(
+            'tool_trigger_learn_events',
+            [
+                'eventname' => 'privacy:metadata:learnevents:eventname',
+                'userid' => 'privacy:metadata:learnevents:userid',
+                'relateduserid' => 'privacy:metadata:learnevents:relateduserid',
+                'anonymous' => 'privacy:metadata:learnevents:anonymous',
+                'other' => 'privacy:metadata:learnevents:other',
+                'timecreated' => 'privacy:metadata:learnevents:timecreated',
+                'origin' => 'privacy:metadata:learnevents:origin',
+                'ip' => 'privacy:metadata:learnevents:ip',
+                'realuserid' => 'privacy:metadata:learnevents:realuserid',
+            ],
+            'privacy:metadata:learnevents'
+        );
+
         // The plugin itself provides the data from the event.
         $datafields = ['tool_trigger_events' => 'privacy:metadata:events'];
+        $datafields = ['tool_trigger_learn_events' => 'privacy:metadata:learnevents'];
 
         // Get a list of the sensitive data that each step provides.
         foreach ($steplist as $stepclass) {
@@ -109,6 +126,19 @@ class provider implements
         $sql = "
             SELECT l.contextid
               FROM {tool_trigger_events} l
+             WHERE l.userid = :userid1
+                OR l.relateduserid = :userid2
+                OR l.realuserid = :userid3";
+
+        $contextlist->add_from_sql($sql, [
+            'userid1' => $userid,
+            'userid2' => $userid,
+            'userid3' => $userid,
+        ]);
+
+        $sql = "
+            SELECT l.contextid
+              FROM {tool_trigger_learn_events} l
              WHERE l.userid = :userid1
                 OR l.relateduserid = :userid2
                 OR l.realuserid = :userid3";
@@ -163,6 +193,15 @@ class provider implements
                  WHERE q.eventid = e.id
             )"
         );
+
+        $DB->execute("
+            DELETE
+              FROM {tool_trigger_queue} q
+             WHERE NOT EXISTS (
+                SELECT 1
+                  FROM {tool_trigger_learn_events} e
+                 WHERE q.eventid = e.id
+            )");
     }
 
     /**
