@@ -51,23 +51,9 @@ class roles_lookup_step extends base_lookup_step {
      */
     private static $stepfields = array('roles');
 
-    /**
-     * Whether to halt execution of the workflow, if the user has been marked "deleted".
-     *
-     * @var bool
-     */
-    private $nodeleted;
-
     protected function init() {
         $this->useridfield = $this->data['useridfield'];
         $this->outputprefix = $this->data['outputprefix'];
-
-        // This is a new field, so it's possible that stored workflow steps may not have a setting for it.
-        if (array_key_exists('nodeleted', $this->data)) {
-            $this->nodeleted = (bool) $this->data['nodeleted'];
-        } else {
-            $this->nodeleted = true;
-        }
     }
 
     /**
@@ -77,29 +63,15 @@ class roles_lookup_step extends base_lookup_step {
     public function execute($step, $trigger, $event, $stepresults) {
         global $DB;
 
-        $datafields = $this->get_datafields($event, $stepresults);
+        $datafields = $this->get_datafields($event, $stepresults); // Do we need this???
 
         if (!array_key_exists($this->useridfield, $datafields)) {
             throw new \invalid_parameter_exception("Specified userid field not present in the workflow data: "
                 . $this->useridfield);
         }
 
-//        $userfields = implode(',', $this->get_fields());
-//        $userdata = \core_user::get_user($datafields[$this->useridfield], $userfields);
-
         $sql = 'SELECT id, roleid, contextid, component, itemid FROM {role_assignments} WHERE userid = ' . $datafields[$this->useridfield];
         $roles = $DB->get_records_sql($sql);
-
-        // Users are not typically deleted from the database on deletion; they're just flagged as "deleted".
-        // So if no user with that ID is found, then throw an exception.
-//        if (!$userdata) {
-//            throw new \invalid_parameter_exception('User not found with id ' . $datafields[$this->useridfield]);
-//        }
-
-        // Have we been asked to exclude deleted users?
-//        if ($this->nodeleted && $userdata->deleted) {
-//            return [false, $stepresults];
-//        }
 
         foreach ($roles as $role => $value) {
             foreach ($value as $key => $value1) {
@@ -126,9 +98,6 @@ class roles_lookup_step extends base_lookup_step {
         $mform->setType('outputprefix', PARAM_ALPHANUMEXT);
         $mform->addRule('outputprefix', get_string('required'), 'required');
         $mform->setDefault('outputprefix', 'user_');
-
-        $mform->addElement('selectyesno', 'nodeleted', get_string('step_lookup_user_nodeleted', 'tool_trigger'));
-        $mform->setDefault('nodeleted', 1);
     }
 
     /**

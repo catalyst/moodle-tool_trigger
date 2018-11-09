@@ -65,32 +65,6 @@ class roles_unassign_action_step extends base_action_step {
         return get_string('httppostactionstepdesc', 'tool_trigger');
     }
 
-    private $httphandler = null;
-
-    /**
-     * Kinda hacky... unit testing requires us to specify a different http handler for guzzle to use.
-     * That's really the only reason we need this method!
-     *
-     * @param callable $handler
-     */
-    public function set_http_client_handler($handler) {
-        $this->httphandler = $handler;
-    }
-
-    /**
-     * Instantiate an http client.
-     *
-     * @return \GuzzleHttp\Client
-     */
-    public function get_http_client() {
-        $clientconfig = [];
-        if ($this->httphandler) {
-            $clientconfig['handler'] = $this->httphandler;
-        }
-
-        return new \GuzzleHttp\Client($clientconfig);
-    }
-
     /**
      * @param $step
      * @param $trigger
