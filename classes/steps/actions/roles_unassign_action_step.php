@@ -62,7 +62,7 @@ class roles_unassign_action_step extends base_action_step {
      * @return string human readable step name.
      */
     static public function get_step_desc() {
-        return get_string('httppostactionstepdesc', 'tool_trigger');
+        return get_string('rolesunassignactionstepdesc', 'tool_trigger');
     }
 
     /**
