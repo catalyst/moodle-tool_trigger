@@ -131,6 +131,5 @@ class roles_lookup_step extends base_lookup_step {
      */
     public static function get_fields() {
         return self::$stepfields;
-
     }
 }

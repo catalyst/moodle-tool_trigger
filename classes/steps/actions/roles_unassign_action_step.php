@@ -92,18 +92,6 @@ class roles_unassign_action_step extends base_action_step {
     }
 
     /**
-     * {@inheritDoc}
-     * @see \tool_trigger\steps\base\base_step::add_privacy_metadata()
-     */
-    public static function add_privacy_metadata($collection, $privacyfields) {
-        return $collection->add_external_location_link(
-            'http_post_action_step',
-            $privacyfields,
-            'step_action_httppost:privacy:desc'
-        );
-    }
-
-    /**
      * Get a list of fields this step provides.
      *
      * @return array $stepfields The fields this step provides.
