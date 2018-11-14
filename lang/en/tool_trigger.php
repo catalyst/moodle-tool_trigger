@@ -141,6 +141,11 @@ $string['step_lookup_user_desc'] = 'This step looks up data about a user.';
 $string['step_lookup_user_nodeleted'] = 'Exit if user has been deleted?';
 $string['step_lookup_user_name'] = 'User lookup';
 $string['step_lookup_user_useridfield'] = 'User id data field';
+
+$string['step_lookup_roles:privacy:userdata_desc'] = 'Data about user roles in various contexts.';
+$string['step_lookup_roles_desc'] = 'This step looks up user roles.';
+$string['step_lookup_roles_name'] = 'User roles lookup';
+
 $string['step_action_email:privacy:desc'] = 'This plugin may be configured to send emails containing data from Moodle.';
 $string['step_action_httppost:privacy:desc'] = 'This plugin may be configured to send HTTP requests to external addresses, containing data from Moodle.';
 $string['step_action_logdump_desc'] = 'This step prints the event and workflow steps data to the cron log. (Mostly useful for testing.)';
@@ -164,3 +169,6 @@ $string['workflowfile'] = 'Workflow file';
 $string['workflowname'] = 'Name';
 $string['workflowname_help'] = 'The human readable name for this workflow.';
 $string['workflowoverview'] = 'Workflow overview';
+
+$string['rolesunassignactionstepname'] = 'Roles unassignment';
+$string['rolesunassignactionstepdesc'] = 'A step to unassign all user role assignments.';
