@@ -65,7 +65,7 @@ https://www.catalyst-au.net/
 
 Issues, and pull requests using github are welcome and encouraged! 
 
-https://github.com/catalyst/moodle-webservice_restful/issues
+https://github.com/catalyst/moodle-tool_trigger/issues
 
 If you would like commercial support or would like to sponsor additional improvements
 to this plugin please contact us:
