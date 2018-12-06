@@ -70,7 +70,8 @@ class roles_lookup_step extends base_lookup_step {
                 . $this->useridfield);
         }
 
-        $sql = 'SELECT id, roleid, contextid, component, itemid FROM {role_assignments} WHERE userid = ' . $datafields[$this->useridfield];
+        $sql = 'SELECT id, roleid, contextid, component, itemid FROM {role_assignments} WHERE userid = :userid';
+        $params = array('userid' => $datafields[$this->useridfield]);
         $rs = $DB->get_recordset_sql($sql, array());
         foreach ($rs as $record) {
             foreach ($record as $key => $value) {
@@ -79,6 +80,7 @@ class roles_lookup_step extends base_lookup_step {
                 }
             }
         }
+        $rs->close();
 
         return [true, $stepresults];
     }
