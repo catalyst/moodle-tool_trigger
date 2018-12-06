@@ -128,13 +128,13 @@ class tool_trigger_numcompare_filter_step_testcase extends advanced_testcase {
         $step = new numcompare_filter_step(
             json_encode([
                 'field1' => 'nosuchfield',
-                'operator' => numcompare_filter_step::OPERATOR_EQUAL,
+                'operator' => numcompare_filter_step::OPERATOR_NOTEQUAL,
                 'field2' => '10'
             ])
             );
 
-        $this->expectException('\invalid_parameter_exception');
-        $step->execute(null, null, $this->event, []);
+        list($status) = $step->execute(null, null, $this->event, []);
+        $this->assertTrue($status);
     }
 
     public function test_not_numeric() {

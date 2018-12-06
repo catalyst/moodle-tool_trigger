@@ -111,7 +111,7 @@ class numcompare_filter_step extends base_filter_step {
         if (array_key_exists($formval, $allfields)) {
             $formval = $allfields[$formval];
         } else {
-            throw new \invalid_parameter_exception('Found no datafield named ' . $formval);
+            $formval = 0;
         }
 
         if (is_numeric($formval)) {
