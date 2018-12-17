@@ -77,7 +77,7 @@ class cohort_lookup_step extends base_lookup_step
         $cohortdata = $DB->get_records_sql($sql, $params);
 
         foreach ($cohortdata as $key => $value) {
-            $stepresults[$this->outputprefix . 'id_' . $key] = $cohorts;
+            $stepresults[$this->outputprefix . 'id_' . $key] = $key;
         }
 
         return [true, $stepresults];
