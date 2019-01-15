@@ -259,6 +259,11 @@ class tool_trigger_steps_form_testcase extends advanced_testcase {
                     'field' => 'realuserid',
                     'type' => 'string',
                 ),
+                22 =>
+                array(
+                    'field' => 'wwwroot',
+                    'type' => 'string'
+                ),
             ),
             'steps' => array()
         );

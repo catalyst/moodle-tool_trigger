@@ -269,6 +269,11 @@ class learn_process {
             }
         }
 
+        $fieldarray[] = array(
+            'field' => 'wwwroot',
+            'type' => 'string'
+        );
+
         return $fieldarray;
     }
 

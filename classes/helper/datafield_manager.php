@@ -83,6 +83,7 @@ trait datafield_manager {
      * the workflow.
      */
     public function update_datafields($event, $stepresults) {
+        global $CFG;
         $newfields = [];
         if (is_array($event->get_data())) {
             $newfields = array_merge($newfields, $event->get_data());
@@ -90,6 +91,9 @@ trait datafield_manager {
         if (is_array($event->get_logextra())) {
             $newfields = array_merge($newfields, $event->get_logextra());
         }
+
+        $newfields["wwwroot"] = $CFG->wwwroot;
+
         if (isset($newfields['other']) && is_array($newfields['other'])) {
             foreach ($newfields['other'] as $key => $value) {
                 if (is_scalar($value)) {
