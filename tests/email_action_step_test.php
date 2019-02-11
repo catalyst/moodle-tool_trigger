@@ -47,7 +47,8 @@ class tool_trigger_email_action_step_testcase extends advanced_testcase {
         $settings = [
             'emailto' => $this->user1->email,
             'emailsubject' => 'Subject of the email',
-            'emailcontent' => 'Content of the email'
+            'emailcontent_editor[text]' => 'Content of the email',
+            'emailcontent_editor[format]' => 0
         ];
         $step = new \tool_trigger\steps\actions\email_action_step(json_encode($settings));
 
@@ -74,7 +75,7 @@ class tool_trigger_email_action_step_testcase extends advanced_testcase {
             $message->subject
         );
         $this->assertEquals(
-            $settings['emailcontent'],
+            $settings['emailcontent_editor[text]'],
             $message->fullmessage
         );
     }
@@ -83,7 +84,8 @@ class tool_trigger_email_action_step_testcase extends advanced_testcase {
         $settings = [
             'emailto' => 'testusernotinmoodle@example.com',
             'emailsubject' => 'Subject of the email',
-            'emailcontent' => 'Content of the email'
+            'emailcontent_editor[text]' => 'Content of the email',
+            'emailcontent_editor[format]' => 0
         ];
         $step = new \tool_trigger\steps\actions\email_action_step(json_encode($settings));
 
@@ -113,7 +115,8 @@ class tool_trigger_email_action_step_testcase extends advanced_testcase {
         $settings = [
             'emailto' => '{user_email}',
             'emailsubject' => 'User {userid} looked at your profile',
-            'emailcontent' => 'user {userid}, in course {other_courseid} aka "{other_courseshortname}" aka "{other_coursefullname}"'
+            'emailcontent_editor[text]' => 'user {userid}, in course {other_courseid} aka "{other_courseshortname}" aka "{other_coursefullname}"',
+            'emailcontent_editor[format]' => 0,
         ];
         $step = new \tool_trigger\steps\actions\email_action_step(json_encode($settings));
 

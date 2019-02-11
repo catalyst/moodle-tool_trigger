@@ -13,20 +13,43 @@ cache:
     - $HOME/.composer/cache
     - $HOME/.npm
 
-php:
-  - 7.0
-  - 7.1
-  - 7.2
-env:
- global:
-  - MOODLE_BRANCH=master
- matrix:
-  - DB=pgsql MOODLE_BRANCH=MOODLE_34_STABLE
-  - DB=mysqli MOODLE_BRANCH=MOODLE_34_STABLE
-  - DB=pgsql MOODLE_BRANCH=MOODLE_35_STABLE
-  - DB=mysqli MOODLE_BRANCH=MOODLE_35_STABLE
-  - DB=pgsql MOODLE_BRANCH=master
-  - DB=mysqli MOODLE_BRANCH=master
+matrix:
+  include:
+    # PHP 7.0
+    - php: 7.0
+      env: DB=mysqli MOODLE_BRANCH=MOODLE_34_STABLE
+    - php: 7.0
+      env: DB=pgsql MOODLE_BRANCH=MOODLE_34_STABLE
+    - php: 7.0
+      env: DB=mysqli MOODLE_BRANCH=MOODLE_35_STABLE
+    - php: 7.0
+      env: DB=pgsql MOODLE_BRANCH=MOODLE_35_STABLE
+    # PHP 7.1
+    - php: 7.1
+      env: DB=mysqli MOODLE_BRANCH=MOODLE_34_STABLE
+    - php: 7.1
+      env: DB=pgsql MOODLE_BRANCH=MOODLE_34_STABLE
+    - php: 7.1
+      env: DB=mysqli MOODLE_BRANCH=MOODLE_35_STABLE
+    - php: 7.1
+      env: DB=pgsql MOODLE_BRANCH=MOODLE_35_STABLE
+    - php: 7.1
+      env: DB=mysqli MOODLE_BRANCH=master
+    - php: 7.1
+      env: DB=pgsql MOODLE_BRANCH=master
+    # PHP 7.2
+    - php: 7.2
+      env: DB=mysqli MOODLE_BRANCH=MOODLE_34_STABLE
+    - php: 7.2
+      env: DB=pgsql MOODLE_BRANCH=MOODLE_34_STABLE
+    - php: 7.2
+      env: DB=mysqli MOODLE_BRANCH=MOODLE_35_STABLE
+    - php: 7.2
+      env: DB=pgsql MOODLE_BRANCH=MOODLE_35_STABLE
+    - php: 7.2
+      env: DB=mysqli MOODLE_BRANCH=master
+    - php: 7.2
+      env: DB=pgsql MOODLE_BRANCH=master
 
 before_install:
   - phpenv config-rm xdebug.ini

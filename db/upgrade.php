@@ -171,5 +171,23 @@ function xmldb_tool_trigger_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2018071700, 'tool', 'trigger');
     }
 
+    if ($oldversion < 2019021100) {
+
+        // Convert all old email text fields to new Atto fields
+        $sql = 'SELECT * FROM {tool_trigger_steps} WHERE stepclass = \'\tool_trigger\steps\actions\email_action_step\'';
+        $rs = $DB->get_recordset_sql($sql, array());
+        foreach ($rs as $record) {
+            $data = json_decode($record->data, true);
+            $data['emailcontent_editor[text]'] = $data['emailcontent'];
+            unset($data['emailcontent']);
+            $data['emailcontent_editor[format]'] = 1;
+            $jsondata = json_encode($data);
+            $record->data = $jsondata;
+            $DB->update_record('tool_trigger_steps', $record);
+        }
+        $rs->close();
+        // Trigger savepoint reached.
+        upgrade_plugin_savepoint(true, 2019021100, 'tool', 'trigger');
+    }
     return true;
 }
