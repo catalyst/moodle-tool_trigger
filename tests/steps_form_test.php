@@ -100,6 +100,10 @@ class tool_trigger_steps_form_testcase extends advanced_testcase {
      * @dataProvider provide_steps
      */
     public function test_step_form($steptype, $stepclass) {
+        global $PAGE;
+
+        $PAGE->set_url('/');
+
         $html = tool_trigger_output_fragment_new_step_form([
             'context' => \context_system::instance(),
             'steptype' => $steptype,

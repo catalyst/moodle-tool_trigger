@@ -112,7 +112,8 @@ class tool_trigger_process_workflow_testcase extends advanced_testcase {
                 'description' => 'Email user data to me',
                 'emailto' => \core_user::get_user_by_username('admin')->email,
                 'emailsubject' => '{user_firstname} {user_lastname} logged in',
-                'emailcontent' => '{user_email} logged in.'
+                'emailcontent_editor[text]' => '{user_email} logged in.',
+                'emailcontent_editor[format]' => 0
             ]
         ]);
 

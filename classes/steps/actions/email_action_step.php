@@ -84,8 +84,8 @@ class email_action_step extends base_action_step {
     protected function init() {
         $this->emailto = $this->data['emailto'];
         $this->emailsubject = $this->data['emailsubject'];
-        $this->emailcontent = $this->data['emailcontent'];
-        $this->messageplain = $this->data['emailcontent'];
+        $this->emailcontent = $this->data['emailcontent_editor[text]'];
+        $this->messageplain = format_text_email($this->data['emailcontent_editor[text]'], $this->data['emailcontent_editor[format]']);
     }
 
     /**
@@ -120,7 +120,7 @@ class email_action_step extends base_action_step {
         $emailto = $this->render_datafields($this->emailto);
         $emailsubject = $this->render_datafields($this->emailsubject);
         $emailcontent = $this->render_datafields($this->emailcontent);
-        $messageplain = $this->render_datafields($this->emailcontent);
+        $messageplain = $this->render_datafields($this->messageplain);
 
         // Check we have a valid email address.
         if ($emailto == clean_param($emailto, PARAM_EMAIL)) {
@@ -192,11 +192,22 @@ class email_action_step extends base_action_step {
         $mform->addHelpButton('emailsubject', 'emailsubject', 'tool_trigger');
 
         // Params!
-        $attributes = array('cols' => '50', 'rows' => '5');
-        $mform->addElement('textarea', 'emailcontent', get_string ('emailcontent', 'tool_trigger'), $attributes);
-        $mform->setType('emailcontent', PARAM_RAW_TRIMMED);
-        $mform->addRule('emailcontent', get_string('required'), 'required');
-        $mform->addHelpButton('emailcontent', 'emailcontent', 'tool_trigger');
+        $attributes = array(
+            'subdirs' => false,
+            'maxbytes' => 0,
+            'maxfiles' => 0,
+            'changeformat' => 0,
+            'context' => null,
+            'noclean' => 0,
+            'trusttext' => true,
+            'enable_filemanagement' => false
+        );
+
+        // Message!
+        $mform->addElement('editor', 'emailcontent_editor', get_string('emailcontent', 'tool_trigger'), null, $attributes);
+        $mform->setType('emailcontent_editor', PARAM_RAW_TRIMMED);
+        $mform->addRule('emailcontent_editor', get_string('required'), 'required');
+        $mform->addHelpButton('emailcontent_editor', 'emailcontent', 'tool_trigger');
     }
 
     /**

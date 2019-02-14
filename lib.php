@@ -94,7 +94,19 @@ function tool_trigger_output_fragment_new_step_form($args) {
 
     if (!empty($args['defaults'])) {
         // Don't need to clean/validate these, because formslib will do that.
-        $mform->set_data(json_decode($args['defaults'], true));
+
+        $data = json_decode($args['defaults'], true);
+
+        // Requirement for new editor to populate text area..
+        if (!empty($data['emailcontent_editor[text]'])) {
+            $data['emailcontent'] = "";
+            $data['emailcontentformat'] = $data['emailcontent_editor[format]'];
+            $data['emailcontent_editor']['text'] = $data['emailcontent_editor[text]'];
+            $data['emailcontent_editor']['format'] = $data['emailcontent_editor[format]'];
+            $data['emailcontent_editor']['itemid'] = $data['id'];
+            $data['emailcontenttrust'] = false;
+        }
+        $mform->set_data($data);
     }
 
     if (!empty($ajaxformdata)) {
