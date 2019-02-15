@@ -412,6 +412,11 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
                     'field' => 'realuserid',
                     'type' => 'string',
                 ),
+                20 =>
+                array (
+                    'field' => 'wwwroot',
+                    'type' => 'string'
+                ),
             );
 
         $this->assertEquals($eventfields, $expected);
