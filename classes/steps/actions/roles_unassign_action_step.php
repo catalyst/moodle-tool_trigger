@@ -44,7 +44,25 @@ class roles_unassign_action_step extends base_action_step {
      */
     private static $stepfields = array();
 
+    /**
+     * The prefix to put before the new fields added to the workflow data.
+     *
+     * @var string
+     */
+    private $inputprefixuser = null;
+    private $inputprefixrole = null;
+
     protected function init() {
+        if (!is_null($this->data['inputprefixuser'])) {
+            $this->inputprefixuser = $this->data['inputprefixuser'];
+        } else {
+            $this->inputprefixuser = 'user_';
+        }
+        if (!is_null ($this->data['inputprefixuser'])) {
+            $this->inputprefixrole = $this->data['inputprefixrole'];
+        } else {
+            $this->inputprefixrole = 'user_';
+        }
     }
 
     /**
@@ -76,8 +94,12 @@ class roles_unassign_action_step extends base_action_step {
         global $CFG;
 
         if ($stepresults['user_suspended'] == 1) {
-            foreach ($stepresults['user_roles'] as $key => $value) {
-                role_unassign_all(array('userid' => $stepresults['user_id'], 'contextid' => $value['contextid'], 'component' => $value['component'], 'itemid' => $value['itemid']));
+            foreach ($stepresults[$this->inputprefixrole . 'roles'] as $key => $value) {
+                role_unassign_all(array(
+                    'userid' => $stepresults[$this->inputprefixrole . 'id'],
+                    'contextid' => $value['contextid'],
+                    'component' => $value['component'],
+                    'itemid' => $value['itemid']));
             }
         }
 
@@ -89,6 +111,15 @@ class roles_unassign_action_step extends base_action_step {
      * @see \tool_trigger\steps\base\base_step::add_extra_form_fields()
      */
     public function form_definition_extra($form, $mform, $customdata) {
+        $mform->addElement('text', 'inputprefixuser', get_string('inputprefixuser', 'tool_trigger'));
+        $mform->setType('inputprefixuser', PARAM_ALPHANUMEXT);
+        $mform->addRule('inputprefixuser', get_string('required'), 'required');
+        $mform->setDefault('inputprefixuser', 'user_');
+
+        $mform->addElement('text', 'inputprefixrole', get_string('inputprefixrole', 'tool_trigger'));
+        $mform->setType('inputprefixrole', PARAM_ALPHANUMEXT);
+        $mform->addRule('inputprefixrole', get_string('required'), 'required');
+        $mform->setDefault('inputprefixrole', 'user_');
     }
 
     /**

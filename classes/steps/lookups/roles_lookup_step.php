@@ -72,16 +72,14 @@ class roles_lookup_step extends base_lookup_step {
 
         $sql = 'SELECT id, roleid, contextid, component, itemid FROM {role_assignments} WHERE userid = :userid';
         $params = array('userid' => $datafields[$this->useridfield]);
-        $rs = $DB->get_recordset_sql($sql, $params);
-        foreach ($rs as $record) {
-            foreach ($record as $key => $value) {
-                if (is_scalar($record->roleid)) {
-                    $stepresults[$this->outputprefix . 'roles'][$record->id][$key] = $value;
+        $userroles = $DB->get_records_sql($sql, $params);
+        foreach ($userroles as $role) {
+            foreach ($role as $key => $value) {
+                if (is_scalar($role->roleid)) {
+                    $stepresults[$this->outputprefix . 'roles'][ $role->id][$key] = $value;
                 }
             }
         }
-        $rs->close();
-
         return [true, $stepresults];
     }
 
