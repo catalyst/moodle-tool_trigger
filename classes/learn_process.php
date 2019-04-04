@@ -273,6 +273,10 @@ class learn_process {
             'field' => 'wwwroot',
             'type' => 'string'
         );
+        $fieldarray[] = array(
+            'field' => 'wwwroot_domain',
+            'type' => 'string'
+        );
 
         return $fieldarray;
     }
