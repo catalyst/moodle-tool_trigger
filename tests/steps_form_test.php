@@ -268,6 +268,11 @@ class tool_trigger_steps_form_testcase extends advanced_testcase {
                     'field' => 'wwwroot',
                     'type' => 'string'
                 ),
+                23 =>
+                array(
+                    'field' => 'wwwroot_domain',
+                    'type' => 'string'
+                ),
             ),
             'steps' => array()
         );

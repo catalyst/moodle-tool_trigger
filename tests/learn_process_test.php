@@ -417,6 +417,11 @@ class tool_trigger_learn_process_testcase extends advanced_testcase {
                     'field' => 'wwwroot',
                     'type' => 'string'
                 ),
+                21 =>
+                array (
+                    'field' => 'wwwroot_domain',
+                    'type' => 'string'
+                ),
             );
 
         $this->assertEquals($eventfields, $expected);

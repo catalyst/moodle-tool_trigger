@@ -93,6 +93,7 @@ trait datafield_manager {
         }
 
         $newfields["wwwroot"] = $CFG->wwwroot;
+        $newfields["wwwroot_domain"] = preg_replace('#^https?://#', '', $CFG->wwwroot);
 
         if (isset($newfields['other']) && is_array($newfields['other'])) {
             foreach ($newfields['other'] as $key => $value) {
