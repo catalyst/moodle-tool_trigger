@@ -68,7 +68,7 @@ class tool_trigger_http_post_action_step_testcase extends advanced_testcase {
     public function test_execute_200() {
         $stepsettings = [
             'url' => 'http://http_post_action_step.example.com',
-            'httpheaders' => '',
+            'httpheaders' => 'My-Special-Header: {headervalue}',
             'httpparams' => '',
             'jsonencode' => '0'
         ];
@@ -93,7 +93,7 @@ class tool_trigger_http_post_action_step_testcase extends advanced_testcase {
     public function test_execute_404() {
         $stepsettings = [
             'url' => 'http://http_post_action_step.example.com/badurl',
-            'httpheaders' => '',
+            'httpheaders' => 'My-Special-Header: {headervalue}',
             'httpparams' => '',
             'jsonencode' => '0'
         ];
