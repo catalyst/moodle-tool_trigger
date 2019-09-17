@@ -29,6 +29,8 @@ defined('MOODLE_INTERNAL') || die();
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\contextlist;
 use core_privacy\local\request\approved_contextlist;
+use \core_privacy\local\request\approved_userlist;
+use \core_privacy\local\request\userlist;
 
 /**
  * Provider for the tool_trigger plugin.
@@ -44,7 +46,8 @@ use core_privacy\local\request\approved_contextlist;
  */
 class provider implements
     \core_privacy\local\metadata\provider,
-    \core_privacy\local\request\plugin\provider {
+    \core_privacy\local\request\plugin\provider,
+    \core_privacy\local\request\core_userlist_provider {
 
     use \tool_log\local\privacy\moodle_database_export_and_delete {
         delete_data_for_all_users_in_context as trait_delete_data_for_all_users_in_context;
@@ -221,5 +224,62 @@ class provider implements
      */
     protected static function get_export_subcontext() {
         return [get_string('pluginname', 'tool_trigger')];
+    }
+
+    /**
+     * Get the list of users who have data within a context.
+     *
+     * @param userlist $userlist the userlist containing the list of users who have data in this context/plugin combination.
+     */
+    public static function get_users_in_context(userlist $userlist) {
+        $context = $userlist->get_context();
+
+        if (!$context instanceof \context_user) {
+            return;
+        }
+
+        $params = ['userid' => $context->instanceid];
+
+        $sql = "SELECT userid FROM {tool_trigger_events} WHERE userid = :userid";
+        $userlist->add_from_sql('userid', $sql, $params);
+
+        $sql = "SELECT userid FROM {tool_trigger_learn_events} WHERE userid = :userid";
+        $userlist->add_from_sql('userid', $sql, $params);
+    }
+
+    /**
+     * Delete multiple users within a single context.
+     *
+     * @param approved_userlist $userlist The approved context and user information to delete information for.
+     */
+    public static function delete_data_for_users(approved_userlist $userlist) {
+        global $DB;
+
+        $userids = $userlist->get_userids();
+        $context = $userlist->get_context();
+
+        if (!$context instanceof \context_user) {
+            return;
+        }
+
+        // Only delete events that do not have an unfinished queue still waiting.
+        list($insql, $inparams) = $DB->get_in_or_equal($userids);
+        array_unshift($inparams, \tool_trigger\task\process_workflows::STATUS_READY_TO_RUN);
+        $sql = "
+            DELETE
+              FROM {tool_trigger_events}
+             WHERE NOT EXISTS (
+                       SELECT 1
+                         FROM {tool_trigger_queue}
+                        WHERE {tool_trigger_queue}.eventid = {tool_trigger_events}.id
+                              AND {tool_trigger_queue}.status = ?
+                   ) AND userid $insql";
+        $DB->execute($sql, $inparams);
+
+        // Also remove user information from learnt events.
+        list($insql, $inparams) = $DB->get_in_or_equal($userids);
+        $select = "userid $insql";
+        $DB->delete_records_select('tool_trigger_learn_events', $select, $inparams);
+
     }
 }
