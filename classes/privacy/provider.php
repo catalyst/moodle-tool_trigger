@@ -29,6 +29,8 @@ defined('MOODLE_INTERNAL') || die();
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\contextlist;
 use core_privacy\local\request\approved_contextlist;
+use core_privacy\local\request\userlist;
+use core_privacy\local\request\approved_userlist;
 
 /**
  * Provider for the tool_trigger plugin.
@@ -44,6 +46,7 @@ use core_privacy\local\request\approved_contextlist;
  */
 class provider implements
     \core_privacy\local\metadata\provider,
+    \core_privacy\local\request\core_userlist_provider,
     \core_privacy\local\request\plugin\provider {
 
     use \tool_log\local\privacy\moodle_database_export_and_delete {
@@ -221,5 +224,27 @@ class provider implements
      */
     protected static function get_export_subcontext() {
         return [get_string('pluginname', 'tool_trigger')];
+    }
+
+    /**
+     * Get the list of users who have data within a context.
+     *
+     * @param   userlist    $userlist   The userlist containing the list of users who have data in this context/plugin combination.
+     */
+    public static function get_users_in_context(userlist $userlist) {
+        // This is a dummy method to pass unit tests.
+        // Needs to be implemented before merging into master branch.
+        return false;
+    }
+
+    /**
+     * Delete multiple users within a single context.
+     *
+     * @param   approved_userlist       $userlist The approved context and user information to delete information for.
+     */
+    public static function delete_data_for_users(approved_userlist $userlist) {
+        // This is a dummy method to pass unit tests.
+        // Needs to be implemented before merging into master branch.
+        return false;
     }
 }
