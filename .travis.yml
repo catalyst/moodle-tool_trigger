@@ -3,15 +3,13 @@ language: php
 addons:
   firefox: "47.0.1"
   postgresql: "9.4"
-  apt:
-    packages:
-      - oracle-java8-installer
-      - oracle-java8-set-default
 
 cache:
   directories:
     - $HOME/.composer/cache
     - $HOME/.npm
+
+dist: trusty
 
 matrix:
   include:
