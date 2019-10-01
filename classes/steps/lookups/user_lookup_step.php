@@ -18,6 +18,8 @@ namespace tool_trigger\steps\lookups;
 
 defined('MOODLE_INTERNAL') || die;
 
+require_once($CFG->dirroot . '/user/profile/lib.php');
+
 /**
  * A lookup step that takes a user's ID and adds standard data about the
  * user.
@@ -134,7 +136,7 @@ class user_lookup_step extends base_lookup_step {
                     . $this->useridfield);
         }
 
-        $userfields = implode(',', $this->get_fields());
+        $userfields = implode(',', self::$stepfields);
         $userdata = \core_user::get_user($datafields[$this->useridfield], $userfields);
 
         // Users are not typically deleted from the database on deletion; they're just flagged as "deleted".
@@ -156,6 +158,14 @@ class user_lookup_step extends base_lookup_step {
 
         // Also fetch the user's fullname.
         $stepresults[$this->outputprefix . 'fullname'] = fullname($userdata);
+
+        // Get custom profile_fields if any.
+        profile_load_custom_fields($userdata);
+        if (!empty($userdata->profile)) {
+            foreach ($userdata->profile as $shortname => $value) {
+                $stepresults[$this->outputprefix . $shortname] = $value;
+            }
+        }
 
         return [true, $stepresults];
     }
@@ -209,7 +219,9 @@ class user_lookup_step extends base_lookup_step {
      * @return array $stepfields The fields this step provides.
      */
     public static function get_fields() {
-        return self::$stepfields;
+        $customfields = profile_get_custom_fields(true);
+        $customfieldoptions = array_column($customfields, 'shortname', 'shortname');
 
+        return self::$stepfields + $customfieldoptions;
     }
 }

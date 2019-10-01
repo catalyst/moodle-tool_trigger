@@ -61,6 +61,31 @@ class tool_trigger_user_lookup_testcase extends advanced_testcase {
     }
 
     /**
+     * Basic test, but this time with additional custom profile field.
+     */
+    public function test_execute_basic_with_custom_profile_fields() {
+        // Create user profile field.
+        $field = $this->add_user_custom_profile_field('testfield', 'text');
+        // Populate data.
+        profile_save_data((object)['id' => $this->user1->id, 'profile_field_' . $field->shortname => 'User 1 Field Data']);
+
+        $step = new \tool_trigger\steps\lookups\user_lookup_step(
+            json_encode([
+                'useridfield' => 'userid',
+                'outputprefix' => 'user_',
+                'nodeleted' => '1'
+            ])
+        );
+
+        list($status, $stepresults) = $step->execute(null, null, $this->event, []);
+
+        $this->assertTrue($status);
+        $this->assertEquals($this->user1->username, $stepresults['user_username']);
+        $this->assertEquals($this->user1->email, $stepresults['user_email']);
+        $this->assertEquals('User 1 Field Data', $stepresults['user_testfield']);
+    }
+
+    /**
      * Non-default values for step's settings. Look for the relateduserid
      * (an optional field, for events that involve one user interacting
      * with another), and use a different prefix.

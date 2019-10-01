@@ -71,4 +71,34 @@ trait tool_trigger_user_event_fixture {
         // Run as the cron user  .
         cron_setup_user();
     }
+
+    /**
+     * A helper function to create a user profile field.
+     *
+     * @param string $shortname Profile filed shortname.
+     * @param string $datatype Data type for the field. E.g. text, textarea, checkbox, menu, datetime.
+     * @param bool $forceunique Should the field store unique data.
+     *
+     * @return \stdClass
+     */
+    public function add_user_custom_profile_field($shortname, $datatype, $forceunique = false) {
+        global $DB;
+
+        // Create a new profile field.
+        $data = new \stdClass();
+        $data->shortname = $shortname;
+        $data->datatype = $datatype;
+        $data->name = 'Test ' . $shortname;
+        $data->description = 'This is a test field';
+        $data->required = false;
+        $data->locked = false;
+        $data->forceunique = $forceunique;
+        $data->signup = false;
+        $data->visible = '0';
+        $data->categoryid = '0';
+
+        $DB->insert_record('user_info_field', $data);
+
+        return $data;
+    }
 }
