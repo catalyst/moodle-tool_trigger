@@ -151,6 +151,7 @@ $string['step_filter_fail_name'] = 'Fail';
 $string['step_lookup_cohort_desc'] = 'This step looks up cohort data for a user.';
 $string['step_lookup_cohort_name'] = 'Cohort lookup';
 $string['step_lookup_course:privacy:coursedata_desc'] = 'Data about courses, including id, course name, start and end dates, etc.';
+$string['step_lookup_course:privacy:categorydata_desc'] = 'Data about course categories, including name, description etc.';
 $string['step_lookup_course_desc'] = 'This step looks up data about a course.';
 $string['step_lookup_course_name'] = 'Course lookup';
 $string['step_lookup_course_courseidfield'] = 'Course id data field';
