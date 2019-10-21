@@ -80,7 +80,8 @@ class course_lookup_step extends base_lookup_step {
         'requested',
         'enablecompletion',
         'completionnotify',
-        'cacherev'
+        'cacherev',
+        'contextid',
     );
 
     protected function init() {
@@ -103,11 +104,19 @@ class course_lookup_step extends base_lookup_step {
         }
 
         $coursedata = $DB->get_record('course', ['id' => $allfields[$this->courseidfield]]);
+        $context = \context_course::instance($allfields[$this->courseidfield], IGNORE_MISSING);
 
         if (!$coursedata) {
             // If the course has been deleted, there's no point re-running the task.
             return [false, $stepresults];
         }
+
+        if (!$context) {
+            // If the context not exist for some reason, there's no point re-running the task.
+            return [false, $stepresults];
+        }
+
+        $coursedata->contextid = $context->id;
 
         foreach ($coursedata as $key => $value) {
             $stepresults[$this->outputprefix . $key] = $value;

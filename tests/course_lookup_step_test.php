@@ -65,10 +65,12 @@ class tool_trigger_course_lookup_step_testcase extends advanced_testcase {
         );
 
         list($status, $stepresults) = $step->execute(null, null, $this->event, []);
+        $context = context_course::instance($this->course->id);
 
         $this->assertTrue($status);
         $this->assertEquals($this->course->id, $stepresults['course_id']);
         $this->assertEquals($this->course->fullname, $stepresults['course_fullname']);
+        $this->assertEquals($context->id, $stepresults['course_contextid']);
     }
 
     /**
