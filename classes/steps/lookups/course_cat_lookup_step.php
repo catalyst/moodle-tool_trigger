@@ -63,6 +63,7 @@ class course_cat_lookup_step extends base_lookup_step {
         'depth',
         'path',
         'theme',
+        'contextid'
     ];
 
     protected function init() {
@@ -84,13 +85,20 @@ class course_cat_lookup_step extends base_lookup_step {
                     . $this->categoryidfield);
         }
 
-        $fields = implode(',', self::$stepfields);
-        $categorydata = $DB->get_record('course_categories', ['id' => $allfields[$this->categoryidfield]], $fields);
+        $categorydata = $DB->get_record('course_categories', ['id' => $allfields[$this->categoryidfield]]);
+        $context = \context_coursecat::instance($allfields[$this->categoryidfield], IGNORE_MISSING);
 
         if (!$categorydata) {
             // If the course has been deleted, there's no point re-running the task.
             return [false, $stepresults];
         }
+
+        if (!$context) {
+            // If the context not exist for some reason, there's no point re-running the task.
+            return [false, $stepresults];
+        }
+
+        $categorydata->contextid = $context->id;
 
         foreach ($categorydata as $key => $value) {
             $stepresults[$this->outputprefix . $key] = $value;

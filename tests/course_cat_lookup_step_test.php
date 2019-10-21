@@ -87,6 +87,7 @@ class tool_trigger_course_cat_lookup_step_testcase extends advanced_testcase {
             'depth',
             'path',
             'theme',
+            'contextid',
         ];
         $this->assertEquals($expected, \tool_trigger\steps\lookups\course_cat_lookup_step::get_fields());
     }
@@ -104,10 +105,12 @@ class tool_trigger_course_cat_lookup_step_testcase extends advanced_testcase {
         );
 
         list($status, $stepresults) = $step->execute(null, null, $this->event, []);
+        $context = context_coursecat::instance($this->category->id);
 
         $this->assertTrue($status);
         $this->assertEquals($this->category->id, $stepresults['category_id']);
         $this->assertEquals($this->category->name, $stepresults['category_name']);
+        $this->assertEquals($context->id, $stepresults['category_contextid']);
     }
 
     /**
