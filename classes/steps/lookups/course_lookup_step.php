@@ -45,12 +45,6 @@ class course_lookup_step extends base_lookup_step {
     private $outputprefix = null;
 
     /**
-     * Course id.
-     * @var int
-     */
-    private $courseid;
-
-    /**
      * The fields suplied by this step.
      *
      * @var array

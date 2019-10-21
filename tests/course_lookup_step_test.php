@@ -141,7 +141,7 @@ class tool_trigger_course_lookup_step_testcase extends advanced_testcase {
         $this->assertEquals($this->course->fullname, $stepresults['course_fullname']);
         $this->assertEquals($context->id, $stepresults['course_contextid']);
 
-        // Course id as string.
+        // Course id is not exist.
         $step = new \tool_trigger\steps\lookups\course_lookup_step(
             json_encode([
                 'courseidfield' => 7777777,
