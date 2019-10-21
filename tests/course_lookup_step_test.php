@@ -106,50 +106,74 @@ class tool_trigger_course_lookup_step_testcase extends advanced_testcase {
     }
 
     /**
-     * Test for exception if course id entered directly.
+     * Data provided to test hardcoded category id.
+     * @return array
      */
-    public function test_execute_course_id() {
-        // Course id as int.
+    public function hardcoded_course_id_data_provider() {
+        $this->course = $this->getDataGenerator()->create_course();
+
+        return [
+            'Course id as int' => [
+                $this->course->id,
+                true,
+                false,
+            ],
+            'Course id as string' => [
+                (string)$this->course->id,
+                true,
+                false,
+            ],
+            'Non-existing Course id.' => [
+                777777,
+                false,
+                false,
+            ],
+            'Nil Course id.' => [
+                0,
+                false,
+                true,
+            ],
+            'Empty string Course id.' => [
+                '',
+                false,
+                true,
+            ],
+            'Null Course id.' => [
+                null,
+                false,
+                true,
+            ],
+        ];
+    }
+
+    /**
+     * Test for exception if course id entered directly.
+     *
+     * @dataProvider hardcoded_course_id_data_provider
+     */
+    public function test_execute_course_id($courseid, $status, $exception) {
         $step = new \tool_trigger\steps\lookups\course_lookup_step(
             json_encode([
-                'courseidfield' => $this->course->id,
+                'courseidfield' => $courseid,
                 'outputprefix' => 'course_'
             ])
         );
+
+        if ($exception) {
+            $this->expectException('\moodle_exception');
+            $this->expectExceptionMessageRegExp("/Specified courseid field not present in the workflow data:*/");
+        }
 
         list($status, $stepresults) = $step->execute(null, null, $this->event, []);
-        $context = context_course::instance($this->course->id);
 
-        $this->assertTrue($status);
-        $this->assertEquals($this->course->id, $stepresults['course_id']);
-        $this->assertEquals($this->course->fullname, $stepresults['course_fullname']);
-        $this->assertEquals($context->id, $stepresults['course_contextid']);
-
-        // Course id as string.
-        $step = new \tool_trigger\steps\lookups\course_lookup_step(
-            json_encode([
-                'courseidfield' => (string)$this->course->id,
-                'outputprefix' => 'course_'
-            ])
-        );
-
-        list($status, $stepresults) = $step->execute(null, null, $this->event, []);
-        $context = context_course::instance($this->course->id);
-
-        $this->assertTrue($status);
-        $this->assertEquals($this->course->id, $stepresults['course_id']);
-        $this->assertEquals($this->course->fullname, $stepresults['course_fullname']);
-        $this->assertEquals($context->id, $stepresults['course_contextid']);
-
-        // Course id is not exist.
-        $step = new \tool_trigger\steps\lookups\course_lookup_step(
-            json_encode([
-                'courseidfield' => 7777777,
-                'outputprefix' => 'course_'
-            ])
-        );
-
-        list($status) = $step->execute(null, null, $this->event, []);
-        $this->assertFalse($status);
+        if ($status) {
+            $context = context_course::instance($this->course->id);
+            $this->assertTrue($status);
+            $this->assertEquals($this->course->id, $stepresults['course_id']);
+            $this->assertEquals($this->course->fullname, $stepresults['course_fullname']);
+            $this->assertEquals($context->id, $stepresults['course_contextid']);
+        } else {
+            $this->assertFalse($status);
+        }
     }
 }

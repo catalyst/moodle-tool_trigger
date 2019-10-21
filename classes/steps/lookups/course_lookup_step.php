@@ -96,9 +96,9 @@ class course_lookup_step extends base_lookup_step {
     public function execute($step, $trigger, $event, $stepresults) {
         global $DB;
 
-        $courseid = $this->courseidfield;
+        $courseid = (int)$this->courseidfield;
 
-        if (empty((int)$this->courseidfield)) {
+        if (empty($courseid)) {
             $allfields = $this->get_datafields($event, $stepresults);
 
             if (!array_key_exists($this->courseidfield, $allfields)) {
