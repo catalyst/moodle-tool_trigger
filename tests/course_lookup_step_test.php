@@ -104,4 +104,52 @@ class tool_trigger_course_lookup_step_testcase extends advanced_testcase {
         list($status) = $step->execute(null, null, $this->event, []);
         $this->assertFalse($status);
     }
+
+    /**
+     * Test for exception if course id entered directly.
+     */
+    public function test_execute_course_id() {
+        // Course id as int.
+        $step = new \tool_trigger\steps\lookups\course_lookup_step(
+            json_encode([
+                'courseidfield' => $this->course->id,
+                'outputprefix' => 'course_'
+            ])
+        );
+
+        list($status, $stepresults) = $step->execute(null, null, $this->event, []);
+        $context = context_course::instance($this->course->id);
+
+        $this->assertTrue($status);
+        $this->assertEquals($this->course->id, $stepresults['course_id']);
+        $this->assertEquals($this->course->fullname, $stepresults['course_fullname']);
+        $this->assertEquals($context->id, $stepresults['course_contextid']);
+
+        // Course id as string.
+        $step = new \tool_trigger\steps\lookups\course_lookup_step(
+            json_encode([
+                'courseidfield' => (string)$this->course->id,
+                'outputprefix' => 'course_'
+            ])
+        );
+
+        list($status, $stepresults) = $step->execute(null, null, $this->event, []);
+        $context = context_course::instance($this->course->id);
+
+        $this->assertTrue($status);
+        $this->assertEquals($this->course->id, $stepresults['course_id']);
+        $this->assertEquals($this->course->fullname, $stepresults['course_fullname']);
+        $this->assertEquals($context->id, $stepresults['course_contextid']);
+
+        // Course id as string.
+        $step = new \tool_trigger\steps\lookups\course_lookup_step(
+            json_encode([
+                'courseidfield' => 7777777,
+                'outputprefix' => 'course_'
+            ])
+        );
+
+        list($status) = $step->execute(null, null, $this->event, []);
+        $this->assertFalse($status);
+    }
 }

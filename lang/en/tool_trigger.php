@@ -155,6 +155,7 @@ $string['step_lookup_course:privacy:categorydata_desc'] = 'Data about course cat
 $string['step_lookup_course_desc'] = 'This step looks up data about a course.';
 $string['step_lookup_course_name'] = 'Course lookup';
 $string['step_lookup_course_courseidfield'] = 'Course id data field';
+$string['courseidfield_help'] = 'You can use course id as a number or as a filed name from the workflow data';
 $string['step_lookup_category_desc'] = 'This step looks up data about a category.';
 $string['step_lookup_category_name'] = 'Category lookup';
 $string['step_lookup_category_categoryidfield'] = 'Category id data field';
