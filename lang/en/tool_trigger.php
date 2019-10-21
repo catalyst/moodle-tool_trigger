@@ -159,6 +159,7 @@ $string['courseidfield_help'] = 'You can use course id as a number or as a filed
 $string['step_lookup_category_desc'] = 'This step looks up data about a category.';
 $string['step_lookup_category_name'] = 'Category lookup';
 $string['step_lookup_category_categoryidfield'] = 'Category id data field';
+$string['courseidfield_help'] = 'You can use category id as a number or as a filed name from the workflow data';
 $string['step_lookup_user:privacy:userdata_desc'] = 'Personal data about users, such as usernames, names, email addresses, etc.';
 $string['step_lookup_user_desc'] = 'This step looks up data about a user.';
 $string['step_lookup_user_nodeleted'] = 'Exit if user has been deleted?';

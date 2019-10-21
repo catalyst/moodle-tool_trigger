@@ -146,4 +146,52 @@ class tool_trigger_course_cat_lookup_step_testcase extends advanced_testcase {
         list($status) = $step->execute(null, null, $this->event, []);
         $this->assertFalse($status);
     }
+
+    /**
+     * Find the category data when using hardcoded category id.
+     */
+    public function test_execute_category_id() {
+        // Category id as int.
+        $step = new \tool_trigger\steps\lookups\course_cat_lookup_step(
+            json_encode([
+                'categoryidfield' => $this->category->id,
+                'outputprefix' => 'category_'
+            ])
+        );
+
+        list($status, $stepresults) = $step->execute(null, null, $this->event, []);
+        $context = context_coursecat::instance($this->category->id);
+
+        $this->assertTrue($status);
+        $this->assertEquals($this->category->id, $stepresults['category_id']);
+        $this->assertEquals($this->category->name, $stepresults['category_name']);
+        $this->assertEquals($context->id, $stepresults['category_contextid']);
+
+        // Category id as string.
+        $step = new \tool_trigger\steps\lookups\course_cat_lookup_step(
+            json_encode([
+                'categoryidfield' => (string)$this->category->id,
+                'outputprefix' => 'category_'
+            ])
+        );
+
+        list($status, $stepresults) = $step->execute(null, null, $this->event, []);
+        $context = context_coursecat::instance($this->category->id);
+
+        $this->assertTrue($status);
+        $this->assertEquals($this->category->id, $stepresults['category_id']);
+        $this->assertEquals($this->category->name, $stepresults['category_name']);
+        $this->assertEquals($context->id, $stepresults['category_contextid']);
+
+        // Non-existing category id.
+        $step = new \tool_trigger\steps\lookups\course_cat_lookup_step(
+            json_encode([
+                'categoryidfield' => 77777777,
+                'outputprefix' => 'category_'
+            ])
+        );
+
+        list($status) = $step->execute(null, null, $this->event, []);
+        $this->assertFalse($status);
+    }
 }

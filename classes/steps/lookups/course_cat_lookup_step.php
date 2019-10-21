@@ -78,15 +78,20 @@ class course_cat_lookup_step extends base_lookup_step {
     public function execute($step, $trigger, $event, $stepresults) {
         global $DB;
 
-        $allfields = $this->get_datafields($event, $stepresults);
+        $categoryid = $this->categoryidfield;
+        if (empty((int)$this->categoryidfield)) {
+            $allfields = $this->get_datafields($event, $stepresults);
 
-        if (!array_key_exists($this->categoryidfield, $allfields)) {
-            throw new \invalid_parameter_exception("Specified category field not present in the workflow data: "
+            if (!array_key_exists($this->categoryidfield, $allfields)) {
+                throw new \invalid_parameter_exception("Specified category field not present in the workflow data: "
                     . $this->categoryidfield);
+            }
+
+            $categoryid = $allfields[$this->categoryidfield];
         }
 
-        $categorydata = $DB->get_record('course_categories', ['id' => $allfields[$this->categoryidfield]]);
-        $context = \context_coursecat::instance($allfields[$this->categoryidfield], IGNORE_MISSING);
+        $categorydata = $DB->get_record('course_categories', ['id' => $categoryid]);
+        $context = \context_coursecat::instance($categoryid, IGNORE_MISSING);
 
         if (!$categorydata) {
             // If the course has been deleted, there's no point re-running the task.
@@ -115,6 +120,7 @@ class course_cat_lookup_step extends base_lookup_step {
         $mform->setType('categoryidfield', PARAM_ALPHANUMEXT);
         $mform->addRule('categoryidfield', get_string('required'), 'required');
         $mform->setDefault('categoryidfield', 'course_category');
+        $mform->addHelpButton('categoryidfield', 'categoryidfield', 'tool_trigger');
 
         $mform->addElement('text', 'outputprefix', get_string('outputprefix', 'tool_trigger'));
         $mform->setType('outputprefix', PARAM_ALPHANUMEXT);
