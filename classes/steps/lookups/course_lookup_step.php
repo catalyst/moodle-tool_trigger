@@ -45,7 +45,7 @@ class course_lookup_step extends base_lookup_step {
     private $outputprefix = null;
 
     /**
-     * The fields suplied by this step.
+     * The fields supplied by this step.
      *
      * @var array
      */
@@ -80,7 +80,8 @@ class course_lookup_step extends base_lookup_step {
         'requested',
         'enablecompletion',
         'completionnotify',
-        'cacherev'
+        'cacherev',
+        'contextid',
     );
 
     protected function init() {
@@ -95,19 +96,33 @@ class course_lookup_step extends base_lookup_step {
     public function execute($step, $trigger, $event, $stepresults) {
         global $DB;
 
-        $allfields = $this->get_datafields($event, $stepresults);
+        $courseid = (int)$this->courseidfield;
 
-        if (!array_key_exists($this->courseidfield, $allfields)) {
-            throw new \invalid_parameter_exception("Specified courseid field not present in the workflow data: "
+        if (empty($courseid)) {
+            $allfields = $this->get_datafields($event, $stepresults);
+
+            if (!array_key_exists($this->courseidfield, $allfields)) {
+                throw new \invalid_parameter_exception("Specified courseid field not present in the workflow data: "
                     . $this->courseidfield);
+            }
+
+            $courseid = $allfields[$this->courseidfield];
         }
 
-        $coursedata = $DB->get_record('course', ['id' => $allfields[$this->courseidfield]]);
+        $coursedata = $DB->get_record('course', ['id' => $courseid]);
+        $context = \context_course::instance($courseid, IGNORE_MISSING);
 
         if (!$coursedata) {
             // If the course has been deleted, there's no point re-running the task.
             return [false, $stepresults];
         }
+
+        if (!$context) {
+            // If the context not exist for some reason, there's no point re-running the task.
+            return [false, $stepresults];
+        }
+
+        $coursedata->contextid = $context->id;
 
         foreach ($coursedata as $key => $value) {
             $stepresults[$this->outputprefix . $key] = $value;
@@ -124,6 +139,7 @@ class course_lookup_step extends base_lookup_step {
         $mform->setType('courseidfield', PARAM_ALPHANUMEXT);
         $mform->addRule('courseidfield', get_string('required'), 'required');
         $mform->setDefault('courseidfield', 'courseid');
+        $mform->addHelpButton('courseidfield', 'courseidfield', 'tool_trigger');
 
         $mform->addElement('text', 'outputprefix', get_string('outputprefix', 'tool_trigger'));
         $mform->setType('outputprefix', PARAM_ALPHANUMEXT);

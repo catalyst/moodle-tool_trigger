@@ -87,6 +87,7 @@ class tool_trigger_course_cat_lookup_step_testcase extends advanced_testcase {
             'depth',
             'path',
             'theme',
+            'contextid',
         ];
         $this->assertEquals($expected, \tool_trigger\steps\lookups\course_cat_lookup_step::get_fields());
     }
@@ -104,10 +105,12 @@ class tool_trigger_course_cat_lookup_step_testcase extends advanced_testcase {
         );
 
         list($status, $stepresults) = $step->execute(null, null, $this->event, []);
+        $context = context_coursecat::instance($this->category->id);
 
         $this->assertTrue($status);
         $this->assertEquals($this->category->id, $stepresults['category_id']);
         $this->assertEquals($this->category->name, $stepresults['category_name']);
+        $this->assertEquals($context->id, $stepresults['category_contextid']);
     }
 
     /**
@@ -143,4 +146,77 @@ class tool_trigger_course_cat_lookup_step_testcase extends advanced_testcase {
         list($status) = $step->execute(null, null, $this->event, []);
         $this->assertFalse($status);
     }
+
+    /**
+     * Data provided to test hardcoded category id.
+     * @return array
+     */
+    public function hardcoded_category_id_data_provider() {
+        $this->category = $this->getDataGenerator()->create_category();
+
+        return [
+            'Category id as int' => [
+                $this->category->id,
+                true,
+                false,
+            ],
+            'Category id as string' => [
+                (string)$this->category->id,
+                true,
+                false,
+            ],
+            'Non-existing category id.' => [
+                777777,
+                false,
+                false,
+            ],
+            'Nil category id.' => [
+                0,
+                false,
+                true,
+            ],
+            'Empty string category id.' => [
+                '',
+                false,
+                true,
+            ],
+            'Null category id.' => [
+                null,
+                false,
+                true,
+            ],
+        ];
+    }
+
+    /**
+     * Test hardcoded category id.
+     *
+     * @dataProvider hardcoded_category_id_data_provider
+     */
+    public function test_execute_category_id($categoryid, $status, $exception) {
+        $step = new \tool_trigger\steps\lookups\course_cat_lookup_step(
+            json_encode([
+                'categoryidfield' => $categoryid,
+                'outputprefix' => 'category_'
+            ])
+        );
+
+        if ($exception) {
+            $this->expectException('\moodle_exception');
+            $this->expectExceptionMessageRegExp("/Specified category field not present in the workflow data:*/");
+        }
+
+        list($status, $stepresults) = $step->execute(null, null, $this->event, []);
+
+        if ($status) {
+            $context = context_coursecat::instance($this->category->id);
+            $this->assertTrue($status);
+            $this->assertEquals($this->category->id, $stepresults['category_id']);
+            $this->assertEquals($this->category->name, $stepresults['category_name']);
+            $this->assertEquals($context->id, $stepresults['category_contextid']);
+        } else {
+            $this->assertFalse($status);
+        }
+    }
+
 }

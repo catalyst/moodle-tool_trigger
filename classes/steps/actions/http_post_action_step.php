@@ -42,7 +42,7 @@ class http_post_action_step extends base_action_step {
     protected $params;
 
     /**
-     * The fields suplied by this step.
+     * The fields supplied by this step.
      *
      * @var array
      */

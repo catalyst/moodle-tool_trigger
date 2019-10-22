@@ -44,7 +44,7 @@ class course_cat_lookup_step extends base_lookup_step {
     private $outputprefix = null;
 
     /**
-     * The fields suplied by this step.
+     * The fields supplied by this step.
      *
      * @var array
      */
@@ -63,6 +63,7 @@ class course_cat_lookup_step extends base_lookup_step {
         'depth',
         'path',
         'theme',
+        'contextid'
     ];
 
     protected function init() {
@@ -77,20 +78,33 @@ class course_cat_lookup_step extends base_lookup_step {
     public function execute($step, $trigger, $event, $stepresults) {
         global $DB;
 
-        $allfields = $this->get_datafields($event, $stepresults);
+        $categoryid = (int)$this->categoryidfield;
 
-        if (!array_key_exists($this->categoryidfield, $allfields)) {
-            throw new \invalid_parameter_exception("Specified category field not present in the workflow data: "
+        if (empty($categoryid)) {
+            $allfields = $this->get_datafields($event, $stepresults);
+
+            if (!array_key_exists($this->categoryidfield, $allfields)) {
+                throw new \invalid_parameter_exception("Specified category field not present in the workflow data: "
                     . $this->categoryidfield);
+            }
+
+            $categoryid = $allfields[$this->categoryidfield];
         }
 
-        $fields = implode(',', self::$stepfields);
-        $categorydata = $DB->get_record('course_categories', ['id' => $allfields[$this->categoryidfield]], $fields);
+        $categorydata = $DB->get_record('course_categories', ['id' => $categoryid]);
+        $context = \context_coursecat::instance($categoryid, IGNORE_MISSING);
 
         if (!$categorydata) {
             // If the course has been deleted, there's no point re-running the task.
             return [false, $stepresults];
         }
+
+        if (!$context) {
+            // If the context not exist for some reason, there's no point re-running the task.
+            return [false, $stepresults];
+        }
+
+        $categorydata->contextid = $context->id;
 
         foreach ($categorydata as $key => $value) {
             $stepresults[$this->outputprefix . $key] = $value;
@@ -107,6 +121,7 @@ class course_cat_lookup_step extends base_lookup_step {
         $mform->setType('categoryidfield', PARAM_ALPHANUMEXT);
         $mform->addRule('categoryidfield', get_string('required'), 'required');
         $mform->setDefault('categoryidfield', 'course_category');
+        $mform->addHelpButton('categoryidfield', 'categoryidfield', 'tool_trigger');
 
         $mform->addElement('text', 'outputprefix', get_string('outputprefix', 'tool_trigger'));
         $mform->setType('outputprefix', PARAM_ALPHANUMEXT);

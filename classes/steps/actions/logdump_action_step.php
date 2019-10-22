@@ -29,7 +29,7 @@ defined('MOODLE_INTERNAL') || die;
 class logdump_action_step extends base_action_step {
 
     /**
-     * The fields suplied by this step.
+     * The fields supplied by this step.
      *
      * @var array
      */
