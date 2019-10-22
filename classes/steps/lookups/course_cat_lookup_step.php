@@ -44,7 +44,7 @@ class course_cat_lookup_step extends base_lookup_step {
     private $outputprefix = null;
 
     /**
-     * The fields suplied by this step.
+     * The fields supplied by this step.
      *
      * @var array
      */

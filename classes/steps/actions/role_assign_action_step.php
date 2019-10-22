@@ -31,7 +31,7 @@ class role_assign_action_step extends base_action_step {
     use \tool_trigger\helper\datafield_manager;
 
     /**
-     * The fields suplied by this step.
+     * The fields supplied by this step.
      *
      * @var array
      */
