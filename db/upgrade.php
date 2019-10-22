@@ -189,5 +189,20 @@ function xmldb_tool_trigger_upgrade($oldversion) {
         // Trigger savepoint reached.
         upgrade_plugin_savepoint(true, 2019021100, 'tool', 'trigger');
     }
+
+    if ($oldversion < 2019102200) {
+
+        // A new realtime field to the workflow table.
+        $table = new xmldb_table('tool_trigger_workflows');
+        $field = new xmldb_field('realtime', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, 0);
+
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Trigger savepoint reached.
+        upgrade_plugin_savepoint(true, 2019102200, 'tool', 'trigger');
+    }
+
     return true;
 }
