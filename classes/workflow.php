@@ -56,6 +56,11 @@ class workflow {
     public $active;
 
     /**
+     * @var int Is this workflow realtime.
+     */
+    public $realtime;
+
+    /**
      * @var int Is this workflow in draft mode.
      */
     public $draft;
@@ -90,6 +95,7 @@ class workflow {
         $this->id = $workflow->id;
         $this->event = $workflow->event;
         $this->active = $workflow->enabled;
+        $this->realtime = $workflow->realtime;
         $this->draft = $workflow->draft;
         $this->lasttriggered = $workflow->timetriggered;
 
