@@ -141,13 +141,11 @@ class role_assign_action_step extends base_action_step {
         $mform->setDefault('useridfield', 'userid');
         $mform->addHelpButton('useridfield', 'useridfield', 'tool_trigger');
 
-
         $mform->addElement('text', 'roleidfield', get_string('step_action_role_assign_roleidfield', 'tool_trigger'));
         $mform->setType('roleidfield', PARAM_ALPHANUMEXT);
         $mform->addRule('roleidfield', get_string('required'), 'required');
         $mform->setDefault('roleidfield', 'roleid');
         $mform->addHelpButton('roleidfield', 'roleidfield', 'tool_trigger');
-
 
         $mform->addElement('text', 'contextidfield', get_string('step_action_role_assign_contextidfield', 'tool_trigger'));
         $mform->setType('contextidfield', PARAM_ALPHANUMEXT);
