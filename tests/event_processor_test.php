@@ -76,6 +76,7 @@ class tool_trigger_event_processor_testcase extends advanced_testcase {
         $mdata->workflowdescription = 'When a user logs in, email me.';
         $mdata->eventtomonitor = '\core\event\user_loggedin';
         $mdata->workflowactive = 1;
+        $mdata->workflowrealtime = 0;
         $mdata->draftmode = 0;
         $mdata->isstepschanged = 1;
         $mdata->stepjson = json_encode([
@@ -162,10 +163,16 @@ class tool_trigger_event_processor_testcase extends advanced_testcase {
      * Test processing event.
      * Ensure details for a non ignored event end up in database.
      */
-    public function test_process_event() {
+    public function test_process_event_add_event_to_db() {
+        global $DB;
+        $this->create_workflow();
+
+        $this->assertEmpty($DB->get_records('tool_trigger_events'));
 
         $event = \core\event\user_loggedin::create($this->eventarr);
         \tool_trigger\event_processor::process_event($event);
+
+        $this->assertCount(1, $DB->get_records('tool_trigger_events'));
     }
 
 }
