@@ -34,7 +34,7 @@ global $CFG;
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-class tool_trigger_testcase extends advanced_testcase {
+abstract class tool_trigger_testcase extends advanced_testcase {
 
     /**
      * Helper function to create a test workflow.
