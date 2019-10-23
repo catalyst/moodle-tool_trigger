@@ -24,11 +24,15 @@
 
 namespace tool_trigger\task;
 
+use tool_trigger\helper\processor_helper;
+
 defined('MOODLE_INTERNAL') || die();
 /**
  * Simple task to rocess queued workflows.
  */
 class process_workflows extends \core\task\scheduled_task {
+    use processor_helper;
+
     /**
      * The task has been queued but not yet executed.
      */
@@ -84,12 +88,12 @@ class process_workflows extends \core\task\scheduled_task {
         global $DB;
         $triggerqueue = array();
 
-        // Get list of events to process that are not already in the queue.
+        // Get list of events to process that are not already in the queue for not real time workflows.
         $sql = "SELECT e.*, w.id as workflowid
                 FROM {tool_trigger_events} e
                 JOIN {tool_trigger_workflows} w ON w.event = e.eventname
                 LEFT JOIN {tool_trigger_queue} q ON q.eventid = e.id
-                WHERE w.enabled = 1 AND q.id IS NULL AND q.status IS NULL;";
+                WHERE w.enabled = 1 AND w.realtime = 0 AND q.id IS NULL AND q.status IS NULL;";
 
         $events = $DB->get_recordset_sql($sql);
         foreach ($events as $event) {
@@ -104,13 +108,13 @@ class process_workflows extends \core\task\scheduled_task {
             $triggerqueue[] = $trigger;
         }
         $events->close();
-        $DB->insert_records('tool_trigger_queue', $triggerqueue);
+        $this->insert_queue_records($triggerqueue);
     }
 
     private function process_queue($starttime) {
         global $DB;
 
-        // Now process queue.
+        // Now process queue including real time workflows that dumped records in the queue as couldn't process realtime.
         $sql = "SELECT q.id as qid, q.workflowid, q.status, q.tries, q.timecreated, q.timemodified, q.eventid
                   FROM {tool_trigger_queue} q
                   JOIN {tool_trigger_workflows} w ON w.id = q.workflowid
@@ -120,7 +124,7 @@ class process_workflows extends \core\task\scheduled_task {
         $queue = $DB->get_recordset_sql($sql, null, 0, self::LIMITQUEUE);
 
         foreach ($queue as $q) {
-            mtrace('Executing workflow: ' . $q->qid);
+            mtrace('Executing workflow: ' . $q->workflowid);
             $this->process_item($q);
 
             if (time() > ($starttime + self::MAXTIME)) {
@@ -129,32 +133,6 @@ class process_workflows extends \core\task\scheduled_task {
             }
         }
         $queue->close();
-    }
-
-    /**
-     * Returns an event from the log data.
-     *
-     * @param \stdClass $data Log data
-     * @return \core\event\base
-     */
-    private function restore_event($data) {
-
-        $extra = array('origin' => $data->origin, 'ip' => $data->ip, 'realuserid' => $data->realuserid);
-        $data = (array)$data;
-        $data['other'] = unserialize($data['other']);
-        if ($data['other'] === false) {
-            $data['other'] = array();
-        }
-        unset($data['origin']);
-        unset($data['ip']);
-        unset($data['realuserid']);
-        unset($data['id']);
-
-        if (!$event = \core\event\base::restore($data, $extra)) {
-            return null;
-        }
-
-        return $event;
     }
 
     private function process_item($item) {
@@ -166,38 +144,32 @@ class process_workflows extends \core\task\scheduled_task {
         $trigger->tries = $item->tries + 1;
         $trigger->timemodified = $item->timemodified;
 
-        $DB->update_record('tool_trigger_queue', $trigger);
+        $this->update_queue_record($trigger);
 
         // Update workflow record to state this workflow was attempted.
         $workflow = new \stdClass();
         $workflow->id = $item->workflowid;
         $workflow->timetriggered = time();
-        $DB->update_record('tool_trigger_workflows', $workflow);
+        $this->update_workflow_record($workflow);
 
-        $event = $this->restore_event(
-            $DB->get_record('tool_trigger_events', ['id' => $item->eventid])
-        );
-
-        $workflowmanager = new \tool_trigger\workflow_manager();
+        $event = $this->restore_event($this->get_event_record($item->eventid));
 
         // Get steps for this workflow.
-        $steps = $DB->get_records('tool_trigger_steps', array('workflowid' => $item->workflowid), 'steporder');
+        $steps = $this->get_workflow_steps($item->workflowid);
         $success = false;
-        $stepresults = [];
+
         foreach ($steps as $step) {
             // Update queue to say which step was last attempted.
             $trigger->laststep = $step->id;
             $trigger->timemodified = time();
-            $DB->update_record('tool_trigger_queue', $trigger);
+            $this->update_queue_record($trigger);
 
             mtrace('Execute workflow step: ' . $step->id . ', ' . $step->stepclass);
 
             try {
                 $outertransaction = $DB->is_transaction_started();
 
-                $stepobj = $workflowmanager->validate_and_make_step($step->stepclass, $step->data);
-
-                list($success, $stepresults) = $stepobj->execute($step, $trigger, $event, $stepresults);
+                $success = $this->execute_step($step,  $trigger, $event);
 
                 if (!$success) {
                     // Failed to execute this step, exit processing this trigger, but don't try again.
@@ -207,9 +179,9 @@ class process_workflows extends \core\task\scheduled_task {
 
             } catch (\Exception $e) {
                 // Errored out executing this step. Exit processing this trigger, and try again later(?)
-                $trigger->status = self::STATUS_READY_TO_RUN;
+                $trigger->status = self::STATUS_FINISHED_EARLY;
                 $trigger->timemodified = time();
-                $DB->update_record('tool_trigger_queue', $trigger);
+                $this->update_queue_record($trigger);
                 if (!empty($e->debuginfo)) {
 
                     mtrace("Debug info:");
@@ -236,7 +208,7 @@ class process_workflows extends \core\task\scheduled_task {
             $trigger->status = self::STATUS_FINISHED_EARLY;
         }
         $trigger->timemodified = time();
-        $DB->update_record('tool_trigger_queue', $trigger);
+        $this->update_queue_record($trigger);
 
     }
 }

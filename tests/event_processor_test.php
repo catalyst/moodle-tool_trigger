@@ -26,6 +26,8 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 
+require_once('tool_trigger_testcase.php');
+
 /**
  * Event processor unit tests.
  *
@@ -34,10 +36,9 @@ global $CFG;
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-class tool_trigger_event_processor_testcase extends advanced_testcase {
+class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
 
     public function setup() {
-        global $DB;
         $this->resetAfterTest(true);
 
         // Create an event. This _is_ easier to do via direct DB insertions.
@@ -62,53 +63,6 @@ class tool_trigger_event_processor_testcase extends advanced_testcase {
         // Run as the cron user.
         cron_setup_user();
 
-    }
-
-    /**
-     * Helper function to create a test workflow.
-     *
-     * @return int $workflowid The id of the created workflow.
-     */
-    public function create_workflow() {
-        $mdata = new \stdClass();
-        $mdata->workflowid = 0;
-        $mdata->workflowname = 'Email me about login';
-        $mdata->workflowdescription = 'When a user logs in, email me.';
-        $mdata->eventtomonitor = '\core\event\user_loggedin';
-        $mdata->workflowactive = 1;
-        $mdata->workflowrealtime = 0;
-        $mdata->draftmode = 0;
-        $mdata->isstepschanged = 1;
-        $mdata->stepjson = json_encode([
-                [
-                        'id' => 0,
-                        'type' => 'lookups',
-                        'stepclass' => '\tool_trigger\steps\lookups\user_lookup_step',
-                        'steporder' => '0',
-                        'name' => 'Get user data',
-                        'description' => 'Get user data',
-                        'useridfield' => 'userid',
-                        'outputprefix' => 'user_'
-                ],
-                [
-                        'id' => 0,
-                        'type' => 'actions',
-                        'stepclass' => '\tool_trigger\steps\actions\email_action_step',
-                        'steporder' => '1',
-                        'name' => 'Email user data to me',
-                        'description' => 'Email user data to me',
-                        'emailto' => \core_user::get_user_by_username('admin')->email,
-                        'emailsubject' => '{user_firstname} {user_lastname} logged in',
-                        'emailcontent' => '{user_email} logged in.'
-                ]
-        ]);
-
-        // Insert it into the database. (It seems like it'll be more robust to do this
-        // by calling workflow_process rather than doing it by hand.)
-        $workflowprocess = new \tool_trigger\workflow_process($mdata);
-        $workflowid = $workflowprocess->processform();
-
-        return $workflowid;
     }
 
     /**
@@ -175,4 +129,26 @@ class tool_trigger_event_processor_testcase extends advanced_testcase {
         $this->assertCount(1, $DB->get_records('tool_trigger_events'));
     }
 
+    /**
+     * Test processing real time event.
+     * Ensure realtime event processed and timetriggered updated in DB.
+     */
+    public function test_process_realtime_workflow() {
+        global $DB;
+
+        $now = time();
+
+        $workflowid = $this->create_workflow(1);
+        $timetriggered = $DB->get_field('tool_trigger_workflows', 'timetriggered', ['id' => $workflowid]);
+
+        $this->assertEmpty($timetriggered);
+        $this->assertEmpty($DB->get_records('tool_trigger_events'));
+
+        $event = \core\event\user_loggedin::create($this->eventarr);
+        \tool_trigger\event_processor::process_event($event);
+
+        $this->assertCount(1, $DB->get_records('tool_trigger_events'));
+        $timetriggered = $DB->get_field('tool_trigger_workflows', 'timetriggered', ['id' => $workflowid]);
+        $this->assertGreaterThanOrEqual($now, $timetriggered);
+    }
 }

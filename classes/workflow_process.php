@@ -178,10 +178,11 @@ class workflow_process {
     /**
      * Process the form.
      *
-     * @param int $now
+     * @param int $now Time now.
+     * @param bool $returnid Should return workflow ID?
      * @return boolean
      */
-    public function processform($now=0) {
+    public function processform($now=0, $returnid = false) {
         global $DB;
 
         if ($now == 0) {
@@ -241,6 +242,10 @@ class workflow_process {
         } catch (\Exception $e) {
             $transaction->rollback($e);
             $return = false;
+        }
+
+        if (!empty($returnid) && !empty($workflowid)) {
+            $return = $workflowid;
         }
 
         return $return;
