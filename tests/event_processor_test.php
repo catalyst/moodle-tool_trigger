@@ -148,6 +148,43 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
         \tool_trigger\event_processor::process_event($event);
 
         $this->assertCount(1, $DB->get_records('tool_trigger_events'));
+        $this->assertCount(0, $DB->get_records('tool_trigger_queue'));
+        $timetriggered = $DB->get_field('tool_trigger_workflows', 'timetriggered', ['id' => $workflowid]);
+        $this->assertGreaterThanOrEqual($now, $timetriggered);
+    }
+
+    /**
+     * Test processing real time event with an error will add a message to a queue to process later.
+     */
+    public function test_process_realtime_workflow_save_to_queue_if_failed() {
+        global $DB;
+
+        $now = time();
+        $steps = [
+            [
+                'id' => 0,
+                'type' => 'lookups',
+                'stepclass' => '\tool_trigger\steps\lookups\user_lookup_step',
+                'steporder' => '0',
+                'name' => 'Get user data',
+                'description' => 'Get user data',
+                'useridfield' => 'broken_field', // This should trigger exception on look up step.
+                'outputprefix' => 'user_'
+            ],
+        ];
+
+        $workflowid = $this->create_workflow(1, $steps);
+        $this->assertEmpty($DB->get_records('tool_trigger_events'));
+        $this->assertEmpty($DB->get_records('tool_trigger_queue'));
+
+        $event = \core\event\user_loggedin::create($this->eventarr);
+        \tool_trigger\event_processor::process_event($event);
+
+        // We should see debugging call with the failed step.
+        $this->assertDebuggingCalledCount(1);
+
+        $this->assertCount(1, $DB->get_records('tool_trigger_events'));
+        $this->assertCount(1, $DB->get_records('tool_trigger_queue'));
         $timetriggered = $DB->get_field('tool_trigger_workflows', 'timetriggered', ['id' => $workflowid]);
         $this->assertGreaterThanOrEqual($now, $timetriggered);
     }

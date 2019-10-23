@@ -107,7 +107,7 @@ class event_processor {
         $entry = $this->prepare_event($event);
 
         if (!$this->is_event_ignored($event)) { // If is not an ignore event then process.
-            $this->insert_event_entry($entry);
+            $entry['id'] = $this->insert_event_entry($entry);
             $this->process_realtime_workflows($entry);
         }
 
@@ -161,10 +161,12 @@ class event_processor {
      * Insert event data into the database.
      *
      * @param \stdClass $evententry Event data.
+     * @return int
      */
     private function insert_event_entry($evententry) {
         global $DB;
-        $DB->insert_record('tool_trigger_events', $evententry);
+
+        return $DB->insert_record('tool_trigger_events', $evententry);
     }
 
     /**
@@ -225,6 +227,8 @@ class event_processor {
                         $queuerecord->timemodified = time();
                         $queuerecord->laststep = 0;
                         $this->insert_queue_records([$queuerecord]);
+                        $success = true;
+                        break;
                     } finally {
                         if (!$outertransaction && $DB->is_transaction_started()) {
                             $DB->force_transaction_rollback();

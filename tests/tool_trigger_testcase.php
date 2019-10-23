@@ -40,9 +40,25 @@ class tool_trigger_testcase extends advanced_testcase {
      * Helper function to create a test workflow.
      *
      * @param int $realtime Is realtime workflow?
+     * @param array $steps A list of steps.
      * @return int $workflowid The id of the created workflow.
      */
-    public function create_workflow($realtime = 0) {
+    public function create_workflow($realtime = 0, $steps = []) {
+        if (empty($steps)) {
+            $steps = [
+                [
+                    'id' => 0,
+                    'type' => 'lookups',
+                    'stepclass' => '\tool_trigger\steps\lookups\user_lookup_step',
+                    'steporder' => '0',
+                    'name' => 'Get user data',
+                    'description' => 'Get user data',
+                    'useridfield' => 'userid',
+                    'outputprefix' => 'user_'
+                ],
+            ];
+        }
+
         $mdata = new \stdClass();
         $mdata->workflowid = 0;
         $mdata->workflowname = 'Email me about login';
@@ -52,18 +68,7 @@ class tool_trigger_testcase extends advanced_testcase {
         $mdata->workflowrealtime = $realtime;
         $mdata->draftmode = 0;
         $mdata->isstepschanged = 1;
-        $mdata->stepjson = json_encode([
-                [
-                        'id' => 0,
-                        'type' => 'lookups',
-                        'stepclass' => '\tool_trigger\steps\lookups\user_lookup_step',
-                        'steporder' => '0',
-                        'name' => 'Get user data',
-                        'description' => 'Get user data',
-                        'useridfield' => 'userid',
-                        'outputprefix' => 'user_'
-                ],
-        ]);
+        $mdata->stepjson = json_encode($steps);
 
         // Insert it into the database. (It seems like it'll be more robust to do this
         // by calling workflow_process rather than doing it by hand.)
