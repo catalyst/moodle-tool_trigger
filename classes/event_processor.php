@@ -200,11 +200,12 @@ class event_processor {
 
                 $event = $this->restore_event($evententry);
                 $steps = $this->get_workflow_steps($workflow->id);
+                $stepresults = [];
                 $success = false;
                 foreach ($steps as $step) {
                     try {
                         $outertransaction = $DB->is_transaction_started();
-                        $success = $this->execute_step($step,  new \stdClass(), $event);
+                        list($success, $stepresults) = $this->execute_step($step,  new \stdClass(), $event, $stepresults);
 
                         if (!$success) {
                             // Failed to execute this step, exit processing this trigger, but don't try again.

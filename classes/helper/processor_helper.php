@@ -64,18 +64,16 @@ trait processor_helper {
      * @param \stdClass $trigger The `tool_trigger_queue` record for this execution
      * of the workflow.
      * @param \core\event\base $event The deserialized event object that triggered this execution
+     * @param array $stepresults To pass to the step.
      *
-     * @return bool
+     * @return array
      */
-    public function execute_step($step, $trigger, $event) {
-        $stepresults = [];
-
+    public function execute_step($step, $trigger, $event, $stepresults) {
         $workflowmanager = new \tool_trigger\workflow_manager();
 
         $stepobj = $workflowmanager->validate_and_make_step($step->stepclass, $step->data);
-        list($success, $stepresults) = $stepobj->execute($step, $trigger, $event, $stepresults);
 
-        return $success;
+        return $stepobj->execute($step, $trigger, $event, $stepresults);
     }
 
     /**

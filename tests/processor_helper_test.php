@@ -117,8 +117,13 @@ class tool_trigger_processor_helper_testcase extends tool_trigger_testcase {
         $workflowid = $this->create_workflow();
         $steps = $DB->get_records('tool_trigger_steps', ['workflowid' => $workflowid]);
         foreach ($steps as $step) {
-            $result = $this->testclass->execute_step($step, new stdClass(), $event);
-            $this->assertTrue($result);
+            $result = $this->testclass->execute_step($step, new stdClass(), $event, []);
+            $this->assertCount(2, $result);
+            $this->assertTrue($result[0]);
+            $this->assertTrue(is_array($result[1]));
+            foreach ($result[1] as $key => $value) {
+                $this->assertContains('user_', $key);
+            }
         }
     }
 

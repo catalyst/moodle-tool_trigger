@@ -156,6 +156,7 @@ class process_workflows extends \core\task\scheduled_task {
 
         // Get steps for this workflow.
         $steps = $this->get_workflow_steps($item->workflowid);
+        $stepresults = [];
         $success = false;
 
         foreach ($steps as $step) {
@@ -169,7 +170,7 @@ class process_workflows extends \core\task\scheduled_task {
             try {
                 $outertransaction = $DB->is_transaction_started();
 
-                $success = $this->execute_step($step,  $trigger, $event);
+                list($success, $stepresults) = $this->execute_step($step,  $trigger, $event, $stepresults);
 
                 if (!$success) {
                     // Failed to execute this step, exit processing this trigger, but don't try again.
