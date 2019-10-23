@@ -179,7 +179,7 @@ class process_workflows extends \core\task\scheduled_task {
 
             } catch (\Exception $e) {
                 // Errored out executing this step. Exit processing this trigger, and try again later(?)
-                $trigger->status = self::STATUS_FINISHED_EARLY;
+                $trigger->status = self::STATUS_READY_TO_RUN;
                 $trigger->timemodified = time();
                 $this->update_queue_record($trigger);
                 if (!empty($e->debuginfo)) {
