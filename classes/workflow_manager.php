@@ -218,6 +218,7 @@ class workflow_manager {
 
         $matchedsteps = $this->get_step_class_names($steptype);
         $stepswithnames = $this->lookup_step_names($matchedsteps);
+        asort($stepswithnames);
 
         return $stepswithnames;
     }
