@@ -48,6 +48,7 @@ class tool_trigger_workflow_process_testcase extends advanced_testcase {
         $mdata->workflowdescription = 'test workflow description';
         $mdata->eventtomonitor = '\mod_scorm\event\user_report_viewed';
         $mdata->workflowactive = 1;
+        $mdata->workflowrealtime = 1;
         $mdata->draftmode = 0;
         $mdata->isstepschanged = 1;
         $mdata->stepjson = '[{"id":"0","type":"action","stepclass":"/steps/action/log_step",'
@@ -179,6 +180,7 @@ class tool_trigger_workflow_process_testcase extends advanced_testcase {
         $expected->workflowdescription = $expecteddescription;
         $expected->eventtomonitor = '\core\event\user_login_failed';
         $expected->workflowactive = 0;
+        $expected->workflowrealtime = 0;
         $expected->draftmode = 0;
         $expected->isstepschanged = 1;
         $expected->stepjson = json_encode($expectedsteps);

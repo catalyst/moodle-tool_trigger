@@ -24,6 +24,9 @@
 
 namespace tool_trigger;
 
+use tool_trigger\helper\processor_helper;
+use tool_trigger\task\process_workflows;
+
 defined('MOODLE_INTERNAL') || die();
 
 /**
@@ -34,6 +37,13 @@ defined('MOODLE_INTERNAL') || die();
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class event_processor {
+    use processor_helper;
+
+    /**
+     * Are we in the learning mode?
+     * @var bool
+     */
+    private $islearning;
 
     /** @var  static a reference to an instance of this class (using late static binding). */
     protected static $singleton;
@@ -49,6 +59,7 @@ class event_processor {
      * The observer monitoring all the events.
      *
      * @param \core\event\base $event event object.
+     * @return bool
      */
     public static function process_event(\core\event\base $event) {
 
@@ -96,7 +107,8 @@ class event_processor {
         $entry = $this->prepare_event($event);
 
         if (!$this->is_event_ignored($event)) { // If is not an ignore event then process.
-            $this->insert_event_entry($entry);
+            $entry['id'] = $this->insert_event_entry($entry);
+            $this->process_realtime_workflows($entry);
         }
 
         if ($this->islearning) { // If in learning mode then store event details.
@@ -149,10 +161,12 @@ class event_processor {
      * Insert event data into the database.
      *
      * @param \stdClass $evententry Event data.
+     * @return int
      */
     private function insert_event_entry($evententry) {
         global $DB;
-        $DB->insert_record('tool_trigger_events', $evententry);
+
+        return $DB->insert_record('tool_trigger_events', $evententry);
     }
 
     /**
@@ -165,4 +179,68 @@ class event_processor {
         $DB->insert_record('tool_trigger_learn_events', $learnentry);
     }
 
+    /**
+     * Process real time workflows associated with this event.
+     * @param \stdClass $evententry Event data.
+     */
+    private function process_realtime_workflows($evententry) {
+        global $DB;
+
+        // Disable moodle specific debug messages and any errors in output and log them to error log.
+        defined('NO_DEBUG_DISPLAY') || define('NO_DEBUG_DISPLAY', true);
+
+        $evententry = (object)$evententry;
+        $workflows = $DB->get_records(
+            'tool_trigger_workflows',
+            ['enabled' => 1, 'realtime' => 1, 'event' => $evententry->eventname]
+        );
+
+        foreach ($workflows as $workflow) {
+            try {
+                $workflow->timetriggered = time();
+                $this->update_workflow_record($workflow);
+
+                $event = $this->restore_event($evententry);
+                $steps = $this->get_workflow_steps($workflow->id);
+                $stepresults = [];
+                $success = false;
+                foreach ($steps as $step) {
+                    try {
+                        $outertransaction = $DB->is_transaction_started();
+                        list($success, $stepresults) = $this->execute_step($step,  new \stdClass(), $event, $stepresults);
+
+                        if (!$success) {
+                            // Failed to execute this step, exit processing this trigger, but don't try again.
+                            debugging('Execute workflow step: ' . $step->id . ', ' . $step->stepclass . ' Exiting workflow early');
+                            break;
+                        }
+                    } catch (\Exception $e) {
+                        debugging('Error execute workflow step: ' . $step->id . ', ' . $step->stepclass . ' ' . $e->getMessage());
+
+                        // Insert to the queue table and try to run again in cron.
+                        $queuerecord = new \stdClass();
+                        $queuerecord->workflowid = $workflow->id;
+                        $queuerecord->eventid = $evententry->id;
+                        $queuerecord->status = process_workflows::STATUS_READY_TO_RUN;
+                        $queuerecord->tries = 1;
+                        $queuerecord->timecreated = time();
+                        $queuerecord->timemodified = time();
+                        $queuerecord->laststep = 0;
+                        $this->insert_queue_records([$queuerecord]);
+                        $success = true;
+                        break;
+                    } finally {
+                        if (!$outertransaction && $DB->is_transaction_started()) {
+                            $DB->force_transaction_rollback();
+                        }
+                    }
+                }
+                if (!$success) {
+                    debugging('Error execute workflow: ' . $workflow->id . ' failed and will not be rerun.');
+                }
+            } catch (\Exception $exception) {
+                debugging('Error: processing real time workflow ' . $exception->getMessage(), $exception->getTrace());
+            }
+        }
+    }
 }

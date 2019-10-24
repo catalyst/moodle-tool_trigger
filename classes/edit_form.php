@@ -100,6 +100,15 @@ class edit_form extends \moodleform {
         $mform->addHelpButton('workflowactive', 'workflowactive', 'tool_trigger');
         $mform->setDefault('workflowactive', 1);
 
+        // Workflow realtime.
+        $mform->addElement('advcheckbox',
+            'workflowrealtime',
+            get_string ('workflowrealtime', 'tool_trigger'),
+            'Enable', array(), array(0, 1));
+        $mform->setType('workflowrealtime', PARAM_INT);
+        $mform->addHelpButton('workflowrealtime', 'workflowrealtime', 'tool_trigger');
+        $mform->setDefault('workflowrealtime', 0);
+
         // Hidden text field for step JSON.
         $mform->addElement('hidden', 'stepjson');
         $mform->setType('stepjson', PARAM_RAW_TRIMMED);

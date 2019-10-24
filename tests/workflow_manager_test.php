@@ -123,6 +123,7 @@ class tool_trigger_workflow_manager_testcase extends advanced_testcase {
         $mdata->workflowdescription = 'test workflow description';
         $mdata->eventtomonitor = '\mod_scorm\event\user_report_viewed';
         $mdata->workflowactive = 1;
+        $mdata->workflowrealtime = 0;
         $mdata->draftmode = 0;
         $mdata->isstepschanged = 1;
         $mdata->stepjson = '[{"useridfield":"userid","outputprefix":"user_","nodeleted":"1","stepdesc":"User lookup",'

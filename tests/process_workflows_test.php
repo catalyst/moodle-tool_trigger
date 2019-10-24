@@ -90,6 +90,7 @@ class tool_trigger_process_workflow_testcase extends advanced_testcase {
         $mdata->workflowdescription = 'When a user logs in, email me.';
         $mdata->eventtomonitor = '\core\event\user_loggedin';
         $mdata->workflowactive = 1;
+        $mdata->workflowrealtime = 0;
         $mdata->draftmode = 0;
         $mdata->isstepschanged = 1;
         $mdata->stepjson = json_encode([
