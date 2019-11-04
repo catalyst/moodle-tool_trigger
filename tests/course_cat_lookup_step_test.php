@@ -152,19 +152,8 @@ class tool_trigger_course_cat_lookup_step_testcase extends advanced_testcase {
      * @return array
      */
     public function hardcoded_category_id_data_provider() {
-        $this->category = $this->getDataGenerator()->create_category();
 
         return [
-            'Category id as int' => [
-                $this->category->id,
-                true,
-                false,
-            ],
-            'Category id as string' => [
-                (string)$this->category->id,
-                true,
-                false,
-            ],
             'Non-existing category id.' => [
                 777777,
                 false,
@@ -206,17 +195,56 @@ class tool_trigger_course_cat_lookup_step_testcase extends advanced_testcase {
             $this->expectExceptionMessageRegExp("/Specified category field not present in the workflow data:*/");
         }
 
-        list($status, $stepresults) = $step->execute(null, null, $this->event, []);
+        list($statusresult, $stepresults) = $step->execute(null, null, $this->event, []);
 
         if ($status) {
             $context = context_coursecat::instance($this->category->id);
-            $this->assertTrue($status);
+            $this->assertTrue($statusresult);
             $this->assertEquals($this->category->id, $stepresults['category_id']);
             $this->assertEquals($this->category->name, $stepresults['category_name']);
             $this->assertEquals($context->id, $stepresults['category_contextid']);
         } else {
-            $this->assertFalse($status);
+            $this->assertFalse($statusresult);
         }
     }
 
+    /**
+     * Test dynamic category id as int.
+     */
+    public function test_execute_category_id_integer() {
+        $step = new \tool_trigger\steps\lookups\course_cat_lookup_step(
+            json_encode([
+                'categoryidfield' => $this->category->id,
+                'outputprefix' => 'category_'
+            ])
+        );
+
+        list($status, $stepresults) = $step->execute(null, null, $this->event, []);
+
+        $context = context_coursecat::instance($this->category->id);
+        $this->assertTrue($status);
+        $this->assertEquals($this->category->id, $stepresults['category_id']);
+        $this->assertEquals($this->category->name, $stepresults['category_name']);
+        $this->assertEquals($context->id, $stepresults['category_contextid']);
+    }
+
+    /**
+     * Test dynamic category id as string.
+     */
+    public function test_execute_category_id_string() {
+        $step = new \tool_trigger\steps\lookups\course_cat_lookup_step(
+            json_encode([
+                'categoryidfield' => (string) $this->category->id,
+                'outputprefix' => 'category_'
+            ])
+        );
+
+        list($status, $stepresults) = $step->execute(null, null, $this->event, []);
+
+        $context = context_coursecat::instance($this->category->id);
+        $this->assertTrue($status);
+        $this->assertEquals($this->category->id, $stepresults['category_id']);
+        $this->assertEquals($this->category->name, $stepresults['category_name']);
+        $this->assertEquals($context->id, $stepresults['category_contextid']);
+    }
 }
