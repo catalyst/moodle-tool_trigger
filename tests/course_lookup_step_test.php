@@ -110,19 +110,8 @@ class tool_trigger_course_lookup_step_testcase extends advanced_testcase {
      * @return array
      */
     public function hardcoded_course_id_data_provider() {
-        $this->course = $this->getDataGenerator()->create_course();
 
         return [
-            'Course id as int' => [
-                $this->course->id,
-                true,
-                false,
-            ],
-            'Course id as string' => [
-                (string)$this->course->id,
-                true,
-                false,
-            ],
             'Non-existing Course id.' => [
                 777777,
                 false,
@@ -164,16 +153,56 @@ class tool_trigger_course_lookup_step_testcase extends advanced_testcase {
             $this->expectExceptionMessageRegExp("/Specified courseid field not present in the workflow data:*/");
         }
 
-        list($status, $stepresults) = $step->execute(null, null, $this->event, []);
+        list($statusresult, $stepresults) = $step->execute(null, null, $this->event, []);
 
         if ($status) {
             $context = context_course::instance($this->course->id);
-            $this->assertTrue($status);
+            $this->assertTrue($statusresult);
             $this->assertEquals($this->course->id, $stepresults['course_id']);
             $this->assertEquals($this->course->fullname, $stepresults['course_fullname']);
             $this->assertEquals($context->id, $stepresults['course_contextid']);
         } else {
-            $this->assertFalse($status);
+            $this->assertFalse($statusresult);
         }
+    }
+
+    /**
+     * Test for exception if course id entered directly with dynamic id as integer.
+     */
+    public function test_execute_course_id_integer() {
+        $step = new \tool_trigger\steps\lookups\course_lookup_step(
+            json_encode([
+                'courseidfield' => $this->course->id,
+                'outputprefix' => 'course_'
+            ])
+        );
+
+        list($status, $stepresults) = $step->execute(null, null, $this->event, []);
+
+        $context = context_course::instance($this->course->id);
+        $this->assertTrue($status);
+        $this->assertEquals($this->course->id, $stepresults['course_id']);
+        $this->assertEquals($this->course->fullname, $stepresults['course_fullname']);
+        $this->assertEquals($context->id, $stepresults['course_contextid']);
+    }
+
+    /**
+     * Test for exception if course id entered directly with dynamic id as string.
+     */
+    public function test_execute_course_id_string() {
+        $step = new \tool_trigger\steps\lookups\course_lookup_step(
+            json_encode([
+                'courseidfield' => (string)$this->course->id,
+                'outputprefix' => 'course_'
+            ])
+        );
+
+        list($status, $stepresults) = $step->execute(null, null, $this->event, []);
+
+        $context = context_course::instance($this->course->id);
+        $this->assertTrue($status);
+        $this->assertEquals($this->course->id, $stepresults['course_id']);
+        $this->assertEquals($this->course->fullname, $stepresults['course_fullname']);
+        $this->assertEquals($context->id, $stepresults['course_contextid']);
     }
 }
