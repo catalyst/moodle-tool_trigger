@@ -49,6 +49,16 @@ if ($workflowid) {
 $PAGE->set_title($pagetitlestr);
 $PAGE->set_heading($pagetitlestr);
 
+if ($node = $PAGE->settingsnav->find('root', \navigation_node::TYPE_SITE_ADMIN)) {
+    $PAGE->navbar->add($node->get_content(), $node->action());
+}
+foreach (array('tools', 'tool_trigger', 'tool_trigger_worfklowsettings') as $label) {
+    if ($node = $PAGE->settingsnav->find($label, \navigation_node::TYPE_SETTING)) {
+        $PAGE->navbar->add($node->get_content(), $node->action());
+    }
+}
+$PAGE->navbar->add($pagetitlestr);
+
 // Load the javascript.
 $PAGE->requires->js_call_amd('tool_trigger/step_select', 'init', array($context->id));
 

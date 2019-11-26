@@ -98,7 +98,10 @@ class renderable extends \table_sql implements \renderable {
      * @return string html used to display the column field.
      */
     public function col_name(\tool_trigger\workflow $workflow) {
-        return $workflow->get_name($this->context);
+        global $OUTPUT;
+
+        $editurl = new \moodle_url('/admin/tool/trigger/edit.php', array('workflowid' => $workflow->id));
+        return \html_writer::link($editurl, $workflow->get_name($this->context));
     }
 
     /**
@@ -148,22 +151,22 @@ class renderable extends \table_sql implements \renderable {
 
         $manage = '';
 
-        $editurl = new \moodle_url($CFG->wwwroot. '/admin/tool/trigger/edit.php', array('workflowid' => $workflow->id));
+        $editurl = new \moodle_url('/admin/tool/trigger/edit.php', array('workflowid' => $workflow->id));
         $icon = $OUTPUT->render(new \pix_icon('t/edit', get_string('editrule', 'tool_trigger')));
         $manage .= \html_writer::link($editurl, $icon, array('class' => 'action-icon'));
 
         // The user should always be able to copy the rule if they are able to view the page.
-        $copyurl = new \moodle_url($CFG->wwwroot. '/admin/tool/trigger/manageworkflow.php',
+        $copyurl = new \moodle_url('/admin/tool/trigger/manageworkflow.php',
                 array('workflowid' => $workflow->id, 'action' => 'copy', 'sesskey' => sesskey()));
         $icon = $OUTPUT->render(new \pix_icon('t/copy', get_string('duplicaterule', 'tool_trigger')));
         $manage .= \html_writer::link($copyurl, $icon, array('class' => 'action-icon'));
 
-        $deleteurl = new \moodle_url($CFG->wwwroot. '/admin/tool/trigger/manageworkflow.php', array('workflowid' => $workflow->id,
+        $deleteurl = new \moodle_url('/admin/tool/trigger/manageworkflow.php', array('workflowid' => $workflow->id,
                 'action' => 'delete', 'sesskey' => sesskey()));
         $icon = $OUTPUT->render(new \pix_icon('t/delete', get_string('deleterule', 'tool_trigger')));
         $manage .= \html_writer::link($deleteurl, $icon, array('class' => 'action-icon'));
 
-        $downloadurl = new \moodle_url($CFG->wwwroot. '/admin/tool/trigger/export.php', array('workflowid' => $workflow->id,
+        $downloadurl = new \moodle_url('/admin/tool/trigger/export.php', array('workflowid' => $workflow->id,
             'action' => 'download', 'sesskey' => sesskey()));
         $icon = $OUTPUT->render(new \pix_icon('t/download', get_string('downloadrule', 'tool_trigger')));
         $manage .= \html_writer::link($downloadurl, $icon, array('class' => 'action-icon'));
