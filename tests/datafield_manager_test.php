@@ -101,10 +101,10 @@ class tool_trigger_datafield_manager_testcase extends advanced_testcase {
 
         $templatestring = 'Good tag: {tagexists}.
 Bad tag: {nosuchtag}.
-Null tag: {nullvalue}
-Empty tag: {emptyvalue}
-Array tag: {arrayvalue}
-Object tag: {objectvalue}
+Null tag: {nullvalue}.
+Empty tag: {emptyvalue}.
+Array tag: {arrayvalue}.
+Object tag: {objectvalue}.
 Good tag again: {tagexists}.';
 
         $dfprovider = $this->getMockForTrait('\tool_trigger\helper\datafield_manager');
@@ -113,10 +113,10 @@ Good tag again: {tagexists}.';
         $populatedstring = $dfprovider->render_datafields($templatestring);
         $this->assertEquals('Good tag: tagvalue.
 Bad tag: {nosuchtag}.
-Null tag: 
-Empty tag: 
-Array tag: {arrayvalue}
-Object tag: {objectvalue}
+Null tag: .
+Empty tag: .
+Array tag: {arrayvalue}.
+Object tag: {objectvalue}.
 Good tag again: tagvalue.', $populatedstring);
     }
 
