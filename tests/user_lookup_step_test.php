@@ -64,10 +64,12 @@ class tool_trigger_user_lookup_testcase extends advanced_testcase {
      * Basic test, but this time with additional custom profile field.
      */
     public function test_execute_basic_with_custom_profile_fields() {
-        // Create user profile field.
-        $field = $this->add_user_custom_profile_field('testfield', 'text');
+        // Create user profile fields.
+        $field1 = $this->add_user_custom_profile_field('testfield1', 'text');
+        $field2 = $this->add_user_custom_profile_field('testfield2', 'text');
+
         // Populate data.
-        profile_save_data((object)['id' => $this->user1->id, 'profile_field_' . $field->shortname => 'User 1 Field Data']);
+        profile_save_data((object)['id' => $this->user1->id, 'profile_field_' . $field1->shortname => 'User 1 Field Data']);
 
         $step = new \tool_trigger\steps\lookups\user_lookup_step(
             json_encode([
@@ -82,7 +84,8 @@ class tool_trigger_user_lookup_testcase extends advanced_testcase {
         $this->assertTrue($status);
         $this->assertEquals($this->user1->username, $stepresults['user_username']);
         $this->assertEquals($this->user1->email, $stepresults['user_email']);
-        $this->assertEquals('User 1 Field Data', $stepresults['user_testfield']);
+        $this->assertEquals('User 1 Field Data', $stepresults['user_testfield1']);
+        $this->assertSame(null, $stepresults['user_testfield2']);
     }
 
     /**
