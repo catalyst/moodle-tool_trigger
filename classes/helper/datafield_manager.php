@@ -97,7 +97,7 @@ trait datafield_manager {
 
         if (isset($newfields['other']) && is_array($newfields['other'])) {
             foreach ($newfields['other'] as $key => $value) {
-                if (is_scalar($value)) {
+                if (is_scalar($value) || is_null($value)) {
                     $newfields["other_{$key}"] = $value;
                 }
             }
@@ -105,7 +105,7 @@ trait datafield_manager {
         }
 
         foreach ($stepresults as $key => $value) {
-            if (is_scalar($value)) {
+            if (is_scalar($value) || is_null($value)) {
                 $newfields[$key] = $value;
             }
         }

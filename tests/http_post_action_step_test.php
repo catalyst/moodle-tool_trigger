@@ -120,7 +120,7 @@ class tool_trigger_http_post_action_step_testcase extends advanced_testcase {
         $stepsettings = [
                 'url' => 'http://api.example.com/?returnurl={returnurl}&lang=en',
                 'httpheaders' => 'My-Special-Header: {headervalue}',
-                'httpparams' => 'a={a}&b={b}&c={c}&d=1',
+                'httpparams' => 'a={a}&b={b}&c={c}&d=1&e={e}',
                 'jsonencode' => '0'
         ];
         $step = new \tool_trigger\steps\actions\http_post_action_step(json_encode($stepsettings));
@@ -136,7 +136,8 @@ class tool_trigger_http_post_action_step_testcase extends advanced_testcase {
             // Check that these get properly urlencoded.
             'a' => '1005',
             'b' => '?.&=;',
-            'c' => 'c'
+            'c' => 'c',
+            'e' => null
         ];
 
         list($status) = $step->execute(null, null, $this->event, $prevstepresults);
@@ -161,7 +162,7 @@ class tool_trigger_http_post_action_step_testcase extends advanced_testcase {
 
         // The datafields in the request body should also be urlencoded.
         $this->assertEquals(
-            "a=1005&b=%3F.%26%3D%3B&c=c&d=1",
+            "a=1005&b=%3F.%26%3D%3B&c=c&d=1&e=",
             $request->getBody()->getContents()
         );
 
@@ -177,7 +178,7 @@ class tool_trigger_http_post_action_step_testcase extends advanced_testcase {
         $stepsettings = [
                 'url' => 'http://api.example.com/?returnurl={returnurl}&lang=en',
                 'httpheaders' => 'My-Special-Header: {headervalue}',
-                'httpparams' => 'a={a}&b={b}&c={c}&d=1',
+                'httpparams' => 'a={a}&b={b}&c={c}&d=1&e={e}',
                 'jsonencode' => '1'
         ];
         $step = new \tool_trigger\steps\actions\http_post_action_step(json_encode($stepsettings));
@@ -193,7 +194,8 @@ class tool_trigger_http_post_action_step_testcase extends advanced_testcase {
                 // Check that these get properly urlencoded.
                 'a' => '1005',
                 'b' => '?.&=;',
-                'c' => 'c'
+                'c' => 'c',
+                'e' => null
         ];
 
         list($status) = $step->execute(null, null, $this->event, $prevstepresults);
@@ -218,7 +220,7 @@ class tool_trigger_http_post_action_step_testcase extends advanced_testcase {
 
         // The datafields in the request body should be JSON encoded.
         $this->assertEquals(
-                '{"a":"1005","b":"?.","c":"c","d":"1"}',
+                '{"a":"1005","b":"?.","c":"c","d":"1","e":""}',
                 $request->getBody()->getContents()
                 );
 
