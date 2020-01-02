@@ -173,7 +173,7 @@ function xmldb_tool_trigger_upgrade($oldversion) {
 
     if ($oldversion < 2019021100) {
 
-        // Convert all old email text fields to new Atto fields
+        // Convert all old email text fields to new Atto fields.
         $sql = 'SELECT * FROM {tool_trigger_steps} WHERE stepclass = \'\tool_trigger\steps\actions\email_action_step\'';
         $rs = $DB->get_recordset_sql($sql, array());
         foreach ($rs as $record) {

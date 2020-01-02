@@ -85,7 +85,8 @@ class email_action_step extends base_action_step {
         $this->emailto = $this->data['emailto'];
         $this->emailsubject = $this->data['emailsubject'];
         $this->emailcontent = $this->data['emailcontent_editor[text]'];
-        $this->messageplain = format_text_email($this->data['emailcontent_editor[text]'], $this->data['emailcontent_editor[format]']);
+        $this->messageplain = format_text_email(
+            $this->data['emailcontent_editor[text]'], $this->data['emailcontent_editor[format]']);
     }
 
     /**

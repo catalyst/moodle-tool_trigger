@@ -25,6 +25,9 @@ This plugin currently supports Moodle:
 
 * 3.4
 * 3.5
+* 3.6
+* 3.7
+* 3.8
 
 ## Moodle Plugin Installation
 The following sections outline how to install the Moodle plugin.

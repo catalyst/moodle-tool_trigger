@@ -115,7 +115,8 @@ class tool_trigger_email_action_step_testcase extends advanced_testcase {
         $settings = [
             'emailto' => '{user_email}',
             'emailsubject' => 'User {userid} looked at your profile',
-            'emailcontent_editor[text]' => 'user {userid}, in course {other_courseid} aka "{other_courseshortname}" aka "{other_coursefullname}"',
+            'emailcontent_editor[text]' =>
+                'user {userid}, in course {other_courseid} aka "{other_courseshortname}" aka "{other_coursefullname}"',
             'emailcontent_editor[format]' => 0,
         ];
         $step = new \tool_trigger\steps\actions\email_action_step(json_encode($settings));
