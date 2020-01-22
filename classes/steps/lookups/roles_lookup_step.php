@@ -49,7 +49,7 @@ class roles_lookup_step extends base_lookup_step {
      *
      * @var array
      */
-    private static $stepfields = array('roles');
+    private static $stepfields = array('roleid');
 
     protected function init() {
         $this->useridfield = $this->data['useridfield'];
@@ -74,11 +74,9 @@ class roles_lookup_step extends base_lookup_step {
         $params = array('userid' => $datafields[$this->useridfield]);
         $userroles = $DB->get_records_sql($sql, $params);
         foreach ($userroles as $role) {
-            foreach ($role as $key => $value) {
-                if (is_scalar($role->roleid)) {
-                    $stepresults[$this->outputprefix . 'roles'][ $role->id][$key] = $value;
-                }
-            }
+			foreach($role as $key => $value){
+				$stepresults[$this->outputprefix . $key] = $value;
+			}
         }
         return [true, $stepresults];
     }
