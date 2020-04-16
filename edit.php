@@ -99,7 +99,7 @@ if ($mform->is_cancelled()) {
     if ($result) {
         redirect(new moodle_url('/admin/tool/trigger/manage.php'), get_string('changessaved'));
     } else {
-        redirect(new moodle_url('/admin/tool/trigger/manage.php'), get_tring('errorsavingworkflow'));
+        redirect(new moodle_url('/admin/tool/trigger/manage.php'), get_string('errorsavingworkflow'));
     }
 
 } else {

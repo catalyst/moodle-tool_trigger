@@ -43,7 +43,7 @@ abstract class tool_trigger_testcase extends advanced_testcase {
      * @param array $steps A list of steps.
      * @return int $workflowid The id of the created workflow.
      */
-    public function create_workflow($realtime = 0, $steps = []) {
+    public function create_workflow($realtime = 0, $steps = [], $debug = 0) {
         if (empty($steps)) {
             $steps = [
                 [
@@ -66,6 +66,7 @@ abstract class tool_trigger_testcase extends advanced_testcase {
         $mdata->eventtomonitor = '\core\event\user_loggedin';
         $mdata->workflowactive = 1;
         $mdata->workflowrealtime = $realtime;
+        $mdata->workflowdebug = $debug;
         $mdata->draftmode = 0;
         $mdata->isstepschanged = 1;
         $mdata->stepjson = json_encode($steps);

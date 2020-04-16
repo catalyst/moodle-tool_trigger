@@ -196,51 +196,522 @@ class event_processor {
         );
 
         foreach ($workflows as $workflow) {
-            try {
-                $workflow->timetriggered = time();
-                $this->update_workflow_record($workflow);
+            $this->process_realtime_workflow($workflow, $evententry);
+        }
+    }
 
-                $event = $this->restore_event($evententry);
-                $steps = $this->get_workflow_steps($workflow->id);
-                $stepresults = [];
-                $success = false;
-                foreach ($steps as $step) {
-                    try {
-                        $outertransaction = $DB->is_transaction_started();
-                        list($success, $stepresults) = $this->execute_step($step,  new \stdClass(), $event, $stepresults);
+    private function process_realtime_workflow($workflow, $evententry) {
+        global $DB;
 
-                        if (!$success) {
-                            // Failed to execute this step, exit processing this trigger, but don't try again.
-                            debugging('Execute workflow step: ' . $step->id . ', ' . $step->stepclass . ' Exiting workflow early');
-                            break;
-                        }
-                    } catch (\Exception $e) {
-                        debugging('Error execute workflow step: ' . $step->id . ', ' . $step->stepclass . ' ' . $e->getMessage());
+        try {
+            $workflow->timetriggered = time();
+            $this->update_workflow_record($workflow);
+            $runid = self::record_workflow_trigger($workflow->id, $evententry);
 
-                        // Insert to the queue table and try to run again in cron.
-                        $queuerecord = new \stdClass();
-                        $queuerecord->workflowid = $workflow->id;
-                        $queuerecord->eventid = $evententry->id;
-                        $queuerecord->status = process_workflows::STATUS_READY_TO_RUN;
-                        $queuerecord->tries = 1;
-                        $queuerecord->timecreated = time();
-                        $queuerecord->timemodified = time();
-                        $queuerecord->laststep = 0;
-                        $this->insert_queue_records([$queuerecord]);
-                        $success = true;
+            $event = $this->restore_event($evententry);
+            $steps = $this->get_workflow_steps($workflow->id);
+            $stepresults = [];
+            $success = false;
+            $prevstep = null;
+            foreach ($steps as $step) {
+                try {
+                    $outertransaction = $DB->is_transaction_started();
+                    list($success, $stepresults) = $this->execute_step($step,  new \stdClass(), $event, $stepresults);
+
+                    // Now record the steps into the history table, and update prevstep for the next iteration.
+                    if ($success && !empty($runid)) {
+                        $prevstep = self::record_step_trigger($step, $prevstep, $runid, $stepresults);
+                    } else if (!$success && !empty($runid)) {
+                        self::record_failed_step($prevstep, $runid);
+                    }
+
+                    if (!$success) {
+                        // Failed to execute this step, exit processing this trigger, but don't try again.
+                        debugging('Execute workflow step: ' . $step->id . ', ' . $step->stepclass . ' Exiting workflow early');
                         break;
-                    } finally {
-                        if (!$outertransaction && $DB->is_transaction_started()) {
-                            $DB->force_transaction_rollback();
-                        }
+                    }
+                } catch (\Exception $e) {
+                    debugging('Error execute workflow step: ' . $step->id . ', ' . $step->stepclass . ' ' . $e->getMessage());
+
+                    // Record step fail if debugging enabled.
+                    if (!empty($runid)) {
+                        self::record_failed_step($prevstep, $runid);
+                    }
+
+                    // Insert to the queue table and try to run again in cron.
+                    $queuerecord = new \stdClass();
+                    $queuerecord->workflowid = $workflow->id;
+                    $queuerecord->eventid = $evententry->id;
+                    $queuerecord->status = process_workflows::STATUS_READY_TO_RUN;
+                    $queuerecord->tries = 1;
+                    $queuerecord->timecreated = time();
+                    $queuerecord->timemodified = time();
+                    $queuerecord->laststep = 0;
+                    $this->insert_queue_records([$queuerecord]);
+                    $success = true;
+                    break;
+                } finally {
+                    if (!$outertransaction && $DB->is_transaction_started()) {
+                        $DB->force_transaction_rollback();
                     }
                 }
-                if (!$success) {
-                    debugging('Error execute workflow: ' . $workflow->id . ' failed and will not be rerun.');
-                }
-            } catch (\Exception $exception) {
-                debugging('Error: processing real time workflow ' . $exception->getMessage(), $exception->getTrace());
+            }
+            if (!$success) {
+                debugging('Error execute workflow: ' . $workflow->id . ' failed and will not be rerun.');
+            }
+        } catch (\Exception $exception) {
+            debugging('Error: processing real time workflow ' . $exception->getMessage(), $exception->getTrace());
+        }
+    }
+
+    /**
+     * This function records information about the workflow run for
+     * history and auditing.
+     *
+     * @param int $workflowid The workflow id to record.
+     * @param stdClass $event the event that triggered this workflow.
+     * @return int|null the id of the recorded workflow record or null.
+     */
+    public static function record_workflow_trigger(int $workflowid, $event) {
+        global $DB;
+
+        // First, check whether this should be recorded, if debug is enabled for the workflow id.
+        $debug = $DB->get_field('tool_trigger_workflows', 'debug', ['id' => $workflowid]);
+        // If the debug flag is false, exit out.
+        if (!$debug) {
+            return null;
+        }
+
+        // Get new run number.
+        $sqlfrag = "SELECT MAX(number) FROM {tool_trigger_workflow_hist} WHERE workflowid = :wfid";
+        $runnumber = $DB->get_field_sql($sqlfrag, array('wfid' => $workflowid)) + 1;
+
+        // Encode event data as JSON.
+        $eventdata = json_encode($event);
+
+        $id = $DB->insert_record('tool_trigger_workflow_hist', array(
+            'workflowid' => $workflowid,
+            'number' => $runnumber,
+            'timecreated' => time(),
+            'event' => $eventdata,
+            'eventid' => $event->id
+        ), true);
+
+        // Return the id for use in other tables.
+        return $id;
+    }
+
+    /**
+     * This records an execution of a step for historical and auditing purposes.
+     *
+     * @param stdClass $step the step object to store.
+     * @param integer $prevstep The previous step.
+     * @param integer $runid the run this step is in.
+     * @param array $stepresults the results from the stepexecution.
+     * @return int the id of the inserted step record.
+     */
+    public static function record_step_trigger($step, $prevstep, $runid, $stepresults) {
+        global $DB;
+
+        // Clone the step to allow modifications.
+        $clonestep = (array) $step;
+
+        if (empty($prevstep)) {
+            $clonestep['number'] = 0;
+        } else {
+            $clonestep['number'] = $DB->get_field('tool_trigger_run_hist', 'number', ['id' => $prevstep]) + 1;
+        }
+
+        // Unset step ID so this is inserted as a new record.
+        unset($clonestep['id']);
+        $clonestep['executed'] = time();
+        $clonestep['prevstepid'] = $prevstep;
+        $clonestep['runid'] = $runid;
+        $clonestep['results'] = json_encode($stepresults);
+
+        // If the stepconfigid isn't set, this is a new step record.
+        // It must be set to the id of the step we are copying.
+        // Else it should remain the same.
+        if (empty($clonestep['stepconfigid'])) {
+            $clonestep['stepconfigid'] = $step->id;
+        }
+
+        return $DB->insert_record('tool_trigger_run_hist', $clonestep, true);
+    }
+
+    /**
+     * This step will record the step that failed if a run was not successfully completed.
+     *
+     * @param int|null $laststep the last step completed sucessfully or null if no previous step.
+     * @param int $runid the id of the run.
+     * @return void
+     */
+    public static function record_failed_step($laststep, $runid) {
+        global $DB;
+        if (!empty($laststep)) {
+            $laststeprec = $DB->get_record('tool_trigger_run_hist', ['id' => $laststep]);
+            $failedstep = $laststeprec->number + 1;
+        } else {
+            // If no prevstep, run failed on step 0.
+            $failedstep = 0;
+        }
+
+        $DB->set_field('tool_trigger_workflow_hist', 'failedstep', $failedstep, ['id' => $runid]);
+    }
+
+    /**
+     * This gets all of the data required from the history tables, and reruns a step.
+     * If newrunid is supplied, it sets the runid of the new step execution to the newrunid
+     *
+     * @param int $stepid the id of the step from historic table.
+     * @param int $newrunid This is used to execute a step on a new workflow run.
+     * @return void
+     */
+    public static function execute_historic_step(int $stepid, int $newrunid = 0) {
+        global $DB;
+
+        // Get step data from DB.
+        $step = $DB->get_record('tool_trigger_run_hist', ['id' => $stepid]);
+        $eventdata = json_decode($DB->get_field('tool_trigger_workflow_hist', 'event', ['id' => $step->runid]));
+
+        // Set new run id to old ID if not supplied.
+        $newrunid = $newrunid !== 0 ? $newrunid : $step->runid;
+
+        $prevstep = $DB->get_record('tool_trigger_run_hist', ['id' => $step->prevstepid]);
+        // If there is no previous step, instantiate to default values.
+        if (!$prevstep) {
+            $stepresults = [];
+            $prevstepid = null;
+        } else {
+            $stepresults = json_decode($prevstep->results, true);
+            $prevstepid = $prevstep->id;
+        }
+
+        $processor = new \tool_trigger\event_processor();
+        $event = $processor->restore_event($eventdata);
+
+        list($success, $stepresults) = $processor->execute_step($step,  new \stdClass(), $event, $stepresults);
+        if ($success) {
+            self::record_step_trigger($step, $prevstepid, $newrunid, $stepresults);
+        }
+    }
+
+    /**
+     * This function takes a stepid to rerun, then finds the current
+     * configuration for that step, and executes it. If newprevid is supplied,
+     * then the step is logged with the newprevid as the previd.
+     * This is used when chaining calls of this from other functions to build
+     * a new run chain.
+     *
+     * @param int the stepid to trigger a new run of with new config.
+     * @param int $newprevid
+     * @return void
+     */
+    public static function execute_current_step(int $stepid, $newprevid = 0) {
+        global $DB;
+        // First get the historic step from id.
+        $step = $DB->get_record('tool_trigger_run_hist', ['id' => $stepid]);
+        $eventdata = json_decode($DB->get_field('tool_trigger_workflow_hist', 'event', ['id' => $step->runid]));
+
+        // Figure out if there was a previous step.
+        $prevstep = $DB->get_record('tool_trigger_run_hist', ['id' => $step->prevstepid]);
+        if (!$prevstep) {
+            $stepresults = [];
+            $prevstepid = null;
+        } else {
+            // If newprevid is supplied, this must be part of a longer rerun.
+            if ($newprevid !== 0) {
+                $stepresults = json_decode($DB->get_field('tool_trigger_run_hist', 'results', ['id' => $newprevid]), true);
+                $prevstepid = $newprevid;
+            } else {
+                $stepresults = json_decode($prevstep->results, true);
+                $prevstepid = $prevstep->id;
             }
         }
+
+        $processor = new \tool_trigger\event_processor();
+        $event = $processor->restore_event($eventdata);
+
+        // Now retrieve the new step config.
+        $newstep = $DB->get_record('tool_trigger_steps', ['id' => $step->stepconfigid]);
+
+        list($success, $stepresults) = $processor->execute_step($newstep,  new \stdClass(), $event, $stepresults);
+        if ($success) {
+            self::record_step_trigger($newstep, $prevstepid, $step->runid, $stepresults);
+        }
+    }
+
+    /**
+     * This function takes a historic stepid, finds the next step in the chain, and triggers a new run of it.
+     * If newrunid is supplied, this will update the runid to the new supplied value.
+     *
+     * @param int $stepid
+     * @param int $newprevid The new previd to update the step to.
+     * @param int $newrunid A new run id to log
+     * @return array|null An array of the step that was just executed, and the resulting id.
+     */
+    public static function execute_next_step_historic(int $stepid, int $origrun = 0, $newprevid = 0, $newrunid = 0) {
+        global $DB;
+
+        // Get step data from DB.
+        $step = $DB->get_record('tool_trigger_run_hist', ['id' => $stepid]);
+        $eventdata = json_decode($DB->get_field('tool_trigger_workflow_hist', 'event', ['id' => $step->runid]));
+
+        $origrun = $origrun !== 0 ? $origrun : $step->runid;
+
+        // Now we need to get the min id instance of the step that follows the original step.
+        $nextstepsql = "SELECT *
+                          FROM {tool_trigger_run_hist}
+                         WHERE workflowid = :workflow
+                           AND runid = :run
+                           AND number = :number
+                           AND id > :previd
+                      ORDER BY id ASC
+                         LIMIT 1";
+
+        // If original ID is supplied, we should get next step on from the original id.
+        // This is used when chaining historical runs.
+        $params = [
+            'workflow' => $step->workflowid,
+            'run' => $origrun,
+            'number' => $step->number + 1,
+            'previd' => $step->id
+        ];
+        $nextstep = $DB->get_record_sql($nextstepsql, $params);
+
+        // If no nextstep is found, return false.
+        if (!$nextstep) {
+            return null;
+        }
+
+        // If new Runid is supplied, update the events.
+        $runid = $newrunid !== 0 ? $newrunid : $step->runid;
+        // Now perform a 'rerun' on this step, except it is based on the new step created above.
+        $processor = new \tool_trigger\event_processor();
+        $event = $processor->restore_event($eventdata);
+        // If new previd is supplied, we are in a chain, must base off new event in the chain.
+        if ($newprevid !== 0) {
+            $previd = $newprevid !== 0 ? $newprevid : $step->id;
+            $stepresults = json_decode($DB->get_field('tool_trigger_run_hist', 'results', ['id' => $previd]), true);
+        } else {
+            $previd = $step->id;
+            $stepresults = json_decode($step->results, true);
+        }
+
+        list($success, $stepresults) = $processor->execute_step($nextstep,  new \stdClass(), $event, $stepresults);
+        if ($success) {
+            self::record_step_trigger($nextstep, $previd, $runid, $stepresults);
+        }
+
+        // Select the highest id of matching step type for newly executed step.
+        $newstepsql = "SELECT *
+                  FROM {tool_trigger_run_hist}
+                 WHERE workflowid = :workflow
+                   AND runid = :run
+                   AND name = :stepname
+                   AND id > :previd
+              ORDER BY id DESC
+                 LIMIT 1";
+        $newstep = $DB->get_record_sql($newstepsql, [
+            'workflow' => $nextstep->workflowid,
+            'run' => $runid,
+            'stepname' => $nextstep->name,
+            'previd' => $previd
+        ]);
+
+        // Return the ID just executed for use in moving through the historic chain.
+        return [$nextstep->id, $newstep->id];
+    }
+
+    /**
+     * This function takes a step, and executes the next step in the chain, using current config.
+     *
+     * @param integer $stepid the step id to rerun
+     * @return integer the ID of the executed step.
+     */
+    public static function execute_next_step_current(int $stepid) {
+        global $DB;
+
+        // Get step data from DB.
+        $step = $DB->get_record('tool_trigger_run_hist', ['id' => $stepid]);
+
+        // Now we need to get the most recent instance of the step that follows this step.
+        $nextstepsql = "SELECT *
+                          FROM {tool_trigger_run_hist}
+                         WHERE workflowid = :workflow
+                           AND runid = :run
+                           AND number = :number
+                      ORDER BY id DESC
+                         LIMIT 1";
+        $nextstep = $DB->get_record_sql($nextstepsql, [
+            'workflow' => $step->workflowid,
+            'run' => $step->runid,
+            'number' => $step->number + 1
+        ]);
+
+        // If no nextstep is found, jump out.
+        if (!$nextstep) {
+            return false;
+        }
+
+        // Otherwise, we can fire a rerun of nextstep with current config, passing in the new previd.
+        self::execute_current_step($nextstep->id, $step->id);
+
+        // Now lookup the ID of the newly created step, and return it.
+        // Select the highest id of matching step type.
+        $newstepsql = "SELECT id
+                  FROM {tool_trigger_run_hist}
+                 WHERE workflowid = :workflow
+                   AND runid = :run
+                   AND name = :stepname
+              ORDER BY id DESC
+                 LIMIT 1";
+        $newstepid = $DB->get_field_sql($newstepsql, [
+            'workflow' => $nextstep->workflowid,
+            'run' => $nextstep->runid,
+            'stepname' => $nextstep->name
+        ]);
+        return $newstepid;
+    }
+
+    /**
+     * This function takes a stepid, reruns the step, then triggers the
+     * next step in the workflow based on the results from the rerun.
+     * If the $completerun param is supplied, it will continue executing
+     * steps until the end of the workflow.
+     * If $newrunid is supplied, all steps will have their runid set to the newrunid.
+     *
+     * @param int $stepid the step to execute from.
+     * @param boolean $completerun Whether to run until run completion.
+     * @param int $newrunid The runid to move executed steps onto.
+     * @return void
+     */
+    public static function execute_step_and_continue_historic(int $stepid, bool $completerun = false, $newrunid = 0) {
+        global $DB;
+        $step = $DB->get_record('tool_trigger_run_hist', ['id' => $stepid]);
+
+        // Set new run id to old ID if not supplied.
+        $newrunid = $newrunid !== 0 ? $newrunid : $step->runid;
+
+        // Call the single step rerun function, then get the resulting object.
+        self::execute_historic_step($stepid, $newrunid);
+        // Select the highest id of matching step type.
+        $newstepsql = "SELECT *
+                  FROM {tool_trigger_run_hist}
+                 WHERE workflowid = :workflow
+                   AND runid = :run
+                   AND name = :stepname
+              ORDER BY id DESC
+                 LIMIT 1";
+        $newstep = $DB->get_record_sql($newstepsql, [
+            'workflow' => $step->workflowid,
+            'run' => $newrunid,
+            'stepname' => $step->name
+        ]);
+
+        // Now execute the next step in the historic chain.
+        $idarr = self::execute_next_step_historic($step->id, $step->runid, $newstep->id, $newrunid);
+
+        // Now if we are completing the entire run, we need to use the id keep iterating till we get a false.
+        if ($completerun) {
+            while (!empty($idarr)) {
+                $idarr = self::execute_next_step_historic($idarr[0], $step->runid, $idarr[1], $newrunid);
+            }
+        }
+    }
+
+    /**
+     * This function takes a stepid, reruns the step, then triggers the
+     * next step in the workflow based on the results from the rerun.
+     * If the $completerun param is supplied, it will continue executing
+     * steps until the end of the workflow.
+     *
+     * @param int $stepid
+     * @param boolean $completerun
+     * @return void
+     */
+    public static function execute_step_and_continue_current(int $stepid, bool $completerun = false) {
+        global $DB;
+        $step = $DB->get_record('tool_trigger_run_hist', ['id' => $stepid]);
+
+        // Call the single step rerun function, then get the resulting object.
+        self::execute_current_step($stepid);
+        // Select the highest id of matching step type.
+        $newstepsql = "SELECT *
+                  FROM {tool_trigger_run_hist}
+                 WHERE workflowid = :workflow
+                   AND runid = :run
+                   AND name = :stepname
+              ORDER BY id DESC
+                 LIMIT 1";
+        $newstep = $DB->get_record_sql($newstepsql, [
+            'workflow' => $step->workflowid,
+            'run' => $step->runid,
+            'stepname' => $step->name
+        ]);
+
+        // Now execute the next step, based on the step we just created.
+        $id = self::execute_next_step_current($newstep->id);
+
+        // Now if we are completing the entire run, we need to use the id keep iterating till we get a false.
+        if ($completerun) {
+            while ($id !== false) {
+                $id = self::execute_next_step_current($id);
+            }
+        }
+    }
+
+    /**
+     * This function takes a workflow, and reruns it exactly.
+     *
+     * @param int $runid the runid to rerun exactly.
+     * @return void
+     */
+    public static function execute_workflow_from_event_historic(int $runid) {
+        global $DB;
+        $runrecord = $DB->get_record('tool_trigger_workflow_hist', ['id' => $runid]);
+        // We just need to get the first step id that was in the chain for this runid,
+        // Then rerun to completion with historic configuration.
+        $sql = "SELECT id
+                  FROM {tool_trigger_run_hist}
+                 WHERE runid = :runid
+              ORDER BY id ASC
+                 LIMIT 1";
+        $firststepid = $DB->get_field_sql($sql, ['runid' => $runid]);
+
+        // Manually add a Workflow trigger record.
+        $eventdata = json_decode($runrecord->event);
+        self::record_workflow_trigger($runrecord->workflowid, $eventdata);
+
+        // Now lets find the new run id, to supply to the rerun chain.
+        $newrunidsql = "SELECT id
+                          FROM {tool_trigger_workflow_hist}
+                         WHERE workflowid = :workflowid
+                      ORDER BY id DESC
+                         LIMIT 1";
+        $newrunid = $DB->get_field_sql($newrunidsql, ['workflowid' => $runrecord->workflowid]);
+
+        // Finally, kick off the rerun.
+        self::execute_step_and_continue_historic($firststepid, true, $newrunid);
+    }
+
+    /**
+     * This gets the event that fired a workflow, and reruns the current workflow configuration
+     * against that event.
+     *
+     * @param int $runid the id to use the event from.
+     * @return void
+     */
+    public static function execute_workflow_from_event_current(int $runid) {
+        global $DB;
+        $runrecord = $DB->get_record('tool_trigger_workflow_hist', ['id' => $runid]);
+        $workflow = $DB->get_record('tool_trigger_workflows', ['id' => $runrecord->workflowid]);
+        $evententry = json_decode($runrecord->event);
+
+        // Force the debug flag in the workflow on, so it is always recorded if manually triggered.
+        $workflow->debug = 1;
+
+        $processor = new \tool_trigger\event_processor();
+        $processor->process_realtime_workflow($workflow, $evententry);
     }
 }

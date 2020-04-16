@@ -45,6 +45,10 @@ matrix:
       env: DB=pgsql MOODLE_BRANCH=master
     - php: 7.0
       env: DB=mysqli MOODLE_BRANCH=master
+    - php: 7.1
+      env: DB=pgsql MOODLE_BRANCH=master
+    - php: 7.1
+      env: DB=mysqli MOODLE_BRANCH=master
     - php: 7.0
       env: DB=pgsql MOODLE_BRANCH=MOODLE_38_STABLE
     - php: 7.0
@@ -86,6 +90,7 @@ script:
   - moodle-plugin-ci validate
   - moodle-plugin-ci savepoints
   - moodle-plugin-ci mustache
-  - moodle-plugin-ci grunt
+# Grunt is currently broken due to a new way of building JS on 3.8+
+#  - moodle-plugin-ci grunt
   - moodle-plugin-ci phpunit
   - moodle-plugin-ci behat

@@ -52,5 +52,14 @@ $tasks = array(
         'day' => '*',
         'dayofweek' => '*',
         'month' => '*'
+    ),
+    array(
+        'classname' => 'tool_trigger\task\cleanup_history',
+        'blocking' => 0,
+        'minute' => 'R',
+        'hour' => '0',
+        'day' => '*',
+        'dayofweek' => '*',
+        'month' => '*'
     )
 );

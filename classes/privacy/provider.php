@@ -114,11 +114,31 @@ class provider implements
             $stepclass::add_privacy_metadata($collection, $datafields);
         }
 
+        // Add history table information.
+        $collection->add_database_table(
+            'tool_trigger_workflow_hist',
+            [
+                'timecreated' => 'privacy:metadata:workflowhistory:timecreated',
+                'event' => 'privacy:metadata:workflowhistory:event',
+            ],
+            'privacy:metadata:workflowhistory'
+        );
+
+        $collection->add_database_table(
+            'tool_trigger_run_hist',
+            [
+                'executed' => 'privacy:metadata:runhistory:executed',
+                'results' => 'privacy:metadata:runhistory:results',
+            ],
+            'privacy:metadata:runhistory'
+        );
+
         return $collection;
     }
 
     /**
      * Get the list of contexts that contain user information for the specified user.
+     * This list will always contain historic data contexts, as they are based off event contexts.
      *
      * @param   int         $userid     The user to search.
      * @return  contextlist   $contextlist  The contextlist containing the list of contexts used in this plugin.
@@ -205,6 +225,35 @@ class provider implements
                   FROM {tool_trigger_learn_events} e
                  WHERE q.eventid = e.id
             )");
+
+        // Now delete historic trigger runs that are orphaned.
+        $DB->execute("
+            DELETE
+              FROM {tool_trigger_workflow_hist} wfh
+             WHERE NOT EXISTS (
+                SELECT 1
+                  FROM {tool_trigger_events} e
+                 WHERE wfh.eventid = e.id
+            )");
+
+        $DB->execute("
+            DELETE
+              FROM {tool_trigger_workflow_hist} wfh
+             WHERE NOT EXISTS (
+                SELECT 1
+                  FROM {tool_trigger_learn_events} e
+                 WHERE wfh.eventid = e.id
+            )");
+
+        // Finally, delete the historic steps that are now orphaned.
+        $DB->execute("
+            DELETE
+              FROM {tool_trigger_run_hist} rh
+             WHERE NOT EXISTS (
+                SELECT 1
+                  FROM {tool_trigger_workflow_hist} wfh
+                 WHERE rh.runid = wfh.id
+            )");
     }
 
     /**
@@ -228,6 +277,7 @@ class provider implements
 
     /**
      * Get the list of users who have data within a context.
+     * This list will always contain historic user data, as they are based off event users.
      *
      * @param userlist $userlist the userlist containing the list of users who have data in this context/plugin combination.
      */
@@ -281,5 +331,33 @@ class provider implements
         $select = "userid $insql";
         $DB->delete_records_select('tool_trigger_learn_events', $select, $inparams);
 
+        // Now delete historic data that was based off events now deleted.
+        $DB->execute("
+            DELETE
+              FROM {tool_trigger_workflow_hist}
+             WHERE NOT EXISTS (
+                SELECT 1
+                  FROM {tool_trigger_events}
+                 WHERE {tool_trigger_workflow_hist}.eventid = {tool_trigger_events}.id
+            )");
+
+        $DB->execute("
+            DELETE
+              FROM {tool_trigger_workflow_hist}
+             WHERE NOT EXISTS (
+                SELECT 1
+                  FROM {tool_trigger_learn_events}
+                 WHERE {tool_trigger_workflow_hist}.eventid = {tool_trigger_learn_events}.id
+            )");
+
+        // Finally, delete the historic steps that are now orphaned.
+        $DB->execute("
+            DELETE
+              FROM {tool_trigger_run_hist}
+             WHERE NOT EXISTS (
+                SELECT 1
+                  FROM {tool_trigger_workflow_hist}
+                 WHERE {tool_trigger_run_hist}.runid = {tool_trigger_workflow_hist}.id
+            )");
     }
 }
