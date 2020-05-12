@@ -96,6 +96,7 @@ class workflow {
         $this->event = $workflow->event;
         $this->active = $workflow->enabled;
         $this->realtime = $workflow->realtime;
+        $this->debug = $workflow->debug;
         $this->draft = $workflow->draft;
         $this->lasttriggered = $workflow->timetriggered;
 

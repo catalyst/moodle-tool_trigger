@@ -67,6 +67,7 @@ class renderable extends \table_sql implements \renderable {
                 'realtime',
                 'numsteps',
                 'lasttriggered',
+                'triggerhistory',
                 'manage'
         ));
         $this->define_headers(array(
@@ -77,6 +78,7 @@ class renderable extends \table_sql implements \renderable {
                 get_string('realtime', 'tool_trigger'),
                 get_string('numsteps', 'tool_trigger'),
                 get_string('lasttriggered', 'tool_trigger'),
+                get_string('triggerhistory', 'tool_trigger'),
                 get_string('manage', 'tool_trigger'),
             )
         );
@@ -138,6 +140,11 @@ class renderable extends \table_sql implements \renderable {
         } else {
             return $workflow->event;
         }
+    }
+
+    public function col_triggerhistory(\tool_trigger\workflow $workflow) {
+        $url = new \moodle_url('/admin/tool/trigger/history.php', array('workflow' => $workflow->id));
+        return \html_writer::link($url, get_string('workflowviewhistory', 'tool_trigger'));
     }
 
     /**

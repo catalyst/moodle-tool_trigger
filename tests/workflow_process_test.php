@@ -49,6 +49,7 @@ class tool_trigger_workflow_process_testcase extends advanced_testcase {
         $mdata->eventtomonitor = '\mod_scorm\event\user_report_viewed';
         $mdata->workflowactive = 1;
         $mdata->workflowrealtime = 1;
+        $mdata->workflowdebug = 0;
         $mdata->draftmode = 0;
         $mdata->isstepschanged = 1;
         $mdata->stepjson = '[{"id":"0","type":"action","stepclass":"/steps/action/log_step",'

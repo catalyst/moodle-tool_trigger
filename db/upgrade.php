@@ -204,5 +204,75 @@ function xmldb_tool_trigger_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2019102200, 'tool', 'trigger');
     }
 
+    if ($oldversion < 2020050100) {
+
+        // Define table tool_trigger_workflow_hist to be created.
+        $table = new xmldb_table('tool_trigger_workflow_hist');
+
+        // Adding fields to table tool_trigger_workflow_hist.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('workflowid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('number', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '15', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('eventid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('event', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $table->add_field('failedstep', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+
+        // Adding keys to table tool_trigger_workflow_hist.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('eventid', XMLDB_KEY_FOREIGN, array('eventid'), 'tool_trigger_events', array('id'));
+
+        // Conditionally launch create table for tool_trigger_workflow_hist.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Define table tool_trigger_run_hist to be created.
+        $table = new xmldb_table('tool_trigger_run_hist');
+
+        // Adding fields to table tool_trigger_run_hist.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('workflowid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('runid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('name', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('description', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $table->add_field('type', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('stepclass', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('data', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $table->add_field('steporder', XMLDB_TYPE_INTEGER, '4', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('timemodified', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('executed', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0');
+        $table->add_field('prevstepid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('number', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('results', XMLDB_TYPE_TEXT, null, null, null, null, null);
+        $table->add_field('stepconfigid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+
+        // Adding keys to table tool_trigger_run_hist.
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('workflowid', XMLDB_KEY_FOREIGN, array('workflowid'), 'tool_trigger_workflows', array('id'));
+        $table->add_key('run', XMLDB_KEY_FOREIGN, array('runid'), 'tool_trigger_workflow_hist', array('id'));
+
+        // Adding indexes to table tool_trigger_run_hist.
+        $table->add_index('class', XMLDB_INDEX_NOTUNIQUE, array('stepclass'));
+
+        // Conditionally launch create table for tool_trigger_run_hist.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Define field debug to be added to tool_trigger_workflows.
+        $table = new xmldb_table('tool_trigger_workflows');
+        $field = new xmldb_field('debug', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, '0', 'draft');
+
+        // Conditionally launch add field debug.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Trigger savepoint reached.
+        upgrade_plugin_savepoint(true, 2020050100, 'tool', 'trigger');
+    }
+
     return true;
 }

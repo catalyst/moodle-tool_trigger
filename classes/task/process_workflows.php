@@ -149,6 +149,7 @@ class process_workflows extends \core\task\scheduled_task {
         // Update workflow record to state this workflow was attempted.
         $workflow = new \stdClass();
         $workflow->id = $item->workflowid;
+        $runid = \tool_trigger\event_processor::record_workflow_trigger($workflow->id, $this->get_event_record($item->eventid));
         $workflow->timetriggered = time();
         $this->update_workflow_record($workflow);
 
@@ -158,6 +159,7 @@ class process_workflows extends \core\task\scheduled_task {
         $steps = $this->get_workflow_steps($item->workflowid);
         $stepresults = [];
         $success = false;
+        $prevstep = null;
 
         foreach ($steps as $step) {
             // Update queue to say which step was last attempted.
@@ -171,6 +173,12 @@ class process_workflows extends \core\task\scheduled_task {
                 $outertransaction = $DB->is_transaction_started();
 
                 list($success, $stepresults) = $this->execute_step($step,  $trigger, $event, $stepresults);
+
+                if ($success && !empty($runid)) {
+                    $prevstep = \tool_trigger\event_processor::record_step_trigger($step, $prevstep, $runid, $stepresults);
+                } else if (!$success && !empty($runid)) {
+                    \tool_trigger\event_processor::record_failed_step($prevstep, $runid);
+                }
 
                 if (!$success) {
                     // Failed to execute this step, exit processing this trigger, but don't try again.
@@ -190,6 +198,12 @@ class process_workflows extends \core\task\scheduled_task {
                 }
                 mtrace("Backtrace:");
                 mtrace(format_backtrace($e->getTrace(), true));
+
+                // Record the failed step for debugging.
+                if (!empty($runid)) {
+                    \tool_trigger\event_processor::record_failed_step($prevstep, $runid);
+                }
+
                 return;
 
             } finally {

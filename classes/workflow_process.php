@@ -83,6 +83,7 @@ class workflow_process {
             'draftmode' => $workflow->draft,
             'workflowactive' => $workflow->active,
             'workflowrealtime' => $workflow->realtime,
+            'workflowdebug' => $workflow->debug,
             'stepjson' => $this->encode_steps_to_json_for_form($workflow)
         ];
     }
@@ -201,6 +202,7 @@ class workflow_process {
         $workflowrecord->event = $formdata->eventtomonitor;
         $workflowrecord->enabled = $formdata->workflowactive;
         $workflowrecord->realtime = $formdata->workflowrealtime;
+        $workflowrecord->debug = $formdata->workflowdebug;
         $workflowrecord->draft = $formdata->draftmode;
         $workflowrecord->timecreated = $now;
         $workflowrecord->timemodified = $now;
