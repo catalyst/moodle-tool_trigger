@@ -915,6 +915,7 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
         $DB->set_field('tool_trigger_steps', 'description', 'New description', ['type' => 'lookups']);
 
         // Now rerun and compare the 2 runs.
+        \cache_helper::purge_by_definition('tool_trigger', 'eventsubscriptions');
         \tool_trigger\event_processor::execute_workflow_from_event_current($firstrun->id);
         $records = $DB->get_records('tool_trigger_workflow_hist', []);
         $secondrun = end($records);
@@ -974,6 +975,7 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
         $firstrun = $DB->get_record('tool_trigger_workflow_hist', []);
 
         // Now rerun and compare the 2 runs.
+        \cache_helper::purge_by_definition('tool_trigger', 'eventsubscriptions');
         \tool_trigger\event_processor::execute_workflow_from_event_historic($firstrun->id);
         $records = $DB->get_records('tool_trigger_workflow_hist', []);
         $secondrun = end($records);

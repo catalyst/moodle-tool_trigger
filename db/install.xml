@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="admin/tool/trigger/db" VERSION="20200430" COMMENT="XMLDB file for Moodle admin/tool/trigger"
+<XMLDB PATH="admin/tool/trigger/db" VERSION="20200619" COMMENT="XMLDB file for Moodle admin/tool/trigger"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../../lib/xmldb/xmldb.xsd"
 >
@@ -152,6 +152,7 @@
         <FIELD NAME="eventid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="ID of the event in the events table."/>
         <FIELD NAME="event" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="The event data that triggered this run"/>
         <FIELD NAME="failedstep" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="A field to hold the last failed step number for the run."/>
+        <FIELD NAME="errorstep" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="The step that had an error, if there was one."/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

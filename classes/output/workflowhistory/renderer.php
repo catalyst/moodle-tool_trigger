@@ -23,6 +23,9 @@
  */
 
 namespace tool_trigger\output\workflowhistory;
+
+use single_button;
+
 defined('MOODLE_INTERNAL') || die;
 require_once(__DIR__.'/run.php');
 require_once(__DIR__.'/workflow.php');
@@ -54,6 +57,11 @@ class renderer extends \plugin_renderer_base {
                 'params' => ['workflow' => $workflowid, 'run' => $run]
             ];
         } else {
+            // We want to ouput some buttons before drawing the table.
+            $o = $this->rerun_all_historic_button($workflowid);
+            $o .= '&nbsp;';
+            $o .= $this->rerun_all_current_button($workflowid);
+
             $renderable = new \tool_trigger\output\workflowhistory\workflowhistory_renderable('triggerhistory', $url);
             $sql = (object) [
                 'fields' => '*',
@@ -174,5 +182,29 @@ class renderer extends \plugin_renderer_base {
         $btn .= \html_writer::end_div() . \html_writer::end_div();
 
         return $btn;
+    }
+
+    /**
+     * This function outputs the rerun all historic errors button.
+     *
+     * @return void
+     */
+    private function rerun_all_historic_button($workflowid) {
+        $url = new \moodle_url('/admin/tool/trigger/history.php',
+            ['action' => 'rerunallhist', 'sesskey' => sesskey(), 'id' => $workflowid, 'workflow' => $workflowid]);
+        $btn = new \single_button($url, get_string('rerunallhist', 'tool_trigger'), 'get', true);
+        echo $this->render($btn);
+    }
+
+    /**
+     * This function outputs the rerun all current errors button.
+     *
+     * @return void
+     */
+    private function rerun_all_current_button($workflowid) {
+        $url = new \moodle_url('/admin/tool/trigger/history.php',
+            ['action' => 'rerunallcurr', 'sesskey' => sesskey(), 'id' => $workflowid, 'workflow' => $workflowid]);
+        $btn = new \single_button($url, get_string('rerunallcurr', 'tool_trigger'), 'get', true);
+        echo $this->render($btn);
     }
 }

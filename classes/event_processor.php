@@ -39,6 +39,12 @@ defined('MOODLE_INTERNAL') || die();
 class event_processor {
     use processor_helper;
 
+    const EXEC_STOP = 'stop';
+
+    const EXEC_CONTINUE = 'continue';
+
+    const EXEC_ERROR = 'error';
+
     /**
      * Are we in the learning mode?
      * @var bool
@@ -235,7 +241,7 @@ class event_processor {
 
                     // Record step fail if debugging enabled.
                     if (!empty($runid)) {
-                        self::record_failed_step($prevstep, $runid);
+                        self::record_failed_step($prevstep, $runid, true);
                     }
 
                     // Insert to the queue table and try to run again in cron.
@@ -341,12 +347,13 @@ class event_processor {
 
     /**
      * This step will record the step that failed if a run was not successfully completed.
+     * If the $error bool is provided, the step will be recorded as an error not a fail.
      *
      * @param int|null $laststep the last step completed sucessfully or null if no previous step.
      * @param int $runid the id of the run.
      * @return void
      */
-    public static function record_failed_step($laststep, $runid) {
+    public static function record_failed_step($laststep, $runid, $error = false) {
         global $DB;
         if (!empty($laststep)) {
             $laststeprec = $DB->get_record('tool_trigger_run_hist', ['id' => $laststep]);
@@ -356,7 +363,9 @@ class event_processor {
             $failedstep = 0;
         }
 
-        $DB->set_field('tool_trigger_workflow_hist', 'failedstep', $failedstep, ['id' => $runid]);
+        $field = $error ? 'errorstep' : 'failedstep';
+
+        $DB->set_field('tool_trigger_workflow_hist', $field, $failedstep, ['id' => $runid]);
     }
 
     /**
@@ -713,5 +722,51 @@ class event_processor {
 
         $processor = new \tool_trigger\event_processor();
         $processor->process_realtime_workflow($workflow, $evententry);
+    }
+
+    /**
+     * This function gets all the errored runs, and reruns them,
+     * with either current config or historic if given.
+     *
+     * @param int $workflow the workflow id to rerun
+     * @param boolean $historic whether to use historic configuration
+     * @return void
+     */
+    public static function rerun_all_error_runs($workflow, $historic = false) {
+        global $DB;
+
+        $timelimit = get_config('tool_trigger', 'historyduration');
+
+        // Get all runs that still contain data.
+        // This is generally the period we wish to review.
+        // Cron will rerun errors, so we want the newest errored run for an event.
+        // We also need to ensure if there are multiple runs, the latest one errored.
+
+        $latesterrorsql = "SELECT MAX(id)
+                             FROM {tool_trigger_workflow_hist} sube
+                            WHERE sube.eventid = hist.eventid
+                              AND sube.errorstep IS NOT NULL";
+
+        $latestrunsql = "SELECT MAX(id)
+                           FROM {tool_trigger_workflow_hist} subl
+                          WHERE subl.eventid = hist.eventid";
+
+        $sql = "SELECT hist.id
+                  FROM {tool_trigger_workflow_hist} hist
+                 WHERE hist.timecreated > ?
+                   AND hist.workflowid = ?
+                   AND ($latesterrorsql) = hist.id
+                   AND ($latestrunsql) = hist.id";
+
+        $ids = $DB->get_records_sql($sql, [$timelimit, $workflow]);
+
+        // We now need to iterate through, and rerun.
+        foreach ($ids as $runid) {
+            if ($historic) {
+                self::execute_workflow_from_event_historic($runid);
+            } else {
+                self::execute_workflow_from_event_current($runid);
+            }
+        }
     }
 }
