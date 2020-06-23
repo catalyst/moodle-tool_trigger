@@ -58,9 +58,9 @@ class renderer extends \plugin_renderer_base {
             ];
         } else {
             // We want to ouput some buttons before drawing the table.
-            $o = $this->rerun_all_historic_button($workflowid);
-            $o .= '&nbsp;';
-            $o .= $this->rerun_all_current_button($workflowid);
+            $this->rerun_all_historic_button($workflowid);
+            echo '&nbsp;';
+            $this->rerun_all_current_button($workflowid);
 
             $renderable = new \tool_trigger\output\workflowhistory\workflowhistory_renderable('triggerhistory', $url);
             $sql = (object) [

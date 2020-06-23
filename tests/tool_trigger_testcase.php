@@ -76,6 +76,9 @@ abstract class tool_trigger_testcase extends advanced_testcase {
         $workflowprocess = new \tool_trigger\workflow_process($mdata);
         $workflowid = $workflowprocess->processform(0, true);
 
+        // We now need to purge the event caches, so the new workflow is picked up.
+        \cache_helper::purge_by_definition('tool_trigger', 'eventsubscriptions');
+
         return $workflowid;
     }
 }

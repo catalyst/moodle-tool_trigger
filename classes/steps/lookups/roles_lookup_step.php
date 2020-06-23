@@ -66,8 +66,6 @@ class roles_lookup_step extends base_lookup_step {
         $datafields = $this->get_datafields($event, $stepresults); // Do we need this???
 
         if (!array_key_exists($this->useridfield, $datafields)) {
-            $errmsg = "Specified courseid field not present in the workflow data: ". $this->courseidfield;
-                return [self::STEP_ERROR, $errmsg];
             throw new \invalid_parameter_exception("Specified userid field not present in the workflow data: "
                 . $this->useridfield);
         }

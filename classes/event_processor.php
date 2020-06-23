@@ -39,12 +39,6 @@ defined('MOODLE_INTERNAL') || die();
 class event_processor {
     use processor_helper;
 
-    const EXEC_STOP = 'stop';
-
-    const EXEC_CONTINUE = 'continue';
-
-    const EXEC_ERROR = 'error';
-
     /**
      * Are we in the learning mode?
      * @var bool
@@ -761,11 +755,11 @@ class event_processor {
         $ids = $DB->get_records_sql($sql, [$timelimit, $workflow]);
 
         // We now need to iterate through, and rerun.
-        foreach ($ids as $runid) {
+        foreach ($ids as $run) {
             if ($historic) {
-                self::execute_workflow_from_event_historic($runid);
+                self::execute_workflow_from_event_historic($run->id);
             } else {
-                self::execute_workflow_from_event_current($runid);
+                self::execute_workflow_from_event_current($run->id);
             }
         }
     }
