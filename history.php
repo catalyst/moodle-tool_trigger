@@ -189,6 +189,7 @@ if (!empty($action) && confirm_sesskey()) {
                 $cancelurl = new moodle_url('/admin/tool/trigger/history.php', ['workflow' => $workflowid, 'run' => $runid]);
                 $string = get_string('rerunallcurrconfirm', 'tool_trigger');
             }
+            break;
 
         case 'rerunallhist':
             if ($confirm) {
@@ -200,6 +201,7 @@ if (!empty($action) && confirm_sesskey()) {
                 $cancelurl = new moodle_url('/admin/tool/trigger/history.php', ['workflow' => $workflowid, 'run' => $runid]);
                 $string = get_string('rerunallhistconfirm', 'tool_trigger');
             }
+            break;
     }
 
     // If not confirmed, output the confirm page, with the params set in the switch, then exit.
