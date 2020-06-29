@@ -274,5 +274,20 @@ function xmldb_tool_trigger_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2020050100, 'tool', 'trigger');
     }
 
+    if ($oldversion < 2020061900) {
+
+        // Define field errorstep to be added to tool_trigger_workflow_hist.
+        $table = new xmldb_table('tool_trigger_workflow_hist');
+        $field = new xmldb_field('errorstep', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'failedstep');
+
+        // Conditionally launch add field errorstep.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Trigger savepoint reached.
+        upgrade_plugin_savepoint(true, 2020061900, 'tool', 'trigger');
+    }
+
     return true;
 }

@@ -117,15 +117,18 @@ class workflowhistory_renderable extends \table_sql implements \renderable {
     public function col_runstatus($run) {
         global $DB;
         // Return a badge for the status.
-        if (empty($run->failedstep)) {
+        if (!empty($run->errorstep)) {
+            return \html_writer::tag('span', get_string('errorstep', 'tool_trigger', $run->errorstep + 1),
+                array('class' => 'badge badge-warning'));
+        } else if (!empty($run->failedstep)) {
+            return \html_writer::tag('span', get_string('failedstep', 'tool_trigger', $run->failedstep + 1),
+                array('class' => 'badge badge-danger'));
+        } else {
             // Find the number of steps executed.
             $sql = "SELECT MAX(number) FROM {tool_trigger_run_hist} WHERE runid = ?";
             $num = $DB->get_field_sql($sql, [$run->id]) + 1;
             return \html_writer::tag('span', get_string('runpassed', 'tool_trigger', $num),
                 array('class' => 'badge badge-success'));
-        } else {
-            return \html_writer::tag('span', get_string('failedstep', 'tool_trigger', $run->failedstep + 1),
-                array('class' => 'badge badge-danger'));
         }
     }
 

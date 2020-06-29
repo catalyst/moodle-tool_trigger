@@ -69,6 +69,10 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
         $DB->delete_records('tool_trigger_run_hist', []);
         $DB->delete_records('tool_trigger_workflow_hist', []);
         $DB->delete_records('tool_trigger_steps', []);
+        $DB->delete_records('tool_trigger_workflows', []);
+
+        // Purge caches that may cause issues with events being ignored.
+        \cache_helper::purge_by_definition('tool_trigger', 'eventsubscriptions');
     }
 
     /**
@@ -277,7 +281,7 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
                 'outputprefix' => 'user_'
             ],
             [
-                'id' => 0,
+                'id' => 1,
                 'type' => 'lookups',
                 'stepclass' => '\tool_trigger\steps\lookups\user_lookup_step',
                 'steporder' => '1',
@@ -329,7 +333,7 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
                 'outputprefix' => 'user_'
             ],
             [
-                'id' => 0,
+                'id' => 1,
                 'type' => 'lookups',
                 'stepclass' => '\tool_trigger\steps\lookups\user_lookup_step',
                 'steporder' => '1',
@@ -363,7 +367,7 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
                 'outputprefix' => 'user_'
             ],
             [
-                'id' => 0,
+                'id' => 1,
                 'type' => 'lookups',
                 'stepclass' => '\tool_trigger\steps\lookups\user_lookup_step',
                 'steporder' => '1',
@@ -428,7 +432,7 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
                 'outputprefix' => 'user_'
             ],
             [
-                'id' => 0,
+                'id' => 1,
                 'type' => 'lookups',
                 'stepclass' => '\tool_trigger\steps\lookups\user_lookup_step',
                 'steporder' => '1',
@@ -486,7 +490,7 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
                 'outputprefix' => 'user_'
             ],
             [
-                'id' => 0,
+                'id' => 1,
                 'type' => 'lookups',
                 'stepclass' => '\tool_trigger\steps\lookups\user_lookup_step',
                 'steporder' => '1',
@@ -502,7 +506,7 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
         \tool_trigger\event_processor::process_event($event);
 
         // Now get the step records needed.
-        $origrecords = $DB->get_records('tool_trigger_run_hist', []);
+        $origrecords = $DB->get_records('tool_trigger_run_hist', [], 'id ASC');
         $origstep = reset($origrecords);
         $secondstep = end($origrecords);
 
@@ -511,12 +515,12 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
 
         // Test that executing on the last step does nothing.
         \tool_trigger\event_processor::execute_next_step_current($secondstep->id);
-        $secondrecords = $DB->get_records('tool_trigger_run_hist', []);
+        $secondrecords = $DB->get_records('tool_trigger_run_hist', [], 'id ASC');
         $this->assertEquals(count($origrecords), count($secondrecords));
 
         // Now rerun first step, and check that the new record matches the second step.
         \tool_trigger\event_processor::execute_next_step_current($origstep->id);
-        $thirdrecords = $DB->get_records('tool_trigger_run_hist', []);
+        $thirdrecords = $DB->get_records('tool_trigger_run_hist', [], 'id ASC');
         $thirdstep = end($thirdrecords);
 
         // Check fields line up.
@@ -559,18 +563,18 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
         \tool_trigger\event_processor::process_event($event);
 
         // Now get the step records needed.
-        $origrecords = $DB->get_records('tool_trigger_run_hist', []);
+        $origrecords = $DB->get_records('tool_trigger_run_hist', [], 'id ASC');
         $origstep = reset($origrecords);
         $secondstep = end($origrecords);
 
         // Test that executing on the last step does nothing.
         \tool_trigger\event_processor::execute_next_step_historic($secondstep->id);
-        $secondrecords = $DB->get_records('tool_trigger_run_hist', []);
+        $secondrecords = $DB->get_records('tool_trigger_run_hist', [], 'id ASC');
         $this->assertEquals(count($origrecords), count($secondrecords));
 
         // Now rerun first step, and check that the new record matches the second step.
         \tool_trigger\event_processor::execute_next_step_historic($origstep->id);
-        $thirdrecords = $DB->get_records('tool_trigger_run_hist', []);
+        $thirdrecords = $DB->get_records('tool_trigger_run_hist', [], 'id ASC');
         $thirdstep = end($thirdrecords);
 
         // Check fields line up.
@@ -595,7 +599,7 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
                 'outputprefix' => 'user_'
             ],
             [
-                'id' => 0,
+                'id' => 1,
                 'type' => 'actions',
                 'stepclass' => '\tool_trigger\steps\actions\email_action_step',
                 'steporder' => '1',
@@ -622,7 +626,7 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
 
         // Test that executing on the last step only replays the last step.
         \tool_trigger\event_processor::execute_step_and_continue_current($secondstep->id);
-        $secondrecords = $DB->get_records('tool_trigger_run_hist', []);
+        $secondrecords = $DB->get_records('tool_trigger_run_hist', [], 'id ASC');
         $this->assertEquals(3, count($secondrecords));
         $thirdstep = end($secondrecords);
 
@@ -637,7 +641,7 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
 
         // Now execute on the first step and check 2 steps rerun.
         \tool_trigger\event_processor::execute_step_and_continue_current($origstep->id);
-        $thirdrecords = $DB->get_records('tool_trigger_run_hist', []);
+        $thirdrecords = $DB->get_records('tool_trigger_run_hist', [], 'id ASC');
         $this->assertEquals(5, count($thirdrecords));
         $fifthstep = end($thirdrecords);
         $fourthstep = prev($thirdrecords);
@@ -674,7 +678,7 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
                 'outputprefix' => 'user_'
             ],
             [
-                'id' => 0,
+                'id' => 1,
                 'type' => 'actions',
                 'stepclass' => '\tool_trigger\steps\actions\email_action_step',
                 'steporder' => '1',
@@ -686,7 +690,7 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
                 'emailcontent_editor[format]' => 0
             ],
             [
-                'id' => 0,
+                'id' => 2,
                 'type' => 'actions',
                 'stepclass' => '\tool_trigger\steps\actions\email_action_step',
                 'steporder' => '2',
@@ -698,10 +702,10 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
                 'emailcontent_editor[format]' => 0
             ],
             [
-                'id' => 0,
+                'id' => 3,
                 'type' => 'actions',
                 'stepclass' => '\tool_trigger\steps\actions\email_action_step',
-                'steporder' => '1',
+                'steporder' => '3',
                 'name' => 'Emailuser3',
                 'description' => 'Email3',
                 'emailto' => 'testusernotinmoodle@example.com',
@@ -714,7 +718,7 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
         \tool_trigger\event_processor::process_event($event);
 
         // Check history has 4 steps.
-        $firstrecords = $DB->get_records('tool_trigger_run_hist', []);
+        $firstrecords = $DB->get_records('tool_trigger_run_hist', [], 'id ASC');
         $this->assertEquals(4, count($firstrecords));
 
         // Manually modify the steps in the table, and change email content.
@@ -723,19 +727,19 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
         // Now rerun and next on step 1, and check only 2 records added.
         $firststep = reset($firstrecords);
         \tool_trigger\event_processor::execute_step_and_continue_current($firststep->id);
-        $secondrecords = $DB->get_records('tool_trigger_run_hist', []);
+        $secondrecords = $DB->get_records('tool_trigger_run_hist', [], 'id ASC');
         $this->assertEquals(6, count($secondrecords));
 
         // Now clear this table, and trigger a new run.
         $DB->delete_records('tool_trigger_run_hist', []);
         \tool_trigger\event_processor::process_event($event);
-        $thirdrecords = $DB->get_records('tool_trigger_run_hist', []);
+        $thirdrecords = $DB->get_records('tool_trigger_run_hist', [], 'id ASC');
         $this->assertEquals(4, count($firstrecords));
         $firststep = reset($thirdrecords);
 
         // Now rerun step 1, and complete the run (total 8 records).
         \tool_trigger\event_processor::execute_step_and_continue_current($firststep->id, true);
-        $fouthrecords = $DB->get_records('tool_trigger_run_hist', []);
+        $fouthrecords = $DB->get_records('tool_trigger_run_hist', [], 'id ASC');
         $this->assertEquals(8, count($fouthrecords));
     }
 
@@ -754,7 +758,7 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
                 'outputprefix' => 'user_'
             ],
             [
-                'id' => 0,
+                'id' => 1,
                 'type' => 'lookups',
                 'stepclass' => '\tool_trigger\steps\lookups\user_lookup_step',
                 'steporder' => '1',
@@ -770,13 +774,13 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
         \tool_trigger\event_processor::process_event($event);
 
         // Now get the step records needed.
-        $origrecords = $DB->get_records('tool_trigger_run_hist', []);
+        $origrecords = $DB->get_records('tool_trigger_run_hist', [], 'id ASC');
         $origstep = reset($origrecords);
         $secondstep = end($origrecords);
 
         // Test that executing on the last step only replays the last step.
         \tool_trigger\event_processor::execute_step_and_continue_historic($secondstep->id);
-        $secondrecords = $DB->get_records('tool_trigger_run_hist', []);
+        $secondrecords = $DB->get_records('tool_trigger_run_hist', [], 'id ASC');
         $this->assertEquals(3, count($secondrecords));
         $thirdstep = end($secondrecords);
 
@@ -788,7 +792,7 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
 
         // Now execute on the first step and check 2 steps rerun.
         \tool_trigger\event_processor::execute_step_and_continue_historic($origstep->id);
-        $thirdrecords = $DB->get_records('tool_trigger_run_hist', []);
+        $thirdrecords = $DB->get_records('tool_trigger_run_hist', [], 'id ASC');
         $this->assertEquals(5, count($thirdrecords));
         $fifthstep = end($thirdrecords);
         $fourthstep = prev($thirdrecords);
@@ -822,7 +826,7 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
                 'outputprefix' => 'user_'
             ],
             [
-                'id' => 0,
+                'id' => 1,
                 'type' => 'lookups',
                 'stepclass' => '\tool_trigger\steps\lookups\user_lookup_step',
                 'steporder' => '1',
@@ -832,7 +836,7 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
                 'outputprefix' => 'user2_'
             ],
             [
-                'id' => 0,
+                'id' => 2,
                 'type' => 'lookups',
                 'stepclass' => '\tool_trigger\steps\lookups\user_lookup_step',
                 'steporder' => '2',
@@ -842,7 +846,7 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
                 'outputprefix' => 'user3_'
             ],
             [
-                'id' => 0,
+                'id' => 3,
                 'type' => 'lookups',
                 'stepclass' => '\tool_trigger\steps\lookups\user_lookup_step',
                 'steporder' => '3',
@@ -856,25 +860,25 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
         \tool_trigger\event_processor::process_event($event);
 
         // Check history has 4 steps.
-        $firstrecords = $DB->get_records('tool_trigger_run_hist', []);
+        $firstrecords = $DB->get_records('tool_trigger_run_hist', [], 'id ASC');
         $this->assertEquals(4, count($firstrecords));
 
         // Now rerun and next on step 1, and check only 2 records added.
         $firststep = reset($firstrecords);
         \tool_trigger\event_processor::execute_step_and_continue_historic($firststep->id);
-        $secondrecords = $DB->get_records('tool_trigger_run_hist', []);
+        $secondrecords = $DB->get_records('tool_trigger_run_hist', [], 'id ASC');
         $this->assertEquals(6, count($secondrecords));
 
         // Now clear this table, and trigger a new run.
         $DB->delete_records('tool_trigger_run_hist', []);
         \tool_trigger\event_processor::process_event($event);
-        $thirdrecords = $DB->get_records('tool_trigger_run_hist', []);
+        $thirdrecords = $DB->get_records('tool_trigger_run_hist', [], 'id ASC');
         $this->assertEquals(4, count($firstrecords));
         $firststep = reset($thirdrecords);
 
         // Now rerun step 1, and complete the run (total 8 records).
         \tool_trigger\event_processor::execute_step_and_continue_historic($firststep->id, true);
-        $fouthrecords = $DB->get_records('tool_trigger_run_hist', []);
+        $fouthrecords = $DB->get_records('tool_trigger_run_hist', [], 'id ASC');
         $this->assertEquals(8, count($fouthrecords));
     }
 
@@ -893,7 +897,7 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
                 'outputprefix' => 'user_'
             ],
             [
-                'id' => 0,
+                'id' => 1,
                 'type' => 'lookups',
                 'stepclass' => '\tool_trigger\steps\lookups\user_lookup_step',
                 'steporder' => '1',
@@ -915,8 +919,9 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
         $DB->set_field('tool_trigger_steps', 'description', 'New description', ['type' => 'lookups']);
 
         // Now rerun and compare the 2 runs.
+        \cache_helper::purge_by_definition('tool_trigger', 'eventsubscriptions');
         \tool_trigger\event_processor::execute_workflow_from_event_current($firstrun->id);
-        $records = $DB->get_records('tool_trigger_workflow_hist', []);
+        $records = $DB->get_records('tool_trigger_workflow_hist', [], 'id ASC');
         $secondrun = end($records);
 
         // Check the fields of the runs.
@@ -925,8 +930,8 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
         // Check number is incremented.
         $this->assertEquals($firstrun->number + 1, $secondrun->number);
 
-        $firstrun = $DB->get_records('tool_trigger_run_hist', ['runid' => $firstrun->id]);
-        $secondrun = $DB->get_records('tool_trigger_run_hist', ['runid' => $secondrun->id]);
+        $firstrun = $DB->get_records('tool_trigger_run_hist', ['runid' => $firstrun->id], 'id ASC');
+        $secondrun = $DB->get_records('tool_trigger_run_hist', ['runid' => $secondrun->id], 'id ASC');
 
         // Now check the event count for the 2 runs.
         $this->assertEquals(count($firstrun), count($secondrun));
@@ -955,7 +960,7 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
                 'outputprefix' => 'user_'
             ],
             [
-                'id' => 0,
+                'id' => 1,
                 'type' => 'lookups',
                 'stepclass' => '\tool_trigger\steps\lookups\user_lookup_step',
                 'steporder' => '1',
@@ -974,8 +979,9 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
         $firstrun = $DB->get_record('tool_trigger_workflow_hist', []);
 
         // Now rerun and compare the 2 runs.
+        \cache_helper::purge_by_definition('tool_trigger', 'eventsubscriptions');
         \tool_trigger\event_processor::execute_workflow_from_event_historic($firstrun->id);
-        $records = $DB->get_records('tool_trigger_workflow_hist', []);
+        $records = $DB->get_records('tool_trigger_workflow_hist', [], 'id ASC');
         $secondrun = end($records);
 
         // Check the fields of the runs.
@@ -988,5 +994,146 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
         $firstruncount = $DB->count_records('tool_trigger_run_hist', ['runid' => $firstrun->id]);
         $secondruncount = $DB->count_records('tool_trigger_run_hist', ['runid' => $secondrun->id]);
         $this->assertEquals($firstruncount, $secondruncount);
+    }
+
+    public function test_rerun_all_error_runs() {
+        global $DB;
+
+        set_config('historyduration', 14 * DAYSECS, 'tool_trigger');
+
+        // Perform basic workflow setup, with debug mode enabled.
+        $goodsteps = [
+            [
+                'id' => 0,
+                'type' => 'lookups',
+                'stepclass' => '\tool_trigger\steps\lookups\user_lookup_step',
+                'steporder' => '0',
+                'name' => 'Get user data',
+                'description' => 'Get user data',
+                'useridfield' => 'userid',
+                'outputprefix' => 'user_'
+            ],
+            [
+                'id' => 1,
+                'type' => 'lookups',
+                'stepclass' => '\tool_trigger\steps\lookups\user_lookup_step',
+                'steporder' => '1',
+                'name' => 'Get user data2',
+                'description' => 'Get user data2',
+                'useridfield' => 'userid',
+                'outputprefix' => 'user2_'
+            ]
+        ];
+        $wfid = $this->create_workflow(1, $goodsteps, 1);
+
+        $event = \core\event\user_loggedin::create($this->eventarr);
+        \tool_trigger\event_processor::process_event($event);
+
+        // Now get the run record just executed.
+        $firstruns = $DB->get_records('tool_trigger_workflow_hist', [], 'id ASC');
+
+        \cache_helper::purge_by_definition('tool_trigger', 'eventsubscriptions');
+        \tool_trigger\event_processor::rerun_all_error_runs($wfid);
+
+        // Confirm that the run wasn't re-executed, as there was no error.
+        $secondruns = $DB->get_records('tool_trigger_workflow_hist', [], 'id ASC');
+
+        $this->assertEquals(count($firstruns), count($secondruns));
+        $first = reset($firstruns);
+        $second = reset($secondruns);
+        $this->assertEquals($first->id, $second->id);
+
+        $DB->delete_records('tool_trigger_workflow_hist', [], 'id ASC');
+        $DB->delete_records('tool_trigger_run_hist', [], 'id ASC');
+        $DB->delete_records('tool_trigger_workflows', [], 'id ASC');
+
+        // Now confirm this behaviour for a failed run (not errored!).
+        $failsteps = [
+            [
+                'id' => 0,
+                'type' => 'filters',
+                'stepclass' => '\tool_trigger\steps\filters\numcompare_filter_step',
+                'steporder' => '0',
+                'field1' => 123,
+                'operator' => '==',
+                'field2' => 456,
+            ]
+        ];
+
+        // New workflow with these steps.
+        $wfid = $this->create_workflow(1, $failsteps, 1);
+        \cache_helper::purge_by_definition('tool_trigger', 'eventsubscriptions');
+        \tool_trigger\event_processor::process_event($event);
+
+        // Now get the run record just executed.
+        $firstruns = $DB->get_records('tool_trigger_workflow_hist', [], 'id ASC');
+
+        \cache_helper::purge_by_definition('tool_trigger', 'eventsubscriptions');
+        \tool_trigger\event_processor::rerun_all_error_runs($wfid);
+
+        // Confirm that the run wasn't re-executed, as there was no error.
+        $secondruns = $DB->get_records('tool_trigger_workflow_hist', [], 'id ASC');
+
+        $this->assertEquals(count($firstruns), count($secondruns));
+        $first = reset($firstruns);
+        $second = reset($secondruns);
+        $this->assertEquals($first->id, $second->id);
+
+        $DB->delete_records('tool_trigger_workflow_hist', []);
+        $DB->delete_records('tool_trigger_run_hist', []);
+        $DB->delete_records('tool_trigger_workflows', []);
+
+        // Now confirm an errored run will rerun (and error again).
+        $errorsteps = [
+            [
+                'id' => 0,
+                'type' => 'filters',
+                'stepclass' => '\tool_trigger\steps\filters\numcompare_filter_step',
+                'steporder' => '0',
+                'field1' => 123,
+                'operator' => 'invalid operator',
+                'field2' => 456,
+            ]
+        ];
+
+        // New workflow with these steps.
+        $wfid = $this->create_workflow(1, $errorsteps, 1);
+        \cache_helper::purge_by_definition('tool_trigger', 'eventsubscriptions');
+        \tool_trigger\event_processor::process_event($event);
+        $this->assertDebuggingCalledCount(3);
+
+        // Now get the run record just executed.
+        $firstruns = $DB->get_records('tool_trigger_workflow_hist', [], 'id ASC');
+
+        // Confirm that there is a record in the errorstep field.
+        $first = reset($firstruns);
+        $this->assertEquals(0, $first->errorstep);
+
+        \cache_helper::purge_by_definition('tool_trigger', 'eventsubscriptions');
+        \tool_trigger\event_processor::rerun_all_error_runs($wfid);
+        $this->assertDebuggingCalled();
+
+        // Confirm that the run was re-executed, as there was an error.
+        $secondruns = $DB->get_records('tool_trigger_workflow_hist', [], 'id ASC');
+
+        $this->assertNotEquals(count($firstruns), count($secondruns));
+        $second = end($secondruns);
+        $this->assertGreaterThan($first->id, $second->id);
+
+        // Now do a bit of DB hackery to add another run, that has been modified to look successful.
+        $newrecord = clone($second);
+        unset($newrecord->id);
+        unset($newrecord->errorstep);
+        $insertedid = $DB->insert_record('tool_trigger_workflow_hist', $newrecord, true);
+
+        // Now if we attempt a rerun, nothing should happen, as this event's most recent entry is a success.
+        \cache_helper::purge_by_definition('tool_trigger', 'eventsubscriptions');
+        \tool_trigger\event_processor::rerun_all_error_runs($wfid);
+
+        $thirdruns = $DB->get_records('tool_trigger_workflow_hist', [], 'id ASC');
+        // Confirm that nothing changed in the DB, except the addition of the modified entry.
+        $this->assertEquals(count($secondruns) + 1, count($thirdruns));
+        $third = end($thirdruns);
+        $this->assertEquals($insertedid, $third->id);
     }
 }
