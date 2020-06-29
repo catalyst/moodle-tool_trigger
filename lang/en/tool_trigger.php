@@ -221,6 +221,7 @@ $string['roleidfield'] = 'Role id data field';
 $string['roleidfield_help'] = 'You can use role id as a number or as a filed name from the workflow data';
 $string['runid'] = 'Run ID';
 $string['runpassed'] = 'Passed step {$a}';
+$string['runpassednonum'] = 'Passed';
 $string['runstatus'] = 'Run status';
 $string['step_action_role_assign_contextidfield'] = 'Context id data field';
 $string['stepnotfound'] = 'Step not found';

@@ -126,9 +126,14 @@ class workflowhistory_renderable extends \table_sql implements \renderable {
         } else {
             // Find the number of steps executed.
             $sql = "SELECT MAX(number) FROM {tool_trigger_run_hist} WHERE runid = ?";
-            $num = $DB->get_field_sql($sql, [$run->id]) + 1;
-            return \html_writer::tag('span', get_string('runpassed', 'tool_trigger', $num),
-                array('class' => 'badge badge-success'));
+            $res = $DB->get_field_sql($sql, [$run->id]);
+            // Output a plain passed badge if no data found, rather than a number badge.
+            if (!empty($res)) {
+                $string = get_string('runpassed', 'tool_trigger', $res + 1);
+            } else {
+                $string = get_string('runpassednonum', 'tool_trigger');
+            }
+            return \html_writer::tag('span', $string, array('class' => 'badge badge-success'));
         }
     }
 
