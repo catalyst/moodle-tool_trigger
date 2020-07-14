@@ -745,7 +745,7 @@ class event_processor {
                            FROM {tool_trigger_workflow_hist} subl
                           WHERE subl.eventid = hist.eventid";
 
-        $sql = "SELECT hist.id
+        $sql = "SELECT hist.id, hist.eventid
                   FROM {tool_trigger_workflow_hist} hist
                  WHERE hist.timecreated > ?
                    AND hist.workflowid = ?
@@ -755,12 +755,33 @@ class event_processor {
         $ids = $DB->get_records_sql($sql, [$timelimit, $workflow]);
 
         // We now need to iterate through, and rerun.
+        $results = [];
         foreach ($ids as $run) {
             if ($historic) {
                 self::execute_workflow_from_event_historic($run->id);
             } else {
                 self::execute_workflow_from_event_current($run->id);
             }
+
+            // Get new run ID, and store the result.
+            $newrun = $DB->get_records('tool_trigger_workflow_hist', ['eventid' => $run->eventid], 'id DESC', '*', 0, 1);
+            $newrun = reset($newrun);
+
+            $passed = $newrun->errorstep > 0 ? false : true;
+            $results[$run->id] = [$newrun->id, $passed];
         }
+
+        // Now output a list of all of the rerun ids with status
+        $output = get_string('rerunerrors', 'tool_trigger') . '<br>';
+        $error = false;
+        foreach ($results as $previd => $new) {
+            list($newid, $passed) = $new;
+            if (!$passed) {
+                $output .= get_string('newrunfailed', 'tool_trigger', ['prev' => $previd, 'new' => $newid]) . '<br>';
+                $error = true;
+            }
+        }
+        $notifytype = $error ? 'notifyerror' : 'notifysuccess';
+        \core\notification::add($output, $notifytype);
     }
 }
