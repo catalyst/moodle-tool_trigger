@@ -181,6 +181,14 @@ class renderable extends \table_sql implements \renderable {
         return $manage;
     }
 
+    public function col_active($row) {
+        if ($row->active) {
+            return get_string('active');
+        } else {
+            return get_string('inactive');
+        }
+    }
+
     /**
      * Query the reader. Store results in the object for use by build_table.
      *
@@ -196,6 +204,12 @@ class renderable extends \table_sql implements \renderable {
         // Set initial bars.
         if ($useinitialsbar) {
             $this->initialbars($total > $pagesize);
+        }
+    }
+
+    public function get_row_class($row) {
+        if (!$row->active) {
+            return 'table-secondary';
         }
     }
 }
