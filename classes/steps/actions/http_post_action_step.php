@@ -57,6 +57,12 @@ class http_post_action_step extends base_action_step {
         $this->headers = $this->data['httpheaders'];
         $this->params = $this->data['httpparams'];
         $this->jsonencode = $this->data['jsonencode'];
+        // Legacy steps may not have this set.
+        if (!empty($this->data['expectedresponse'])) {
+            $this->expectedresponse = $this->data['expectedresponse'];
+        } else {
+            $this->expectedresponse = 200;
+        }
     }
 
     /**
@@ -151,6 +157,13 @@ class http_post_action_step extends base_action_step {
         $stepresults['http_response_status_code'] = $response->getStatusCode();
         $stepresults['http_response_status_message'] = $response->getReasonPhrase();
         $stepresults['http_response_body'] = $response->getBody();
+
+        if ($response->getStatusCode() != $this->expectedresponse) {
+            // If we weren't expecting this response, throw an exception.
+            // The error will be caught and rerun.
+            throw new \invalid_response_exception("HTTP Response code expected was {$this->expectedresponse}, received {$response->getStatusCode()}");
+        }
+
         return array(true, $stepresults);
     }
 
@@ -187,6 +200,13 @@ class http_post_action_step extends base_action_step {
         $mform->setType('jsonencode', PARAM_INT);
         $mform->addHelpButton('jsonencode', 'jsonencode', 'tool_trigger');
         $mform->setDefault('jsonencode', 0);
+
+        // Expected header response.
+        $attributes = array('size' => 3);
+        $mform->addElement('text', 'expectedresponse', get_string('expectedresponse', 'tool_trigger'), $attributes);
+        $mform->setType('expectedresponse', PARAM_INT);
+        $mform->addHelpButton('expectedresponse', 'expectedresponse', 'tool_trigger');
+        $mform->setDefault('expectedresponse', 200);
     }
 
     /**
