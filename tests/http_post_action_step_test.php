@@ -95,7 +95,8 @@ class tool_trigger_http_post_action_step_testcase extends advanced_testcase {
             'url' => 'http://http_post_action_step.example.com/badurl',
             'httpheaders' => 'My-Special-Header: {headervalue}',
             'httpparams' => '',
-            'jsonencode' => '0'
+            'jsonencode' => '0',
+            'expectedresponse' => 404
         ];
         $step = new \tool_trigger\steps\actions\http_post_action_step(json_encode($stepsettings));
 
