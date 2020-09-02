@@ -184,6 +184,7 @@ class tool_trigger_workflow_process_testcase extends advanced_testcase {
         $expected->workflowrealtime = 0;
         $expected->draftmode = 0;
         $expected->isstepschanged = 1;
+        $expected->workflowdebug = 0;
         $expected->stepjson = json_encode($expectedsteps);
 
         $workflowobj = \tool_trigger\workflow_process::import_prep($filecontentjson);
