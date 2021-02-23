@@ -108,7 +108,7 @@ class base_form extends \moodleform {
      * @param array $existingsteps The array of existing steps in workflow.
      * @return array $fields The returned fields available.
      */
-    private function get_trigger_fields($eventname, $stepclass, $existingsteps, $steporder) {
+    protected function get_trigger_fields($eventname, $stepclass, $existingsteps, $steporder) {
         // Get all fields for this workflows event.
         $fields = array();
         $learnprocess = new \tool_trigger\learn_process();
@@ -167,6 +167,7 @@ class base_form extends \moodleform {
             'lookups' => get_string('lookup', 'tool_trigger'),
             'filters' => get_string('filter', 'tool_trigger'),
             'actions' => get_string('action', 'tool_trigger'),
+            'debounce' => get_string('debounce', 'tool_trigger'),
         );
         $mform->addElement('select', 'type', get_string('steptype', 'tool_trigger'), $steptype);
         $mform->addHelpButton('type', 'steptype', 'tool_trigger');

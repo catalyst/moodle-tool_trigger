@@ -175,10 +175,16 @@ class user_lookup_step extends base_lookup_step {
      * @see \tool_trigger\steps\base\base_step::form_definition_extra()
      */
     public function form_definition_extra($form, $mform, $customdata) {
-        $mform->addElement('text', 'useridfield', get_string('step_lookup_user_useridfield', 'tool_trigger'));
-        $mform->setType('useridfield', PARAM_ALPHANUMEXT);
-        $mform->addRule('useridfield', get_string('required'), 'required');
-        $mform->setDefault('useridfield', 'userid');
+        if (isset($this->_customdata['event'])) {
+            $triggerfields = $this->get_trigger_fields(
+                $this->_customdata['event'],
+                $this->_customdata['stepclass'],
+                $this->_customdata['existingsteps'],
+                $this->_customdata['steporder']
+            );
+        } else {
+            $triggerfields = [];
+        }
 
         $mform->addElement('text', 'outputprefix', get_string('outputprefix', 'tool_trigger'));
         $mform->setType('outputprefix', PARAM_ALPHANUMEXT);
