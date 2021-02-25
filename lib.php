@@ -106,6 +106,16 @@ function tool_trigger_output_fragment_new_step_form($args) {
             $data['emailcontent_editor']['itemid'] = $data['id'];
             $data['emailcontenttrust'] = false;
         }
+
+        // Also fix up autocomplete and duration for debouncing.
+        if (!empty($data['debouncecontext'])) {
+            $data['debouncecontext'] = $data['debouncecontext[]'];
+        }
+        if (!empty($data['debounceduration[number]'])) {
+            $data['debounceduration']['number'] = $data['debounceduration[number]'];
+            $data['debounceduration']['timeunit'] = $data['debounceduration[timeunit]'];
+        }
+
         $mform->set_data($data);
     }
 

@@ -34,6 +34,12 @@ class process_workflows extends \core\task\scheduled_task {
     use processor_helper;
 
     /**
+     * The task was cancelled.
+     * @var integer
+     */
+    const STATUS_CANCELLED = -1;
+
+    /**
      * The task has been queued but not yet executed.
      */
     const STATUS_READY_TO_RUN = 0;
@@ -118,9 +124,11 @@ class process_workflows extends \core\task\scheduled_task {
         $sql = "SELECT q.id as qid, q.workflowid, q.status, q.tries, q.timecreated, q.timemodified, q.eventid
                   FROM {tool_trigger_queue} q
                   JOIN {tool_trigger_workflows} w ON w.id = q.workflowid
-                  WHERE w.enabled = 1 AND q.status = " . self::STATUS_READY_TO_RUN . "
-                  AND q.tries < " . self::MAXTRIES . "
-                  ORDER BY q.timecreated";
+                 WHERE w.enabled = 1 AND q.status = " . self::STATUS_READY_TO_RUN . "
+                   AND q.tries < " . self::MAXTRIES . "
+                   AND (q.executiontime IS NULL
+                    OR q.executiontime < " . time() . ")
+                 ORDER BY q.timecreated";
         $queue = $DB->get_recordset_sql($sql, null, 0, self::LIMITQUEUE);
 
         foreach ($queue as $q) {
@@ -137,6 +145,14 @@ class process_workflows extends \core\task\scheduled_task {
 
     private function process_item($item) {
         global $DB;
+
+        // Check if this queue item has been cancelled in this run.
+        if ($DB->get_field('tool_trigger_queue', 'status', ['id' => $item->qid]) === '-1') {
+            // TODO: Record a cancelled run here.
+
+            // \tool_trigger\event_processor::record_cancelled_workflow_trigger();
+            return;
+        }
 
         $trigger = new \stdClass();
         $trigger->id = $item->qid;
@@ -157,7 +173,8 @@ class process_workflows extends \core\task\scheduled_task {
 
         // Get steps for this workflow.
         $steps = $this->get_workflow_steps($item->workflowid);
-        $stepresults = [];
+        // Add itemid to the initial stepresults for use in debouncing.
+        $stepresults = ['eventid' => $item->eventid];
         $success = false;
         $prevstep = null;
 

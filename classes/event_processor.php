@@ -216,6 +216,13 @@ class event_processor {
             foreach ($steps as $step) {
                 try {
                     $outertransaction = $DB->is_transaction_started();
+
+                    // Special case, the debounce step should never process realtime.
+                    // Bail here, and move to the cron queue.
+                    if ($step->stepclass === 'debounce\debounce') {
+                        throw new \Exception('debounce');
+                    }
+
                     list($success, $stepresults) = $this->execute_step($step,  new \stdClass(), $event, $stepresults);
 
                     // Now record the steps into the history table, and update prevstep for the next iteration.
@@ -231,7 +238,9 @@ class event_processor {
                         break;
                     }
                 } catch (\Exception $e) {
-                    debugging('Error execute workflow step: ' . $step->id . ', ' . $step->stepclass . ' ' . $e->getMessage());
+                    if (!$e->getMessage() === 'debounce') {
+                        debugging('Error execute workflow step: ' . $step->id . ', ' . $step->stepclass . ' ' . $e->getMessage());
+                    }
 
                     // Record step fail if debugging enabled.
                     if (!empty($runid)) {

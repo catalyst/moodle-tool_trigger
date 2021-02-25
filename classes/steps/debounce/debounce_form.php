@@ -55,14 +55,12 @@ class debounce_form extends \tool_trigger\steps\base\base_form {
         }
 
         // Mash all the fields from the different bits together.
-        $fields = array_map(function($el) {
-            return $el['field'];
-        }, $triggerfields['fields']);
-        foreach ($triggerfields['steps'] as $step) {
-            $stepfields = array_map(function($el) {
+        if (!empty($triggerfields)) {
+            $fields = array_map(function($el) {
                 return $el['field'];
-            }, $step['fields']);
-            $fields = array_merge($fields, $stepfields);
+            }, $triggerfields['fields']);
+        } else {
+            $fields = [];
         }
 
         // Event.

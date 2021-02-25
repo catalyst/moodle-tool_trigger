@@ -53,6 +53,7 @@ $string['debounce'] = 'Debounce';
 $string['debounce_desc'] = 'The debounce step is a special step that queues up the workflow to be run after a certain period of time, using only the latest instance of the workflow to occur in the period, with a period reset occuring at each new workflow instance trigger.';
 $string['debouncecontext'] = 'Debounce match fields';
 $string['debouncecontext_help'] = 'The fields to match in an event to start a debounce. All selected fields must match in order to be debounced.';
+$string['debounceduration'] = 'Duration to debounce events';
 $string['deleterule'] = 'Delete rule';
 $string['deletestep'] = 'Delete step';
 $string['description'] = 'Description';
