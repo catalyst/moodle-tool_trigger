@@ -121,7 +121,7 @@ class process_workflows extends \core\task\scheduled_task {
         global $DB;
 
         // Now process queue including real time workflows that dumped records in the queue as couldn't process realtime.
-        $sql = "SELECT q.id as qid, q.workflowid, q.status, q.tries, q.timecreated, q.timemodified, q.eventid
+        $sql = "SELECT q.id as qid, q.workflowid, q.status, q.tries, q.timecreated, q.timemodified, q.eventid, q.executiontime
                   FROM {tool_trigger_queue} q
                   JOIN {tool_trigger_workflows} w ON w.id = q.workflowid
                  WHERE w.enabled = 1 AND q.status = " . self::STATUS_READY_TO_RUN . "
@@ -159,6 +159,9 @@ class process_workflows extends \core\task\scheduled_task {
         $trigger->workflowid = $item->workflowid;
         $trigger->tries = $item->tries + 1;
         $trigger->timemodified = $item->timemodified;
+        if (!empty($item->executiontime)) {
+            $trigger->executiontime = $item->executiontime;
+        }
 
         $this->update_queue_record($trigger);
 
@@ -237,7 +240,7 @@ class process_workflows extends \core\task\scheduled_task {
             $trigger->status = self::STATUS_FINISHED;
         } else {
             // Some steps not completed.
-            $trigger->status = self::STATUS_FINISHED_EARLY;
+            $trigger->status = array_key_exists('cancelled', $stepresults) &&$stepresults['cancelled'] ? self::STATUS_CANCELLED : self::STATUS_FINISHED_EARLY;
         }
         $trigger->timemodified = time();
         $this->update_queue_record($trigger);

@@ -793,4 +793,24 @@ class event_processor {
         $notifytype = $error ? 'notifyerror' : 'notifysuccess';
         \core\notification::add($output, $notifytype);
     }
+
+    public static function record_cancelled_workflow($workflowid, $event) {
+        global $DB;
+
+        // Get new run number.
+        $sqlfrag = "SELECT MAX(number) FROM {tool_trigger_workflow_hist} WHERE workflowid = :wfid";
+        $runnumber = $DB->get_field_sql($sqlfrag, array('wfid' => $workflowid)) + 1;
+
+        // Encode event data as JSON.
+        $eventdata = json_encode($event);
+
+        $DB->insert_record('tool_trigger_workflow_hist', array(
+            'workflowid' => $workflowid,
+            'number' => $runnumber,
+            'timecreated' => time(),
+            'event' => $eventdata,
+            'eventid' => $event->id,
+            'failedstep' => \tool_trigger\task\process_workflows::STATUS_CANCELLED
+        ));
+    }
 }

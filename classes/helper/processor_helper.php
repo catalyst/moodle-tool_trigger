@@ -48,7 +48,6 @@ trait processor_helper {
         unset($data['origin']);
         unset($data['ip']);
         unset($data['realuserid']);
-        $id = $data['id'];
         unset($data['id']);
 
         if (!$event = \core\event\base::restore($data, $extra)) {

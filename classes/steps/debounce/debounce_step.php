@@ -28,6 +28,8 @@
 
 namespace tool_trigger\steps\debounce;
 use tool_trigger\steps\base\base_step;
+use xmldb_table;
+use xmldb_field;
 
 defined('MOODLE_INTERNAL') || die;
 
@@ -67,8 +69,8 @@ class debounce_step extends base_step {
             $data['debounceduration']['number'] = $data['debounceduration[number]'];
             $data['debounceduration']['timeunit'] = $data['debounceduration[timeunit]'];
         }
-        $this->matchfields = $this->data['debouncecontext[]'];
-        $this->duration = (int) $this->data['debounceduration[number]'] * $this->data['debounceduration[timeunit]'];
+        $this->matchfields = explode(',', $this->data['debouncecontext[]']);
+        $this->duration = (int) $this->data['debounceduration[number]'] * (int) $this->data['debounceduration[timeunit]'];
     }
 
     /**
@@ -89,40 +91,57 @@ class debounce_step extends base_step {
         // If there is no execution time, we need to queue this step to fire at the specified time.
         // Add the new queue record, then return a fail to stop re-execution of this workflow instance.
         if (empty($trigger->executiontime)) {
-            unset($trigger->id);
-            $trigger->executiontime = time() + $this->duration;
+            $newrecord = clone $trigger;
+            unset($newrecord->id);
+            $newrecord->executiontime = time() + $this->duration;
             // The eventid should always be set in the initial stepresults array.
-            $trigger->eventid = $stepresults['eventid'];
-            if (empty($trigger->timecreated)) {
-                $trigger->timecreated = time();
-            }
+            $newrecord->eventid = $stepresults['eventid'];
+            $newrecord->tries = 0;
+            $newrecord->timemodified = time();
+            $newrecord->timecreated = time();
 
-            $DB->insert_record('tool_trigger_queue', $trigger);
+            $queuedid = $DB->insert_record('tool_trigger_queue', $newrecord, true);
+
+            // Put some data in stepresults for use in logging debug mode.
+            $stepresults['debouncequeueid'] = $queuedid;
 
             return [false, $stepresults];
         }
 
         // If there is an execution time, This should be run.
         // The SQL means that it will only get here when its ready to run.
-        $sql = "SELECT *
+        $sql = "SELECT q.*
                   FROM {tool_trigger_queue} q
                   JOIN {tool_trigger_events} e
                     ON q.eventid = e.id
                  WHERE q.workflowid = :workflowid
+                   AND q.status = 0
                    AND ";
 
-        // This could explode badly on mangled data, buts its inside a try so ¯\_(ツ)_/¯.
+        // This could explode badly on mangled data, but its inside a try so ¯\_(ツ)_/¯.
         $counter = 0;
-        $params = [];
+        $params = ['workflowid' => $trigger->workflowid];
+        $dbman = $DB->get_manager();
+        // Define field eventid to be added to tool_trigger_queue.
+        $table = new xmldb_table('tool_trigger_events');
+
         foreach ($this->matchfields as $field) {
-            $fieldname = "field" . (string) $counter;
+            // We need to use $field directly as moodles parameter binding isnt powerful enough.
+            // This means we have to check it *exactly* matches an event table field.
+            $fieldxml = new xmldb_field($field);
+            if (!$dbman->field_exists($table, $fieldxml)) {
+                // This is naughty. Skip it.
+                continue;
+            }
+
             $value = "value" . (string) $counter;
-            $chunk = "e.:$fieldname = :$value";
+            $chunk = "e.$field = :$value";
             if ($counter != 0) {
                 $chunk = " AND " . $chunk;
             }
             $sql .= $chunk;
-            $params = array_merge($params, [$fieldname => $field, $value => $event->$fieldname]);
+            // Cast all fields to named table var field.
+            $params = array_merge($params, [$value => $event->$field]);
         }
 
         $sql .= " ORDER BY q.id ASC";
@@ -165,10 +184,15 @@ class debounce_step extends base_step {
             }
 
             $DB->set_field('tool_trigger_queue', 'status', \tool_trigger\task\process_workflows::STATUS_CANCELLED, ['id' => $record->id]);
+            $eventrecord = $DB->get_record('tool_trigger_events', ['id' => $record->eventid]);
+
+            \tool_trigger\event_processor::record_cancelled_workflow($trigger->workflowid, $eventrecord);
         }
 
         // Now return the state based on whether this should continue.
         $status = $trigger->id === $highest->id;
+        // Steps can cancel themselves. Add it to the stepresults so we can catch it later.
+        $stepresults['cancelled'] = !$status;
         return [$status, $stepresults];
     }
 

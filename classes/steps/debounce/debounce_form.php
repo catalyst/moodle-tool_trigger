@@ -59,6 +59,10 @@ class debounce_form extends \tool_trigger\steps\base\base_form {
             $fields = array_map(function($el) {
                 return $el['field'];
             }, $triggerfields['fields']);
+
+            // Now duplicate the fieldnames into the keys.
+            // Pretty frontend, pretty data structure :).
+            $fields = array_combine($fields, $fields);
         } else {
             $fields = [];
         }
