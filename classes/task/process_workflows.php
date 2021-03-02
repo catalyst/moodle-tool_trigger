@@ -133,9 +133,9 @@ class process_workflows extends \core\task\scheduled_task {
                  WHERE w.enabled = 1 AND q.status = " . self::STATUS_READY_TO_RUN . "
                    AND q.tries < " . self::MAXTRIES . "
                    AND (q.executiontime IS NULL
-                    OR q.executiontime < " . time() . ")
+                    OR q.executiontime < :time)
                  ORDER BY q.timecreated";
-        $queue = $DB->get_recordset_sql($sql, null, 0, self::LIMITQUEUE);
+        $queue = $DB->get_recordset_sql($sql, ['time' => time()], 0, self::LIMITQUEUE);
 
         foreach ($queue as $q) {
             mtrace('Executing workflow: ' . $q->workflowid);
@@ -153,10 +153,8 @@ class process_workflows extends \core\task\scheduled_task {
         global $DB;
 
         // Check if this queue item has been cancelled in this run.
-        if ($DB->get_field('tool_trigger_queue', 'status', ['id' => $item->qid]) === '-1') {
-            // TODO: Record a cancelled run here.
-
-            // \tool_trigger\event_processor::record_cancelled_workflow_trigger();
+        // We can skip them safely.
+        if ($DB->get_field('tool_trigger_queue', 'status', ['id' => $item->qid]) === self::STATUS_CANCELLED) {
             return;
         }
 
@@ -210,7 +208,6 @@ class process_workflows extends \core\task\scheduled_task {
                 if (!$success) {
                     // Failed to execute this step, exit processing this trigger, but don't try again.
                     mtrace('Exiting workflow early');
-                    $trigger->status = self::STATUS_FINISHED_EARLY;
                     break;
                 }
 
@@ -255,12 +252,13 @@ class process_workflows extends \core\task\scheduled_task {
             } else if (array_key_exists('cancelled', $stepresults) && $stepresults['cancelled']) {
                 $trigger->status = self::STATUS_CANCELLED;
                 $record = true;
+            } else {
+                $trigger->status = self::STATUS_FINISHED_EARLY;
             }
-
 
             // Now lets update the historical reference for this run.
             if ($record && !empty($runid)) {
-                $deferred = $trigger->status  === self::STATUS_DEFERRED;
+                $deferred = $trigger->status === self::STATUS_DEFERRED;
                 \tool_trigger\event_processor::record_cancelled_workflow(
                     $workflow->id,
                     $this->get_event_record($item->eventid),

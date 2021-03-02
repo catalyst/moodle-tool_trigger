@@ -86,7 +86,13 @@ class debounce_step extends base_step {
      * @see \tool_trigger\steps\base\base_step::execute()
      */
     public function execute($step, $trigger, $event, $stepresults) {
-        global $DB;
+        global $DB, $USER;
+
+        // Special case, the debounce step should never process realtime.
+        // Bail here, and move to the cron queue by throwing an exception.
+        if (!CLI_SCRIPT) {
+            throw new \Exception('debounce');
+        }
 
         // If there is no execution time, we need to queue this step to fire at the specified time.
         // Add the new queue record, then return a fail to stop re-execution of this workflow instance.
@@ -256,7 +262,7 @@ class debounce_step extends base_step {
      * {@inheritDoc}
      * @see \tool_trigger\steps\base\base_step::form_definition_extra()
      */
-    public function form_definition_extra($form, $mform, $customdata){
+    public function form_definition_extra ($form, $mform, $customdata) {
         return;
     }
 }

@@ -120,7 +120,7 @@ class workflowhistory_renderable extends \table_sql implements \renderable {
         if (!empty($run->errorstep)) {
             return \html_writer::tag('span', get_string('errorstep', 'tool_trigger', $run->errorstep + 1),
                 array('class' => 'badge badge-warning'));
-        // Handle debounce statuses.
+            // Handle debounce statuses.
         } else if (!empty($run->failedstep) && ((int) $run->failedstep === \tool_trigger\task\process_workflows::STATUS_CANCELLED)) {
             return \html_writer::tag('span', get_string('cancelled'), array('class' => 'badge badge-info'));
         } else if (!empty($run->failedstep) && ((int) $run->failedstep === \tool_trigger\task\process_workflows::STATUS_DEFERRED)) {

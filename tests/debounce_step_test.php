@@ -45,7 +45,7 @@ class debounce_step_testcase extends advanced_testcase {
      * Create a "user_profile_viewed" event, of user1 viewing user2's
      * profile. And then run everything else as the cron user.
      */
-    public function setup() {
+    public function setup():void {
         global $DB;
         $this->resetAfterTest(true);
 
