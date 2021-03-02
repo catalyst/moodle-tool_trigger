@@ -154,7 +154,8 @@ class debounce_step extends base_step {
         // The items in the queue should then all be skipped until the one we want to execute.
         $notime  = [];
         $maxtime = 0;
-        $highest = null;
+        // Assume we are highest.
+        $highest = $trigger;
         foreach ($records as $record) {
             if (empty($record->executiontime)) {
                 $notime[] = $record;
@@ -170,9 +171,10 @@ class debounce_step extends base_step {
         // We now have the highest executiontime, but we need to prio the highest match with no exectime.
         if (count($notime) > 1) {
             // This can happen with 2 events in succession between a cron run.
-            $highest = usort($notime, function($el1, $el2) {
+            usort($notime, function($el1, $el2) {
                 return $el1->timecreated - $el2->timecreated;
-            })[0];
+            });
+            $highest = $notime[0];
         } else if (count($notime) == 1) {
             $highest = $notime[0];
         }
