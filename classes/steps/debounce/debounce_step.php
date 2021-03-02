@@ -144,7 +144,7 @@ class debounce_step extends base_step {
             $params = array_merge($params, [$value => $event->$field]);
         }
 
-        $sql .= " ORDER BY q.id ASC";
+        $sql .= " ORDER BY e.id, q.executiontime, q.id";
         $records = $DB->get_records_sql($sql, $params);
 
         // Now we have all records that should be debounced.
@@ -172,16 +172,21 @@ class debounce_step extends base_step {
         if (count($notime) > 1) {
             // This can happen with 2 events in succession between a cron run.
             usort($notime, function($el1, $el2) {
-                return $el1->timecreated - $el2->timecreated;
+                if ($el1->timecreated === $el2->timecreated) {
+                    return $el1->eventid - $el2->eventid;
+                } else {
+                    return $el1->timecreated - $el2->timecreated;
+                }
             });
             $highest = $notime[0];
         } else if (count($notime) == 1) {
             $highest = $notime[0];
         }
 
-        // Cancel all but the highest record.
+        // Cancel all but the highest record, and the current record. That is handled out of loop.
+        $stepresults['debouncedids'] = [];
         foreach ($records as $record) {
-            if ($record->id === $highest->id) {
+            if ($record->id === $highest->id || $trigger->id === $record->id) {
                 continue;
             }
 
@@ -189,6 +194,7 @@ class debounce_step extends base_step {
             $eventrecord = $DB->get_record('tool_trigger_events', ['id' => $record->eventid]);
 
             \tool_trigger\event_processor::record_cancelled_workflow($trigger->workflowid, $eventrecord);
+            $stepresults['debouncedevents'][] = $record->eventid;
         }
 
         // Now return the state based on whether this should continue.

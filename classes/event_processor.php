@@ -219,7 +219,7 @@ class event_processor {
 
                     // Special case, the debounce step should never process realtime.
                     // Bail here, and move to the cron queue.
-                    if ($step->stepclass === 'debounce\debounce') {
+                    if ($step->stepclass === '\tool_trigger\steps\debounce\debounce_step') {
                         throw new \Exception('debounce');
                     }
 
@@ -794,7 +794,16 @@ class event_processor {
         \core\notification::add($output, $notifytype);
     }
 
-    public static function record_cancelled_workflow($workflowid, $event) {
+    /**
+     * Records a cancelled workflow, used in debouncing.
+     *
+     * @param int $workflowid
+     * @param stdClass $event
+     * @param int $runid
+     * @param boolean $deferred
+     * @return void
+     */
+    public static function record_cancelled_workflow($workflowid, $event, $runid = null, $deferred = false) {
         global $DB;
 
         // Get new run number.
@@ -804,13 +813,21 @@ class event_processor {
         // Encode event data as JSON.
         $eventdata = json_encode($event);
 
-        $DB->insert_record('tool_trigger_workflow_hist', array(
+        // Decide the field type to record
+        $status = $deferred ? \tool_trigger\task\process_workflows::STATUS_DEFERRED : \tool_trigger\task\process_workflows::STATUS_CANCELLED;
+        $dataobj = [
             'workflowid' => $workflowid,
             'number' => $runnumber,
             'timecreated' => time(),
             'event' => $eventdata,
             'eventid' => $event->id,
-            'failedstep' => \tool_trigger\task\process_workflows::STATUS_CANCELLED
-        ));
+            'failedstep' => $status
+        ];
+
+        if (empty($runid)) {
+            $DB->insert_record('tool_trigger_workflow_hist', $dataobj);
+        } else {
+            $DB->set_field('tool_trigger_workflow_hist', 'failedstep', $status, ['id' => $runid]);
+        }
     }
 }

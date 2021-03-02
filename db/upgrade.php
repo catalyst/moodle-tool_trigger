@@ -304,20 +304,5 @@ function xmldb_tool_trigger_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2021022300, 'tool', 'trigger');
     }
 
-    if ($oldversion < 2021022400) {
-
-        // Define field cancelled to be added to tool_trigger_queue.
-        $table = new xmldb_table('tool_trigger_queue');
-        $field = new xmldb_field('cancelled', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'executiontime');
-
-        // Conditionally launch add field cancelled.
-        if (!$dbman->field_exists($table, $field)) {
-            $dbman->add_field($table, $field);
-        }
-
-        // Trigger savepoint reached.
-        upgrade_plugin_savepoint(true, 2021022400, 'tool', 'trigger');
-    }
-
     return true;
 }

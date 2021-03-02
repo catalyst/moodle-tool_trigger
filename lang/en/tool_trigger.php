@@ -54,6 +54,7 @@ $string['debounce_desc'] = 'The debounce step is a special step that queues up t
 $string['debouncecontext'] = 'Debounce match fields';
 $string['debouncecontext_help'] = 'The fields to match in an event to start a debounce. All selected fields must match in order to be debounced.';
 $string['debounceduration'] = 'Duration to debounce events';
+$string['deferred'] = 'Deferred';
 $string['deleterule'] = 'Delete rule';
 $string['deletestep'] = 'Delete step';
 $string['description'] = 'Description';

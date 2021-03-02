@@ -153,16 +153,15 @@ class renderer extends \plugin_renderer_base {
         return $btn;
     }
 
-    public function run_actions_button($run) {
-
-        // Cancelled workflows can never be rerun, the actual completed instance should be rerun.
-        if (!empty($run->failedstep) && ((int) $run->failedstep === \tool_trigger\task\process_workflows::STATUS_CANCELLED)) {
-            return '';
-        }
-
+    public function run_actions_button($run, $statusonly = false) {
         $btn = '';
         $viewurl = new \moodle_url('/admin/tool/trigger/history.php', array('run' => $run->id, 'workflow' => $run->workflowid));
         $viewbtn = \html_writer::link($viewurl, get_string('viewdetailedrun', 'tool_trigger'), ['class' => 'btn btn-primary']);
+
+        // For deferred and cancelled runs, show only details.
+        if ($statusonly) {
+            return $viewbtn;
+        }
 
         $reruncurrurl = new \moodle_url('/admin/tool/trigger/history.php',
             ['action' => 'rerunworkflowcurr', 'id' => $run->id, 'workflow' => $run->workflowid, 'sesskey' => sesskey()]);

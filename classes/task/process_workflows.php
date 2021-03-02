@@ -40,6 +40,12 @@ class process_workflows extends \core\task\scheduled_task {
     const STATUS_CANCELLED = -1;
 
     /**
+     * The task was deferred.
+     * @var integer
+     */
+    const STATUS_DEFERRED = -2;
+
+    /**
      * The task has been queued but not yet executed.
      */
     const STATUS_READY_TO_RUN = 0;
@@ -194,7 +200,8 @@ class process_workflows extends \core\task\scheduled_task {
 
                 list($success, $stepresults) = $this->execute_step($step,  $trigger, $event, $stepresults);
 
-                if ($success && !empty($runid)) {
+                // Record a success, or a failed debounce step with a queuedid.
+                if (!empty($runid) && ($success || !$success && !empty($stepresults['debouncequeueid']))) {
                     $prevstep = \tool_trigger\event_processor::record_step_trigger($step, $prevstep, $runid, $stepresults);
                 } else if (!$success && !empty($runid)) {
                     \tool_trigger\event_processor::record_failed_step($prevstep, $runid);
@@ -203,6 +210,7 @@ class process_workflows extends \core\task\scheduled_task {
                 if (!$success) {
                     // Failed to execute this step, exit processing this trigger, but don't try again.
                     mtrace('Exiting workflow early');
+                    $trigger->status = self::STATUS_FINISHED_EARLY;
                     break;
                 }
 
@@ -239,8 +247,27 @@ class process_workflows extends \core\task\scheduled_task {
             // All steps completed.
             $trigger->status = self::STATUS_FINISHED;
         } else {
-            // Some steps not completed.
-            $trigger->status = array_key_exists('cancelled', $stepresults) &&$stepresults['cancelled'] ? self::STATUS_CANCELLED : self::STATUS_FINISHED_EARLY;
+            // Some steps not completed, this may be a cancelled status, or a deferred status.
+            $record = false;
+            if (array_key_exists('debouncequeueid', $stepresults)) {
+                $trigger->status = self::STATUS_DEFERRED;
+                $record = true;
+            } else if (array_key_exists('cancelled', $stepresults) && $stepresults['cancelled']) {
+                $trigger->status = self::STATUS_CANCELLED;
+                $record = true;
+            }
+
+
+            // Now lets update the historical reference for this run.
+            if ($record && !empty($runid)) {
+                $deferred = $trigger->status  === self::STATUS_DEFERRED;
+                \tool_trigger\event_processor::record_cancelled_workflow(
+                    $workflow->id,
+                    $this->get_event_record($item->eventid),
+                    $runid,
+                    $deferred
+                );
+            }
         }
         $trigger->timemodified = time();
         $this->update_queue_record($trigger);

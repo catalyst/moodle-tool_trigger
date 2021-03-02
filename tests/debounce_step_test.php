@@ -172,7 +172,6 @@ class debounce_step_testcase extends advanced_testcase {
         // Confirm there is a cancel in the stepresults, and the higher exectime was not cancelled.
         $this->assertFalse($status);
         $this->assertTrue($stepresults1['cancelled']);
-        $this->assertEquals(-1, (int) $DB->get_field('tool_trigger_queue', 'status', ['id' => $qtrigger1->id]));
         $this->assertEquals(0, (int) $DB->get_field('tool_trigger_queue', 'status', ['id' => $qtrigger2->id]));
 
         // Execute the second one and confirm it fires correctly.
@@ -239,15 +238,13 @@ class debounce_step_testcase extends advanced_testcase {
         $this->assertFalse($status);
         $this->assertTrue($stepresults2['cancelled']);
         $this->assertEquals(-1, (int) $DB->get_field('tool_trigger_queue', 'status', ['id' => $qtrigger1->id]));
-        $this->assertEquals(-1, (int) $DB->get_field('tool_trigger_queue', 'status', ['id' => $qtrigger2->id]));
         $this->assertEquals(0, (int) $DB->get_field('tool_trigger_queue', 'status', ['id' => $qtrigger3->id]));
 
-        // Execute the second one and confirm it fires correctly.
+        // Execute the third one and confirm it fires correctly.
         list($status, $stepresults3) = $this->step->execute(null, $qtrigger3, $this->event, $stepresults3);
         $this->assertTrue($status);
         $this->assertFalse($stepresults3['cancelled']);
         $this->assertEquals(-1, (int) $DB->get_field('tool_trigger_queue', 'status', ['id' => $qtrigger1->id]));
         $this->assertEquals(-1, (int) $DB->get_field('tool_trigger_queue', 'status', ['id' => $qtrigger2->id]));
     }
-
 }
