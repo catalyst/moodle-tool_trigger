@@ -50,7 +50,7 @@ class tool_trigger_course_cat_lookup_step_testcase extends advanced_testcase {
     /**
      * Initial set up.
      */
-    public function setUp() {
+    public function setUp():void {
         parent::setUp();
 
         $this->resetAfterTest(true);

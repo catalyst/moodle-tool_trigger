@@ -32,7 +32,7 @@ class tool_trigger_course_lookup_step_testcase extends advanced_testcase {
      * Create a "user_profile_viewed" event, of user1 viewing user2's
      * profile. And then run everything else as the cron user.
      */
-    public function setup() {
+    public function setup():void {
         $this->resetAfterTest(true);
         $this->user = \core_user::get_user_by_username('admin');
         $this->course = $this->getDataGenerator()->create_course();

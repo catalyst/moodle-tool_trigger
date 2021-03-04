@@ -62,7 +62,7 @@ class role_assign_action_step_testcase extends advanced_testcase {
     /**
      * Initial set up.
      */
-    public function setUp(): void {
+    public function setUp():void {
         parent::setUp();
 
         $this->resetAfterTest(true);

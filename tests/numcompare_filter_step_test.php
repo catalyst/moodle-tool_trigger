@@ -34,7 +34,7 @@ class tool_trigger_numcompare_filter_step_testcase extends advanced_testcase {
      * Create a "user_profile_viewed" event, of user1 viewing user2's
      * profile. And then run everything else as the cron user.
      */
-    public function setup() {
+    public function setup():void {
         $this->resetAfterTest(true);
 
         // Grade event generation, copied from lib/tests/event_user_graded.php!

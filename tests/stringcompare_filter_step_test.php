@@ -37,7 +37,7 @@ class tool_trigger_stringcompare_filter_step_testcase extends advanced_testcase 
      * Create a "user_profile_viewed" event, of user1 viewing user2's
      * profile. And then run everything else as the cron user.
      */
-    public function setup(): void {
+    public function setup():void {
         $this->setup_user_event();
     }
 

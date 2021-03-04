@@ -30,7 +30,7 @@ require_once($CFG->dirroot . '/admin/tool/trigger/guzzle/autoloader.php');
 
 class tool_trigger_http_post_action_step_testcase extends advanced_testcase {
 
-    public function setup() {
+    public function setup():void {
         $this->resetAfterTest(true);
 
         $this->requests_sent = [];

@@ -36,7 +36,7 @@ global $CFG;
 
 class tool_trigger_json_export_testcase extends advanced_testcase {
 
-    public function setup() {
+    public function setup():void {
         $this->resetAfterTest(true);
     }
 

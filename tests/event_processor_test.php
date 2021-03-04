@@ -38,7 +38,7 @@ require_once('tool_trigger_testcase.php');
 
 class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
 
-    public function setup() {
+    public function setup():void {
         $this->resetAfterTest(true);
         // Create an event. This _is_ easier to do via direct DB insertions.
         $user = $this->getDataGenerator()->create_user();

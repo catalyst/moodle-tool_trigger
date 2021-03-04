@@ -42,7 +42,7 @@ class tool_trigger_privacy_testcase extends advanced_testcase {
     /**
      * Set up method.
      */
-    public function setUp() {
+    public function setUp():void {
         $this->resetAfterTest();
     }
 

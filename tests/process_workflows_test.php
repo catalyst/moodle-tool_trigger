@@ -36,7 +36,7 @@ global $CFG;
 
 class tool_trigger_process_workflow_testcase extends advanced_testcase {
 
-    public function setup(): void {
+    public function setup():void {
         global $DB;
         $this->resetAfterTest(true);
 

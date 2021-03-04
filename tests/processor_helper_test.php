@@ -39,7 +39,7 @@ class tool_trigger_processor_helper_testcase extends tool_trigger_testcase {
     /**
      * Set up.
      */
-    public function setup(): void {
+    public function setup():void {
         $this->resetAfterTest(true);
 
         // Create anonymous class for testing trait.

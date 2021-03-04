@@ -36,7 +36,7 @@ global $CFG;
 
 class tool_trigger_learn_process_testcase extends advanced_testcase {
 
-    public function setup() {
+    public function setup():void {
         $this->resetAfterTest(true);
     }
 
