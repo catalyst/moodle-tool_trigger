@@ -55,14 +55,14 @@ class cleanup extends \core\task\scheduled_task {
         // Only delete events that do not have an unfinished queue still waiting.
         $sql = "
             DELETE
-              FROM {tool_trigger_events} e
+              FROM {tool_trigger_events}
              WHERE NOT EXISTS (
                        SELECT 1
                          FROM {tool_trigger_queue} q
-                        WHERE q.eventid = e.id
+                        WHERE q.eventid = {tool_trigger_events}.id
                               AND q.status = :statusready
                    )
-                   AND e.timecreated < :timetocleanup";
+                   AND timecreated < :timetocleanup";
         $DB->execute($sql, [
             'statusready' => \tool_trigger\task\process_workflows::STATUS_READY_TO_RUN,
             'timetocleanup' => $timetocleanup
@@ -70,9 +70,9 @@ class cleanup extends \core\task\scheduled_task {
 
         // Now delete processed queue items.
         $sql = "DELETE
-                  FROM {tool_trigger_queue} q
-                 WHERE q.status <> :statusready
-                   AND q.timemodified < :timetocleanup";
+                  FROM {tool_trigger_queue}
+                 WHERE status <> :statusready
+                   AND timemodified < :timetocleanup";
         $DB->execute($sql, [
             'statusready' => \tool_trigger\task\process_workflows::STATUS_READY_TO_RUN,
             'timetocleanup' => $timetocleanup
