@@ -125,13 +125,9 @@ class email_action_step extends base_action_step {
 
         // Check we have a valid email address.
         if ($emailto == clean_param($emailto, PARAM_EMAIL)) {
-            // If user is given from previous step results, use that id
-            if (isset($stepresults['user_id'])) {
-                $user = $DB->get_record('user', array('id' => $stepresults['user_id']));
-            } else {
-                // Check if user exists and use user record.
-                $user = $DB->get_record('user', array('email' => $emailto, 'deleted' => 0));
-            }
+
+            // Check if user exists and use user record.
+            $user = $DB->get_record('user', array('email' => $emailto, 'deleted' => 0));
 
             // If user not found, use noreply as a base.
             if (empty($user)) {
