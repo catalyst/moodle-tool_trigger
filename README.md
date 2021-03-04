@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/catalyst/moodle-tool_trigger.svg?branch=master)](https://travis-ci.org/catalyst/moodle-tool_trigger)
+![Build Status](https://github.com/catalyst/moodle-tool_trigger/actions/workflows/master.yml/badge.svg?branch=master)
 
 # Event Trigger
 
@@ -23,11 +23,11 @@ More Information on Moodle events can be found in the Moodle documentation at th
 ## Supported Moodle Versions
 This plugin currently supports Moodle:
 
-* 3.4
 * 3.5
-* 3.6
-* 3.7
 * 3.8
+* 3.9
+* 3.10
+* 3.11
 
 ## Moodle Plugin Installation
 The following sections outline how to install the Moodle plugin.
