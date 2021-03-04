@@ -34,7 +34,7 @@ class tool_trigger_steps_form_testcase extends advanced_testcase {
         $this->setAdminUser();
     }
 
-    public function tearDown() {
+    public function tearDown():void {
         // Reset user for tests.
         $this->setUser();
     }

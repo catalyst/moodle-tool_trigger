@@ -63,7 +63,7 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
         cron_setup_user();
     }
 
-    public function tearDown() {
+    public function tearDown():void {
         global $DB;
         // Manually clear all related DB tables. Avoids voodoo failing tests.
         $DB->delete_records('tool_trigger_run_hist', []);
