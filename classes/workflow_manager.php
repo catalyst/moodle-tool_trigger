@@ -38,7 +38,7 @@ class workflow_manager {
     /**
      * @var string[] The categories of steps available.
      */
-    const STEPTYPES = array('lookups', 'actions', 'filters');
+    const STEPTYPES = array('lookups', 'actions', 'filters', 'debounce');
 
     /**
      * Helper method to convert db records to workflow objects.

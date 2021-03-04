@@ -5,6 +5,8 @@ on: [push, pull_request]
 jobs:
   citest:
     name: CI test
+    env:
+      IGNORE_PATHS: tests/fixtures
     runs-on: 'ubuntu-latest'
 
     services:

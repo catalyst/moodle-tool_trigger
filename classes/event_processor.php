@@ -231,7 +231,9 @@ class event_processor {
                         break;
                     }
                 } catch (\Exception $e) {
-                    debugging('Error execute workflow step: ' . $step->id . ', ' . $step->stepclass . ' ' . $e->getMessage());
+                    if (!($e->getMessage() === 'debounce')) {
+                        debugging('Error execute workflow step: ' . $step->id . ', ' . $step->stepclass . ' ' . $e->getMessage());
+                    }
 
                     // Record step fail if debugging enabled.
                     if (!empty($runid)) {
@@ -783,5 +785,42 @@ class event_processor {
         }
         $notifytype = $error ? 'notifyerror' : 'notifysuccess';
         \core\notification::add($output, $notifytype);
+    }
+
+    /**
+     * Records a cancelled workflow, used in debouncing.
+     *
+     * @param int $workflowid
+     * @param stdClass $event
+     * @param int $runid
+     * @param boolean $deferred
+     * @return void
+     */
+    public static function record_cancelled_workflow($workflowid, $event, $runid = null, $deferred = false) {
+        global $DB;
+
+        // Get new run number.
+        $sqlfrag = "SELECT MAX(number) FROM {tool_trigger_workflow_hist} WHERE workflowid = :wfid";
+        $runnumber = $DB->get_field_sql($sqlfrag, array('wfid' => $workflowid)) + 1;
+
+        // Encode event data as JSON.
+        $eventdata = json_encode($event);
+
+        // Decide the field type to record
+        $status = $deferred ? \tool_trigger\task\process_workflows::STATUS_DEFERRED : \tool_trigger\task\process_workflows::STATUS_CANCELLED;
+        $dataobj = [
+            'workflowid' => $workflowid,
+            'number' => $runnumber,
+            'timecreated' => time(),
+            'event' => $eventdata,
+            'eventid' => $event->id,
+            'failedstep' => $status
+        ];
+
+        if (empty($runid)) {
+            $DB->insert_record('tool_trigger_workflow_hist', $dataobj);
+        } else {
+            $DB->set_field('tool_trigger_workflow_hist', 'failedstep', $status, ['id' => $runid]);
+        }
     }
 }

@@ -34,6 +34,18 @@ class process_workflows extends \core\task\scheduled_task {
     use processor_helper;
 
     /**
+     * The task was cancelled.
+     * @var integer
+     */
+    const STATUS_CANCELLED = -1;
+
+    /**
+     * The task was deferred.
+     * @var integer
+     */
+    const STATUS_DEFERRED = -2;
+
+    /**
      * The task has been queued but not yet executed.
      */
     const STATUS_READY_TO_RUN = 0;
@@ -115,13 +127,15 @@ class process_workflows extends \core\task\scheduled_task {
         global $DB;
 
         // Now process queue including real time workflows that dumped records in the queue as couldn't process realtime.
-        $sql = "SELECT q.id as qid, q.workflowid, q.status, q.tries, q.timecreated, q.timemodified, q.eventid
+        $sql = "SELECT q.id as qid, q.workflowid, q.status, q.tries, q.timecreated, q.timemodified, q.eventid, q.executiontime
                   FROM {tool_trigger_queue} q
                   JOIN {tool_trigger_workflows} w ON w.id = q.workflowid
-                  WHERE w.enabled = 1 AND q.status = " . self::STATUS_READY_TO_RUN . "
-                  AND q.tries < " . self::MAXTRIES . "
-                  ORDER BY q.timecreated";
-        $queue = $DB->get_recordset_sql($sql, null, 0, self::LIMITQUEUE);
+                 WHERE w.enabled = 1 AND q.status = " . self::STATUS_READY_TO_RUN . "
+                   AND q.tries < " . self::MAXTRIES . "
+                   AND (q.executiontime IS NULL
+                    OR q.executiontime < :time)
+                 ORDER BY q.timecreated";
+        $queue = $DB->get_recordset_sql($sql, ['time' => time()], 0, self::LIMITQUEUE);
 
         foreach ($queue as $q) {
             mtrace('Executing workflow: ' . $q->workflowid);
@@ -138,11 +152,20 @@ class process_workflows extends \core\task\scheduled_task {
     private function process_item($item) {
         global $DB;
 
+        // Check if this queue item has been cancelled in this run.
+        // We can skip them safely.
+        if ($DB->get_field('tool_trigger_queue', 'status', ['id' => $item->qid]) === self::STATUS_CANCELLED) {
+            return;
+        }
+
         $trigger = new \stdClass();
         $trigger->id = $item->qid;
         $trigger->workflowid = $item->workflowid;
         $trigger->tries = $item->tries + 1;
         $trigger->timemodified = $item->timemodified;
+        if (!empty($item->executiontime)) {
+            $trigger->executiontime = $item->executiontime;
+        }
 
         $this->update_queue_record($trigger);
 
@@ -157,7 +180,8 @@ class process_workflows extends \core\task\scheduled_task {
 
         // Get steps for this workflow.
         $steps = $this->get_workflow_steps($item->workflowid);
-        $stepresults = [];
+        // Add itemid to the initial stepresults for use in debouncing.
+        $stepresults = ['eventid' => $item->eventid];
         $success = false;
         $prevstep = null;
 
@@ -174,7 +198,8 @@ class process_workflows extends \core\task\scheduled_task {
 
                 list($success, $stepresults) = $this->execute_step($step,  $trigger, $event, $stepresults);
 
-                if ($success && !empty($runid)) {
+                // Record a success, or a failed debounce step with a queuedid.
+                if (!empty($runid) && ($success || !$success && !empty($stepresults['debouncequeueid']))) {
                     $prevstep = \tool_trigger\event_processor::record_step_trigger($step, $prevstep, $runid, $stepresults);
                 } else if (!$success && !empty($runid)) {
                     \tool_trigger\event_processor::record_failed_step($prevstep, $runid);
@@ -219,8 +244,28 @@ class process_workflows extends \core\task\scheduled_task {
             // All steps completed.
             $trigger->status = self::STATUS_FINISHED;
         } else {
-            // Some steps not completed.
-            $trigger->status = self::STATUS_FINISHED_EARLY;
+            // Some steps not completed, this may be a cancelled status, or a deferred status.
+            $record = false;
+            if (array_key_exists('debouncequeueid', $stepresults)) {
+                $trigger->status = self::STATUS_DEFERRED;
+                $record = true;
+            } else if (array_key_exists('cancelled', $stepresults) && $stepresults['cancelled']) {
+                $trigger->status = self::STATUS_CANCELLED;
+                $record = true;
+            } else {
+                $trigger->status = self::STATUS_FINISHED_EARLY;
+            }
+
+            // Now lets update the historical reference for this run.
+            if ($record && !empty($runid)) {
+                $deferred = $trigger->status === self::STATUS_DEFERRED;
+                \tool_trigger\event_processor::record_cancelled_workflow(
+                    $workflow->id,
+                    $this->get_event_record($item->eventid),
+                    $runid,
+                    $deferred
+                );
+            }
         }
         $trigger->timemodified = time();
         $this->update_queue_record($trigger);

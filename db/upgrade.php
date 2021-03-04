@@ -289,5 +289,20 @@ function xmldb_tool_trigger_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2020061900, 'tool', 'trigger');
     }
 
+    if ($oldversion < 2021022300) {
+
+        // Define field executiontime to be added to tool_trigger_queue.
+        $table = new xmldb_table('tool_trigger_queue');
+        $field = new xmldb_field('executiontime', XMLDB_TYPE_INTEGER, '15', null, null, null, null, 'timemodified');
+
+        // Conditionally launch add field executiontime.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Trigger savepoint reached.
+        upgrade_plugin_savepoint(true, 2021022300, 'tool', 'trigger');
+    }
+
     return true;
 }

@@ -120,6 +120,11 @@ class workflowhistory_renderable extends \table_sql implements \renderable {
         if (!empty($run->errorstep)) {
             return \html_writer::tag('span', get_string('errorstep', 'tool_trigger', $run->errorstep + 1),
                 array('class' => 'badge badge-warning'));
+            // Handle debounce statuses.
+        } else if (!empty($run->failedstep) && ((int) $run->failedstep === \tool_trigger\task\process_workflows::STATUS_CANCELLED)) {
+            return \html_writer::tag('span', get_string('cancelled'), array('class' => 'badge badge-info'));
+        } else if (!empty($run->failedstep) && ((int) $run->failedstep === \tool_trigger\task\process_workflows::STATUS_DEFERRED)) {
+            return \html_writer::tag('span', get_string('deferred', 'tool_trigger'), array('class' => 'badge badge-info'));
         } else if (!empty($run->failedstep)) {
             return \html_writer::tag('span', get_string('failedstep', 'tool_trigger', $run->failedstep + 1),
                 array('class' => 'badge badge-danger'));
@@ -141,7 +146,12 @@ class workflowhistory_renderable extends \table_sql implements \renderable {
         global $PAGE;
 
         $renderer = $PAGE->get_renderer('tool_trigger', 'workflowhistory');
-        return $renderer->run_actions_button($run);
+
+        $statusonly = !empty($run->failedstep) &&
+            ((int) $run->failedstep === \tool_trigger\task\process_workflows::STATUS_CANCELLED ||
+            (int) $run->failedstep === \tool_trigger\task\process_workflows::STATUS_DEFERRED);
+
+        return $renderer->run_actions_button($run, $statusonly);
     }
 
     /**

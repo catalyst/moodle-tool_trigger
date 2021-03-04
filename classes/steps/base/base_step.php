@@ -82,7 +82,12 @@ abstract class base_step {
     const STEPTYPE_FILTER = 'filters';
 
     /**
-     * Returns which type of step it is. This must match be "actions", "lookups", or "filters",
+     * @var string
+     */
+    const STEPTYPE_DEBOUNCE = 'debounce';
+
+    /**
+     * Returns which type of step it is. This must match be "actions", "lookups", "filters", or "debounce"
      * and the way its' currently implemented, it must also match the classes's namespace and the directory it's in.
      *
      * @return string
