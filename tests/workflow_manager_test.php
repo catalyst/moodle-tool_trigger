@@ -145,5 +145,11 @@ class tool_trigger_workflow_manager_testcase extends advanced_testcase {
 
     }
 
+    public function test_cleanup() {
+        $this->resetAfterTest();
+        // Run the task. This only tests that DB query does not throw exceptions.
+        $task = new \tool_trigger\task\cleanup();
+        $task->execute();
+    }
 
 }

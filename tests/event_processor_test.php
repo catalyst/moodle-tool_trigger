@@ -1136,4 +1136,26 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
         $third = end($thirdruns);
         $this->assertEquals($insertedid, $third->id);
     }
+
+    public function test_cleanup_history() {
+        global $DB;
+        $this->resetAfterTest();
+
+        $event = \core\event\user_loggedin::create($this->eventarr);
+        $workflowid2 = $this->create_workflow(1, [], 1);
+        \tool_trigger\event_processor::process_event($event);
+
+        $countwfhist = $DB->count_records('tool_trigger_run_hist', []);
+        $this->assertEquals(1, $countwfhist);
+
+        // Change it as if it was executed long time ago.
+        $DB->execute('UPDATE {tool_trigger_run_hist} SET executed = :veryold', ['veryold' => 12345]);
+
+        // Run the task. It should delete this record from history.
+        $task = new \tool_trigger\task\cleanup_history();
+        $task->execute();
+
+        $countwfhist = $DB->count_records('tool_trigger_run_hist', []);
+        $this->assertEquals(0, $countwfhist);
+    }
 }

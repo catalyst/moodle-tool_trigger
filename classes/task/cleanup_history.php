@@ -55,15 +55,17 @@ class cleanup_history extends \core\task\scheduled_task {
         // Conditions: Delete steps executed older than duration,
         // But have to check if any steps within duration that rely on that step
         // To be safe for now. Keep all run steps if any in run are over duration.
-        $sql = "DELETE
-                  FROM {tool_trigger_events}
-      WHERE NOT EXISTS (
-                        SELECT 1
-                          FROM {tool_trigger_queue} q
-                         WHERE q.eventid = {tool_trigger_events}.id
-                           AND q.status = :statusready
-                        )
-                   AND timecreated < :timetocleanup";
-        $DB->execute($sql, ['lookback1' => $lookback, 'lookback2' => $lookback]);
+        $sql = "SELECT rh.id FROM {tool_trigger_run_hist} rh
+                      WHERE rh.executed < :lookback1
+                        AND (
+                            SELECT COUNT(id) as count
+                              FROM {tool_trigger_run_hist} sub
+                             WHERE sub.runid = rh.runid
+                               AND sub.executed > :lookback2
+                            ) = 0";
+        $ids = $DB->get_fieldset_sql($sql, ['lookback1' => $lookback, 'lookback2' => $lookback]);
+        if ($ids) {
+            $DB->delete_records_list('tool_trigger_run_hist', 'id', $ids);
+        }
     }
 }
