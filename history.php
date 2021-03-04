@@ -178,6 +178,30 @@ if (!empty($action) && confirm_sesskey()) {
                 $string = get_string('executenextconfirm', 'tool_trigger');
             }
             break;
+
+        case 'rerunallcurr':
+            if ($confirm) {
+                \tool_trigger\event_processor::rerun_all_error_runs($workflowid);
+            } else {
+                $confirmurl = new moodle_url('/admin/tool/trigger/history.php');
+                $confirmurl->params(['confirm' => 1, 'action' => $action, 'id' => $actionid,
+                    'workflow' => $workflowid, 'id' => $actionid]);
+                $cancelurl = new moodle_url('/admin/tool/trigger/history.php', ['workflow' => $workflowid, 'run' => $runid]);
+                $string = get_string('rerunallcurrconfirm', 'tool_trigger');
+            }
+            break;
+
+        case 'rerunallhist':
+            if ($confirm) {
+                \tool_trigger\event_processor::rerun_all_error_runs($workflowid, true);
+            } else {
+                $confirmurl = new moodle_url('/admin/tool/trigger/history.php');
+                $confirmurl->params(['confirm' => 1, 'action' => $action, 'id' => $actionid,
+                    'workflow' => $workflowid, 'id' => $actionid]);
+                $cancelurl = new moodle_url('/admin/tool/trigger/history.php', ['workflow' => $workflowid, 'run' => $runid]);
+                $string = get_string('rerunallhistconfirm', 'tool_trigger');
+            }
+            break;
     }
 
     // If not confirmed, output the confirm page, with the params set in the switch, then exit.

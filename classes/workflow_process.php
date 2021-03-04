@@ -270,6 +270,7 @@ class workflow_process {
         $data->workflowrealtime = 0;
         $data->draftmode = 0;
         $data->isstepschanged = 1;
+        $data->workflowdebug = isset($content['debug']) ? $content['debug'] : 0;
 
         // Format and flatten step data.
         $cleansteps = array();

@@ -201,7 +201,7 @@ class process_workflows extends \core\task\scheduled_task {
 
                 // Record the failed step for debugging.
                 if (!empty($runid)) {
-                    \tool_trigger\event_processor::record_failed_step($prevstep, $runid);
+                    \tool_trigger\event_processor::record_failed_step($prevstep, $runid, true);
                 }
 
                 return;

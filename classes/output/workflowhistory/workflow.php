@@ -117,15 +117,23 @@ class workflowhistory_renderable extends \table_sql implements \renderable {
     public function col_runstatus($run) {
         global $DB;
         // Return a badge for the status.
-        if (empty($run->failedstep)) {
-            // Find the number of steps executed.
-            $sql = "SELECT MAX(number) FROM {tool_trigger_run_hist} WHERE runid = ?";
-            $num = $DB->get_field_sql($sql, [$run->id]) + 1;
-            return \html_writer::tag('span', get_string('runpassed', 'tool_trigger', $num),
-                array('class' => 'badge badge-success'));
-        } else {
+        if (!empty($run->errorstep)) {
+            return \html_writer::tag('span', get_string('errorstep', 'tool_trigger', $run->errorstep + 1),
+                array('class' => 'badge badge-warning'));
+        } else if (!empty($run->failedstep)) {
             return \html_writer::tag('span', get_string('failedstep', 'tool_trigger', $run->failedstep + 1),
                 array('class' => 'badge badge-danger'));
+        } else {
+            // Find the number of steps executed.
+            $sql = "SELECT MAX(number) FROM {tool_trigger_run_hist} WHERE runid = ?";
+            $res = $DB->get_field_sql($sql, [$run->id]);
+            // Output a plain passed badge if no data found, rather than a number badge.
+            if (!empty($res)) {
+                $string = get_string('runpassed', 'tool_trigger', $res + 1);
+            } else {
+                $string = get_string('runpassednonum', 'tool_trigger');
+            }
+            return \html_writer::tag('span', $string, array('class' => 'badge badge-success'));
         }
     }
 

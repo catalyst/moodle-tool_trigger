@@ -97,7 +97,7 @@ class workflow_manager {
             $transaction = $DB->start_delegated_transaction();
 
             // Get workflow record.
-            $worflowfields = 'name, description, event';
+            $worflowfields = 'name, description, event, debug';
             $workflowrecord = $DB->get_record('tool_trigger_workflows', ['id' => $workflowid], $worflowfields, MUST_EXIST);
 
             // Get step records.

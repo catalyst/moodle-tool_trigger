@@ -181,6 +181,14 @@ class renderable extends \table_sql implements \renderable {
         return $manage;
     }
 
+    public function col_active($row) {
+        if ($row->active) {
+            return get_string('active');
+        } else {
+            return get_string('inactive');
+        }
+    }
+
     /**
      * Query the reader. Store results in the object for use by build_table.
      *
@@ -192,6 +200,10 @@ class renderable extends \table_sql implements \renderable {
         $total = \tool_trigger\workflow_manager::count_workflows();
         $this->pagesize($pagesize, $total);
         $workflows = \tool_trigger\workflow_manager::get_workflows_paginated($this->get_page_start(), $this->get_page_size());
+        // Sort inactive arrays to the bottom.
+        usort($workflows, function($a, $b) {
+            return ($a->active < $b->active);
+        });
         $this->rawdata = $workflows;
         // Set initial bars.
         if ($useinitialsbar) {
