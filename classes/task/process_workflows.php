@@ -202,6 +202,7 @@ class process_workflows extends \core\task\scheduled_task {
                 if (!empty($runid) && ($success || !$success && !empty($stepresults['debouncequeueid']))) {
                     $prevstep = \tool_trigger\event_processor::record_step_trigger($step, $prevstep, $runid, $stepresults);
                 } else if (!$success && !empty($runid)) {
+                    \tool_trigger\event_processor::record_step_trigger($step, $prevstep, $runid, $stepresults);
                     \tool_trigger\event_processor::record_failed_step($prevstep, $runid);
                 }
 
@@ -226,6 +227,7 @@ class process_workflows extends \core\task\scheduled_task {
 
                 // Record the failed step for debugging.
                 if (!empty($runid)) {
+                    \tool_trigger\event_processor::record_step_trigger($step, $prevstep, $runid, ['error' => $e->getMessage()]);
                     \tool_trigger\event_processor::record_failed_step($prevstep, $runid, true);
                 }
 

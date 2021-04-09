@@ -222,6 +222,7 @@ class event_processor {
                     if ($success && !empty($runid)) {
                         $prevstep = self::record_step_trigger($step, $prevstep, $runid, $stepresults);
                     } else if (!$success && !empty($runid)) {
+                        self::record_step_trigger($step, $prevstep, $runid, $stepresults);
                         self::record_failed_step($prevstep, $runid);
                     }
 
@@ -237,6 +238,7 @@ class event_processor {
 
                     // Record step fail if debugging enabled.
                     if (!empty($runid)) {
+                        self::record_step_trigger($step, $prevstep, $runid, ['error' => $e->getMessage()]);
                         self::record_failed_step($prevstep, $runid, true);
                     }
 
