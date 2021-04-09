@@ -107,12 +107,7 @@ jobs:
           # PHPUnit depends on en_AU.UTF-8 locale
           sudo locale-gen en_AU.UTF-8
       - name: Install Moodle
-        run: |
-          mkdir ~/.npm-global
-          npm config set prefix '~/.npm-global'
-          export PATH=~/.npm-global/bin:$PATH
-          source ~/.profile
-          moodle-plugin-ci install -vvv --plugin ./plugin --db-host=127.0.0.1
+        run:  moodle-plugin-ci install -vvv --plugin ./plugin --db-host=127.0.0.1
         env:
           DB: ${{ matrix.database }}
           MOODLE_BRANCH: ${{ matrix.moodle-branch }}
