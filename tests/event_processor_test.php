@@ -349,7 +349,8 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
         $this->assertDebuggingCalled();
 
         $countrunhist3 = $DB->count_records('tool_trigger_run_hist');
-        $this->assertEquals(1, $countrunhist3);
+        // Check all steps get recorded.
+        $this->assertEquals(2, $countrunhist3);
     }
 
     public function test_execute_current_step() {
