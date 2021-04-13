@@ -37,6 +37,8 @@ require_capability('tool/trigger:manageworkflows', $context);
 $workflowid = required_param('workflow', PARAM_INT);
 $runid = optional_param('run', null, PARAM_INT);
 $action = optional_param('action', null, PARAM_TEXT);
+$download = optional_param('download', null, PARAM_ALPHA);
+
 if (!empty($action)) {
     $actionid = required_param('id', PARAM_INT);
 }
@@ -228,16 +230,22 @@ if (!empty($runid)) {
     $PAGE->navbar->add(get_string('viewdetailedrun', 'tool_trigger'), $navbarurl);
 }
 
-// Build the page output if not performing an action and being redirected.
-echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('workflowviewhistory', 'tool_trigger'));
 $renderer = $PAGE->get_renderer('tool_trigger', 'workflowhistory');
 
-if (!$workflow->debug) {
-    \core\notification::add(
-        get_string('warningdebugging', 'tool_trigger', $workflowid),
-        \core\output\notification::NOTIFY_WARNING
-    );
+if ($download) {
+    \core\session\manager::write_close();
+    $renderer->render_table($workflowid, $runid, $download);
+    die();
+} else {
+    // Build the page output if not performing an action and being redirected.
+    if (!$workflow->debug) {
+        \core\notification::add(
+            get_string('warningdebugging', 'tool_trigger', $workflowid),
+            \core\output\notification::NOTIFY_WARNING
+        );
+    }
+    echo $OUTPUT->header();
+    echo $OUTPUT->heading(get_string('workflowviewhistory', 'tool_trigger'));
+    $renderer->render_table($workflowid, $runid, $download);
+    echo $OUTPUT->footer();
 }
-$renderer->render_table($workflowid, $runid);
-echo $OUTPUT->footer();

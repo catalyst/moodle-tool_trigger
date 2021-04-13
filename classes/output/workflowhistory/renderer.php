@@ -24,8 +24,6 @@
 
 namespace tool_trigger\output\workflowhistory;
 
-use single_button;
-
 defined('MOODLE_INTERNAL') || die;
 require_once(__DIR__.'/run.php');
 require_once(__DIR__.'/workflow.php');
@@ -41,15 +39,16 @@ class renderer extends \plugin_renderer_base {
     /**
      * Sets the SQL for the table, and renders it.
      *
-     * @param \tool_trigger\output\workflowhistory\renderable $renderable the table to render
-     * @return void
+     * @param int $workflowid Workflow ID to render a history of.
+     * @param mixed $run Optional run ID to render specific run history.
+     * @param null|string $download Data format type. One of csv, xhtml, ods, etc
      */
-    public function render_table($workflowid, $run = null) {
+    public function render_table(int $workflowid, $run = null, $download = null) {
         $url = new \moodle_url('/admin/tool/trigger/history.php', ['workflow' => $workflowid, 'run' => $run]);
 
         // Decide which table to render if run is given.
         if (!empty($run)) {
-            $renderable = new \tool_trigger\output\workflowhistory\runhistory_renderable('runhistory', $url);
+            $table = new runhistory_renderable('runhistory', $url);
             $sql = (object) [
                 'fields' => '*',
                 'from' => '{tool_trigger_run_hist}',
@@ -57,12 +56,20 @@ class renderer extends \plugin_renderer_base {
                 'params' => ['workflow' => $workflowid, 'run' => $run]
             ];
         } else {
-            // We want to ouput some buttons before drawing the table.
-            $this->rerun_all_historic_button($workflowid);
-            echo '&nbsp;';
-            $this->rerun_all_current_button($workflowid);
+            if (!$download) {
+                // We want to ouput some buttons before drawing the table.
+                echo $this->rerun_all_historic_button($workflowid);
+                echo '&nbsp;';
+                echo $this->rerun_all_current_button($workflowid);
+                echo \html_writer::tag('br', '');
+            }
 
-            $renderable = new \tool_trigger\output\workflowhistory\workflowhistory_renderable('triggerhistory', $url);
+            $table = new workflowhistory_renderable(
+                'triggerhistory',
+                $url,
+                100,
+                $download
+            );
             $sql = (object) [
                 'fields' => '*',
                 'from' => '{tool_trigger_workflow_hist}',
@@ -72,8 +79,8 @@ class renderer extends \plugin_renderer_base {
         }
 
         // Then output the table.
-        $renderable->sql = $sql;
-        $renderable->out($renderable->pagesize, true);
+        $table->sql = $sql;
+        $table->out($table->pagesize, true);
     }
 
     public function step_actions_button($step) {
@@ -192,24 +199,26 @@ class renderer extends \plugin_renderer_base {
     /**
      * This function outputs the rerun all historic errors button.
      *
-     * @return void
+     * @param int $workflowid Workflow ID to render a history of.
+     * @return string
      */
-    private function rerun_all_historic_button($workflowid) {
+    private function rerun_all_historic_button(int $workflowid) {
         $url = new \moodle_url('/admin/tool/trigger/history.php',
             ['action' => 'rerunallhist', 'sesskey' => sesskey(), 'id' => $workflowid, 'workflow' => $workflowid]);
         $btn = new \single_button($url, get_string('rerunallhist', 'tool_trigger'), 'get', true);
-        echo $this->render($btn);
+        return $this->render($btn);
     }
 
     /**
      * This function outputs the rerun all current errors button.
      *
-     * @return void
+     * @param int $workflowid Workflow ID to render a history of.
+     * @return string
      */
     private function rerun_all_current_button($workflowid) {
         $url = new \moodle_url('/admin/tool/trigger/history.php',
             ['action' => 'rerunallcurr', 'sesskey' => sesskey(), 'id' => $workflowid, 'workflow' => $workflowid]);
         $btn = new \single_button($url, get_string('rerunallcurr', 'tool_trigger'), 'get', true);
-        echo $this->render($btn);
+        return $this->render($btn);
     }
 }
