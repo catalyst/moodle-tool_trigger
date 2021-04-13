@@ -41,6 +41,8 @@ if (!empty($action)) {
     $actionid = required_param('id', PARAM_INT);
 }
 
+$workflow = $DB->get_record('tool_trigger_workflows', ['id' => $workflowid], '*', MUST_EXIST);
+
 if (!empty($action) && confirm_sesskey()) {
     // Here we will handle page actions for steps and workflows.
     $confirm = optional_param('confirm', false, PARAM_BOOL);
@@ -230,5 +232,12 @@ if (!empty($runid)) {
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('workflowviewhistory', 'tool_trigger'));
 $renderer = $PAGE->get_renderer('tool_trigger', 'workflowhistory');
+
+if (!$workflow->debug) {
+    \core\notification::add(
+        get_string('warningdebugging', 'tool_trigger', $workflowid),
+        \core\output\notification::NOTIFY_WARNING
+    );
+}
 $renderer->render_table($workflowid, $runid);
 echo $OUTPUT->footer();
