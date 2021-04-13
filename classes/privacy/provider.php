@@ -209,50 +209,50 @@ class provider implements
         global $DB;
         $DB->execute("
             DELETE
-              FROM {tool_trigger_queue} q
+              FROM {tool_trigger_queue}
              WHERE NOT EXISTS (
                 SELECT 1
                   FROM {tool_trigger_events} e
-                 WHERE q.eventid = e.id
+                 WHERE {tool_trigger_queue}.eventid = e.id
             )"
         );
 
         $DB->execute("
             DELETE
-              FROM {tool_trigger_queue} q
+              FROM {tool_trigger_queue}
              WHERE NOT EXISTS (
                 SELECT 1
                   FROM {tool_trigger_learn_events} e
-                 WHERE q.eventid = e.id
+                 WHERE {tool_trigger_queue}.eventid = e.id
             )");
 
         // Now delete historic trigger runs that are orphaned.
         $DB->execute("
             DELETE
-              FROM {tool_trigger_workflow_hist} wfh
+              FROM {tool_trigger_workflow_hist}
              WHERE NOT EXISTS (
                 SELECT 1
                   FROM {tool_trigger_events} e
-                 WHERE wfh.eventid = e.id
+                 WHERE {tool_trigger_workflow_hist}.eventid = e.id
             )");
 
         $DB->execute("
             DELETE
-              FROM {tool_trigger_workflow_hist} wfh
+              FROM {tool_trigger_workflow_hist}
              WHERE NOT EXISTS (
                 SELECT 1
                   FROM {tool_trigger_learn_events} e
-                 WHERE wfh.eventid = e.id
+                 WHERE {tool_trigger_workflow_hist}.eventid = e.id
             )");
 
         // Finally, delete the historic steps that are now orphaned.
         $DB->execute("
             DELETE
-              FROM {tool_trigger_run_hist} rh
+              FROM {tool_trigger_run_hist}
              WHERE NOT EXISTS (
                 SELECT 1
                   FROM {tool_trigger_workflow_hist} wfh
-                 WHERE rh.runid = wfh.id
+                 WHERE {tool_trigger_run_hist}.runid = wfh.id
             )");
     }
 
