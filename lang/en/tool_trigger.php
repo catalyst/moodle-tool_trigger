@@ -251,6 +251,7 @@ $string['trigger:manageworkflows'] = 'Create and configure automatic event-trigg
 $string['timeexecuted'] = 'Time executed';
 $string['timetocleanup'] = 'Time to cleanup old events';
 $string['timetocleanup_help'] = 'This setting sets the time sucessfully executed workflows remain in the Moodle database prior to being removed.';
+$string['warningdebugging'] = 'Debug mode is disabled for the current workflow. To be able to record the history, you should <a href = "/admin/tool/trigger/edit.php?workflowid={$a}">enable debugging for the workflow</a>.';
 $string['workflowactive'] = 'Workflow active';
 $string['workflowactive_help'] = 'Only active workflows will be processed when an event is triggered.';
 $string['workflowrealtime'] = 'Real time processing';
