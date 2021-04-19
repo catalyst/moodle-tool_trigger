@@ -43,6 +43,14 @@ class tool_trigger_email_action_step_testcase extends advanced_testcase {
         $this->sink = $this->redirectMessages();
     }
 
+    protected function tearDown(): void {
+        $this->user1 = null;
+        $this->user2 = null;
+        $this->course = null;
+        $this->event = null;
+        parent::tearDown();
+    }
+
     public function test_execute_basic() {
         $settings = [
             'emailto' => $this->user1->email,

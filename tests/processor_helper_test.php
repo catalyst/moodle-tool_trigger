@@ -48,6 +48,12 @@ class tool_trigger_processor_helper_testcase extends tool_trigger_testcase {
         };
     }
 
+    protected function tearDown(): void {
+        $this->testclass = null;
+        $this->user = null;
+        parent::tearDown();
+    }
+
     /**
      * Test can restore event from the DB record.
      */

@@ -68,6 +68,13 @@ class tool_trigger_course_cat_lookup_step_testcase extends advanced_testcase {
         cron_setup_user();
     }
 
+    protected function tearDown() {
+        $this->user = null;
+        $this->category = null;
+        $this->event = null;
+        parent::tearDown();
+    }
+
     /**
      * Test fields list.
      */

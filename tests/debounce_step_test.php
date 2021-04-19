@@ -83,6 +83,12 @@ class debounce_step_testcase extends advanced_testcase {
         $this->eventid = $DB->insert_record('tool_trigger_events', $entry, true);
     }
 
+    protected function tearDown(): void {
+        $this->step = null;
+        $this->eventid = null;
+        parent::tearDown();
+    }
+
     private function get_mock_queue_item() {
         global $DB;
 
