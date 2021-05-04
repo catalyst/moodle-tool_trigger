@@ -62,15 +62,12 @@ class debounce_step extends base_step {
      */
     protected function init() {
         // Also fix up autocomplete and duration for debouncing.
-        if (!empty($data['debouncecontext'])) {
-            $data['debouncecontext'] = $data['debouncecontext[]'];
+        if (!empty($this->data['debounceduration[number]'])) {
+            $this->data['debounceduration']['number'] = $this->data['debounceduration[number]'];
+            $this->data['debounceduration']['timeunit'] = $this->data['debounceduration[timeunit]'];
         }
-        if (!empty($data['debounceduration[number]'])) {
-            $data['debounceduration']['number'] = $data['debounceduration[number]'];
-            $data['debounceduration']['timeunit'] = $data['debounceduration[timeunit]'];
-        }
-        $this->matchfields = explode(',', $this->data['debouncecontext[]']);
-        $this->duration = (int) $this->data['debounceduration[number]'] * (int) $this->data['debounceduration[timeunit]'];
+        $this->matchfields = $this->data['debouncecontext'];
+        $this->duration = (int) $this->data['debounceduration']['number'] * (int) $this->data['debounceduration']['timeunit'];
     }
 
     /**

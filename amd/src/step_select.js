@@ -111,11 +111,21 @@ define(
                 // Then convert from its array-of-objects output format into a single object.
                 var curstep = $stepform.serializeArray().reduce(
                     function(finalobj, field) {
-
-                        // Filter out the sesskey and formslib system fields.
-                        if (field.name !== 'sesskey' && !field.name.startsWith('_qf__')) {
+                        // If field ends with [], the form el was an array.
+                        if (field.name.endsWith('[]')) {
+                            let fieldname = field.name.substring(0, field.name.length - 2);
+                            if (finalobj[fieldname] === undefined) {
+                                finalobj[fieldname] = [field.value];
+                            } else {
+                                finalobj[fieldname].push(field.value);
+                            }
+                        } else if (field.name !== 'sesskey'
+                                && !field.name.startsWith('_qf__')
+                                && !field.value.startsWith('_qf__')) {
+                            // Filter out the sesskey and formslib system fields.
                             finalobj[field.name] = field.value;
                         }
+
                         return finalobj;
                     },
                     {}
