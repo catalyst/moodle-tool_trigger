@@ -94,7 +94,7 @@ class email_action_step extends base_action_step {
      *
      * @return string human readable step name.
      */
-    static public function get_step_name() {
+    public static function get_step_name() {
         return get_string('emailactionstepname', 'tool_trigger');
     }
 
@@ -103,7 +103,7 @@ class email_action_step extends base_action_step {
      *
      * @return string human readable step name.
      */
-    static public function get_step_desc() {
+    public static function get_step_desc() {
         return get_string('emailactionstepdesc', 'tool_trigger');
     }
 

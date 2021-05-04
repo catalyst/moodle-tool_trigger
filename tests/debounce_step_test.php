@@ -68,8 +68,7 @@ class debounce_step_testcase extends advanced_testcase {
         // No existing event queue.
         $this->step = new \tool_trigger\steps\debounce\debounce_step(
             json_encode([
-                'debouncecontext' => 'testcontrol',
-                'debouncecontext[]' => 'eventname',
+                'debouncecontext' => ['eventname'],
                 'debounceduration[number]' => 60,
                 'debounceduration[timeunit]' => 60,
             ])

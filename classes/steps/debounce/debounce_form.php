@@ -80,7 +80,6 @@ class debounce_form extends \tool_trigger\steps\base\base_form {
                 'multiple' => true,
             ]
         );
-        $mform->setDefault('debouncecontext', ['relateduserid', 'eventname', 'userid']); // BROKEN??
         $mform->addHelpButton('debouncecontext', 'debouncecontext', 'tool_trigger');
         $mform->addRule('debouncecontext', get_string('required'), 'required', null, 'client');
 
@@ -89,5 +88,4 @@ class debounce_form extends \tool_trigger\steps\base\base_form {
         $mform->setDefault('debounceduration', 30 * MINSECS);
         $mform->addRule('debounceduration', get_string('required'), 'required', null, 'client');
     }
-
 }

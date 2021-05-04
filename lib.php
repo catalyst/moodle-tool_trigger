@@ -107,10 +107,7 @@ function tool_trigger_output_fragment_new_step_form($args) {
             $data['emailcontenttrust'] = false;
         }
 
-        // Also fix up autocomplete and duration for debouncing.
-        if (!empty($data['debouncecontext'])) {
-            $data['debouncecontext'] = $data['debouncecontext[]'];
-        }
+        // Also fix up duration for debouncing.
         if (!empty($data['debounceduration[number]'])) {
             $data['debounceduration']['number'] = $data['debounceduration[number]'];
             $data['debounceduration']['timeunit'] = $data['debounceduration[timeunit]'];

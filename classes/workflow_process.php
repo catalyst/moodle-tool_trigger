@@ -258,7 +258,7 @@ class workflow_process {
      * @param string $filejson
      * @return \stdClass
      */
-    static public function import_prep($filejson) {
+    public static function import_prep($filejson) {
         $content = json_decode($filejson, true);
 
         $data = new \stdClass();
