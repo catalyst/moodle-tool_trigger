@@ -57,14 +57,14 @@ abstract class base_step {
      *
      * @return string human readable step name.
      */
-    abstract static public function get_step_name();
+    abstract public static function get_step_name();
 
     /**
      * Returns the step description.
      *
      * @return string human readable step description.
      */
-    abstract static public function get_step_desc();
+    abstract public static function get_step_desc();
 
     /**
      * @var string
@@ -92,14 +92,14 @@ abstract class base_step {
      *
      * @return string
      */
-    abstract static public function get_step_type();
+    abstract public static function get_step_type();
 
     /**
      * Returns a language string with the printable description of the type of step.
      *
      * @return string
      */
-    abstract static public function get_step_type_desc();
+    abstract public static function get_step_type_desc();
 
     /**
      * Execute.
