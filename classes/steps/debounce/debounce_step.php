@@ -145,6 +145,7 @@ class debounce_step extends base_step {
             $sql .= $chunk;
             // Cast all fields to named table var field.
             $params = array_merge($params, [$value => $event->$field]);
+            $counter++;
         }
 
         $sql .= " ORDER BY e.id, q.executiontime, q.id";
