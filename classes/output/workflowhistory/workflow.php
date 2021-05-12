@@ -45,8 +45,9 @@ class workflowhistory_renderable extends \table_sql implements \renderable {
      * @param string $uniqueid Unique id of form.
      * @param \moodle_url $url Url where this table is displayed.
      * @param int $perpage Number of rules to display per page.
+     * @param null|string $download Data format type. One of csv, xhtml, ods, etc
      */
-    public function __construct($uniqueid, \moodle_url $url, $perpage = 100) {
+    public function __construct($uniqueid, \moodle_url $url, $perpage = 100, $download = null) {
         parent::__construct($uniqueid);
 
         $this->set_attribute('id', 'tooltriggerworkflowhistory_table');
@@ -78,8 +79,10 @@ class workflowhistory_renderable extends \table_sql implements \renderable {
         $this->collapsible(false);
         $this->sortable(false, 'number', SORT_DESC);
         $this->pageable(true);
-        $this->is_downloadable(false);
         $this->define_baseurl($url);
+        $this->is_downloadable(true);
+        $this->show_download_buttons_at([TABLE_P_BOTTOM]);
+        $this->is_downloading($download, 'workflow_history');
     }
 
     public function col_id($run) {
@@ -118,15 +121,19 @@ class workflowhistory_renderable extends \table_sql implements \renderable {
         global $DB;
         // Return a badge for the status.
         if (!empty($run->errorstep)) {
-            return \html_writer::tag('span', get_string('errorstep', 'tool_trigger', $run->errorstep + 1),
+            $text = \html_writer::tag('span', get_string('errorstep', 'tool_trigger', $run->errorstep + 1),
                 array('class' => 'badge badge-warning'));
             // Handle debounce statuses.
-        } else if (!empty($run->failedstep) && ((int) $run->failedstep === \tool_trigger\task\process_workflows::STATUS_CANCELLED)) {
-            return \html_writer::tag('span', get_string('cancelled'), array('class' => 'badge badge-info'));
+        } else if (!empty($run->failedstep) &&
+            ((int) $run->failedstep === \tool_trigger\task\process_workflows::STATUS_CANCELLED)) {
+            $text = \html_writer::tag(
+                'span', get_string('cancelled'),
+                array('class' => 'badge badge-info')
+            );
         } else if (!empty($run->failedstep) && ((int) $run->failedstep === \tool_trigger\task\process_workflows::STATUS_DEFERRED)) {
-            return \html_writer::tag('span', get_string('deferred', 'tool_trigger'), array('class' => 'badge badge-info'));
+            $text = \html_writer::tag('span', get_string('deferred', 'tool_trigger'), array('class' => 'badge badge-info'));
         } else if (!empty($run->failedstep)) {
-            return \html_writer::tag('span', get_string('failedstep', 'tool_trigger', $run->failedstep + 1),
+            $text = \html_writer::tag('span', get_string('failedstep', 'tool_trigger', $run->failedstep + 1),
                 array('class' => 'badge badge-danger'));
         } else {
             // Find the number of steps executed.
@@ -138,51 +145,29 @@ class workflowhistory_renderable extends \table_sql implements \renderable {
             } else {
                 $string = get_string('runpassednonum', 'tool_trigger');
             }
-            return \html_writer::tag('span', $string, array('class' => 'badge badge-success'));
+            $text = \html_writer::tag('span', $string, array('class' => 'badge badge-success'));
         }
+
+        if ($this->is_downloading()) {
+            $text = html_to_text($text);
+        }
+
+        return $text;
     }
 
     public function col_actions($run) {
         global $PAGE;
 
-        $renderer = $PAGE->get_renderer('tool_trigger', 'workflowhistory');
+        if ($this->is_downloading()) {
+            return '';
+        } else {
+            $renderer = $PAGE->get_renderer('tool_trigger', 'workflowhistory');
 
-        $statusonly = !empty($run->failedstep) &&
-            ((int) $run->failedstep === \tool_trigger\task\process_workflows::STATUS_CANCELLED ||
-            (int) $run->failedstep === \tool_trigger\task\process_workflows::STATUS_DEFERRED);
+            $statusonly = !empty($run->failedstep) &&
+                ((int) $run->failedstep === \tool_trigger\task\process_workflows::STATUS_CANCELLED ||
+                    (int) $run->failedstep === \tool_trigger\task\process_workflows::STATUS_DEFERRED);
 
-        return $renderer->run_actions_button($run, $statusonly);
-    }
-
-    /**
-     * This is a copy of the tablelib implementation,
-     * but removes no-overflow class from the parent div.
-     * Allows dropdowns to overflow.
-     */
-    public function start_html() {
-        global $OUTPUT;
-
-        // Render button to allow user to reset table preferences.
-        echo $this->render_reset_button();
-
-        // Do we need to print initial bars?
-        $this->print_initials_bar();
-
-        // Paging bar.
-        if ($this->use_pages) {
-            $pagingbar = new \paging_bar($this->totalrows, $this->currpage, $this->pagesize, $this->baseurl);
-            $pagingbar->pagevar = $this->request[TABLE_VAR_PAGE];
-            echo $OUTPUT->render($pagingbar);
+            return $renderer->run_actions_button($run, $statusonly);
         }
-
-        if (in_array(TABLE_P_TOP, $this->showdownloadbuttonsat)) {
-            echo $this->download_buttons();
-        }
-
-        $this->wrap_html_start();
-        // Start of main data table.
-
-        echo \html_writer::start_tag('div');
-        echo \html_writer::start_tag('table', $this->attributes);
     }
 }
