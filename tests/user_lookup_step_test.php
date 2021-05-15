@@ -39,6 +39,14 @@ class tool_trigger_user_lookup_testcase extends advanced_testcase {
         $this->setup_user_event();
     }
 
+    protected function tearDown(): void {
+        $this->user1 = null;
+        $this->user2 = null;
+        $this->course = null;
+        $this->event = null;
+        parent::tearDown();
+    }
+
     /**
      * Basic use-case, with default values for settings. Find the
      * user identified at "userid", and add their data with the

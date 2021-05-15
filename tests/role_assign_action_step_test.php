@@ -89,6 +89,15 @@ class role_assign_action_step_testcase extends advanced_testcase {
         cron_setup_user();
     }
 
+    protected function tearDown(): void {
+        $this->user = null;
+        $this->course = null;
+        $this->roleid = null;
+        $this->context = null;
+        $this->event = null;
+        parent::tearDown();
+    }
+
     /**
      * Test fields list.
      */

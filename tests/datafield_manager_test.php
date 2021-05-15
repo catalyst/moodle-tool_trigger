@@ -39,6 +39,14 @@ class tool_trigger_datafield_manager_testcase extends advanced_testcase {
         $this->setup_user_event();
     }
 
+    protected function tearDown(): void {
+        $this->user1 = null;
+        $this->user2 = null;
+        $this->course = null;
+        $this->event = null;
+        parent::tearDown();
+    }
+
     /**
      * Test that all the datafields are correctly generated.
      */

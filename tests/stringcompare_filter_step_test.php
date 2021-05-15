@@ -41,6 +41,14 @@ class tool_trigger_stringcompare_filter_step_testcase extends advanced_testcase 
         $this->setup_user_event();
     }
 
+    protected function tearDown(): void {
+        $this->user1 = null;
+        $this->user2 = null;
+        $this->course = null;
+        $this->event = null;
+        parent::tearDown();
+    }
+
     /**
      * Test the basic working of all the operators, using a configuration where
      * both sides are hard-coded strings without {placeholders}.
