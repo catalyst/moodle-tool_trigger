@@ -57,6 +57,22 @@ if ($hassiteconfig) {
         get_string('historyduration', 'tool_trigger'),
         get_string('historydurationdesc', 'tool_trigger'), 1 * WEEKSECS, WEEKSECS));
 
+    $settings->add(new admin_setting_heading('tool_trigger/autorerunsettings',
+        get_string('autorerunsettings', 'tool_trigger'),
+        get_string('autorerunsettingsdesc', 'tool_trigger')));
+
+    $settings->add(new admin_setting_configcheckbox('tool_trigger/autorereun',
+        get_string('autorerun', 'tool_trigger'),
+        get_string('autorerun_help', 'tool_trigger'), 1));
+
+    $settings->add(new admin_setting_configtext('tool_trigger/autorerunmaxtries',
+        get_string('autorerunmaxtries', 'tool_trigger'),
+        get_string('autorerunmaxtries_help', 'tool_trigger'), 5));
+
+    $settings->add(new admin_setting_configduration('tool_trigger/autorerunduration',
+        get_string('autorerunduration', 'tool_trigger'),
+        get_string('autorerunduration_help', 'tool_trigger'), 1 * HOURSECS, HOURSECS));
+
     $workflowsettings = new admin_externalpage('tool_trigger_worfklowsettings',
         get_string('manage', 'tool_trigger'),
         new moodle_url('/admin/tool/trigger/manage.php'));
