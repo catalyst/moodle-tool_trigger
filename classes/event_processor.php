@@ -274,9 +274,10 @@ class event_processor {
      *
      * @param int $workflowid The workflow id to record.
      * @param stdClass $event the event that triggered this workflow.
+     * @param int $attemptnum The number of attempts for this event.
      * @return int|null the id of the recorded workflow record or null.
      */
-    public static function record_workflow_trigger(int $workflowid, $event) {
+    public static function record_workflow_trigger(int $workflowid, $event, int $attemptnum = 1) {
         global $DB;
 
         // First, check whether this should be recorded, if debug is enabled for the workflow id.
@@ -299,7 +300,8 @@ class event_processor {
             'timecreated' => time(),
             'event' => $eventdata,
             'eventid' => $event->id,
-            'userid' => $event->userid
+            'userid' => $event->userid,
+            'attemptnum' => $attemptnum
         ), true);
 
         // Return the id for use in other tables.

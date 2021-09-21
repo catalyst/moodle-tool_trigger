@@ -128,11 +128,10 @@ class process_workflows extends \core\task\scheduled_task {
                   FROM {tool_trigger_queue} q
                   JOIN {tool_trigger_workflows} w ON w.id = q.workflowid
                  WHERE w.enabled = 1 AND q.status = " . self::STATUS_READY_TO_RUN . "
-                   AND q.tries < :autorerunmaxtries
+                   AND q.tries <= :autorerunmaxtries
                    AND (q.executiontime IS NULL
                     OR q.executiontime < :time)
                  ORDER BY q.timecreated";
-
         $params = [
             'time' => time(),
             'autorerunmaxtries' => get_config('tool_trigger', 'autorerunmaxtries')
@@ -174,7 +173,7 @@ class process_workflows extends \core\task\scheduled_task {
         // Update workflow record to state this workflow was attempted.
         $workflow = new \stdClass();
         $workflow->id = $item->workflowid;
-        $runid = \tool_trigger\event_processor::record_workflow_trigger($workflow->id, $this->get_event_record($item->eventid));
+        $runid = \tool_trigger\event_processor::record_workflow_trigger($workflow->id, $this->get_event_record($item->eventid), $trigger->tries);
         $workflow->timetriggered = time();
         $this->update_workflow_record($workflow);
 
