@@ -36,6 +36,7 @@ require_capability('tool/trigger:manageworkflows', $context);
 
 $workflowid = required_param('workflow', PARAM_INT);
 $runid = optional_param('run', null, PARAM_INT);
+$download = optional_param('download', null, PARAM_TEXT);
 $action = optional_param('action', null, PARAM_TEXT);
 if (!empty($action)) {
     $actionid = required_param('id', PARAM_INT);
@@ -228,16 +229,49 @@ if (!empty($runid)) {
     $PAGE->navbar->add(get_string('viewdetailedrun', 'tool_trigger'), $navbarurl);
 }
 
-// Build the page output if not performing an action and being redirected.
-echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('workflowviewhistory', 'tool_trigger'));
-$renderer = $PAGE->get_renderer('tool_trigger', 'workflowhistory');
+// Params used in $baseurl, which is passed to the rendered form.
+$urlparams = [
+    'workflow' => $workflowid,
+    'filterusername' => s(optional_param('filterusername', null, PARAM_TEXT)),
+    'filteruserid' => optional_param('filteruserid', null, PARAM_INT),
+];
 
-if (!$workflow->debug) {
-    \core\notification::add(
-        get_string('warningdebugging', 'tool_trigger', $workflowid),
-        \core\output\notification::NOTIFY_WARNING
-    );
+// Params passed via the form, to be used as for filtering the results.
+$filterparams = [
+    'filtercancelled' => optional_param('filtercancelled', null, PARAM_INT),
+    'filterdeferred' => optional_param('filterdeferred', null, PARAM_INT),
+    'filtererrored' => optional_param('filtererrored', null, PARAM_INT),
+    'filterpassed' => optional_param('filterpassed', null, PARAM_INT),
+    'filterfailed' => optional_param('filterfailed', null, PARAM_INT),
+];
+
+$baseurl = new moodle_url('/admin/tool/trigger/history.php', $urlparams);
+
+$params = array_merge($urlparams, $filterparams);
+$params = array_filter($params);
+
+// Build the page output if not performing an action and being redirected.
+$renderer = $PAGE->get_renderer('tool_trigger', 'workflowhistory');
+if (empty($download)) {
+    echo $OUTPUT->header();
+    echo $OUTPUT->heading(get_string('workflowviewhistory', 'tool_trigger'));
+
+    if (!$workflow->debug) {
+        \core\notification::add(
+            get_string('warningdebugging', 'tool_trigger', $workflowid),
+            \core\output\notification::NOTIFY_WARNING
+        );
+    }
+
+    if (empty($runid)) {
+        $renderer->render_filter($params);
+        $renderer->render_workflowhistory_table($workflowid, $params);
+    } else {
+        $renderer->render_runhistory_table($workflowid, $runid);
+    }
+    echo $OUTPUT->footer();
+
+} else {
+    // Time to download.
+    $renderer->render_workflowhistory_table($workflowid, $params, $download);
 }
-$renderer->render_table($workflowid, $runid);
-echo $OUTPUT->footer();

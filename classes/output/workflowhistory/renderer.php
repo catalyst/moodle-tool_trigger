@@ -38,42 +38,118 @@ require_once(__DIR__.'/workflow.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class renderer extends \plugin_renderer_base {
+
     /**
-     * Sets the SQL for the table, and renders it.
+     * Sets the SQL for the rub history table, and renders it.
      *
-     * @param \tool_trigger\output\workflowhistory\renderable $renderable the table to render
+     * @param int $workflowid the workflow id
+     * @param int $run the run id
+     * @param bool $download when true, serve the resulting run histry as .json
      * @return void
      */
-    public function render_table($workflowid, $run = null) {
+    public function render_runhistory_table($workflowid, $run, $download = null) {
         $url = new \moodle_url('/admin/tool/trigger/history.php', ['workflow' => $workflowid, 'run' => $run]);
+        $renderable = new \tool_trigger\output\workflowhistory\runhistory_renderable('runhistory', $url);
 
-        // Decide which table to render if run is given.
-        if (!empty($run)) {
-            $renderable = new \tool_trigger\output\workflowhistory\runhistory_renderable('runhistory', $url);
-            $sql = (object) [
-                'fields' => '*',
-                'from' => '{tool_trigger_run_hist}',
-                'where' => 'workflowid = :workflow AND runid = :run',
-                'params' => ['workflow' => $workflowid, 'run' => $run]
-            ];
-        } else {
-            // We want to ouput some buttons before drawing the table.
+        $sqlfields = '*';
+        $sqlfrom = '{tool_trigger_run_hist}';
+        $sqlwhere = 'workflowid = :workflow AND runid = :run';
+        $sqlparams = [
+            'workflow' => $workflowid,
+            'run' => $run
+        ];
+
+        $renderable->set_sql($sqlfields, $sqlfrom, $sqlwhere, $sqlparams);
+        $renderable->out($renderable->pagesize, false);
+    }
+
+    /**
+     * Sets the SQL for the workflow history table, and renders it.
+     *
+     * @param int $workflowid the workflow id
+     * @param array $searchparams an array of parameters used for filtering
+     * @param bool $download when true, serve the resulting table as a .csv
+     * @return void
+     */
+    public function render_workflowhistory_table($workflowid, $searchparams = [], $download = null) {
+        global $DB;
+
+        // We want to output some buttons before drawing the table.
+        if (empty($download)) {
             $this->rerun_all_historic_button($workflowid);
             echo '&nbsp;';
             $this->rerun_all_current_button($workflowid);
-
-            $renderable = new \tool_trigger\output\workflowhistory\workflowhistory_renderable('triggerhistory', $url);
-            $sql = (object) [
-                'fields' => '*',
-                'from' => '{tool_trigger_workflow_hist}',
-                'where' => 'workflowid = :workflow',
-                'params' => ['workflow' => $workflowid]
-            ];
         }
 
-        // Then output the table.
-        $renderable->sql = $sql;
-        $renderable->out($renderable->pagesize, true);
+        $url = new \moodle_url('/admin/tool/trigger/history.php', $searchparams);
+        $renderable = new \tool_trigger\output\workflowhistory\workflowhistory_renderable('triggerhistory', $url, $searchparams, $download, 100);
+
+        $namefields = get_all_user_name_fields(true, 'u');
+        $sqlfields = "tfh.*, {$namefields}";
+        $sqlfrom = '{tool_trigger_workflow_hist} tfh LEFT JOIN {user} u ON tfh.userid = u.id';
+        $sqlwhere = 'workflowid = :workflow';
+        $sqlparams = ['workflow' => $workflowid];
+
+        $userwhere = [];
+        if (!empty($searchparams['filteruserid'])) {
+            $sqlparams['filteruserid'] = $searchparams['filteruserid'];
+            $userwhere[] = ' userid = :filteruserid';
+        }
+
+        if (!empty($searchparams['filterusername'])) {
+            $fullname = $DB->sql_fullname('u.firstname', 'u.lastname');
+            $sqlparams['filterusername'] = "%{$searchparams['filterusername']}%";
+            $userwhere[] = " ({$DB->sql_like($fullname, ':filterusername', false, false)}) ";
+        }
+
+        if (count($userwhere) > 0) {
+            $ors = implode(' OR ', $userwhere);
+            $sqlwhere .= " AND ({$ors}) ";
+        }
+
+        $statuswhere = [];
+        if (!empty($searchparams['filterpassed'])) {
+            $sqlparams['filterpassed'] = $searchparams['filterpassed'];
+            $statuswhere[] = ' ((tfh.failedstep = 0 OR tfh.failedstep IS NULL) AND (tfh.errorstep = 0 OR tfh.errorstep IS NULL))';
+        }
+
+        if (!empty($searchparams['filtercancelled'])) {
+            $sqlparams['filtercancelled'] = $searchparams['filtercancelled'];
+            $statuswhere[] = ' (tfh.failedstep = -1) ';
+        }
+
+        if (!empty($searchparams['filterdeferred'])) {
+            $sqlparams['filterdeferred'] = $searchparams['filterdeferred'];
+            $statuswhere[] = ' (tfh.failedstep = -2) ';
+        }
+
+        if (!empty($searchparams['filtererrored'])) {
+            $sqlparams['filtererrored'] = $searchparams['filtererrored'];
+            $statuswhere[] = ' (tfh.errorstep > 0) ';
+        }
+
+        if (!empty($searchparams['filterfailed'])) {
+            $sqlparams['filterfailed'] = $searchparams['filterfailed'];
+            $statuswhere[] = ' (tfh.failedstep > 0) ';
+        }
+
+        if (count($statuswhere) > 0) {
+            $ors = implode(' OR ', $statuswhere);
+            $sqlwhere .= " AND ({$ors}) ";
+        }
+
+        if (!empty($download)) {
+            $context = \context_system::instance();
+            if (!has_capability('tool/trigger:exportworkflowhistory', $context)) {
+                throw new \moodle_exception('cannot_export_workflow');
+            } else {
+                $workflow = \tool_trigger\workflow_manager::get_workflow($workflowid);
+                $renderable->is_downloading($download, $workflow->get_name($context));
+            }
+        }
+
+        $renderable->set_sql($sqlfields, $sqlfrom, $sqlwhere, $sqlparams);
+        $renderable->out($renderable->pagesize, false);
     }
 
     public function step_actions_button($step) {
@@ -153,7 +229,7 @@ class renderer extends \plugin_renderer_base {
         return $btn;
     }
 
-    public function run_actions_button($run, $statusonly = false) {
+    public function run_actions_button($run, $statusonly = false, $searchparams = []) {
         $btn = '';
         $viewurl = new \moodle_url('/admin/tool/trigger/history.php', array('run' => $run->id, 'workflow' => $run->workflowid));
         $viewbtn = \html_writer::link($viewurl, get_string('viewdetailedrun', 'tool_trigger'), ['class' => 'btn btn-primary']);
@@ -184,9 +260,27 @@ class renderer extends \plugin_renderer_base {
             ['class' => 'dropdown-header']);
         $btn .= \html_writer::link($rerunhisturl, get_string('rerunworkflow', 'tool_trigger'),
             ['class' => 'dropdown-item']);
+        if (has_capability('tool/trigger:exportrundetails', \context_system::instance())) {
+            $downloadurl = new \moodle_url('/admin/tool/trigger/exportrun.php',
+                ['run' => $run->id, 'workflow' => $run->workflowid, 'sesskey' => sesskey()]);
+            $btn .= \html_writer::div('', 'dropdown-divider');
+            $btn .= \html_writer::link($downloadurl, get_string('downloadrundetails', 'tool_trigger'),
+                ['class' => 'dropdown-item']);
+        }
         $btn .= \html_writer::end_div() . \html_writer::end_div();
 
         return $btn;
+    }
+
+    /**
+     * This function outputs the workflow history filter element.
+     *
+     * @param $params
+     */
+    public function render_filter($params) {
+        $mform = new \tool_trigger\output\workflowhistory\filter_form();
+        $mform->set_data($params);
+        $mform->display();
     }
 
     /**

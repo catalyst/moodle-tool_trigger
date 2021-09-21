@@ -36,4 +36,20 @@ $capabilities = array(
             'manager' => CAP_ALLOW
         ),
     ),
+    'tool/trigger:exportworkflowhistory' => array(
+        'riskbitmask' => RISK_CONFIG | RISK_PERSONAL | RISK_SPAM,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'manager' => CAP_ALLOW
+        ),
+    ),
+    'tool/trigger:exportrundetails' => array(
+        'riskbitmask' => RISK_CONFIG | RISK_PERSONAL | RISK_SPAM,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'manager' => CAP_ALLOW
+        ),
+    ),
 );

@@ -149,6 +149,68 @@ class workflow_manager {
     }
 
     /**
+     * Returns an array with all workflow and step data.
+     *
+     * @param $workflowid
+     * @param $runid
+     * @return array[]
+     */
+    public static function export_workflow_and_run_history($workflowid, $runid) {
+        global $DB;
+
+        // Get workflow record.
+        $worflowfields = 'name, description, debug';
+        $workflowrecord = $DB->get_record('tool_trigger_workflows', ['id' => $workflowid], $worflowfields, MUST_EXIST);
+
+        // Get the workflow history.
+        $workflowhist = $DB->get_record('tool_trigger_workflow_hist', ['workflowid' => $workflowid, 'id' => $runid]);
+
+        // Merge in some informative data which can be used with the json_exporter class.
+        $workflowhist->name = $workflowrecord->name . ' Data Export';
+        $workflowhist->description = json_decode($workflowrecord->description);
+        $workflowhist->debug = $workflowrecord->debug;
+
+        // Array of step data to be inserted into the workflow record object.
+        $stepdata = [];
+
+        // Previous step data which is used to diff the run history results object.
+        $prevdata = [];
+
+        $runrecords = $DB->get_recordset('tool_trigger_run_hist', ['workflowid' => $workflowid, 'runid' => $runid], 'steporder ASC');
+        foreach ($runrecords as $record) {
+            $currdata = json_decode($record->results, true);
+
+            $diffdata = array_diff_key($currdata, $prevdata);
+            $record->results = $diffdata;
+
+            // Update $record->data, this is another json blob.
+            $record->data = json_decode($record->data);
+
+            $stepdata[$record->steporder + 1] = $record;
+
+            $prevdata = $currdata;
+        }
+        $runrecords->close();
+
+        // Add full event data to the workflow record.
+        $workflowhist->event = json_decode($workflowhist->event);
+
+        // Add step records to workflow record.
+        $workflowhist->stepdata = $stepdata;
+
+        // Get Moodle version.
+        $workflowhist->moodleversion = get_config('core', 'version');
+
+        // Get plugin version.
+        $workflowhist->pluginversion = get_config('tool_trigger', 'version');
+
+        // Time this data was generated.
+        $workflowhist->timeexported = (string) time();
+
+        return $workflowhist;
+    }
+
+    /**
      * Gets the names of the available step classes.
      *
      * @param null|string $steptype Limit to steps of one step type. Or null (default)
