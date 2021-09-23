@@ -15,10 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Role assignment action step class.
+ * Role unassignment action step class.
  *
  * @package    tool_trigger
- * @copyright  Dmitrii Metelkin <dmitriim@catalyst-au.net>
+ * @copyright  2021 Catalyst IT
+ * @author     Nicholas Hoobin <nicholashoobin@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -26,7 +27,7 @@ namespace tool_trigger\steps\actions;
 
 defined('MOODLE_INTERNAL') || die;
 
-class role_assign_action_step extends base_action_step {
+class role_unassign_action_step extends base_action_step {
 
     use \tool_trigger\helper\datafield_manager;
 
@@ -35,7 +36,7 @@ class role_assign_action_step extends base_action_step {
      *
      * @var array
      */
-    private static $stepfields = ['role_assign_result', 'role_assign_record_id'];
+    private static $stepfields = ['role_unassign_result', 'role_unassign_role_id'];
 
     /**
      * User id field.
@@ -60,7 +61,7 @@ class role_assign_action_step extends base_action_step {
      * @return string human readable step name.
      */
     public static function get_step_name() {
-        return get_string('roleassignactionstepname', 'tool_trigger');
+        return get_string('roleunassignactionstepname', 'tool_trigger');
     }
 
     /**
@@ -69,7 +70,7 @@ class role_assign_action_step extends base_action_step {
      * @return string human readable step name.
      */
     public static function get_step_desc() {
-        return get_string('roleassignactionstepdesc', 'tool_trigger');
+        return get_string('roleunassignactionstepdesc', 'tool_trigger');
     }
 
     /**
@@ -118,14 +119,10 @@ class role_assign_action_step extends base_action_step {
             $contextid = $datafields[$this->contextidfield];
         }
 
-        try {
-            $result = role_assign($roleid, $userid, $contextid);
-        } catch (\Exception $exception) {
-            $result = false;
-        }
+        role_unassign($roleid, $userid, $contextid);
 
-        $stepresults['role_assign_result'] = !empty($result);
-        $stepresults['role_assign_result_id'] = $result;
+        $stepresults['role_unassign_result'] = true;
+        $stepresults['role_unassign_role_id'] = $this->roleidfield;
 
         return [true, $stepresults];
     }
@@ -135,19 +132,19 @@ class role_assign_action_step extends base_action_step {
      * @see \tool_trigger\steps\base\base_step::add_extra_form_fields()
      */
     public function form_definition_extra($form, $mform, $customdata) {
-        $mform->addElement('text', 'useridfield', get_string('step_action_role_assign_useridfield', 'tool_trigger'));
+        $mform->addElement('text', 'useridfield', get_string('step_action_role_unassign_useridfield', 'tool_trigger'));
         $mform->setType('useridfield', PARAM_ALPHANUMEXT);
         $mform->addRule('useridfield', get_string('required'), 'required');
         $mform->setDefault('useridfield', 'userid');
         $mform->addHelpButton('useridfield', 'useridfield', 'tool_trigger');
 
-        $mform->addElement('text', 'roleidfield', get_string('step_action_role_assign_roleidfield', 'tool_trigger'));
+        $mform->addElement('text', 'roleidfield', get_string('step_action_role_unassign_roleidfield', 'tool_trigger'));
         $mform->setType('roleidfield', PARAM_ALPHANUMEXT);
         $mform->addRule('roleidfield', get_string('required'), 'required');
         $mform->setDefault('roleidfield', 'roleid');
         $mform->addHelpButton('roleidfield', 'roleidfield', 'tool_trigger');
 
-        $mform->addElement('text', 'contextidfield', get_string('step_action_role_assign_contextidfield', 'tool_trigger'));
+        $mform->addElement('text', 'contextidfield', get_string('step_action_role_unassign_contextidfield', 'tool_trigger'));
         $mform->setType('contextidfield', PARAM_ALPHANUMEXT);
         $mform->addRule('contextidfield', get_string('required'), 'required');
         $mform->setDefault('contextidfield', 'contextid');
