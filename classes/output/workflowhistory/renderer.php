@@ -91,15 +91,17 @@ class renderer extends \plugin_renderer_base {
         $sqlparams = ['workflow' => $workflowid];
 
         $userwhere = [];
-        if (!empty($searchparams['filteruserid'])) {
-            $sqlparams['filteruserid'] = $searchparams['filteruserid'];
-            $userwhere[] = ' userid = :filteruserid';
-        }
+        if (!empty($searchparams['filteruser'])) {
+            $searchuser = $searchparams['filteruser'];
 
-        if (!empty($searchparams['filterusername'])) {
-            $fullname = $DB->sql_fullname('u.firstname', 'u.lastname');
-            $sqlparams['filterusername'] = "%{$searchparams['filterusername']}%";
-            $userwhere[] = " ({$DB->sql_like($fullname, ':filterusername', false, false)}) ";
+            if (is_numeric($searchuser)) {
+                $sqlparams['filteruserid'] = $searchuser;
+                $userwhere[] = ' userid = :filteruserid';
+            } else {
+                $fullname = $DB->sql_fullname('u.firstname', 'u.lastname');
+                $sqlparams['filterusername'] = "%{$searchuser}%";
+                $userwhere[] = " ({$DB->sql_like($fullname, ':filterusername', false, false)}) ";
+            }
         }
 
         if (count($userwhere) > 0) {

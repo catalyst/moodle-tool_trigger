@@ -232,8 +232,7 @@ if (!empty($runid)) {
 // Params used in $baseurl, which is passed to the rendered form.
 $urlparams = [
     'workflow' => $workflowid,
-    'filterusername' => s(optional_param('filterusername', null, PARAM_TEXT)),
-    'filteruserid' => optional_param('filteruserid', null, PARAM_INT),
+    'filteruser' => s(optional_param('filteruser', null, PARAM_TEXT)),
 ];
 
 // Params passed via the form, to be used as for filtering the results.

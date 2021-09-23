@@ -54,11 +54,9 @@ class filter_form extends \moodleform {
         $mform->addElement('checkbox', 'filtererrored', '', get_string('filtererrored', 'tool_trigger'));
         $mform->addElement('checkbox', 'filtercancelled', '', get_string('filtercancelled', 'tool_trigger'));
 
-        $mform->addElement('text', 'filterusername', get_string('filterlabelusername', 'tool_trigger'), ['placeholder' => '']);
-        $mform->setType('filterusername', PARAM_TEXT);
+        $mform->addElement('text', 'filteruser', get_string('filterlabeluser', 'tool_trigger'), ['placeholder' => '']);
+        $mform->setType('filteruser', PARAM_TEXT);
 
-        $mform->addElement('text', 'filteruserid', get_string('filterlabeluserid', 'tool_trigger'), ['placeholder' => '']);
-        $mform->setType('filteruserid', PARAM_TEXT);
 
         $resetlink = \html_writer::link(new \moodle_url('/admin/tool/trigger/history.php', ['workflow' => '1']), get_string('filterreset', 'tool_trigger'));
         $resetbutton = \html_writer::div($resetlink, 'btn btn-primary');
