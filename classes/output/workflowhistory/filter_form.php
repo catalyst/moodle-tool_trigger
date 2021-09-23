@@ -48,21 +48,25 @@ class filter_form extends \moodleform {
         $mform->addElement('header', 'filterheader', get_string('filter', 'tool_trigger'));
         $mform->setExpanded('filterheader', true);
 
-        $mform->addElement('checkbox', 'filterpassed', get_string('filterlabelrunstatus', 'tool_trigger'), get_string('filterpassed', 'tool_trigger'));
-        $mform->addElement('checkbox', 'filterdeferred', '', get_string('filterdeferred', 'tool_trigger'));
-        $mform->addElement('checkbox', 'filterfailed', '', get_string('filterfailed', 'tool_trigger'));
-        $mform->addElement('checkbox', 'filtererrored', '', get_string('filtererrored', 'tool_trigger'));
-        $mform->addElement('checkbox', 'filtercancelled', '', get_string('filtercancelled', 'tool_trigger'));
+        $filterarr = [
+            $mform->createElement('advcheckbox', 'filterpassed', '', get_string('filterpassed', 'tool_trigger'), ['group' => 'filter']),
+            $mform->createElement('advcheckbox', 'filterdeferred', '', get_string('filterdeferred', 'tool_trigger'), ['group' => 'filter']),
+            $mform->createElement('advcheckbox', 'filterfailed', '', get_string('filterfailed', 'tool_trigger'), ['group' => 'filter']),
+            $mform->createElement('advcheckbox', 'filtererrored', '', get_string('filtererrored', 'tool_trigger'), ['group' => 'filter']),
+            $mform->createElement('advcheckbox', 'filtercancelled', '', get_string('filtercancelled', 'tool_trigger'), ['group' => 'filter']),
+        ];
+
+        $mform->addGroup($filterarr, 'filterarr', get_string('filterlabelrunstatus', 'tool_trigger'), [' '], false);
+        $this->add_checkbox_controller('filter');
 
         $mform->addElement('text', 'filteruser', get_string('filterlabeluser', 'tool_trigger'), ['placeholder' => '']);
         $mform->setType('filteruser', PARAM_TEXT);
 
-
-        $resetlink = \html_writer::link(new \moodle_url('/admin/tool/trigger/history.php', ['workflow' => '1']), get_string('filterreset', 'tool_trigger'));
-        $resetbutton = \html_writer::div($resetlink, 'btn btn-primary');
         $buttonarray = [
             $mform->createElement('submit', 'filtersubmit', get_string('filtersubmit', 'tool_trigger')),
+            $mform->createElement('cancel', 'filterreset', get_string('filterreset', 'tool_trigger')),
         ];
+
         $mform->addGroup($buttonarray, 'buttonar', '', [' '], false);
     }
 }

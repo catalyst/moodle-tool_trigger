@@ -229,14 +229,10 @@ if (!empty($runid)) {
     $PAGE->navbar->add(get_string('viewdetailedrun', 'tool_trigger'), $navbarurl);
 }
 
-// Params used in $baseurl, which is passed to the rendered form.
-$urlparams = [
-    'workflow' => $workflowid,
-    'filteruser' => s(optional_param('filteruser', null, PARAM_TEXT)),
-];
-
 // Params passed via the form, to be used as for filtering the results.
 $filterparams = [
+    'workflow' => $workflowid,
+    'filteruser' => s(optional_param('filteruser', null, PARAM_TEXT)),
     'filtercancelled' => optional_param('filtercancelled', null, PARAM_INT),
     'filterdeferred' => optional_param('filterdeferred', null, PARAM_INT),
     'filtererrored' => optional_param('filtererrored', null, PARAM_INT),
@@ -244,33 +240,37 @@ $filterparams = [
     'filterfailed' => optional_param('filterfailed', null, PARAM_INT),
 ];
 
-$baseurl = new moodle_url('/admin/tool/trigger/history.php', $urlparams);
-
-$params = array_merge($urlparams, $filterparams);
-$params = array_filter($params);
-
 // Build the page output if not performing an action and being redirected.
 $renderer = $PAGE->get_renderer('tool_trigger', 'workflowhistory');
-if (empty($download)) {
-    echo $OUTPUT->header();
-    echo $OUTPUT->heading(get_string('workflowviewhistory', 'tool_trigger'));
 
-    if (!$workflow->debug) {
-        \core\notification::add(
-            get_string('warningdebugging', 'tool_trigger', $workflowid),
-            \core\output\notification::NOTIFY_WARNING
-        );
-    }
-
-    if (empty($runid)) {
-        $renderer->render_filter($params);
-        $renderer->render_workflowhistory_table($workflowid, $params);
-    } else {
-        $renderer->render_runhistory_table($workflowid, $runid);
-    }
-    echo $OUTPUT->footer();
-
-} else {
+if (!empty($download)) {
     // Time to download.
-    $renderer->render_workflowhistory_table($workflowid, $params, $download);
+    $renderer->render_workflowhistory_table($workflowid, $filterparams, $download);
+    exit();
 }
+
+if (!$workflow->debug) {
+    \core\notification::add(
+        get_string('warningdebugging', 'tool_trigger', $workflowid),
+        \core\output\notification::NOTIFY_WARNING
+    );
+}
+
+// Generate the filter form before the output, such that the reset redirect will not throw a warning.
+$filter = new \tool_trigger\output\workflowhistory\filter_form();
+if ($filter->is_cancelled()) {
+    $baseurl = new moodle_url('/admin/tool/trigger/history.php', ['workflow' => $workflowid]);
+    redirect($baseurl);
+}
+
+echo $OUTPUT->header();
+echo $OUTPUT->heading(get_string('workflowviewhistory', 'tool_trigger'));
+
+if (empty($runid)) {
+    $filter->set_data($filterparams);
+    $filter->display();
+    $renderer->render_workflowhistory_table($workflowid, $filterparams);
+} else {
+    $renderer->render_runhistory_table($workflowid, $runid);
+}
+echo $OUTPUT->footer();

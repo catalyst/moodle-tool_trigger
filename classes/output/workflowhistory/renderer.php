@@ -40,7 +40,7 @@ require_once(__DIR__.'/workflow.php');
 class renderer extends \plugin_renderer_base {
 
     /**
-     * Sets the SQL for the rub history table, and renders it.
+     * Sets the SQL for the run history table, and renders it.
      *
      * @param int $workflowid the workflow id
      * @param int $run the run id
@@ -90,23 +90,15 @@ class renderer extends \plugin_renderer_base {
         $sqlwhere = 'workflowid = :workflow';
         $sqlparams = ['workflow' => $workflowid];
 
-        $userwhere = [];
         if (!empty($searchparams['filteruser'])) {
-            $searchuser = $searchparams['filteruser'];
-
-            if (is_numeric($searchuser)) {
-                $sqlparams['filteruserid'] = $searchuser;
-                $userwhere[] = ' userid = :filteruserid';
+            if (is_numeric($searchparams['filteruser'])) {
+                $sqlparams['filteruserid'] = $searchparams['filteruser'];
+                $sqlwhere .= ' AND userid = :filteruserid ';
             } else {
                 $fullname = $DB->sql_fullname('u.firstname', 'u.lastname');
-                $sqlparams['filterusername'] = "%{$searchuser}%";
-                $userwhere[] = " ({$DB->sql_like($fullname, ':filterusername', false, false)}) ";
+                $sqlparams['filterusername'] = "%{$searchparams['filteruser']}%";
+                $sqlwhere .= " AND ({$DB->sql_like($fullname, ':filterusername', false, false)}) ";
             }
-        }
-
-        if (count($userwhere) > 0) {
-            $ors = implode(' OR ', $userwhere);
-            $sqlwhere .= " AND ({$ors}) ";
         }
 
         $statuswhere = [];
@@ -272,17 +264,6 @@ class renderer extends \plugin_renderer_base {
         $btn .= \html_writer::end_div() . \html_writer::end_div();
 
         return $btn;
-    }
-
-    /**
-     * This function outputs the workflow history filter element.
-     *
-     * @param $params
-     */
-    public function render_filter($params) {
-        $mform = new \tool_trigger\output\workflowhistory\filter_form();
-        $mform->set_data($params);
-        $mform->display();
     }
 
     /**
