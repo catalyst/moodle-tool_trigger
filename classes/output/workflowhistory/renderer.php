@@ -86,13 +86,7 @@ class renderer extends \plugin_renderer_base {
 
         $namefields = get_all_user_name_fields(true, 'u');
         $sqlfields = "tfh.*, {$namefields}";
-        $sqlfrom = '{tool_trigger_workflow_hist} tfh';
-
-        $joins = [
-            'LEFT JOIN {user} u ON tfh.userid = u.id',
-        ];
-        $sqlfrom = $sqlfrom . ' ' . implode(' ', $joins);
-
+        $sqlfrom = '{tool_trigger_workflow_hist} tfh LEFT JOIN {user} u ON tfh.userid = u.id';
         $sqlwhere = 'tfh.workflowid = :workflow';
         $sqlparams = ['workflow' => $workflowid];
 
