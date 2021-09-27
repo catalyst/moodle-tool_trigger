@@ -87,7 +87,7 @@ class renderer extends \plugin_renderer_base {
         $namefields = get_all_user_name_fields(true, 'u');
         $sqlfields = "tfh.*, {$namefields}";
         $sqlfrom = '{tool_trigger_workflow_hist} tfh LEFT JOIN {user} u ON tfh.userid = u.id';
-        $sqlwhere = 'workflowid = :workflow';
+        $sqlwhere = 'tfh.workflowid = :workflow';
         $sqlparams = ['workflow' => $workflowid];
 
         if (!empty($searchparams['filteruser'])) {

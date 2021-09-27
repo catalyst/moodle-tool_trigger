@@ -332,5 +332,28 @@ function xmldb_tool_trigger_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2021030402, 'tool', 'trigger');
     }
 
+    if ($oldversion < 2021030403) {
+
+        // Define field id to be added to tool_trigger_workflow_hist.
+        $table = new xmldb_table('tool_trigger_workflow_hist');
+        $field = new xmldb_field('attemptnum', XMLDB_TYPE_INTEGER, '10', null, null, null, '1', 'errorstep');
+
+        // Conditionally launch add field id.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Update the new attemptnum field with the default number of attempts.
+        $rs = $DB->get_recordset('tool_trigger_workflow_hist');
+        foreach ($rs as $record) {
+            $record->attemptnum = 1;
+            $DB->update_record('tool_trigger_workflow_hist', $record);
+        }
+        $rs->close();
+
+        // Trigger savepoint reached.
+        upgrade_plugin_savepoint(true, 2021030403, 'tool', 'trigger');
+    }
+
     return true;
 }

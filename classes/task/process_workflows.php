@@ -62,9 +62,6 @@ class process_workflows extends \core\task\scheduled_task {
      */
     const STATUS_FINISHED = 40;
 
-    /** Max number of tries before ignoring task. */
-    const MAXTRIES = 5;
-
     /** Max number of tasks to try and process in a queue. */
     const LIMITQUEUE = 500;
 
@@ -131,11 +128,15 @@ class process_workflows extends \core\task\scheduled_task {
                   FROM {tool_trigger_queue} q
                   JOIN {tool_trigger_workflows} w ON w.id = q.workflowid
                  WHERE w.enabled = 1 AND q.status = " . self::STATUS_READY_TO_RUN . "
-                   AND q.tries < " . self::MAXTRIES . "
+                   AND q.tries <= :autorerunmaxtries
                    AND (q.executiontime IS NULL
                     OR q.executiontime < :time)
                  ORDER BY q.timecreated";
-        $queue = $DB->get_recordset_sql($sql, ['time' => time()], 0, self::LIMITQUEUE);
+        $params = [
+            'time' => time(),
+            'autorerunmaxtries' => get_config('tool_trigger', 'autorerunmaxtries')
+        ];
+        $queue = $DB->get_recordset_sql($sql, $params, 0, self::LIMITQUEUE);
 
         foreach ($queue as $q) {
             mtrace('Executing workflow: ' . $q->workflowid);
@@ -172,7 +173,7 @@ class process_workflows extends \core\task\scheduled_task {
         // Update workflow record to state this workflow was attempted.
         $workflow = new \stdClass();
         $workflow->id = $item->workflowid;
-        $runid = \tool_trigger\event_processor::record_workflow_trigger($workflow->id, $this->get_event_record($item->eventid));
+        $runid = \tool_trigger\event_processor::record_workflow_trigger($workflow->id, $this->get_event_record($item->eventid), $trigger->tries);
         $workflow->timetriggered = time();
         $this->update_workflow_record($workflow);
 
@@ -213,9 +214,11 @@ class process_workflows extends \core\task\scheduled_task {
                 }
 
             } catch (\Exception $e) {
-                // Errored out executing this step. Exit processing this trigger, and try again later(?)
+                // Errored out executing this step. Exit processing this trigger, and try again later.
+                $now = time();
                 $trigger->status = self::STATUS_READY_TO_RUN;
-                $trigger->timemodified = time();
+                $trigger->timemodified = $now;
+                $trigger->executiontime = $now + get_config('tool_trigger', 'autorerunduration');
                 $this->update_queue_record($trigger);
                 if (!empty($e->debuginfo)) {
 

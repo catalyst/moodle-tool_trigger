@@ -134,13 +134,15 @@ class workflowhistory_renderable extends \table_sql implements \renderable {
     public function col_runstatus($run) {
         global $DB;
 
-        $string = '';
-        $spanclass = '';
-
         // Return a badge for the status.
         if (!empty($run->errorstep)) {
             $string = get_string('errorstep', 'tool_trigger', $run->errorstep + 1);
             $spanclass = 'badge badge-warning';
+            $maxretries = get_config('tool_trigger', 'autorerunmaxtries');
+            if ($run->attemptnum <= $maxretries) {
+                $string .= \html_writer::empty_tag('br');
+                $string .= get_string('errorstepretrypending', 'tool_trigger', $run->attemptnum);
+            }
             // Handle debounce statuses.
         } else if (!empty($run->failedstep) && ((int) $run->failedstep === \tool_trigger\task\process_workflows::STATUS_CANCELLED)) {
             $string = get_string('cancelled');
