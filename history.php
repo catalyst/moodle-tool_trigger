@@ -36,6 +36,7 @@ require_capability('tool/trigger:manageworkflows', $context);
 
 $workflowid = required_param('workflow', PARAM_INT);
 $runid = optional_param('run', null, PARAM_INT);
+$download = optional_param('download', null, PARAM_TEXT);
 $action = optional_param('action', null, PARAM_TEXT);
 if (!empty($action)) {
     $actionid = required_param('id', PARAM_INT);
@@ -228,10 +229,25 @@ if (!empty($runid)) {
     $PAGE->navbar->add(get_string('viewdetailedrun', 'tool_trigger'), $navbarurl);
 }
 
+// Params passed via the form, to be used as for filtering the results.
+$filterparams = [
+    'workflow' => $workflowid,
+    'filteruser' => s(optional_param('filteruser', null, PARAM_TEXT)),
+    'filtercancelled' => optional_param('filtercancelled', null, PARAM_INT),
+    'filterdeferred' => optional_param('filterdeferred', null, PARAM_INT),
+    'filtererrored' => optional_param('filtererrored', null, PARAM_INT),
+    'filterpassed' => optional_param('filterpassed', null, PARAM_INT),
+    'filterfailed' => optional_param('filterfailed', null, PARAM_INT),
+];
+
 // Build the page output if not performing an action and being redirected.
-echo $OUTPUT->header();
-echo $OUTPUT->heading(get_string('workflowviewhistory', 'tool_trigger'));
 $renderer = $PAGE->get_renderer('tool_trigger', 'workflowhistory');
+
+if (!empty($download)) {
+    // Time to download.
+    $renderer->render_workflowhistory_table($workflowid, $filterparams, $download);
+    exit();
+}
 
 if (!$workflow->debug) {
     \core\notification::add(
@@ -239,5 +255,22 @@ if (!$workflow->debug) {
         \core\output\notification::NOTIFY_WARNING
     );
 }
-$renderer->render_table($workflowid, $runid);
+
+// Generate the filter form before the output, such that the reset redirect will not throw a warning.
+$filter = new \tool_trigger\output\workflowhistory\filter_form();
+if ($filter->is_cancelled()) {
+    $baseurl = new moodle_url('/admin/tool/trigger/history.php', ['workflow' => $workflowid]);
+    redirect($baseurl);
+}
+
+echo $OUTPUT->header();
+echo $OUTPUT->heading(get_string('workflowviewhistory', 'tool_trigger'));
+
+if (empty($runid)) {
+    $filter->set_data($filterparams);
+    $filter->display();
+    $renderer->render_workflowhistory_table($workflowid, $filterparams);
+} else {
+    $renderer->render_runhistory_table($workflowid, $runid);
+}
 echo $OUTPUT->footer();

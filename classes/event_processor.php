@@ -298,7 +298,8 @@ class event_processor {
             'number' => $runnumber,
             'timecreated' => time(),
             'event' => $eventdata,
-            'eventid' => $event->id
+            'eventid' => $event->id,
+            'userid' => $event->userid
         ), true);
 
         // Return the id for use in other tables.

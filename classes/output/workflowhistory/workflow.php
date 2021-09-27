@@ -40,46 +40,65 @@ class workflowhistory_renderable extends \table_sql implements \renderable {
     protected $hassystemcap;
 
     /**
+     * @var array $searchparams An array of parameters that the SQL is filtered by.
+     */
+    protected $searchparams;
+
+    /**
      * Sets up the table_log parameters.
      *
      * @param string $uniqueid Unique id of form.
      * @param \moodle_url $url Url where this table is displayed.
+     * @param array $searchparams
+     * @param null $download
      * @param int $perpage Number of rules to display per page.
      */
-    public function __construct($uniqueid, \moodle_url $url, $perpage = 100) {
+    public function __construct($uniqueid, \moodle_url $url, $searchparams = [], $download = null, $perpage = 100) {
         parent::__construct($uniqueid);
 
         $this->set_attribute('id', 'tooltriggerworkflowhistory_table');
         $this->set_attribute('class', 'tooltrigger workflowhistory generaltable generalbox');
-        $this->define_columns(array(
-                'id',
-                'number',
-                'eventid',
-                'username',
-                'description',
-                'time',
-                'runstatus',
-                'actions'
-        ));
-        $this->define_headers(array(
-                get_string('runid', 'tool_trigger'),
-                get_string('triggernumber', 'tool_trigger'),
-                get_string('eventid', 'tool_trigger'),
-                get_string('username'),
-                get_string('eventdescription', 'tool_trigger'),
-                get_string('time'),
-                get_string('runstatus', 'tool_trigger'),
-                get_string('actions')
-            )
-        );
+
+        $columns = [
+            'id',
+            'number',
+            'eventid',
+            'username',
+            'description',
+            'time',
+            'runstatus',
+        ];
+
+        $headers = [
+            get_string('runid', 'tool_trigger'),
+            get_string('triggernumber', 'tool_trigger'),
+            get_string('eventid', 'tool_trigger'),
+            get_string('username'),
+            get_string('eventdescription', 'tool_trigger'),
+            get_string('time'),
+            get_string('runstatus', 'tool_trigger'),
+        ];
+
+        if (empty($download)) {
+            $columns[] = 'actions';
+            $headers[] = get_string('actions');
+        }
+
+        $this->define_columns($columns);
+        $this->define_headers($headers);
+        $this->searchparams = $searchparams;
         $this->pagesize = $perpage;
         $systemcontext = \context_system::instance();
         $this->context = $systemcontext;
         $this->collapsible(false);
         $this->sortable(false, 'number', SORT_DESC);
         $this->pageable(true);
-        $this->is_downloadable(false);
         $this->define_baseurl($url);
+
+        if (has_capability('tool/trigger:exportworkflowhistory', $systemcontext)) {
+            $this->is_downloadable(true);
+            $this->show_download_buttons_at([TABLE_P_BOTTOM]);
+        }
     }
 
     public function col_id($run) {
@@ -95,9 +114,7 @@ class workflowhistory_renderable extends \table_sql implements \renderable {
     }
 
     public function col_username($run) {
-        $eventdata = json_decode($run->event);
-        $user = \core_user::get_user($eventdata->userid);
-        return fullname($user);
+        return fullname($run);
     }
 
     public function col_description($run) {
@@ -116,18 +133,24 @@ class workflowhistory_renderable extends \table_sql implements \renderable {
 
     public function col_runstatus($run) {
         global $DB;
+
+        $string = '';
+        $spanclass = '';
+
         // Return a badge for the status.
         if (!empty($run->errorstep)) {
-            return \html_writer::tag('span', get_string('errorstep', 'tool_trigger', $run->errorstep + 1),
-                array('class' => 'badge badge-warning'));
+            $string = get_string('errorstep', 'tool_trigger', $run->errorstep + 1);
+            $spanclass = 'badge badge-warning';
             // Handle debounce statuses.
         } else if (!empty($run->failedstep) && ((int) $run->failedstep === \tool_trigger\task\process_workflows::STATUS_CANCELLED)) {
-            return \html_writer::tag('span', get_string('cancelled'), array('class' => 'badge badge-info'));
+            $string = get_string('cancelled');
+            $spanclass = 'badge badge-info';
         } else if (!empty($run->failedstep) && ((int) $run->failedstep === \tool_trigger\task\process_workflows::STATUS_DEFERRED)) {
-            return \html_writer::tag('span', get_string('deferred', 'tool_trigger'), array('class' => 'badge badge-info'));
+            $string = get_string('deferred', 'tool_trigger');
+            $spanclass = 'badge badge-info';
         } else if (!empty($run->failedstep)) {
-            return \html_writer::tag('span', get_string('failedstep', 'tool_trigger', $run->failedstep + 1),
-                array('class' => 'badge badge-danger'));
+            $string = get_string('failedstep', 'tool_trigger', $run->failedstep + 1);
+            $spanclass = 'badge badge-danger';
         } else {
             // Find the number of steps executed.
             $sql = "SELECT MAX(number) FROM {tool_trigger_run_hist} WHERE runid = ?";
@@ -138,7 +161,13 @@ class workflowhistory_renderable extends \table_sql implements \renderable {
             } else {
                 $string = get_string('runpassednonum', 'tool_trigger');
             }
-            return \html_writer::tag('span', $string, array('class' => 'badge badge-success'));
+            $spanclass = 'badge badge-success';
+        }
+
+        if ($this->is_downloading()) {
+            return $string;
+        } else {
+            return \html_writer::tag('span', $string, ['class' => $spanclass]);
         }
     }
 
@@ -151,7 +180,7 @@ class workflowhistory_renderable extends \table_sql implements \renderable {
             ((int) $run->failedstep === \tool_trigger\task\process_workflows::STATUS_CANCELLED ||
             (int) $run->failedstep === \tool_trigger\task\process_workflows::STATUS_DEFERRED);
 
-        return $renderer->run_actions_button($run, $statusonly);
+        return $renderer->run_actions_button($run, $statusonly, $this->searchparams);
     }
 
     /**
