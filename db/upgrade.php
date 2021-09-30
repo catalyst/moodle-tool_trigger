@@ -315,19 +315,6 @@ function xmldb_tool_trigger_upgrade($oldversion) {
             $dbman->add_field($table, $field);
         }
 
-        // Update the new userid field with the associated user from the json eventdata.
-        $rs = $DB->get_recordset('tool_trigger_workflow_hist');
-        foreach ($rs as $record) {
-            $eventdata = json_decode($record->event);
-            if (!empty($eventdata->userid)) {
-                $record->userid = $eventdata->userid;
-            } else {
-                $record->userid = 0;
-            }
-            $DB->update_record('tool_trigger_workflow_hist', $record);
-        }
-        $rs->close();
-
         // Trigger savepoint reached.
         upgrade_plugin_savepoint(true, 2021030402, 'tool', 'trigger');
     }
@@ -343,13 +330,8 @@ function xmldb_tool_trigger_upgrade($oldversion) {
             $dbman->add_field($table, $field);
         }
 
-        // Update the new attemptnum field with the default number of attempts.
-        $rs = $DB->get_recordset('tool_trigger_workflow_hist');
-        foreach ($rs as $record) {
-            $record->attemptnum = 1;
-            $DB->update_record('tool_trigger_workflow_hist', $record);
-        }
-        $rs->close();
+        $adhoc = new \tool_trigger\task\update_trigger_helper_task();
+        \core\task\manager::queue_adhoc_task($adhoc);
 
         // Trigger savepoint reached.
         upgrade_plugin_savepoint(true, 2021030403, 'tool', 'trigger');
