@@ -50,28 +50,21 @@ class update_trigger_helper_task extends \core\task\adhoc_task {
     public function execute() {
         global $DB;
 
-        // New feature: Export workflow and run history.
-        // 2021030402.
-
-        // Update the new userid field with the associated user from the json eventdata.
         $rs = $DB->get_recordset('tool_trigger_workflow_hist');
         foreach ($rs as $record) {
+            // New feature: Export workflow and run history.
+            // 2021030402
+            // Update the new userid field with the associated user from the json eventdata.
             $eventdata = json_decode($record->event);
             if (!empty($eventdata->userid)) {
                 $record->userid = $eventdata->userid;
             } else {
                 $record->userid = 0;
             }
-            $DB->update_record('tool_trigger_workflow_hist', $record);
-        }
-        $rs->close();
 
-        // Workflow history indicates pending error status.
-        // 2021030403
-
-        // Update the new attemptnum field with the default number of attempts.
-        $rs = $DB->get_recordset('tool_trigger_workflow_hist');
-        foreach ($rs as $record) {
+            // Workflow history indicates pending error status.
+            // 2021030403
+            // Update the new attemptnum field with the default number of attempts.
             $record->attemptnum = 1;
             $DB->update_record('tool_trigger_workflow_hist', $record);
         }
