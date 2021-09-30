@@ -331,7 +331,7 @@ function xmldb_tool_trigger_upgrade($oldversion) {
         }
 
         $adhoc = new \tool_trigger\task\update_trigger_helper_task();
-        $adhoc->execute();
+        \core\task\manager::queue_adhoc_task($adhoc);
 
         // Trigger savepoint reached.
         upgrade_plugin_savepoint(true, 2021030403, 'tool', 'trigger');
