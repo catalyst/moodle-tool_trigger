@@ -149,7 +149,7 @@ class tool_trigger_course_lookup_step_testcase extends advanced_testcase {
         );
 
         if ($exception) {
-            $this->expectException('\moodle_exception');
+            $this->expectException('Error');
             $this->expectExceptionMessageRegExp("/Specified courseid field not present in the workflow data:*/");
         }
 

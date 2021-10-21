@@ -81,14 +81,14 @@ class tool_trigger_steps_form_testcase extends advanced_testcase {
         ]);
 
         // Check that it has these form fields.
-        $this->assertContains('name="id"', $html);
-        $this->assertContains('name="steporder"', $html);
-        $this->assertContains('name="type"', $html);
-        $this->assertContains('name="stepclass"', $html);
+        $this->assertStringContainsString('name="id"', $html);
+        $this->assertStringContainsString('name="steporder"', $html);
+        $this->assertStringContainsString('name="type"', $html);
+        $this->assertStringContainsString('name="stepclass"', $html);
 
         // Check that it doesn't have these other form fields.
-        $this->assertNotContains('name="name"', $html);
-        $this->assertNotContains('name="description"', $html);
+        $this->assertStringNotContainsString('name="name"', $html);
+        $this->assertStringNotContainsString('name="description"', $html);
     }
 
     /**
@@ -116,8 +116,8 @@ class tool_trigger_steps_form_testcase extends advanced_testcase {
         // We mostly want to test that it renders with no errors thrown.
         // As a minimal test that the output contains *something*, check that
         // the "name" and "description" fields have been added.
-        $this->assertContains('name="name"', $html);
-        $this->assertContains('name="description"', $html);
+        $this->assertStringContainsString('name="name"', $html);
+        $this->assertStringContainsString('name="description"', $html);
     }
 
     /**

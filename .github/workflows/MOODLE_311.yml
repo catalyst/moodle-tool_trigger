@@ -1,4 +1,4 @@
-name: master branch test
+name: Moodle 3.11 branch test
 
 on: [push, pull_request]
 

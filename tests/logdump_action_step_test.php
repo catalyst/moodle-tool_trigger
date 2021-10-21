@@ -83,7 +83,7 @@ EOD;
         $this->assertTrue($status);
 
         // The logdump step also adds the var_dump()s to a datafield called "vardump".
-        $this->assertContains($eventdump, $stepresults['vardump']);
-        $this->assertContains($stepresultsdump, $stepresults['vardump']);
+        $this->assertStringContainsString($eventdump, $stepresults['vardump']);
+        $this->assertStringContainsString($stepresultsdump, $stepresults['vardump']);
     }
 }

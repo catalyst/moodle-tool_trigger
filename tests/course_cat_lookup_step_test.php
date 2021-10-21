@@ -191,7 +191,7 @@ class tool_trigger_course_cat_lookup_step_testcase extends advanced_testcase {
         );
 
         if ($exception) {
-            $this->expectException('\moodle_exception');
+            $this->expectException('Error');
             $this->expectExceptionMessageRegExp("/Specified category field not present in the workflow data:*/");
         }
 

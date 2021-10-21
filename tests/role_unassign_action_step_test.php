@@ -157,7 +157,7 @@ class role_unassign_action_step_testcase extends advanced_testcase {
             ])
         );
 
-        $this->expectException('\moodle_exception');
+        $this->expectException('Error');
         $this->expectExceptionMessageRegExp("/Specified userid field not present in the workflow data:*/");
         $step->execute(null, null, $this->event, []);
     }

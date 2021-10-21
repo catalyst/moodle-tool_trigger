@@ -122,7 +122,7 @@ class tool_trigger_processor_helper_testcase extends tool_trigger_testcase {
             $this->assertTrue($result[0]);
             $this->assertTrue(is_array($result[1]));
             foreach ($result[1] as $key => $value) {
-                $this->assertContains('user_', $key);
+                $this->assertStringContainsString('user_', $key);
             }
         }
     }

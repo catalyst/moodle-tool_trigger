@@ -58,11 +58,10 @@ class tool_trigger_workflow_manager_testcase extends advanced_testcase {
         $stepobj = new \tool_trigger\workflow_manager();
         $steps = $stepobj->lookup_step_names($stepclasses);
 
-        $expected = array(
-            '\tool_trigger\steps\actions\http_post_action_step' => get_string('httppostactionstepname', 'tool_trigger')
+        $this->assertEquals(
+                get_string('httppostactionstepname', 'tool_trigger'),
+                $steps['\tool_trigger\steps\actions\http_post_action_step']
         );
-
-        $this->assertArraySubset($expected, $steps);
     }
 
     /**
@@ -74,11 +73,10 @@ class tool_trigger_workflow_manager_testcase extends advanced_testcase {
         $stepobj = new \tool_trigger\workflow_manager();
         $steps = $stepobj->get_steps_by_type($steptype);
 
-        $expected = array(
-            '\tool_trigger\steps\actions\http_post_action_step' => get_string('httppostactionstepname', 'tool_trigger')
+        $this->assertEquals(
+                get_string('httppostactionstepname', 'tool_trigger'),
+                $steps['\tool_trigger\steps\actions\http_post_action_step']
         );
-
-        $this->assertArraySubset($expected, $steps);
     }
 
     /**
