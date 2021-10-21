@@ -1,4 +1,4 @@
-![Build Status](https://github.com/catalyst/moodle-tool_trigger/actions/workflows/MOODLE_311.yml/badge.svg?branch=master)
+![Build Status](https://github.com/catalyst/moodle-tool_trigger/actions/workflows/MOODLE_311.yml/badge.svg?branch=MOODLE_311)
 
 # Event Trigger
 

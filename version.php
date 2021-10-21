@@ -25,8 +25,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'tool_trigger';
-$plugin->release  = 2021030403;
-$plugin->version  = 2021030403;
-$plugin->requires = 2016052300;
+$plugin->release  = 2021102100;
+$plugin->version  = 2021102100;
+$plugin->requires = 2021051700;
 $plugin->maturity = MATURITY_STABLE;
 $plugin->dependencies = array('tool_monitor' => 2015051101);
