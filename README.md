@@ -29,6 +29,14 @@ This plugin currently supports Moodle:
 * 3.10
 * 3.11
 
+## Branches ##
+The following maps the plugin version to use depending on your Moodle version.
+
+| Moodle verion      | Branch      |
+| ------------------ | ----------- |
+| Moodle 3.5 to 3.10 | master      |
+| Moodle 3.11+       | MOODLE_311  |
+
 ## Moodle Plugin Installation
 The following sections outline how to install the Moodle plugin.
 

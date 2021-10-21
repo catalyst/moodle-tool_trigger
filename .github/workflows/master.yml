@@ -71,14 +71,6 @@ jobs:
             moodle-branch: 'MOODLE_310_STABLE'
             database: 'pgsql'
             node: '14.15'
-          - php: '7.3'
-            moodle-branch: 'MOODLE_311_STABLE'
-            database: 'mariadb'
-            node: '14.15'
-          - php: '7.3'
-            moodle-branch: 'MOODLE_311_STABLE'
-            database: 'pgsql'
-            node: '14.15'
 
     steps:
       - name: Check out repository code
