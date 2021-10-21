@@ -66,11 +66,6 @@ class user_lookup_step extends base_lookup_step {
             'lastname',
             'email',
             'emailstop',
-            'icq',
-            'skype',
-            'yahoo',
-            'aim',
-            'msn',
             'phone1',
             'phone2',
             'institution',
@@ -88,7 +83,6 @@ class user_lookup_step extends base_lookup_step {
             'currentlogin',
             'lastip',
             'picture',
-            'url',
             'description',
             'descriptionformat',
             'mailformat',
@@ -103,7 +97,8 @@ class user_lookup_step extends base_lookup_step {
             'lastnamephonetic',
             'firstnamephonetic',
             'middlename',
-            'alternatename');
+            'alternatename',
+            'moodlenetprofile');
 
     /**
      * Whether to halt execution of the workflow, if the user has been marked "deleted".
