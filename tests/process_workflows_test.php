@@ -134,9 +134,9 @@ class tool_trigger_process_workflow_testcase extends advanced_testcase {
         $task->execute();
 
         // Make sure the output didn't contain any warning or error messages.
-        $this->assertNotContains('warning', strtolower($this->getActualOutput()));
-        $this->assertNotContains('error', strtolower($this->getActualOutput()));
-        $this->assertNotContains('debug', strtolower($this->getActualOutput()));
+        $this->assertStringNotContainsString('warning', strtolower($this->getActualOutput()));
+        $this->assertStringNotContainsString('error', strtolower($this->getActualOutput()));
+        $this->assertStringNotContainsString('debug', strtolower($this->getActualOutput()));
 
         $messages = $messagesink->get_messages();
         $this->assertCount(1, $messages);

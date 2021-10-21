@@ -156,12 +156,7 @@ class tool_trigger_user_lookup_testcase extends advanced_testcase {
         );
         list($status2, $stepresults2) = $step2->execute(null, null, $this->event, []);
         $this->assertTrue($status2);
-        $this->assertArraySubset(
-            [
-                'user_id' => $this->user1->id,
-                'user_deleted' => '1'
-            ],
-            $stepresults2
-        );
+        $this->assertEquals($this->user1->id, $stepresults2['user_id']);
+        $this->assertEquals('1', $stepresults2['user_deleted']);
     }
 }
