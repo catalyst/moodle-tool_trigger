@@ -156,7 +156,7 @@ class http_post_action_step extends base_action_step {
 
         $stepresults['http_response_status_code'] = $response->getStatusCode();
         $stepresults['http_response_status_message'] = $response->getReasonPhrase();
-        $stepresults['http_response_body'] = $response->getBody();
+        $stepresults['http_response_body'] = $response->getBody()->getContents();
 
         if ($response->getStatusCode() != $this->expectedresponse) {
             // If we weren't expecting this response, throw an exception.
