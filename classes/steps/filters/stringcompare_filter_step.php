@@ -112,6 +112,11 @@ class stringcompare_filter_step extends base_filter_step {
         $this->field2 = $this->data['field2'];
         $this->operator = $this->data['operator'];
         $this->wantmatch = (bool) $this->data['wantmatch'];
+        $this->erroronfail = false;
+
+        if (!empty($this->data['erroronfail'])) {
+            $this->erroronfail = (bool) $this->data['erroronfail'];
+        }
     }
 
     /**
@@ -160,6 +165,11 @@ class stringcompare_filter_step extends base_filter_step {
 
         // Check whether they wanted the pattern to match, or not match.
         $result = ($ismatch == $this->wantmatch);
+
+        // Check if we want it to error on failure, and the result was not true.
+        if (($this->erroronfail == true) && !$result) {
+            throw new \moodle_exception('erroronfail for stringcompare', 'tool_trigger');
+        }
 
         return [$result, $stepresults];
     }
@@ -212,6 +222,13 @@ class stringcompare_filter_step extends base_filter_step {
 
         $mform->addGroup($fields, 'stringcomparegroup', '', [' '], false);
         $mform->addRule('stringcomparegroup', get_string('required'), 'required');
+
+        // Error instead of failure.
+        $mform->addElement('advcheckbox', 'erroronfail', get_string ('erroronfail', 'tool_trigger'),
+            'Enable', array(), array(0, 1));
+        $mform->setType('erroronfail', PARAM_INT);
+        $mform->addHelpButton('erroronfail', 'erroronfail', 'tool_trigger');
+        $mform->setDefault('erroronfail', 0);
     }
 
     /**
