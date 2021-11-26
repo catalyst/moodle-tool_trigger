@@ -62,9 +62,6 @@ class process_workflows extends \core\task\scheduled_task {
      */
     const STATUS_FINISHED = 40;
 
-    /** Max number of tasks to try and process in a queue. */
-    const LIMITQUEUE = 500;
-
     /** Max processing time for a queue in seconds. */
     const MAXTIME = 60;
 
@@ -136,7 +133,7 @@ class process_workflows extends \core\task\scheduled_task {
             'time' => time(),
             'autorerunmaxtries' => get_config('tool_trigger', 'autorerunmaxtries')
         ];
-        $queue = $DB->get_recordset_sql($sql, $params, 0, self::LIMITQUEUE);
+        $queue = $DB->get_recordset_sql($sql, $params, 0, get_config('tool_trigger', 'queuelimit'));
 
         foreach ($queue as $q) {
             mtrace('Executing workflow: ' . $q->workflowid);
