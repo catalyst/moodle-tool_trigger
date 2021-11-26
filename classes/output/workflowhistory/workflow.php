@@ -135,7 +135,7 @@ class workflowhistory_renderable extends \table_sql implements \renderable {
         global $DB;
 
         // Return a badge for the status.
-        if (!empty($run->errorstep)) {
+        if (isset($run->errorstep)) {
             $string = get_string('errorstep', 'tool_trigger', $run->errorstep + 1);
             $spanclass = 'badge badge-warning';
             $maxretries = get_config('tool_trigger', 'autorerunmaxtries');
@@ -144,13 +144,13 @@ class workflowhistory_renderable extends \table_sql implements \renderable {
                 $string .= get_string('errorstepretrypending', 'tool_trigger', $run->attemptnum);
             }
             // Handle debounce statuses.
-        } else if (!empty($run->failedstep) && ((int) $run->failedstep === \tool_trigger\task\process_workflows::STATUS_CANCELLED)) {
+        } else if (isset($run->failedstep) && ((int) $run->failedstep === \tool_trigger\task\process_workflows::STATUS_CANCELLED)) {
             $string = get_string('cancelled');
             $spanclass = 'badge badge-info';
-        } else if (!empty($run->failedstep) && ((int) $run->failedstep === \tool_trigger\task\process_workflows::STATUS_DEFERRED)) {
+        } else if (isset($run->failedstep) && ((int) $run->failedstep === \tool_trigger\task\process_workflows::STATUS_DEFERRED)) {
             $string = get_string('deferred', 'tool_trigger');
             $spanclass = 'badge badge-info';
-        } else if (!empty($run->failedstep)) {
+        } else if (isset($run->failedstep)) {
             $string = get_string('failedstep', 'tool_trigger', $run->failedstep + 1);
             $spanclass = 'badge badge-danger';
         } else {
