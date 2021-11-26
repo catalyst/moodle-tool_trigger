@@ -49,6 +49,16 @@ if ($hassiteconfig) {
         get_string('learning', 'tool_trigger'),
         get_string('learning_help', 'tool_trigger'), 0));
 
+    // Workflow Queue settings.
+    $settings->add(new admin_setting_heading('tool_trigger/queuesettings',
+        get_string('queuesettings', 'tool_trigger'),
+        get_string('queuesettingsdesc', 'tool_trigger')));
+
+    $settings->add(new admin_setting_configtext('tool_trigger/queuelimit',
+        get_string('queuelimit', 'tool_trigger'),
+        get_string('queuelimitdesc', 'tool_trigger'), 500, PARAM_INT));
+
+    // Workflow history settings.
     $settings->add(new admin_setting_heading('tool_trigger/historysettings',
         get_string('historysettings', 'tool_trigger'),
         get_string('historysettingsdesc', 'tool_trigger')));
@@ -57,6 +67,7 @@ if ($hassiteconfig) {
         get_string('historyduration', 'tool_trigger'),
         get_string('historydurationdesc', 'tool_trigger'), 1 * WEEKSECS, WEEKSECS));
 
+    // Auto re-run.
     $settings->add(new admin_setting_heading('tool_trigger/autorerunsettings',
         get_string('autorerunsettings', 'tool_trigger'),
         get_string('autorerunsettingsdesc', 'tool_trigger')));
