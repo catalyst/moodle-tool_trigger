@@ -69,8 +69,9 @@ class tool_trigger_user_lookup_testcase extends advanced_testcase {
         $field2 = $this->add_user_custom_profile_field('testfield2', 'text');
 
         // Populate data.
-        user_update_user($this->user1);
-        profile_save_data((object)['id' => $this->user1->id, 'profile_field_' . $field1->shortname => 'User 1 Field Data']);
+        $profilefield = 'profile_field_' . $field1->shortname;
+        $this->user1->$profilefield = 'User 1 Field Data';
+        profile_save_data($this->user1);
 
         $step = new \tool_trigger\steps\lookups\user_lookup_step(
             json_encode([
