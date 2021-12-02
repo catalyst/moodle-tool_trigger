@@ -46,7 +46,8 @@ trait tool_trigger_user_event_fixture {
             'description' => '<p>My description</p>',
             'descriptionformat' => FORMAT_HTML,
             'url' => 'https://www.example.com',
-            'picture' => 1
+            'picture' => 1,
+            'password' => 'af98y4hqkfhacvaHKHDFSs'
         ];
 
         $this->user1 = $this->getDataGenerator()->create_user($extrauserdata);
