@@ -25,8 +25,6 @@
 
 namespace tool_trigger\task;
 
-defined('MOODLE_INTERNAL') || die();
-
 
 /**
  * Helper task to offload upgrade processing

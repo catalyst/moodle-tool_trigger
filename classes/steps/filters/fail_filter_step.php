@@ -27,8 +27,6 @@
 
 namespace tool_trigger\steps\filters;
 
-defined('MOODLE_INTERNAL') || die;
-
 /**
  * Fail filter step class.
  *

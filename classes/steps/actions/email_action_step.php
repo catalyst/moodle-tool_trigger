@@ -25,8 +25,6 @@
 
 namespace tool_trigger\steps\actions;
 
-defined('MOODLE_INTERNAL') || die;
-
 /**
  * email action step class.
  *

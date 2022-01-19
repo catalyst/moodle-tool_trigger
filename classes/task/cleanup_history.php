@@ -25,7 +25,6 @@
 
 namespace tool_trigger\task;
 
-defined('MOODLE_INTERNAL') || die();
 /**
  * Task to cleanup old queue.
  */

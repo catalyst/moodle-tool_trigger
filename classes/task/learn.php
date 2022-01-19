@@ -24,7 +24,6 @@
 
 namespace tool_trigger\task;
 
-defined('MOODLE_INTERNAL') || die();
 /**
  * Task to learn from processed events.
  */

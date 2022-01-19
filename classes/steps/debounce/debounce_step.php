@@ -31,8 +31,6 @@ use tool_trigger\steps\base\base_step;
 use xmldb_table;
 use xmldb_field;
 
-defined('MOODLE_INTERNAL') || die;
-
 /**
  * Debounce step class.
  *

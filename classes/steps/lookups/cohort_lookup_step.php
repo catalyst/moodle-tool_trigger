@@ -16,7 +16,6 @@
 
 namespace tool_trigger\steps\lookups;
 
-defined('MOODLE_INTERNAL') || die;
 /**
  * A lookup step that takes a user's ID and returns a string of
  * all the cohorts that the user is currently assigned to
@@ -26,8 +25,8 @@ defined('MOODLE_INTERNAL') || die;
  * @copyright  Catalyst IT, 2018
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class cohort_lookup_step extends base_lookup_step
-{
+class cohort_lookup_step extends base_lookup_step {
+
 
     use \tool_trigger\helper\datafield_manager;
 
