@@ -29,8 +29,6 @@ namespace tool_trigger\steps\actions;
 
 use tool_trigger\steps\base\base_step;
 
-defined('MOODLE_INTERNAL') || die;
-
 /**
  * Base action step class.
  *

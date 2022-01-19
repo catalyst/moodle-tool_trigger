@@ -24,8 +24,6 @@
 
 namespace tool_trigger\steps\actions;
 
-defined('MOODLE_INTERNAL') || die;
-
 /**
  * HTTP Post action step class.
  *

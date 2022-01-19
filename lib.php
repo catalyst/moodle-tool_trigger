@@ -25,8 +25,6 @@
 use tool_trigger\steps\base\base_form;
 use tool_trigger\import_form;
 
-defined('MOODLE_INTERNAL') || die;
-
 /**
  * Renders the top part of the "new workflow step" modal form. (The part with
  * the "Step type" and "Step" menus.

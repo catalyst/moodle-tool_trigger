@@ -30,8 +30,6 @@ namespace tool_trigger\steps\lookups;
 
 use tool_trigger\steps\base\base_step;
 
-defined('MOODLE_INTERNAL') || die;
-
 /**
  * Base lookup step class.
  *

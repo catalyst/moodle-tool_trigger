@@ -24,8 +24,6 @@
 
 namespace tool_trigger\output\manageworkflows;
 
-defined('MOODLE_INTERNAL') || die;
-
 /**
  * Renderer class for manage rules page.
  *

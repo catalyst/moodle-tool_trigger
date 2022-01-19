@@ -16,8 +16,6 @@
 
 namespace tool_trigger\steps\lookups;
 
-defined('MOODLE_INTERNAL') || die;
-
 /**
  * A lookup step that takes a category ID and adds all data about the category.
  *

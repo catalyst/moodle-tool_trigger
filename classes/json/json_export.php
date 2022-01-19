@@ -24,8 +24,6 @@
 
 namespace tool_trigger\json;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Process trigger system events.
  *
