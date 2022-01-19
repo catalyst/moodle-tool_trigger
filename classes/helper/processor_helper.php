@@ -25,8 +25,6 @@
 
 namespace tool_trigger\helper;
 
-defined('MOODLE_INTERNAL') || die();
-
 trait processor_helper {
 
     /**

@@ -27,8 +27,8 @@ namespace tool_trigger\steps\actions;
 defined('MOODLE_INTERNAL') || die;
 require_once($CFG->dirroot.'/cohort/lib.php');
 
-class assign_cohort_action_step extends base_action_step
-{
+class assign_cohort_action_step extends base_action_step {
+
 
     use \tool_trigger\helper\datafield_manager;
 

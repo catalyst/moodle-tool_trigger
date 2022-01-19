@@ -24,8 +24,6 @@
 
 namespace tool_trigger;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Workflow manager class.
  *

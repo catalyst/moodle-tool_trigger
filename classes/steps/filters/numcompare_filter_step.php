@@ -27,8 +27,6 @@
 
 namespace tool_trigger\steps\filters;
 
-defined('MOODLE_INTERNAL') || die;
-
 /**
  * Base filter step class.
  *
