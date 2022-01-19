@@ -25,8 +25,6 @@
 
 namespace tool_trigger\helper;
 
-defined('MOODLE_INTERNAL') || die;
-
 /**
  * A lookup step that takes a user's ID and adds standard data about the
  * user.

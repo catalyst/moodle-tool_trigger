@@ -16,8 +16,6 @@
 
 namespace tool_trigger\steps\lookups;
 
-defined('MOODLE_INTERNAL') || die;
-
 /**
  * A lookup step that takes a user's ID and adds roles of the user.
  *

@@ -27,8 +27,6 @@ namespace tool_trigger;
 use tool_trigger\helper\processor_helper;
 use tool_trigger\task\process_workflows;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Process trigger system events.
  *

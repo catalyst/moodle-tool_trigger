@@ -16,8 +16,6 @@
 
 namespace tool_trigger\steps\actions;
 
-defined('MOODLE_INTERNAL') || die;
-
 /**
  * Action step that just does a var_dump to the logs.
  *

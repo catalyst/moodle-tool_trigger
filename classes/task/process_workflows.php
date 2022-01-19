@@ -26,7 +26,6 @@ namespace tool_trigger\task;
 
 use tool_trigger\helper\processor_helper;
 
-defined('MOODLE_INTERNAL') || die();
 /**
  * Simple task to rocess queued workflows.
  */

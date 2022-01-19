@@ -25,8 +25,6 @@
 
 namespace tool_trigger\steps\actions;
 
-defined('MOODLE_INTERNAL') || die;
-
 class role_unassign_action_step extends base_action_step {
 
     use \tool_trigger\helper\datafield_manager;
