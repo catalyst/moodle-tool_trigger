@@ -335,5 +335,20 @@ function xmldb_tool_trigger_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2021030403, 'tool', 'trigger');
     }
 
+    if ($oldversion < 2021102101) {
+
+        // Define key stepconfigid (foreign) to be added to tool_trigger_run_hist.
+        $table = new xmldb_table('tool_trigger_run_hist');
+        $key = new xmldb_key('stepconfigid', XMLDB_KEY_FOREIGN, ['stepconfigid'], 'tool_trigger_steps', ['id']);
+
+        // Launch add key stepconfigid.
+        if (!$table->getKey($key->getName())) {
+            $dbman->add_key($table, $key);
+        }
+
+        // Trigger savepoint reached.
+        upgrade_plugin_savepoint(true, 2021102101, 'tool', 'trigger');
+    }
+
     return true;
 }

@@ -30,6 +30,9 @@ namespace tool_trigger\task;
  */
 class cleanup_history extends \core\task\scheduled_task {
 
+    /** @var int Maximum number parameters to use in the SQL IN statement. */
+    const MAX_PARAM_IN = 10000;
+
     /**
      * Get a descriptive name for this task.
      *
@@ -64,7 +67,12 @@ class cleanup_history extends \core\task\scheduled_task {
                             ) = 0";
         $ids = $DB->get_fieldset_sql($sql, ['lookback1' => $lookback, 'lookback2' => $lookback]);
         if ($ids) {
-            $DB->delete_records_list('tool_trigger_run_hist', 'id', $ids);
+            $parts = array_chunk($ids, self::MAX_PARAM_IN);
+            foreach ($parts as $chunk) {
+                mtrace("Deleting: " . count($chunk) . " records from tool_trigger_run_hist.");
+                $DB->delete_records_list('tool_trigger_run_hist', 'id', $chunk);
+            }
         }
+        mtrace("Deleted total: " . count($ids) . " records from tool_trigger_run_hist.");
     }
 }
