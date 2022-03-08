@@ -252,6 +252,7 @@ $string['step_action_logdump_desc'] = 'This step prints the event and workflow s
 $string['step_action_logdump_name'] = 'Cron log';
 $string['step_action_role_assign_useridfield'] = 'User id data field';
 $string['step_action_role_unassign_useridfield'] = 'User id data field';
+$string['step_action_webservice:privacy:desc'] = 'This plugin may be configured to call webservice functions directly and so may handle data from Moodle depending on the function called.';
 $string['useridfield'] = 'User id data field';
 $string['useridfield_help'] = 'You can use user id as a number or as a filed name from the workflow data';
 $string['step_action_role_assign_roleidfield'] = 'Role id data field';
@@ -286,6 +287,16 @@ $string['timetocleanup'] = 'Time to cleanup old events';
 $string['timetocleanup_help'] = 'This setting sets the time sucessfully executed workflows remain in the Moodle database prior to being removed.';
 $string['update_trigger_helper_task'] = 'Adhoc task to offload upgrade processing work.';
 $string['warningdebugging'] = 'Debug mode is disabled for the current workflow. To be able to record the history, you should <a href = "/admin/tool/trigger/edit.php?workflowid={$a}">enable debugging for the workflow</a>.';
+
+$string['webserviceactionfunctionname'] = 'Function';
+$string['webserviceactionfunctionname_help'] = 'The webservice function to be called. See the <a href="/admin/webservice/documentation.php">API Documentation</a>';
+$string['webserviceactionusername'] = 'Who';
+$string['webserviceactionusername_help'] = 'The user (username) who this step will be performed in the context of. This has a sane default of admin';
+$string['webserviceactionparams'] = 'Parameters';
+$string['webserviceactionparams_help'] = 'The function parameters - currently with support for JSON.';
+$string['webserviceactionstepname'] = 'Webservice Function';
+$string['webserviceactionstepdesc'] = 'A step allowing the workflow to trigger web service functions.';
+
 $string['workflowactive'] = 'Workflow active';
 $string['workflowactive_help'] = 'Only active workflows will be processed when an event is triggered.';
 $string['workflowrealtime'] = 'Real time processing';
