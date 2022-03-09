@@ -198,6 +198,10 @@ class webservice_action_step extends base_action_step {
         return self::$stepfields;
     }
 
+    /**
+     * {@inheritDoc}
+     * @see \tool_trigger\steps\base\base_step::form_validation()
+     */
     public function form_validation($data, $files) {
         global $DB;
 
@@ -258,5 +262,40 @@ class webservice_action_step extends base_action_step {
         }
 
         return $errors;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     * @see \tool_trigger\steps\base\base_step::transform_form_data()
+     */
+    public function transform_form_data($data) {
+        // Prettify the JSON data in params, if there is content there.
+        if (!empty($data['params'])) {
+            // Fill template fields with a number.
+            $replacemap = [];
+            $start = PHP_INT_MIN; // Unlikely numerical conflict.
+            $transformcallback = function($matches) use(&$replacemap, &$start) {
+                $replacemap[$start] = $matches[0];
+                return $start++;
+            };
+
+            // Replace all matches with markable values, so they can be swapped back later on to their template forms.
+            $params = preg_replace_callback(
+                $this->datafieldregex,
+                $transformcallback,
+                $data['params']
+            );
+
+            // Pretty print the JSON value so it's formatted.
+            $params = json_encode(json_decode($params), JSON_PRETTY_PRINT);
+
+            // THEN, replace the temporary values with the original template variables.
+            $params = str_replace(array_keys($replacemap), array_values($replacemap), $params);
+
+            // Update the params key in $data to apply the changes as part of the render.
+            $data['params'] = $params;
+        }
+        return $data;
     }
 }

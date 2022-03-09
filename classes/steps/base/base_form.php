@@ -124,7 +124,6 @@ class base_form extends \moodleform {
 
         if (!$isfirst) {
             foreach ($existingsteps as $step) {
-
                 // Don't show fields for steps that may exist after this one.
                 if ($step['steporder'] >= $steporder && $steporder != -1) {
                     break;

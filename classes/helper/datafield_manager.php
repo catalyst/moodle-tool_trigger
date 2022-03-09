@@ -37,6 +37,8 @@ namespace tool_trigger\helper;
 trait datafield_manager {
 
     protected $datafields = [];
+
+    /** @var string regex to determine data fields - should ideally be readonly */
     protected $datafieldregex = '/\{([-_A-Za-z0-9]+)\}/u';
 
     /**

@@ -190,4 +190,18 @@ abstract class base_step {
     public function form_validation($data, $files) {
         return [];
     }
+
+    /**
+     * Transform / process form data, if required.
+     *
+     * An example of when you might want this is when prettifying JSON inputs.
+     * Any step using this should override this to apply the transformations as
+     * needed.
+     *
+     * @param array $data — array of ("fieldname"=>value) of submitted data
+     * @return array $data — array of ("fieldname"=>value) of transformed - if required - data
+     */
+    public function transform_form_data($data) {
+        return $data;
+    }
 }
