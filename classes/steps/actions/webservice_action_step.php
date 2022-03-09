@@ -235,8 +235,13 @@ class webservice_action_step extends base_action_step {
                 );
 
                 // Check if this is valid JSON before doing the function's validate_parameters check.
-                // Note: '512' is the default value for depth.
-                $decodedparams = json_decode($params, true, 512, JSON_THROW_ON_ERROR);
+                $preparedparams = [];
+                if (!empty($params)) {
+                    $preparedparams = json_decode($params, true);
+                    if (is_null($preparedparams)) {
+                        throw new \Exception('Invalid Syntax');
+                    }
+                }
 
                 // Execute the provided function name passing with the given parameters.
                 // $response = \external_api::call_external_function($functionname, json_decode($params, true));
@@ -244,7 +249,7 @@ class webservice_action_step extends base_action_step {
                 call_user_func(
                     [$function->classname, 'validate_parameters'],
                     $function->parameters_desc,
-                    $decodedparams
+                    $preparedparams
                 );
             } catch (\Throwable $e) {
                 // Most usually a response saying the function name provided doesn't exist.
