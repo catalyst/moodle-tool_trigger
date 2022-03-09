@@ -46,7 +46,8 @@ class tool_trigger_webservice_action_step_testcase extends \advanced_testcase {
         $stepsettings = [
             'username' => $adminuser->username,
             'functionname' => 'enrol_manual_enrol_users',
-            'params' => '{"enrolments":{"0":{"roleid":"5","userid":' . $this->user1->id . ',"courseid":' . $this->course->id . '}}}',
+            'params' =>
+                '{"enrolments":{"0":{"roleid":"5","userid":' . $this->user1->id . ',"courseid":' . $this->course->id . '}}}',
         ];
 
         // Check if user is NOT enrolled yet.
@@ -74,7 +75,8 @@ class tool_trigger_webservice_action_step_testcase extends \advanced_testcase {
         $stepsettings = [
             'username' => 'tool_trigger_invalid_username',
             'functionname' => 'enrol_manual_enrol_users',
-            'params' => '{"enrolments":{"0":{"roleid":"5","userid":' . $this->user1->id . ',"courseid":' . $this->course->id . '}}}',
+            'params' =>
+                '{"enrolments":{"0":{"roleid":"5","userid":' . $this->user1->id . ',"courseid":' . $this->course->id . '}}}',
         ];
         $step = new \tool_trigger\steps\actions\webservice_action_step(json_encode($stepsettings));
         $this->expectException(dml_missing_record_exception::class);
@@ -89,7 +91,8 @@ class tool_trigger_webservice_action_step_testcase extends \advanced_testcase {
         $stepsettings = [
             'username' => $adminuser->username,
             'functionname' => 'tool_trigger_function_does_not_exist',
-            'params' => '{"enrolments":{"0":{"roleid":"5","userid":' . $this->user1->id . ',"courseid":' . $this->course->id . '}}}',
+            'params' =>
+                '{"enrolments":{"0":{"roleid":"5","userid":' . $this->user1->id . ',"courseid":' . $this->course->id . '}}}',
         ];
         $step = new \tool_trigger\steps\actions\webservice_action_step(json_encode($stepsettings));
         $this->expectException(dml_missing_record_exception::class);
@@ -104,7 +107,8 @@ class tool_trigger_webservice_action_step_testcase extends \advanced_testcase {
         $stepsettings = [
             'username' => $adminuser->username,
             'functionname' => 'enrol_manual_enrol_users',
-            'params' => '{"not_enrolments":{"0":{"roleid":"5","userid":' . $this->user1->id . ',"courseid":' . $this->course->id . '}}}',
+            'params' =>
+                '{"not_enrolments":{"0":{"roleid":"5","userid":' . $this->user1->id . ',"courseid":' . $this->course->id . '}}}',
         ];
         $step = new \tool_trigger\steps\actions\webservice_action_step(json_encode($stepsettings));
         list($status, $stepresults) = $step->execute(null, null, $this->event, []);
