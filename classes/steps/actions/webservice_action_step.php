@@ -77,6 +77,47 @@ class webservice_action_step extends base_action_step {
     }
 
     /**
+     * Returns the user that should execute the webservice function
+     *
+     * @uses webservice_action_step::$username
+     * @return \stdClass user object
+     */
+    private function get_user() {
+        global $DB;
+        $username = $this->render_datafields($this->username);
+
+        if (empty($username)) {
+            // If {username} is not set, then default it to the main admin user.
+            $user = get_admin();
+        } else {
+            // Assume the role of the provided user given their {username}.
+            $user = $DB->get_record('user', ['username' => $username], '*', MUST_EXIST);
+        }
+
+        // This bypasses the sesskey check for the external api call.
+        $user->ignoresesskey = true;
+
+        return $user;
+    }
+
+    /**
+     * Prepare and run the function set in the config and return the results.
+     *
+     * @uses webservice_action_step::$functionname
+     * @uses webservice_action_step::$params
+     * @return array results of the function run
+     */
+    private function run_function() {
+        // Passing any data from previous steps through by applying template magic.
+        $functionname = $this->render_datafields($this->functionname);
+        $params = $this->render_datafields($this->params);
+
+        // Execute the provided function name passing with the given parameters.
+        $response = \external_api::call_external_function($functionname, json_decode($params, true));
+        return $response;
+    }
+
+    /**
      * Runs the configured step.
      *
      * @param $trigger
@@ -85,30 +126,30 @@ class webservice_action_step extends base_action_step {
      * @return array if execution was succesful and the response from the execution.
      */
     public function execute($step, $trigger, $event, $stepresults) {
-        global $CFG, $DB;
-        require_once($CFG->dirroot . '/admin/tool/trigger/guzzle/autoloader.php');
+        global $USER;
 
         $this->update_datafields($event, $stepresults);
 
-        // Passing any data from previous steps through by applying template magic.
-        $username = $this->render_datafields($this->username);
-        $functionname = $this->render_datafields($this->functionname);
-        $params = $this->render_datafields($this->params);
+        // Store the previous user, setting it back once the step is finished.
+        $previoususer = $USER;
 
-        // Assume the role of the provided user given their {username}.
-        $user = $DB->get_record('user', ['username' => $username], '*', MUST_EXIST);
-        $user->ignoresesskey = true; // This bypasses the sesskey check for the external api call.
+        // Set the configured user as the one who will run the function.
+        $user = $this->get_user();
         \core\session\manager::set_user($user);
         set_login_session_preferences();
 
-        // Execute the provided function name passing with the given parameters.
-        $response = \external_api::call_external_function($functionname, json_decode($params, true));
+        // Run the function and parse the response to a step result.
+        $response = $this->run_function();
         if ($response['error']) {
             return [false, $response['exception']];
         }
 
-        $stepresults = $response;
-        return [true, $stepresults];
+        // Restore the previous user to avoid any side-effects occuring in later steps / code.
+        \core\session\manager::set_user($previoususer);
+        set_login_session_preferences();
+
+        // Return the function call response as is. The shape is already normalised.
+        return [true, $response];
     }
 
     /**
