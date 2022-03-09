@@ -117,7 +117,8 @@ class tool_trigger_webservice_action_step_testcase extends \advanced_testcase {
         $this->assertObjectHasAttribute('errorcode', $stepresults);
         $this->assertEquals('invalidparameter', $stepresults->errorcode);
         $this->assertObjectHasAttribute('debuginfo', $stepresults);
-        $this->assertStringContainsString('Missing required key in single structure: enrolments', $stepresults->debuginfo);
+        // Alternative for assertStringContainsString used for earlier version compatibility.
+        $this->assertTrue(strpos($stepresults->debuginfo, 'Missing required key in single structure: enrolments') !== false);
         $this->assertObjectNotHasAttribute('data', $stepresults);
     }
 }
