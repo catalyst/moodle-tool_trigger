@@ -235,4 +235,14 @@ class base_form extends \moodleform {
         }
     }
 
+    /**
+     * Custom validation that will be run if it exists in each step.
+     *
+     * @author    Kevin Pham <kevinpham@catalyst-au.net>
+     * @copyright Catalyst IT, 2022
+     */
+    function validation($data, $files) {
+        return $this->step->form_validation($data, $files);
+    }
+
 }
