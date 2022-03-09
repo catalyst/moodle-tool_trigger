@@ -196,6 +196,62 @@ class webservice_action_step extends base_action_step {
      */
     public static function get_fields() {
         return self::$stepfields;
+    }
 
+    public function form_validation($data, $files) {
+        global $DB;
+
+        $errors = [];
+
+        // Check if the username links to a valid user, if set.
+        if (!empty($data['username'])) {
+            try {
+                $DB->get_record('user', ['username' => $data['username']], '*', MUST_EXIST);
+            } catch (\Throwable $e) {
+                $errors['username'] = $e->getMessage();
+            }
+        }
+
+        // Check if the provided function (name) is a valid callable function.
+        if (!empty($data['functionname'])) {
+            try {
+                $errorfield = 'functionname';
+                $function = \external_api::external_function_info($data['functionname']);
+
+                $errorfield = 'params';
+
+                // Fill template fields with a number
+                $transformcallback = function() {
+                    return 0;
+                };
+
+                // Cannot use redner_datafields since we need to know of the
+                // datafields in advance. Will need to apply the change
+                // manually.
+                $params = preg_replace_callback(
+                    $this->datafieldregex,
+                    $transformcallback,
+                    $data['params']
+                );
+
+                // Check if this is valid JSON before doing the function's validate_parameters check.
+                // Note: '512' is the default value for depth.
+                $decodedparams = json_decode($params, true, 512, JSON_THROW_ON_ERROR);
+
+                // Execute the provided function name passing with the given parameters.
+                // $response = \external_api::call_external_function($functionname, json_decode($params, true));
+                // Check if the provided function parameters are valid.
+                call_user_func(
+                    [$function->classname, 'validate_parameters'],
+                    $function->parameters_desc,
+                    $decodedparams
+                );
+            } catch (\Throwable $e) {
+                // Most usually a response saying the function name provided doesn't exist.
+                $errors[$errorfield] = $e->getMessage();
+            }
+        }
+
+        return $errors;
     }
 }

@@ -37,6 +37,7 @@ namespace tool_trigger\helper;
 trait datafield_manager {
 
     protected $datafields = [];
+    protected $datafieldregex = '/\{([-_A-Za-z0-9]+)\}/u';
 
     /**
      * Get the data fields.
@@ -160,7 +161,7 @@ trait datafield_manager {
         };
 
         return preg_replace_callback(
-            '/\{([-_A-Za-z0-9]+)\}/u',
+            $this->datafieldregex,
             $callback,
             $templatestr
         );
