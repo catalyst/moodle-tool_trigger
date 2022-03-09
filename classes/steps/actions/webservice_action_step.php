@@ -168,8 +168,6 @@ class webservice_action_step extends base_action_step {
         $attributes = ['placeholder' => 'username'];
         $mform->addElement('text', 'username', get_string('webserviceactionusername', 'tool_trigger'), $attributes);
         $mform->setType('username', PARAM_ALPHANUMEXT);
-        $mform->addRule('username', get_string('required'), 'required');
-        $mform->setDefault('username', 'admin'); // Set the default to admin?
         $mform->addHelpButton('username', 'webserviceactionusername', 'tool_trigger');
 
         // Params.

@@ -291,7 +291,7 @@ $string['warningdebugging'] = 'Debug mode is disabled for the current workflow. 
 $string['webserviceactionfunctionname'] = 'Function';
 $string['webserviceactionfunctionname_help'] = 'The webservice function to be called. See the <a href="/admin/webservice/documentation.php">API Documentation</a>';
 $string['webserviceactionusername'] = 'Who';
-$string['webserviceactionusername_help'] = 'The user (username) who this step will be performed in the context of. This has a sane default of admin';
+$string['webserviceactionusername_help'] = 'The user (username) who this step will be performed in the context of. This defaults to the main admin user if not explicitly set';
 $string['webserviceactionparams'] = 'Parameters';
 $string['webserviceactionparams_help'] = 'The function parameters - currently with support for JSON.';
 $string['webserviceactionstepname'] = 'Webservice Function';
