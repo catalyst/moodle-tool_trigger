@@ -242,7 +242,11 @@ class base_form extends \moodleform {
      * @copyright Catalyst IT, 2022
      */
     public function validation($data, $files) {
-        return $this->step->form_validation($data, $files);
+        $errors = parent::validation($data, $files);
+        return array_merge(
+            $errors,
+            $this->step->form_validation($data, $files)
+        );
     }
 
 }
