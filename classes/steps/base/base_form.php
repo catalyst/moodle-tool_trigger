@@ -241,7 +241,7 @@ class base_form extends \moodleform {
      * @author    Kevin Pham <kevinpham@catalyst-au.net>
      * @copyright Catalyst IT, 2022
      */
-    function validation($data, $files) {
+    public function validation($data, $files) {
         return $this->step->form_validation($data, $files);
     }
 

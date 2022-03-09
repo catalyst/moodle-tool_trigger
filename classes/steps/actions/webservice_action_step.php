@@ -220,7 +220,7 @@ class webservice_action_step extends base_action_step {
 
                 $errorfield = 'params';
 
-                // Fill template fields with a number
+                // Fill template fields with a number.
                 $transformcallback = function() {
                     return 0;
                 };
