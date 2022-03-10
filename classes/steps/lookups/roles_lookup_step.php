@@ -74,7 +74,7 @@ class roles_lookup_step extends base_lookup_step {
         foreach ($userroles as $role) {
             foreach ($role as $key => $value) {
                 if (is_scalar($role->roleid)) {
-                    $stepresults[$this->outputprefix . 'roles'][ $role->id][$key] = $value;
+                    $stepresults[$this->outputprefix . 'roles'][$role->id][$key] = $value;
                 }
             }
         }

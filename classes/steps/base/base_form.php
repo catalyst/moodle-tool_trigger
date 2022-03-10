@@ -124,7 +124,6 @@ class base_form extends \moodleform {
 
         if (!$isfirst) {
             foreach ($existingsteps as $step) {
-
                 // Don't show fields for steps that may exist after this one.
                 if ($step['steporder'] >= $steporder && $steporder != -1) {
                     break;
@@ -233,6 +232,20 @@ class base_form extends \moodleform {
             // Although, if a step needs to customize the form that much, it may be better off
             // just using its own form subclass.
         }
+    }
+
+    /**
+     * Custom validation that will be run if it exists in each step.
+     *
+     * @author    Kevin Pham <kevinpham@catalyst-au.net>
+     * @copyright Catalyst IT, 2022
+     */
+    public function validation($data, $files) {
+        $errors = parent::validation($data, $files);
+        return array_merge(
+            $errors,
+            $this->step->form_validation($data, $files)
+        );
     }
 
 }
