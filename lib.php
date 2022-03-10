@@ -86,6 +86,9 @@ function tool_trigger_output_fragment_new_step_form($args) {
     if (!empty($args['ajaxformdata'])) {
         // Don't need to clean/validate these, because formslib will do that.
         parse_str($args['ajaxformdata'], $ajaxformdata);
+
+        // Apply any data transforms - determined in each step's class.
+        $ajaxformdata = $stepclassobj->transform_form_data($ajaxformdata);
     }
 
     $mform = $stepclassobj->make_form($customdata, $ajaxformdata);
@@ -110,6 +113,9 @@ function tool_trigger_output_fragment_new_step_form($args) {
             $data['debounceduration']['number'] = $data['debounceduration[number]'];
             $data['debounceduration']['timeunit'] = $data['debounceduration[timeunit]'];
         }
+
+        // Apply any data transforms - determined in each step's class.
+        $data = $stepclassobj->transform_form_data($data);
 
         $mform->set_data($data);
     }
