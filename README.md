@@ -1,4 +1,4 @@
-![Build Status](https://github.com/catalyst/moodle-tool_trigger/actions/workflows/MOODLE_311.yml/badge.svg?branch=MOODLE_311)
+![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/catalyst/moodle-tool_trigger/ci/MOODLE_311_STABLE)
 
 # Event Trigger
 
@@ -12,7 +12,7 @@ Each workflow is made up of a series of *steps*. Steps can be things like:
 
 The plugin is designed to be extensible and contributions are welcome to extend the available actions.
 
-More configuration documentation can be found at the following link: 
+More configuration documentation can be found at the following link:
 
 * https://github.com/catalyst/moodle-tool_trigger/wiki
 
@@ -20,22 +20,13 @@ More Information on Moodle events can be found in the Moodle documentation at th
 
 * https://docs.moodle.org/dev/Event_2
 
-## Supported Moodle Versions
-This plugin currently supports Moodle:
-
-* 3.5
-* 3.8
-* 3.9
-* 3.10
-* 3.11
-
 ## Branches ##
 The following maps the plugin version to use depending on your Moodle version.
 
-| Moodle verion      | Branch      |
-| ------------------ | ----------- |
-| Moodle 3.5 to 3.10 | master      |
-| Moodle 3.11+       | MOODLE_311  |
+| Moodle verion      | Branch             |
+| ------------------ | ------------------ |
+| Moodle 3.5 to 3.10 | MOODLE_35_STABLE   |
+| Moodle 3.11+       | MOODLE_311_STABLE  |
 
 ## Moodle Plugin Installation
 The following sections outline how to install the Moodle plugin.
@@ -55,7 +46,7 @@ To install the plugin in Moodle via the Moodle User Interface:
 3. Install plugin from Moodle Plugin directory or via zip upload.
 
 ## Plugin Setup
-Plugin setup and configuration documentation can be found at the following link: 
+Plugin setup and configuration documentation can be found at the following link:
 
 * https://github.com/catalyst/moodle-tool_trigger/wiki
 
@@ -74,7 +65,7 @@ https://www.catalyst-au.net/
 
 # Contributing and Support
 
-Issues, and pull requests using github are welcome and encouraged! 
+Issues, and pull requests using github are welcome and encouraged!
 
 https://github.com/catalyst/moodle-tool_trigger/issues
 
