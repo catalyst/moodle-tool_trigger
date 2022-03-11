@@ -6,3 +6,5 @@ on: [push, pull_request]
 jobs:
   test:
     uses: catalyst/catalyst-moodle-workflows/.github/workflows/group-311-plus-ci.yml@main
+    with:
+      disable_behat: true
