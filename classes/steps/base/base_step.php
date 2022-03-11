@@ -178,4 +178,30 @@ abstract class base_step {
         throw new \Exception('Not implemented');
 
     }
+
+    /**
+     * Custom validation of the form that could be configured per step as required.
+     *
+     * @param array $data — array of ("fieldname"=>value) of submitted data
+     * @param array $files — array of uploaded files "element_name"=>tmp_file_path
+     * @return array of "element_name"=>"error_description" if there are errors,
+     * or an empty array if everything is OK (true allowed for backwards compatibility too).
+     */
+    public function form_validation($data, $files) {
+        return [];
+    }
+
+    /**
+     * Transform / process form data, if required.
+     *
+     * An example of when you might want this is when prettifying JSON inputs.
+     * Any step using this should override this to apply the transformations as
+     * needed.
+     *
+     * @param array $data — array of ("fieldname"=>value) of submitted data
+     * @return array $data — array of ("fieldname"=>value) of transformed - if required - data
+     */
+    public function transform_form_data($data) {
+        return $data;
+    }
 }
