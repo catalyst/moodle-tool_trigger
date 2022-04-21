@@ -28,5 +28,6 @@ $plugin->component = 'tool_trigger';
 $plugin->release  = 2021030406;
 $plugin->version  = 2021030406;
 $plugin->requires = 2016052300;
+$plugin->supported = [35, 310];
 $plugin->maturity = MATURITY_STABLE;
 $plugin->dependencies = array('tool_monitor' => 2015051101);
