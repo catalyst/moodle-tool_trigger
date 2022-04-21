@@ -126,30 +126,39 @@ class webservice_action_step extends base_action_step {
      * @return array if execution was succesful and the response from the execution.
      */
     public function execute($step, $trigger, $event, $stepresults) {
-        global $USER;
+        global $SESSION, $USER;
 
         $this->update_datafields($event, $stepresults);
 
-        // Store the previous user, setting it back once the step is finished.
+        // Store the previous user and session, setting it back once the step is finished.
         $previoususer = $USER;
+        $session = $SESSION;
 
         // Set the configured user as the one who will run the function.
         $user = $this->get_user();
+        \core\session\manager::init_empty_session();
         \core\session\manager::set_user($user);
         set_login_session_preferences();
 
         // Run the function and parse the response to a step result.
-        $response = $this->run_function();
-        if ($response['error']) {
-            return [false, $response['exception']];
+        // This entire block is wrapped in a generic handler, so no matter what the correct user is always restored.
+        try {
+            $response = $this->run_function();
+            if ($response['error']) {
+                $status = [false, $response['exception']];
+            } else {
+                $status = [true, $response];
+            }
+        } catch (\Throwable $e) {
+            $status = [false, $e->getMessage()];
         }
 
         // Restore the previous user to avoid any side-effects occuring in later steps / code.
         \core\session\manager::set_user($previoususer);
-        set_login_session_preferences();
+        $SESSION = $session;
 
         // Return the function call response as is. The shape is already normalised.
-        return [true, $response];
+        return $status;
     }
 
     /**
