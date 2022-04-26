@@ -95,8 +95,9 @@ class tool_trigger_webservice_action_step_testcase extends \advanced_testcase {
                 '{"enrolments":{"0":{"roleid":"5","userid":' . $this->user1->id . ',"courseid":' . $this->course->id . '}}}',
         ];
         $step = new \tool_trigger\steps\actions\webservice_action_step(json_encode($stepsettings));
-        $this->expectException(dml_missing_record_exception::class);
-        $step->execute(null, null, $this->event, []);
+        $result = $step->execute(null, null, $this->event, []);
+        $this->assertFalse($result[0]);
+        $this->assertTrue(strpos($result[1], get_string('invalidrecord', 'error', 'external_functions')) !== false);
     }
 
     /**

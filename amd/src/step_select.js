@@ -17,7 +17,6 @@
  * Workflow step select javascript.
  *
  * @module     tool_trigger/workflow
- * @package    tool_trigger
  * @class      Workflow
  * @copyright  2018 Matt Porritt <mattp@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -53,6 +52,8 @@ define(
 
             /**
              * Updates the steps stored in the hidden form field
+             *
+             * @param {object} steps the steps to store
              */
             function setCurrentFormSteps(steps) {
                 $('[name=stepjson]').val(JSON.stringify(steps));
@@ -72,6 +73,11 @@ define(
                 modalObj.setBody(Fragment.loadFragment('tool_trigger', 'new_base_form', contextid, params));
             }
 
+            /**
+             * Updates the table with the new step data.
+             *
+             * @param {array} stepData The steps to update in the table
+             */
             function updateTable(stepData) {
                 // Format data for template.
                 // Filter out only the fields we want for each step, and make sure the "steporder" values
@@ -100,6 +106,8 @@ define(
 
             /**
              * Updates Moodle form with selected information.
+             *
+             * @param {event} e the event emitted from the modal close.
              * @private
              */
             function processModalForm(e) {
@@ -113,7 +121,7 @@ define(
                     function(finalobj, field) {
                         // If field ends with [], the form el was an array.
                         if (field.name.endsWith('[]')) {
-                            let fieldname = field.name.substring(0, field.name.length - 2);
+                            var fieldname = field.name.substring(0, field.name.length - 2);
                             if (finalobj[fieldname] === undefined) {
                                 finalobj[fieldname] = [field.value];
                             } else {
@@ -174,7 +182,7 @@ define(
              * with only the steps that correspond to the selected
              * step type.
              *
-             * @param array events Array of steps to update selection with.
+             * @param {array} events Array of steps to update selection with.
              */
             function updateStepOptions(events) {
 
@@ -197,7 +205,7 @@ define(
              * Gets a list of filtered steps based on the selected step type.
              * Triggers updating of the form step select element.
              *
-             * @param string varfilter The filter area.
+             * @param {string} valfilter The filter area.
              */
             function getStepsOfType(valfilter) {
                 ajax.call([
@@ -226,6 +234,7 @@ define(
              * @param {Object} formdefaults Default values to display in a new form
              * @param {string} formsubmission Serialized (via jQuery().serialize()) form submission values to load
              * into the form, when re-displaying a form that has failed validation.
+             * @param {int} steporder the order of this step.
              */
             function renderStepForm(steptype, stepclass, formdefaults, formsubmission, steporder) {
                 if (formdefaults === undefined) {
@@ -260,7 +269,7 @@ define(
             }
 
             /**
-             *
+             * Set the handlers for the Modal changing.
              */
             function setupModalChangeHandlers() {
                 // Add event listener for step type select onchange.
@@ -276,6 +285,13 @@ define(
                 });
             }
 
+            /**
+             * Swaps the position of 2 steps
+             *
+             * @param {object} steps the current steps
+             * @param {int} pos1 the first position to swap
+             * @param {int} pos2 the second position to swap
+             */
             function swapSteps(steps, pos1, pos2){
                 // Milliseconds of animation.
                 var duration = 400;
@@ -422,6 +438,7 @@ define(
             /**
              * Initialise the class.
              *
+             * @param {int} context the context id for the function from PHP.
              * @public
              */
             StepSelect.init = function(context) {
