@@ -145,12 +145,12 @@ class webservice_action_step extends base_action_step {
         try {
             $response = $this->run_function();
             if ($response['error']) {
-                $status = [false, $response['exception']];
+                $status = [false, (array) $response['exception']];
             } else {
                 $status = [true, $response];
             }
         } catch (\Throwable $e) {
-            $status = [false, $e->getMessage()];
+            $status = [false, [$e->getMessage()]];
         }
 
         // Restore the previous user to avoid any side-effects occuring in later steps / code.
