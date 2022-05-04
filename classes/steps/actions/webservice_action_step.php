@@ -140,6 +140,11 @@ class webservice_action_step extends base_action_step {
         \core\session\manager::set_user($user);
         set_login_session_preferences();
 
+        // Fake it till you make it - set the the lastaccess in advance to avoid
+        // this value being updated in the database via user_accesstime_log() as
+        // we are not actually logging in and accessing the site as this user.
+        $USER->lastaccess = time();
+
         // Run the function and parse the response to a step result.
         // This entire block is wrapped in a generic handler, so no matter what the correct user is always restored.
         try {

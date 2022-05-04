@@ -42,6 +42,8 @@ class tool_trigger_webservice_action_step_testcase extends \advanced_testcase {
      * Simple test, with a successful result.
      */
     public function test_with_valid_call_to_enrol_user() {
+        global $DB;
+
         $adminuser = get_admin();
         $stepsettings = [
             'username' => $adminuser->username,
@@ -49,6 +51,11 @@ class tool_trigger_webservice_action_step_testcase extends \advanced_testcase {
             'params' =>
                 '{"enrolments":{"0":{"roleid":"5","userid":' . $this->user1->id . ',"courseid":' . $this->course->id . '}}}',
         ];
+
+        // Ensure the user provided by the username is not actually 'logged in'
+        // to perform the required actions.
+        $this->assertEquals(0, $adminuser->lastaccess);
+        $this->assertEquals(0, $adminuser->lastlogin);
 
         // Check if user is NOT enrolled yet.
         $context = context_course::instance($this->course->id);
@@ -66,6 +73,10 @@ class tool_trigger_webservice_action_step_testcase extends \advanced_testcase {
         $context = context_course::instance($this->course->id);
         $enrolled = is_enrolled($context, $this->user1->id);
         $this->assertTrue($enrolled);
+
+        $user = $DB->get_record('user', ['id' => $adminuser->id, 'deleted' => 0]);
+        $this->assertEquals(0, $user->lastaccess);
+        $this->assertEquals(0, $user->lastlogin);
     }
 
     /**
