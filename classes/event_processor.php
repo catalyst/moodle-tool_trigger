@@ -211,6 +211,7 @@ class event_processor {
             $stepresults = [];
             $success = false;
             $prevstep = null;
+            $errored = false;
             foreach ($steps as $step) {
                 try {
                     $outertransaction = $DB->is_transaction_started();
@@ -232,8 +233,16 @@ class event_processor {
                 } catch (\Exception $e) {
                     if (!($e->getMessage() === 'debounce')) {
                         debugging('Error execute workflow step: ' . $step->id . ', ' . $step->stepclass . ' ' . $e->getMessage());
+                        $errored = true;
                     }
+                } finally {
+                    if (!$outertransaction && $DB->is_transaction_started()) {
+                        $DB->force_transaction_rollback();
+                    }
+                }
 
+                // Now that all transactions at the step level are concluded, we can safely log + retry.
+                if ($errored) {
                     // Record step fail if debugging enabled.
                     if (!empty($runid)) {
                         self::record_step_trigger($step, $prevstep, $runid, ['error' => $e->getMessage()]);
@@ -252,13 +261,9 @@ class event_processor {
                     $this->insert_queue_records([$queuerecord]);
                     $success = true;
                     break;
-                } finally {
-                    if (!$outertransaction && $DB->is_transaction_started()) {
-                        $DB->force_transaction_rollback();
-                    }
                 }
             }
-            if (!$success) {
+            if (!$success && !$errored) {
                 debugging('Error execute workflow: ' . $workflow->id . ' failed and will not be rerun.');
             }
         } catch (\Exception $exception) {
