@@ -106,9 +106,11 @@ class tool_trigger_webservice_action_step_testcase extends \advanced_testcase {
                 '{"enrolments":{"0":{"roleid":"5","userid":' . $this->user1->id . ',"courseid":' . $this->course->id . '}}}',
         ];
         $step = new \tool_trigger\steps\actions\webservice_action_step(json_encode($stepsettings));
-        $result = $step->execute(null, null, $this->event, []);
-        $this->assertFalse($result[0]);
-        $this->assertTrue(strpos($result[1][0], get_string('invalidrecord', 'error', 'external_functions')) !== false);
+
+        // Manually catch the exception to check the message
+        $this->expectException('dml_missing_record_exception');
+        $this->expectExceptionMessageRegExp('/external_functions/');
+        $step->execute(null, null, $this->event, []);
     }
 
     /**
@@ -123,14 +125,10 @@ class tool_trigger_webservice_action_step_testcase extends \advanced_testcase {
                 '{"not_enrolments":{"0":{"roleid":"5","userid":' . $this->user1->id . ',"courseid":' . $this->course->id . '}}}',
         ];
         $step = new \tool_trigger\steps\actions\webservice_action_step(json_encode($stepsettings));
-        list($status, $stepresults) = $step->execute(null, null, $this->event, []);
-        $this->assertFalse($status);
-        $this->assertNotNull($stepresults);
-        $this->assertArrayHasKey('errorcode', $stepresults);
-        $this->assertEquals('invalidparameter', $stepresults['errorcode']);
-        $this->arrayHasKey('debuginfo', $stepresults);
-        // Alternative for assertStringContainsString used for earlier version compatibility.
-        $this->assertTrue(strpos($stepresults['debuginfo'], 'Missing required key in single structure: enrolments') !== false);
-        $this->assertArrayNotHasKey('data', $stepresults);
+
+        $this->expectException('coding_exception');
+        // Setup the expectations for exception format.
+        $this->expectExceptionMessageRegExp('/errorcode.*invalidparameter.*debuginfo.*enrolments/');
+        $step->execute(null, null, $this->event, []);
     }
 }

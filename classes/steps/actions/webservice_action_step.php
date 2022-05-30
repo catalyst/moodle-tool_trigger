@@ -126,7 +126,9 @@ class webservice_action_step extends base_action_step {
      * @return array if execution was succesful and the response from the execution.
      */
     public function execute($step, $trigger, $event, $stepresults) {
-        global $SESSION, $USER;
+        global $DB, $SESSION, $USER;
+
+        $outertransaction = $DB->is_transaction_started();
 
         $this->update_datafields($event, $stepresults);
 
@@ -150,12 +152,24 @@ class webservice_action_step extends base_action_step {
         try {
             $response = $this->run_function();
             if ($response['error']) {
-                $status = [false, (array) $response['exception']];
-            } else {
-                $status = [true, $response];
+                // Throw an exception to be propagated for proper error capture.
+                throw new \coding_exception(json_encode($response['exception']));
             }
+
+            $status = [true, $response];
         } catch (\Throwable $e) {
-            $status = [false, [$e->getMessage()]];
+            // Restore the previous user to avoid any side-effects occuring in later steps / code.
+            \core\session\manager::set_user($previoususer);
+            $SESSION = $session;
+
+            // We also need to make sure any transactions that were opened by the Webservice function are terminated.
+            // This logic mirrors the event processor loop transaction logic, just another layer down.
+            if (!$outertransaction && $DB->is_transaction_started()) {
+                $DB->force_transaction_rollback();
+            }
+
+            // Now rethrow for the event processor to register as an error.
+            throw $e;
         }
 
         // Restore the previous user to avoid any side-effects occuring in later steps / code.
