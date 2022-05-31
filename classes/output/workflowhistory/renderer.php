@@ -104,7 +104,7 @@ class renderer extends \plugin_renderer_base {
         $statuswhere = [];
         if (!empty($searchparams['filterpassed'])) {
             $sqlparams['filterpassed'] = $searchparams['filterpassed'];
-            $statuswhere[] = ' ((tfh.failedstep = 0 OR tfh.failedstep IS NULL) AND (tfh.errorstep = 0 OR tfh.errorstep IS NULL))';
+            $statuswhere[] = ' ((tfh.failedstep IS NULL) AND (tfh.errorstep IS NULL))';
         }
 
         if (!empty($searchparams['filtercancelled'])) {
@@ -119,12 +119,12 @@ class renderer extends \plugin_renderer_base {
 
         if (!empty($searchparams['filtererrored'])) {
             $sqlparams['filtererrored'] = $searchparams['filtererrored'];
-            $statuswhere[] = ' (tfh.errorstep > 0) ';
+            $statuswhere[] = ' (tfh.errorstep IS NOT NULL) ';
         }
 
         if (!empty($searchparams['filterfailed'])) {
             $sqlparams['filterfailed'] = $searchparams['filterfailed'];
-            $statuswhere[] = ' (tfh.failedstep > 0) ';
+            $statuswhere[] = ' (tfh.failedstep IS NOT NULL) ';
         }
 
         if (count($statuswhere) > 0) {
