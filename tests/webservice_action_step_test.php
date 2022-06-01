@@ -108,7 +108,7 @@ class tool_trigger_webservice_action_step_testcase extends \advanced_testcase {
         $step = new \tool_trigger\steps\actions\webservice_action_step(json_encode($stepsettings));
 
         // Manually catch the exception to check the message
-        $this->expectException('dml_missing_record_exception');
+        $this->expectException('Error');
         $this->expectExceptionMessageRegExp('/external_functions/');
         $step->execute(null, null, $this->event, []);
     }
@@ -126,7 +126,7 @@ class tool_trigger_webservice_action_step_testcase extends \advanced_testcase {
         ];
         $step = new \tool_trigger\steps\actions\webservice_action_step(json_encode($stepsettings));
 
-        $this->expectException('coding_exception');
+        $this->expectException('Error');
         // Setup the expectations for exception format.
         $this->expectExceptionMessageRegExp('/errorcode.*invalidparameter.*debuginfo.*enrolments/');
         $step->execute(null, null, $this->event, []);
