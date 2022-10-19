@@ -8,3 +8,4 @@ jobs:
     uses: catalyst/catalyst-moodle-workflows/.github/workflows/ci.yml@main
     with:
       disable_behat: true
+      disable_phpdoc: true
