@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="admin/tool/trigger/db" VERSION="20210224" COMMENT="XMLDB file for Moodle admin/tool/trigger"
+<XMLDB PATH="admin/tool/trigger/db" VERSION="20221018" COMMENT="XMLDB file for Moodle admin/tool/trigger"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../../lib/xmldb/xmldb.xsd"
 >
@@ -161,6 +161,9 @@
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
         <KEY NAME="eventid" TYPE="foreign" FIELDS="eventid" REFTABLE="tool_trigger_events" REFFIELDS="id" COMMENT="Relates to the event id in the events table."/>
       </KEYS>
+      <INDEXES>
+        <INDEX NAME="workflowid-number" UNIQUE="false" FIELDS="workflowid, number"/>
+      </INDEXES>
     </TABLE>
     <TABLE NAME="tool_trigger_run_hist" COMMENT="Table to store run history">
       <FIELDS>
