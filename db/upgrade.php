@@ -350,5 +350,20 @@ function xmldb_tool_trigger_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2021102101, 'tool', 'trigger');
     }
 
+    if ($oldversion < 2022101800) {
+
+        // Define index workflowid-number (not unique) to be added to tool_trigger_workflow_hist.
+        $table = new xmldb_table('tool_trigger_workflow_hist');
+        $index = new xmldb_index('workflowid-number', XMLDB_INDEX_NOTUNIQUE, ['workflowid', 'number']);
+
+        // Conditionally launch add index workflowid-number.
+        if (!$dbman->index_exists($table, $index)) {
+            $dbman->add_index($table, $index);
+        }
+
+        // Trigger savepoint reached.
+        upgrade_plugin_savepoint(true, 2022101800, 'tool', 'trigger');
+    }
+
     return true;
 }
