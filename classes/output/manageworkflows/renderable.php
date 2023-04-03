@@ -200,10 +200,15 @@ class renderable extends \table_sql implements \renderable {
         $total = \tool_trigger\workflow_manager::count_workflows();
         $this->pagesize($pagesize, $total);
         $workflows = \tool_trigger\workflow_manager::get_workflows_paginated($this->get_page_start(), $this->get_page_size());
-        // Sort inactive arrays to the bottom.
+
+        // Sort inactive arrays to the bottom and sort by name within each category.
         usort($workflows, function($a, $b) {
-            return ($a->active < $b->active);
+            if ($a->active == $b->active) {
+                return $a->workflow->name <=> $b->workflow->name;
+            }
+            return $b->active <=> $a->active;
         });
+
         $this->rawdata = $workflows;
         // Set initial bars.
         if ($useinitialsbar) {
