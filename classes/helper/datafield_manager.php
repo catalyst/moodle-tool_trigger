@@ -99,7 +99,12 @@ trait datafield_manager {
         if (isset($newfields['other']) && is_array($newfields['other'])) {
             foreach ($newfields['other'] as $key => $value) {
                 if (is_scalar($value) || is_null($value)) {
-                    $newfields["other_{$key}"] = $value;
+                    // Retrieve ID from eventid in other data.
+                    if ($key == 'eventid') {
+                        $newfields['id'] = $value;
+                    } else {
+                        $newfields["other_{$key}"] = $value;
+                    }
                 }
             }
             unset($newfields['other']);

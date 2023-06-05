@@ -62,7 +62,8 @@ trait tool_trigger_user_event_fixture {
             'other' => [
                 'courseid' => $this->course->id,
                 'courseshortname' => $this->course->shortname,
-                'coursefullname' => $this->course->fullname
+                'coursefullname' => $this->course->fullname,
+                'eventid' => 1,
             ]
         ]);
 
