@@ -51,6 +51,12 @@ class tool_trigger_datafield_manager_testcase extends advanced_testcase {
         $dfprovider->update_datafields($this->event, $stepdata);
         $datafields = $dfprovider->get_datafields();
 
+        // Check event id.
+        $this->assertEquals(
+            1,
+            $datafields['id']
+        );
+
         // A field from the event object.
         $this->assertEquals(
             $this->user2->id,

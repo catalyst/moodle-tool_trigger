@@ -43,6 +43,12 @@ trait processor_helper {
         if ($data['other'] === false) {
             $data['other'] = array();
         }
+
+        // Insert eventid into other data.
+        if (isset($data['id'])) {
+            $data['other']['eventid'] = $data['id'];
+        }
+
         unset($data['origin']);
         unset($data['ip']);
         unset($data['realuserid']);
