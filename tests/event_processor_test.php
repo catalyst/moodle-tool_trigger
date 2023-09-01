@@ -1153,8 +1153,11 @@ class tool_trigger_event_processor_testcase extends tool_trigger_testcase {
         $DB->execute('UPDATE {tool_trigger_run_hist} SET executed = :veryold', ['veryold' => 12345]);
 
         // Run the task. It should delete this record from history.
+        // Output buffering is used to eat the output. The record inspection is the tested component.
         $task = new \tool_trigger\task\cleanup_history();
+        ob_start();
         $task->execute();
+        ob_end_clean();
 
         $countwfhist = $DB->count_records('tool_trigger_run_hist', []);
         $this->assertEquals(0, $countwfhist);
