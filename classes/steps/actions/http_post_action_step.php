@@ -127,7 +127,7 @@ class http_post_action_step extends base_action_step {
         // ... urlencode the values of any substitutions being placed into the URL
         // or the POST params.
         $urlencodecallback = function($v) {
-            return urlencode($v);
+            return empty($v) ? $v : urlencode($v);
         };
 
         $url = $this->render_datafields($this->url, null, null, $urlencodecallback);
