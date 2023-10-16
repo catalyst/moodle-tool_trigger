@@ -53,6 +53,7 @@ class tool_trigger_processor_helper_testcase extends tool_trigger_testcase {
      */
     public function test_restore_event() {
         $data = (object) [
+            'id' => 1,
             'eventname' => '\\core\\event\\user_loggedin',
             'component' => 'core',
             'action' => 'loggedin',
@@ -98,6 +99,8 @@ class tool_trigger_processor_helper_testcase extends tool_trigger_testcase {
         $this->assertEquals($expectedevent->userid, $actual->userid);
         $this->assertEquals($expectedevent->objectid, $actual->objectid);
         $this->assertEquals($expectedevent->get_username(), $actual->get_username());
+        // Tool trigger event id
+        $this->assertEquals(1, $actual->other['eventid']);
     }
 
     /**
