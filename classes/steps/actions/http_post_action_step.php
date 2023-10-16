@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * HTTP Post action step class.
+ * HTTP action step class.
  *
  * @package    tool_trigger
  * @copyright  Matt Porritt <mattp@catalyst-au.net>
@@ -25,7 +25,7 @@
 namespace tool_trigger\steps\actions;
 
 /**
- * HTTP Post action step class.
+ * HTTP action step class.
  *
  * @package    tool_trigger
  * @copyright  Matt Porritt <mattp@catalyst-au.net>
@@ -35,9 +35,22 @@ class http_post_action_step extends base_action_step {
 
     use \tool_trigger\helper\datafield_manager;
 
+    /**
+     * Supported HTTP methods.
+     */
+    const SUPPORTED_HTTP_METHODS = [
+        'POST' => 'POST',
+        'GET' => 'GET',
+        'PUT' => 'PUT',
+        'DELETE' => 'DELETE',
+        'PATCH' => 'PATCH',
+    ];
+
     protected $url;
+    protected $httpmethod;
     protected $headers;
     protected $params;
+    private $httphandler = null;
 
     /**
      * The fields supplied by this step.
@@ -52,6 +65,7 @@ class http_post_action_step extends base_action_step {
 
     protected function init() {
         $this->url = $this->data['url'];
+        $this->httpmethod = !empty($this->data['httpmethod']) ? $this->data['httpmethod'] : 'POST';
         $this->headers = $this->data['httpheaders'];
         $this->params = $this->data['httpparams'];
         $this->jsonencode = $this->data['jsonencode'];
@@ -80,8 +94,6 @@ class http_post_action_step extends base_action_step {
     public static function get_step_desc() {
         return get_string('httppostactionstepdesc', 'tool_trigger');
     }
-
-    private $httphandler = null;
 
     /**
      * Kinda hacky... unit testing requires us to specify a different http handler for guzzle to use.
@@ -143,7 +155,7 @@ class http_post_action_step extends base_action_step {
             $params = json_encode($output);
         }
 
-        $request = new \GuzzleHttp\Psr7\Request('POST', $url, $headers, $params);
+        $request = new \GuzzleHttp\Psr7\Request($this->httpmethod, $url, $headers, $params);
         $client = $this->get_http_client();
 
         try {
@@ -159,7 +171,9 @@ class http_post_action_step extends base_action_step {
         if ($response->getStatusCode() != $this->expectedresponse) {
             // If we weren't expecting this response, throw an exception.
             // The error will be caught and rerun.
-            throw new \invalid_response_exception("HTTP Response code expected was {$this->expectedresponse}, received {$response->getStatusCode()}");
+            throw new \invalid_response_exception(
+                "HTTP Response code expected was {$this->expectedresponse}, received {$response->getStatusCode()}"
+            );
         }
 
         return array(true, $stepresults);
@@ -179,6 +193,11 @@ class http_post_action_step extends base_action_step {
         $mform->setType('url', PARAM_RAW_TRIMMED);
         $mform->addRule('url', get_string('required'), 'required');
         $mform->addHelpButton('url', 'httpostactionurl', 'tool_trigger');
+
+        // HTTP method.
+        $mform->addElement('select', 'httpmethod', get_string ('httpostmethod', 'tool_trigger'), self::SUPPORTED_HTTP_METHODS);
+        $mform->setType('httpmethod', PARAM_TEXT);
+        $mform->addHelpButton('httpmethod', 'httpostmethod', 'tool_trigger');
 
         // Headers.
         $attributes = array('cols' => '50', 'rows' => '2');

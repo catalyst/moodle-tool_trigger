@@ -63,11 +63,64 @@ class tool_trigger_http_post_action_step_testcase extends advanced_testcase {
     }
 
     /**
-     * Simple test, with a successful response
+     * Test supported HTTP methods.
      */
-    public function test_execute_200() {
+    public function test_supported_http_methods() {
+        $expected = [
+            'POST' => 'POST',
+            'GET' => 'GET',
+            'PUT' => 'PUT',
+            'DELETE' => 'DELETE',
+            'PATCH' => 'PATCH',
+        ];
+        $this->assertSame($expected, \tool_trigger\steps\actions\http_post_action_step::SUPPORTED_HTTP_METHODS);
+    }
+
+    /**
+     * Test that POST method is set as default if no httpmethod set for the step class.
+     * This is to make sure that steps created before httpmethod was introduced will  get it by default.
+     */
+    public function test_if_httpmethod_is_not_set_post_method_set_as_default() {
         $stepsettings = [
             'url' => 'http://http_post_action_step.example.com',
+            'httpheaders' => 'My-Special-Header: {headervalue}',
+            'httpparams' => '',
+            'jsonencode' => '0'
+        ];
+
+        $step = new \tool_trigger\steps\actions\http_post_action_step(json_encode($stepsettings));
+
+        $reflector = new \ReflectionClass(\tool_trigger\steps\actions\http_post_action_step::class);
+        $property = $reflector->getProperty('httpmethod');
+        $property->setAccessible(true);
+
+        $this->assertEquals('POST', $property->getValue($step));
+    }
+
+    /**
+     * Data provider for all supported HTTP methods.
+     * @return array[]
+     */
+    public function http_methods_data_provider(): array {
+        return [
+            ['POST'],
+            ['GET'],
+            ['PUT'],
+            ['DELETE'],
+            ['PATCH'],
+        ];
+    }
+
+    /**
+     * Simple test, with a successful response
+     *
+     * @dataProvider http_methods_data_provider
+     * @param string $httpmethod
+     */
+    public function test_execute_200(string $httpmethod) {
+        $stepsettings = [
+            'url' => 'http://http_post_action_step.example.com',
+            'httpmethod' => $httpmethod,
             'httpheaders' => 'My-Special-Header: {headervalue}',
             'httpparams' => '',
             'jsonencode' => '0'
@@ -89,10 +142,14 @@ class tool_trigger_http_post_action_step_testcase extends advanced_testcase {
     /**
      * Test that we properly handle a 404 response. Guzzle will throw an exception in this
      * case, but the action step should catch the exception and handle it.
+     *
+     * @dataProvider http_methods_data_provider
+     * @param string $httpmethod
      */
-    public function test_execute_404() {
+    public function test_execute_404(string $httpmethod) {
         $stepsettings = [
             'url' => 'http://http_post_action_step.example.com/badurl',
+            'httpmethod' => $httpmethod,
             'httpheaders' => 'My-Special-Header: {headervalue}',
             'httpparams' => '',
             'jsonencode' => '0',
