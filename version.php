@@ -25,8 +25,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'tool_trigger';
-$plugin->version   = 2024031400;
-$plugin->release   = 2024031400; // Match release exactly to version.
+$plugin->version   = 2024031401;
+$plugin->release   = 2024031401; // Match release exactly to version.
 $plugin->requires  = 2021051701;
 $plugin->supported = [311, 401];
 $plugin->maturity  = MATURITY_STABLE;
