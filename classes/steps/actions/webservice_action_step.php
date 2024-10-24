@@ -50,6 +50,15 @@ class webservice_action_step extends base_action_step {
         'exception',
     ];
 
+    /**
+     * Special parameter that are only alpha(letters).
+     * 
+     * @var array
+     */
+    private static $specialparams = [
+        'country'
+    ];
+
     protected function init() {
         $this->functionname = $this->data['functionname'];
         $this->username = $this->data['username'];
@@ -201,6 +210,12 @@ class webservice_action_step extends base_action_step {
         $mform->addElement('textarea', 'params', get_string('webserviceactionparams', 'tool_trigger'), $attributes);
         $mform->setType('params', PARAM_RAW_TRIMMED);
         $mform->addHelpButton('params', 'webserviceactionparams', 'tool_trigger');
+
+        // Params.
+        $attributes = ['cols' => '50', 'rows' => '5'];
+        $mform->addElement('textarea', 'alphaparams', get_string('webserviceactionalphaparmas', 'tool_trigger'), $attributes);
+        $mform->setType('alphaparams', PARAM_RAW_TRIMMED);
+        $mform->addHelpButton('alphaparams', 'webserviceactionalphaparmas', 'tool_trigger');
     }
 
     /**
@@ -249,10 +264,14 @@ class webservice_action_step extends base_action_step {
                 $function = external_api::external_function_info($data['functionname']);
 
                 $errorfield = 'params';
-
-                // Fill template fields with a number.
-                $transformcallback = function() {
-                    return 0;
+                $alphaparams = explode(',', $data['alphaparams']);
+                // Fill template fields with a number. Some params are special and only allow letters.
+                $transformcallback = function($matches) use($alphaparams) {
+                    if (in_array($matches[1], $alphaparams)) {
+                        return '';
+                    } else {
+                        return 0;
+                    }
                 };
 
                 // Cannot use redner_datafields since we need to know of the

@@ -30,8 +30,9 @@ use core\plugininfo\base, moodle_url, part_of_admin_tree, admin_settingpage;
  * Plugin info class for logging store plugins.
  */
 class trigger extends base {
-/**
-     * Loads plugin settings to the settings tree
+
+    /**
+     * Loads plugin settings to the settings tree.
      *
      * This function usually includes settings.php file in plugins folder.
      * Alternatively it can create a link to some settings page (instance of admin_externalpage)
