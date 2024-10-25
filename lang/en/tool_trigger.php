@@ -293,7 +293,7 @@ $string['warningdebugging'] = 'Debug mode is disabled for the current workflow. 
 $string['webserviceactionfunctionname'] = 'Function';
 $string['webserviceactionfunctionname_help'] = 'The webservice function to be called. See the <a href="/admin/webservice/documentation.php">API Documentation</a>';
 $string['webserviceactionalphaparmas'] = 'WS alpha parameters';
-$string['webserviceactionalphaparmas_help'] = 'Almost all webservices parameters are ALPHANUMERIC(can contain number and letters), when validating the form a mock array is created and the values are set to 0. That works for most of the cases, but if the parameter is just an ALPHA(just letters) this will not work. This field is to set the ALPHA parameters mock as a string when validating. Add here the parameters separated by comma if you are getting an "alpha" type error when saving the form.';
+$string['webserviceactionalphaparmas_help'] = 'The form validation may fail due to some ws parameters type, if you are getting an "ALPHA" type error, add the parameter here.';
 $string['webserviceactionusername'] = 'Who';
 $string['webserviceactionusername_help'] = 'The user (username) who this step will be performed in the context of. This defaults to the main admin user if not explicitly set';
 $string['webserviceactionparams'] = 'Parameters';
