@@ -50,15 +50,6 @@ class webservice_action_step extends base_action_step {
         'exception',
     ];
 
-    /**
-     * Special parameter that are only alpha(letters).
-     * 
-     * @var array
-     */
-    private static $specialparams = [
-        'country'
-    ];
-
     protected function init() {
         $this->functionname = $this->data['functionname'];
         $this->username = $this->data['username'];
