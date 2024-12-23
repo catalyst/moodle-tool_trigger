@@ -162,8 +162,13 @@ trait datafield_manager {
 
                 return $value;
             } else {
-                // No match! Leave the template string in place.
-                return $matches[0];
+                // If there is no value, return the empty value.
+                if (preg_match('/\{.*?\}/', $matches[0])) {
+                    return '';
+                } else {
+                    // No match! Leave the template string in place.
+                    return $matches[0];
+                }        
             }
         };
 
