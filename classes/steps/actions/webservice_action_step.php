@@ -150,11 +150,12 @@ class webservice_action_step extends base_action_step {
         try {
             $response = $this->run_function();
             if ($response['error']) {
-                // Throw an exception to be propagated for proper error capture.
-                throw new \coding_exception(json_encode($response['exception']));
-            }
 
-            $status = [true, $response];
+                // Throw an error if step results are not being returned.        
+                $stepresults['error'] = json_encode($response['exception']);
+
+                return [false, $stepresults];
+            }
         } catch (\Throwable $e) {
             // Restore the previous user to avoid any side-effects occuring in later steps / code.
             \core\session\manager::set_user($previoususer);
@@ -174,8 +175,8 @@ class webservice_action_step extends base_action_step {
         \core\session\manager::set_user($previoususer);
         $SESSION = $session;
 
-        // Return the function call response as is. The shape is already normalised.
-        return $status;
+        // Return stepresults.
+        return [true, $stepresults];
     }
 
     /**
@@ -255,6 +256,7 @@ class webservice_action_step extends base_action_step {
                 $function = external_api::external_function_info($data['functionname']);
 
                 $errorfield = 'params';
+
                 $alphaparams = explode(',', $data['alphaparams']);
                 // Fill template fields with a number. Some params are special and only allow letters.
                 $transformcallback = function($matches) use($alphaparams) {
@@ -357,6 +359,7 @@ class webservice_action_step extends base_action_step {
 
         // Eventually this should shift into the various handlers and not be handled via config.
         $readonlysession = $externalfunctioninfo->readonlysession ?? false;
+
         if (!$readonlysession || empty($CFG->enable_read_only_sessions)) {
             \core\session\manager::restart_with_write_lock($readonlysession);
         }
@@ -375,22 +378,25 @@ class webservice_action_step extends base_action_step {
             } else {
                 $classname = 'moodle_page';
             }
+
             $PAGE = new $classname();
             $COURSE = clone($SITE);
 
             // Validate params, this also sorts the params properly, we need the correct order in the next part.
             $callable = array($externalfunctioninfo->classname, 'validate_parameters');
+
             $params = call_user_func($callable,
                                      $externalfunctioninfo->parameters_desc,
                                      $args);
-            $params = array_values($params);
 
+            $params = array_values($params);
             // Allow any Moodle plugin a chance to override this call. This is a convenient spot to
             // make arbitrary behaviour customisations. The overriding plugin could call the 'real'
             // function first and then modify the results, or it could do a completely separate
             // thing.
             $callbacks = get_plugins_with_function('override_webservice_execution');
             $result = false;
+
             foreach ($callbacks as $plugintype => $plugins) {
                 foreach ($plugins as $plugin => $callback) {
                     $result = $callback($externalfunctioninfo, $params);
