@@ -187,10 +187,11 @@ class course_lookup_step extends base_lookup_step {
      */
     public static function get_fields() {
         $handler = \core_customfield\handler::get_handler('core_course', 'course');
-        $customfields = array_walk($handler->get_fields(), function(&$field) {
-            $field = $field->get('shortname');
-        });
+        $customfields = [];
+        foreach ($handler->get_fields() as $field) {
+            $customfields[] = $field->get('shortname');
+        }
 
-        return self::$stepfields + $customfields;
+        return array_merge(self::$stepfields, $customfields);
     }
 }
