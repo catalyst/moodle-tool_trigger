@@ -226,16 +226,36 @@ class workflow_manager {
         $matchedsteps = array();
         $matches = array();
 
-        foreach ($steptypes as $steptype) {
-            $stepdir = __DIR__ . '/steps/' . $steptype;
-            $handle = opendir($stepdir);
-            while (($file = readdir($handle)) !== false) {
-                preg_match('/\b(?!base)(.*step)/', $file, $matches);
-                foreach ($matches as $classname) {
-                    $matchedsteps[] = '\tool_trigger\steps\\' . $steptype . '\\' . $classname;
+        $plugins = \core_component::get_plugin_list('trigger');
+
+        $dirs = [
+            (object)[
+                'path' => __DIR__,
+                'namespace' => 'tool_trigger',
+            ]
+        ];
+        foreach ($plugins as $plugin => $dir) {
+            $dirs[] = (object)[
+                'path' => $dir . '/classes',
+                'namespace' => "trigger_$plugin",
+            ];
+        }
+
+        foreach ($dirs as $dir) {
+            foreach ($steptypes as $steptype) {
+                $stepdir = $dir->path . '/steps/' . $steptype;
+                if (!is_dir($stepdir)) {
+                    continue;
                 }
+                $handle = opendir($stepdir);
+                while (($file = readdir($handle)) !== false) {
+                    preg_match('/\b(?!base)(.*step)/', $file, $matches);
+                    foreach ($matches as $classname) {
+                        $matchedsteps[] = '\\' . $dir->namespace . '\steps\\' . $steptype . '\\' . $classname;
+                    }
+                }
+                closedir($handle);
             }
-            closedir($handle);
         }
         $matchedsteps = array_unique($matchedsteps);
 
