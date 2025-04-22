@@ -30,7 +30,7 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 
 class subplugin_step_test extends \advanced_testcase {
-   
+
     /**
      * Test user.
      * @var
