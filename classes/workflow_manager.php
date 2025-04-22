@@ -235,6 +235,9 @@ class workflow_manager {
             ]
         ];
         foreach ($plugins as $plugin => $dir) {
+            if (!PHPUNIT_TEST && $plugin == 'testplugin') {
+                continue;
+            }
             $dirs[] = (object)[
                 'path' => $dir . '/classes',
                 'namespace' => "trigger_$plugin",
