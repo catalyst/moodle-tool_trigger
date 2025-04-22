@@ -16,6 +16,7 @@
 
 namespace tool_trigger\steps\actions;
 
+require_once($CFG->libdir . '/externallib.php');
 use core_external\external_api;
 
 /**
