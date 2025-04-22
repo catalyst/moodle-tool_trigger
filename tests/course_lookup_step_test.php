@@ -91,20 +91,21 @@ class course_lookup_step_test extends \advanced_testcase {
     }
 
     /**
-     * Basic test, but this time with additional custom profile field.
+     * Basic test, but this time with additional custom course field.
      */
     public function test_execute_basic_with_custom_profile_fields() {
-        // Create user profile fields.
+        // Create custom course field.
         $customfieldg = $this->getDataGenerator()->get_plugin_generator('core_customfield');
         $category  = $customfieldg->create_category();
-
         $customfield = $customfieldg->create_field([
             'categoryid' => $category->get('id'),
             'type' => 'text',
             'shortname' => 'testfield1',
             'configdata' => [],
         ]);
-        $this->add_course_custom_profile_field_data($customfield->get('id'), $this->course->id, 'CourseFieldValue');
+
+        // Add data to the customfield_data table.
+        $this->add_course_custom_course_field_data($customfield->get('id'), $this->course->id, 'CourseFieldValue');
         $step = new \tool_trigger\steps\lookups\course_lookup_step(
             json_encode([
                 'courseidfield' => 'objectid',
@@ -114,6 +115,7 @@ class course_lookup_step_test extends \advanced_testcase {
 
         list($status, $stepresults) = $step->execute(null, null, $this->event, []);
         $this->assertTrue($status);
+        // Check that the custom field data is returned as a step result.
         $this->assertEquals('CourseFieldValue', $stepresults['course_testfield1']);
     }
 
@@ -250,10 +252,10 @@ class course_lookup_step_test extends \advanced_testcase {
         $this->assertEquals($context->id, $stepresults['course_contextid']);
     }
 
-    public function add_course_custom_profile_field_data($fieldid, $courseid, $customfielddata) {
+    public function add_course_custom_course_field_data($fieldid, $courseid, $customfielddata) {
         global $DB;
 
-        // Add data to the custom profile fields.
+        // Add data to the customfield_data table.
         $data = new \stdClass();
         $data->fieldid = $fieldid;
         $data->instanceid = $courseid;

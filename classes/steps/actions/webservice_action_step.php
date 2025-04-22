@@ -16,7 +16,6 @@
 
 namespace tool_trigger\steps\actions;
 
-require_once($CFG->libdir . '/externallib.php');
 use core_external\external_api;
 
 /**
@@ -112,7 +111,7 @@ class webservice_action_step extends base_action_step {
         $params = $this->render_datafields($this->params);
 
         // Execute the provided function name passing with the given parameters.
-        $response = self::call_external_function($functionname, json_decode($params, true));
+        $response = external_api::call_external_function($functionname, json_decode($params, true));
         return $response;
     }
 
@@ -151,12 +150,11 @@ class webservice_action_step extends base_action_step {
         try {
             $response = $this->run_function();
             if ($response['error']) {
-
-                // Throw an error if step results are not being returned.        
-                $stepresults['error'] = json_encode($response['exception']);
-
-                return [false, $stepresults];
+                // Throw an exception to be propagated for proper error capture.
+                throw new \coding_exception(json_encode($response['exception']));
             }
+
+            $status = [true, $response];
         } catch (\Throwable $e) {
             // Restore the previous user to avoid any side-effects occuring in later steps / code.
             \core\session\manager::set_user($previoususer);
@@ -176,8 +174,8 @@ class webservice_action_step extends base_action_step {
         \core\session\manager::set_user($previoususer);
         $SESSION = $session;
 
-        // Return stepresults.
-        return [true, $stepresults];
+        // Return the function call response as is. The shape is already normalised.
+        return $status;
     }
 
     /**
@@ -203,12 +201,6 @@ class webservice_action_step extends base_action_step {
         $mform->addElement('textarea', 'params', get_string('webserviceactionparams', 'tool_trigger'), $attributes);
         $mform->setType('params', PARAM_RAW_TRIMMED);
         $mform->addHelpButton('params', 'webserviceactionparams', 'tool_trigger');
-
-        // Params.
-        $attributes = ['cols' => '50', 'rows' => '5'];
-        $mform->addElement('textarea', 'alphaparams', get_string('webserviceactionalphaparmas', 'tool_trigger'), $attributes);
-        $mform->setType('alphaparams', PARAM_RAW_TRIMMED);
-        $mform->addHelpButton('alphaparams', 'webserviceactionalphaparmas', 'tool_trigger');
     }
 
     /**
@@ -258,14 +250,9 @@ class webservice_action_step extends base_action_step {
 
                 $errorfield = 'params';
 
-                $alphaparams = explode(',', $data['alphaparams']);
-                // Fill template fields with a number. Some params are special and only allow letters.
-                $transformcallback = function($matches) use($alphaparams) {
-                    if (in_array($matches[1], $alphaparams)) {
-                        return '';
-                    } else {
-                        return 0;
-                    }
+                // Fill template fields with a number.
+                $transformcallback = function() {
+                    return 0;
                 };
 
                 // Cannot use redner_datafields since we need to know of the
@@ -336,107 +323,5 @@ class webservice_action_step extends base_action_step {
             $data['params'] = $params;
         }
         return $data;
-    }
-
-    /**
-     * Call an external function validating all params/returns correctly.
-     *
-     * Note that an external function may modify the state of the current page, so this wrapper
-     * saves and restores tha PAGE and COURSE global variables before/after calling the external function.
-     * This is a fork of the external_api::call_external_function method.
-     * Due the nature of the WS API, without a real user session the function may not work as expected.
-     *
-     * @param string $function A webservice function name.
-     * @param array $args Params array (named params)
-     * @param boolean $ajaxonly If true, an extra check will be peformed to see if ajax is required.
-     * @return array containing keys for error (bool), exception and data.
-     */
-    public static function call_external_function($function, $args, $ajaxonly=false) {
-        global $PAGE, $COURSE, $CFG, $SITE;
-
-        require_once($CFG->libdir . "/pagelib.php");
-
-        $externalfunctioninfo = \external_api::external_function_info($function);
-
-        // Eventually this should shift into the various handlers and not be handled via config.
-        $readonlysession = $externalfunctioninfo->readonlysession ?? false;
-
-        if (!$readonlysession || empty($CFG->enable_read_only_sessions)) {
-            \core\session\manager::restart_with_write_lock($readonlysession);
-        }
-
-        $currentpage = $PAGE;
-        $currentcourse = $COURSE;
-        $response = array();
-
-        try {
-            // Taken straight from from setup.php.
-            if (!empty($CFG->moodlepageclass)) {
-                if (!empty($CFG->moodlepageclassfile)) {
-                    require_once($CFG->moodlepageclassfile);
-                }
-                $classname = $CFG->moodlepageclass;
-            } else {
-                $classname = 'moodle_page';
-            }
-
-            $PAGE = new $classname();
-            $COURSE = clone($SITE);
-
-            // Validate params, this also sorts the params properly, we need the correct order in the next part.
-            $callable = array($externalfunctioninfo->classname, 'validate_parameters');
-
-            $params = call_user_func($callable,
-                                     $externalfunctioninfo->parameters_desc,
-                                     $args);
-
-            $params = array_values($params);
-            // Allow any Moodle plugin a chance to override this call. This is a convenient spot to
-            // make arbitrary behaviour customisations. The overriding plugin could call the 'real'
-            // function first and then modify the results, or it could do a completely separate
-            // thing.
-            $callbacks = get_plugins_with_function('override_webservice_execution');
-            $result = false;
-
-            foreach ($callbacks as $plugintype => $plugins) {
-                foreach ($plugins as $plugin => $callback) {
-                    $result = $callback($externalfunctioninfo, $params);
-                    if ($result !== false) {
-                        break 2;
-                    }
-                }
-            }
-
-            // If the function was not overridden, call the real one.
-            if ($result === false) {
-                $callable = array($externalfunctioninfo->classname, $externalfunctioninfo->methodname);
-                $result = call_user_func_array($callable, $params);
-            }
-
-            // Validate the return parameters.
-            if ($externalfunctioninfo->returns_desc !== null) {
-                $callable = array($externalfunctioninfo->classname, 'clean_returnvalue');
-                $result = call_user_func($callable, $externalfunctioninfo->returns_desc, $result);
-            }
-
-            $response['error'] = false;
-            $response['data'] = $result;
-        } catch (\Throwable $e) {
-            $exception = get_exception_info($e);
-            unset($exception->a);
-            $exception->backtrace = format_backtrace($exception->backtrace, true);
-            if (!debugging('', DEBUG_DEVELOPER)) {
-                unset($exception->debuginfo);
-                unset($exception->backtrace);
-            }
-            $response['error'] = true;
-            $response['exception'] = $exception;
-            // Do not process the remaining requests.
-        }
-
-        $PAGE = $currentpage;
-        $COURSE = $currentcourse;
-
-        return $response;
     }
 }
