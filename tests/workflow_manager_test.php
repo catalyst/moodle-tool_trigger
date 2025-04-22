@@ -80,6 +80,20 @@ class workflow_manager_test extends \advanced_testcase {
     }
 
     /**
+     * Test getting step from custom plugin.
+     */
+    public function test_custom_step_names() {
+
+        $stepclasses = ['\trigger_testplugin\steps\lookups\subplugin_lookup_test_step'];
+        $stepobj = new \tool_trigger\workflow_manager();
+        $steps = $stepobj->lookup_step_names($stepclasses);
+        $this->assertEquals(
+                get_string('subplugin_lookup_test_step_name', 'trigger_testplugin'),
+                $steps['\trigger_testplugin\steps\lookups\subplugin_lookup_test_step']
+        );
+    }
+
+    /**
      * Test the code for validating the name of a step class and instantiating it.
      *
      * (This is an important security feature, because we take the step class names from form input. We have to make sure that
