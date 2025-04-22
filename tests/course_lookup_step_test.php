@@ -91,6 +91,35 @@ class course_lookup_step_test extends \advanced_testcase {
     }
 
     /**
+     * Basic test, but this time with additional custom course field.
+     */
+    public function test_execute_basic_with_custom_profile_fields() {
+        // Create custom course field.
+        $customfieldg = $this->getDataGenerator()->get_plugin_generator('core_customfield');
+        $category  = $customfieldg->create_category();
+        $customfield = $customfieldg->create_field([
+            'categoryid' => $category->get('id'),
+            'type' => 'text',
+            'shortname' => 'testfield1',
+            'configdata' => [],
+        ]);
+
+        // Add data to the customfield_data table.
+        $this->add_course_custom_course_field_data($customfield->get('id'), $this->course->id, 'CourseFieldValue');
+        $step = new \tool_trigger\steps\lookups\course_lookup_step(
+            json_encode([
+                'courseidfield' => 'objectid',
+                'outputprefix' => 'course_'
+            ])
+        );
+
+        list($status, $stepresults) = $step->execute(null, null, $this->event, []);
+        $this->assertTrue($status);
+        // Check that the custom field data is returned as a step result.
+        $this->assertEquals('CourseFieldValue', $stepresults['course_testfield1']);
+    }
+
+    /**
      * Test for exception if an invalid field name is entered.
      */
     public function test_execute_nosuchfield() {
@@ -221,5 +250,23 @@ class course_lookup_step_test extends \advanced_testcase {
         $this->assertEquals($this->course->id, $stepresults['course_id']);
         $this->assertEquals($this->course->fullname, $stepresults['course_fullname']);
         $this->assertEquals($context->id, $stepresults['course_contextid']);
+    }
+
+    public function add_course_custom_course_field_data($fieldid, $courseid, $customfielddata) {
+        global $DB;
+
+        // Add data to the customfield_data table.
+        $data = new \stdClass();
+        $data->fieldid = $fieldid;
+        $data->instanceid = $courseid;
+        $data->value = $customfielddata;
+        $data->charvalue = $customfielddata;
+        $data->timecreated = time();
+        $data->timemodified = time();
+        $data->valueformat = 0;
+        $data->valuetrust = 0;
+        $data->contextid = \context_course::instance($courseid)->id;
+
+        return $DB->insert_record('customfield_data', $data);
     }
 }
