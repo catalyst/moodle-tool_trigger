@@ -47,8 +47,8 @@ class subplugin_step_test extends \advanced_testcase {
      * Create an event to use for testing.
      */
     public function setup():void {
+
         // Create a user event.
-        $this->requestssent = [];
         $this->user = \core_user::get_user_by_username('admin');
         $this->event = \core\event\user_profile_viewed::create([
             'objectid' => $this->user->id,
