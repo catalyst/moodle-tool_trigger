@@ -36,19 +36,20 @@ use core_privacy\local\request\approved_userlist;
  * @copyright  2019 Matt Porritt <mattp@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class privacy_test extends \advanced_testcase {
+final class privacy_test extends \advanced_testcase {
 
     /**
      * Set up method.
      */
-    public function setUp():void {
+    public function setUp(): void {
+        parent::setUp();
         $this->resetAfterTest();
     }
 
     /**
      * Check that the correct userlist is returned if there is any user data for this context.
      */
-    public function test_get_users_in_context() {
+    public function test_get_users_in_context(): void {
         global $DB;
 
         $component = 'tool_trigger';
@@ -99,7 +100,7 @@ class privacy_test extends \advanced_testcase {
     /**
      * Test deleting user data for an approved userlist in a context.
      */
-    public function test_delete_data_for_users() {
+    public function test_delete_data_for_users(): void {
         global $DB;
 
         $component = 'tool_trigger';

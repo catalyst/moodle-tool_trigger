@@ -36,7 +36,7 @@ class workflow_manager {
     /**
      * @var string[] The categories of steps available.
      */
-    const STEPTYPES = array('lookups', 'actions', 'filters', 'debounce');
+    const STEPTYPES = ['lookups', 'actions', 'filters', 'debounce'];
 
     /**
      * Helper method to convert db records to workflow objects.
@@ -45,7 +45,7 @@ class workflow_manager {
      * @return array of worklfow objects.
      */
     protected static function get_instances($records) {
-        $workflows = array();
+        $workflows = [];
         foreach ($records as $key => $record) {
             $workflows[$key] = new workflow($record);
         }
@@ -223,8 +223,8 @@ class workflow_manager {
             $steptypes = [$steptype];
         }
 
-        $matchedsteps = array();
-        $matches = array();
+        $matchedsteps = [];
+        $matches = [];
 
         foreach ($steptypes as $steptype) {
             $stepdir = __DIR__ . '/steps/' . $steptype;
@@ -250,7 +250,7 @@ class workflow_manager {
      * @return string[] An array with the classes as the keys, and the name strings as the values.
      */
     public function lookup_step_names($stepclasses) {
-        $stepnames = array();
+        $stepnames = [];
 
         foreach ($stepclasses as $stepclass) {
             if ($this->validate_step_class($stepclass)) {

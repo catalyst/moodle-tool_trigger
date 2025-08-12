@@ -14,6 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace tool_trigger\steps\actions;
+
+defined('MOODLE_INTERNAL') || die;
+require_once($CFG->dirroot.'/cohort/lib.php');
+
 /**
  * Cohort assignment action step class.
  *
@@ -21,12 +26,6 @@
  * @copyright  Paul Damiani <pauldamiani@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-namespace tool_trigger\steps\actions;
-
-defined('MOODLE_INTERNAL') || die;
-require_once($CFG->dirroot.'/cohort/lib.php');
-
 class assign_cohort_action_step extends base_action_step {
     use \tool_trigger\helper\datafield_manager;
 
@@ -46,7 +45,7 @@ class assign_cohort_action_step extends base_action_step {
      *
      * @var array
      */
-    private static $stepfields = array();
+    private static $stepfields = [];
 
     /**
      * Returns the step name.
@@ -66,25 +65,20 @@ class assign_cohort_action_step extends base_action_step {
         return get_string('assigncohortactionstepdesc', 'tool_trigger');
     }
 
+    #[\Override]
     protected function init() {
         $this->useridfield = $this->data['useridfield'];
         $this->cohortidfield = $this->data['cohortidfield'];
     }
 
-    /**
-     * @param $step
-     * @param $trigger
-     * @param $event
-     * @param $stepresults - result of previousstep to include in processing this step.
-     * @return array if execution was succesful and the response from the execution.
-     */
+    #[\Override]
     public function execute($step, $trigger, $event, $stepresults) {
 
         $datafields = $this->get_datafields($event, $stepresults);
 
         cohort_add_member($this->cohortidfield, $datafields[$this->useridfield]);
 
-        return array(true, $stepresults);
+        return [true, $stepresults];
     }
 
     /**

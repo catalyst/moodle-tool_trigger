@@ -32,13 +32,13 @@ global $DB;
 
 // Get cli options.
 list($options, $unrecognized) = cli_get_params(
-    array(
+    [
         'source' => '',
-        'help' => false
-    ),
-    array(
-        'h' => 'help'
-    )
+        'help' => false,
+    ],
+    [
+        'h' => 'help',
+    ]
     );
 
 if ($unrecognized) {
@@ -73,8 +73,8 @@ $count = 0;
 if ($fp) {
     // Go through CSV file line by line extracting data and inserting into database.
     while (($data = fgetcsv($fp)) !== false) {
-        $parametermatches = array();
-        $valuesmatches = array();
+        $parametermatches = [];
+        $valuesmatches = [];
 
         // Only get the 2 fields from the CSV that contain the data we need.
         $gotparameters = preg_match ('/\((.*?)\)/', $data[13], $parametermatches);

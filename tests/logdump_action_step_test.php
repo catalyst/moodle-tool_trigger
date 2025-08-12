@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace tool_trigger;
+
 /**
  * Unit tests for logdump_action_step
  *
@@ -22,11 +24,8 @@
  * @copyright  Catalyst IT 2018
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-namespace tool_trigger;
-
-class logdump_action_step_test extends \basic_testcase {
-    public function test_execute() {
+final class logdump_action_step_test extends \basic_testcase {
+    public function test_execute(): void {
 
         // Don't overload var_dump by xdebug to solve the unit test when we run it with xdebug.
         ini_set('xdebug.overload_var_dump', 0);
@@ -40,13 +39,13 @@ class logdump_action_step_test extends \basic_testcase {
             'other' => [
                 'courseid' => 1,
                 'courseshortname' => 'short name',
-                'coursefullname' => 'full name'
-            ]
+                'coursefullname' => 'full name',
+            ],
         ]);
 
         $prevstepresults = [
             'foo' => 'bar',
-            'baz' => 'bax'
+            'baz' => 'bax',
         ];
 
         // Just check for a portion of the var_dump of the event, because it's looong!

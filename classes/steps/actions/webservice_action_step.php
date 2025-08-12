@@ -50,6 +50,9 @@ class webservice_action_step extends base_action_step {
         'exception',
     ];
 
+    /**
+     * Step init.
+     */
     protected function init() {
         $this->functionname = $this->data['functionname'];
         $this->username = $this->data['username'];

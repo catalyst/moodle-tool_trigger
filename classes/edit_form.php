@@ -58,15 +58,15 @@ class edit_form extends \moodleform {
         $mform->addHelpButton('workflowname', 'workflowname', 'tool_trigger');
 
         // Workflow description.
-        $editoroptions = array(
+        $editoroptions = [
             'subdirs' => 0,
             'maxbytes' => 0,
             'maxfiles' => 0,
             'changeformat' => 0,
             'context' => \context_system::instance(),
             'noclean' => 0,
-            'trusttext' => 0
-        );
+            'trusttext' => 0,
+        ];
         $mform->addElement('editor', 'workflowdescription', get_string ('workflowdescription', 'tool_trigger'), $editoroptions);
         $mform->setType('workflowdescription', PARAM_RAW_TRIMMED);
         $mform->addHelpButton('workflowdescription', 'workflowdescription', 'tool_trigger');
@@ -95,7 +95,7 @@ class edit_form extends \moodleform {
         $mform->addElement('advcheckbox',
             'workflowactive',
             get_string ('workflowactive', 'tool_trigger'),
-            'Enable', array(), array(0, 1));
+            'Enable', [], [0, 1]);
         $mform->setType('workflowactive', PARAM_INT);
         $mform->addHelpButton('workflowactive', 'workflowactive', 'tool_trigger');
         $mform->setDefault('workflowactive', 1);
@@ -104,7 +104,7 @@ class edit_form extends \moodleform {
         $mform->addElement('advcheckbox',
             'workflowrealtime',
             get_string ('workflowrealtime', 'tool_trigger'),
-            'Enable', array(), array(0, 1));
+            'Enable', [], [0, 1]);
         $mform->setType('workflowrealtime', PARAM_INT);
         $mform->addHelpButton('workflowrealtime', 'workflowrealtime', 'tool_trigger');
         $mform->setDefault('workflowrealtime', 0);
@@ -113,7 +113,7 @@ class edit_form extends \moodleform {
         $mform->addElement('advcheckbox',
             'workflowdebug',
             get_string('workflowdebug', 'tool_trigger'),
-            'Enable', array(), array(0, 1));
+            'Enable', [], [0, 1]);
         $mform->setType('workflowdebug', PARAM_INT);
         $mform->addHelpButton('workflowdebug', 'workflowdebug', 'tool_trigger');
         $mform->setDefault('workflowdebug', 0);

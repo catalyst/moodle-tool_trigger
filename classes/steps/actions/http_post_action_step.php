@@ -14,14 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * HTTP action step class.
- *
- * @package    tool_trigger
- * @copyright  Matt Porritt <mattp@catalyst-au.net>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace tool_trigger\steps\actions;
 
 /**
@@ -45,12 +37,39 @@ class http_post_action_step extends base_action_step {
         'PATCH' => 'PATCH',
     ];
 
+    /**
+     * @var string The target URL for the HTTP request.
+     */
     protected $url;
+
+    /**
+     * @var string The HTTP method to use (e.g., GET, POST, PUT, DELETE).
+     */
     protected $httpmethod;
+
+    /**
+     * @var array|null An associative array of HTTP headers to send with the request.
+     */
     protected $headers;
+
+    /**
+     * @var array|null Parameters to include in the HTTP request body or query string.
+     */
     protected $params;
+
+    /**
+     * @var mixed|null Handler instance or resource for executing the HTTP request.
+     */
     private $httphandler = null;
+
+    /**
+     * @var mixed Expected format or value of the HTTP response.
+     */
     private $expectedresponse;
+
+    /**
+     * @var bool Whether to JSON-encode the request body before sending.
+     */
     private $jsonencode;
 
     /**
@@ -58,12 +77,13 @@ class http_post_action_step extends base_action_step {
      *
      * @var array
      */
-    private static $stepfields = array(
+    private static $stepfields = [
         'http_response_status_code',
         'http_response_status_message',
         'http_response_body',
-    );
+    ];
 
+    #[\Override]
     protected function init() {
         $this->url = $this->data['url'];
         $this->httpmethod = !empty($this->data['httpmethod']) ? $this->data['httpmethod'] : 'POST';
@@ -120,13 +140,7 @@ class http_post_action_step extends base_action_step {
         return new \GuzzleHttp\Client($clientconfig);
     }
 
-    /**
-     * @param $step
-     * @param $trigger
-     * @param $event
-     * @param $stepresults - result of previousstep to include in processing this step.
-     * @return array if execution was succesful and the response from the execution.
-     */
+    #[\Override]
     public function execute($step, $trigger, $event, $stepresults) {
         $this->update_datafields($event, $stepresults);
 
@@ -173,17 +187,14 @@ class http_post_action_step extends base_action_step {
             );
         }
 
-        return array(true, $stepresults);
+        return [true, $stepresults];
     }
 
-    /**
-     * {@inheritDoc}
-     * @see \tool_trigger\steps\base\base_step::add_extra_form_fields()
-     */
+    #[\Override]
     public function form_definition_extra($form, $mform, $customdata) {
 
         // URL.
-        $attributes = array('size' => '50', 'placeholder' => 'https://www.example.com/api', 'type' => 'url');
+        $attributes = ['size' => '50', 'placeholder' => 'https://www.example.com/api', 'type' => 'url'];
         $mform->addElement('text', 'url', get_string ('httpostactionurl', 'tool_trigger'), $attributes);
         // PARAM_URL will reject some templated urls.
         // TODO: Put some validation on this field?
@@ -197,36 +208,33 @@ class http_post_action_step extends base_action_step {
         $mform->addHelpButton('httpmethod', 'httpostmethod', 'tool_trigger');
 
         // Headers.
-        $attributes = array('cols' => '50', 'rows' => '2');
+        $attributes = ['cols' => '50', 'rows' => '2'];
         $mform->addElement('textarea', 'httpheaders', get_string ('httpostactionheaders', 'tool_trigger'), $attributes);
         $mform->setType('httpheaders', PARAM_RAW_TRIMMED);
         $mform->addHelpButton('httpheaders', 'httpostactionheaders', 'tool_trigger');
 
         // Params.
-        $attributes = array('cols' => '50', 'rows' => '5');
+        $attributes = ['cols' => '50', 'rows' => '5'];
         $mform->addElement('textarea', 'httpparams', get_string ('httpostactionparams', 'tool_trigger'), $attributes);
         $mform->setType('httpparams', PARAM_RAW_TRIMMED);
         $mform->addHelpButton('httpparams', 'httpostactionparams', 'tool_trigger');
 
         // Params as JSON.
         $mform->addElement('advcheckbox', 'jsonencode', get_string ('jsonencode', 'tool_trigger'),
-                'Enable', array(), array(0, 1));
+                'Enable', [], [0, 1]);
         $mform->setType('jsonencode', PARAM_INT);
         $mform->addHelpButton('jsonencode', 'jsonencode', 'tool_trigger');
         $mform->setDefault('jsonencode', 0);
 
         // Expected header response.
-        $attributes = array('size' => 3);
+        $attributes = ['size' => 3];
         $mform->addElement('text', 'expectedresponse', get_string('expectedresponse', 'tool_trigger'), $attributes);
         $mform->setType('expectedresponse', PARAM_INT);
         $mform->addHelpButton('expectedresponse', 'expectedresponse', 'tool_trigger');
         $mform->setDefault('expectedresponse', 200);
     }
 
-    /**
-     * {@inheritDoc}
-     * @see \tool_trigger\steps\base\base_step::add_privacy_metadata()
-     */
+    #[\Override]
     public static function add_privacy_metadata($collection, $privacyfields) {
         return $collection->add_external_location_link(
             'http_post_action_step',

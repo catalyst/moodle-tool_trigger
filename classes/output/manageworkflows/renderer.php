@@ -75,7 +75,7 @@ class renderer extends \plugin_renderer_base {
         global $CFG;
 
         $button = \html_writer::tag('button', get_string('addworkflow', 'tool_trigger'), ['class' => 'btn btn-primary']);
-        $addurl = new \moodle_url($CFG->wwwroot. '/admin/tool/trigger/edit.php', array('workflowid' => 0));
+        $addurl = new \moodle_url($CFG->wwwroot. '/admin/tool/trigger/edit.php', ['workflowid' => 0]);
         return \html_writer::link($addurl, $button);
     }
 
@@ -131,7 +131,7 @@ class renderer extends \plugin_renderer_base {
         foreach ($stepdata as $step) {
             $row = [
                 'name' => $step['name'],
-                'steporder' => $step['steporder']
+                'steporder' => $step['steporder'],
             ];
             if ($wfm->validate_step_class($step['stepclass'])) {
                 $row['typedesc'] = $step['stepclass']::get_step_type_desc();

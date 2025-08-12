@@ -28,7 +28,7 @@ require(__DIR__.'/../../../../config.php');
 require_once($CFG->libdir.'/clilib.php');
 
 // Get cli options.
-list($options, $unrecognized) = cli_get_params(array('help' => false), array('h' => 'help'));
+list($options, $unrecognized) = cli_get_params(['help' => false], ['h' => 'help']);
 
 if ($unrecognized) {
     $unrecognized = implode("\n  ", $unrecognized);
@@ -58,7 +58,7 @@ echo "\n";
 // Get the events we have stored fields for.
 $learnprocess = new \tool_trigger\learn_process();
 $eventnames = $learnprocess->get_event_fields_events();
-$results = array();
+$results = [];
 $count = 0;
 
 // Iterrate through each event getting fields.

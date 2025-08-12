@@ -26,30 +26,30 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$capabilities = array(
+$capabilities = [
 
-    'tool/trigger:manageworkflows' => array(
+    'tool/trigger:manageworkflows' => [
         'riskbitmask' => RISK_CONFIG | RISK_PERSONAL | RISK_SPAM,
         'captype' => 'write',
         'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes' => array(
-            'manager' => CAP_ALLOW
-        ),
-    ),
-    'tool/trigger:exportworkflowhistory' => array(
+        'archetypes' => [
+            'manager' => CAP_ALLOW,
+        ],
+    ],
+    'tool/trigger:exportworkflowhistory' => [
         'riskbitmask' => RISK_CONFIG | RISK_PERSONAL | RISK_SPAM,
         'captype' => 'read',
         'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes' => array(
-            'manager' => CAP_ALLOW
-        ),
-    ),
-    'tool/trigger:exportrundetails' => array(
+        'archetypes' => [
+            'manager' => CAP_ALLOW,
+        ],
+    ],
+    'tool/trigger:exportrundetails' => [
         'riskbitmask' => RISK_CONFIG | RISK_PERSONAL | RISK_SPAM,
         'captype' => 'read',
         'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes' => array(
-            'manager' => CAP_ALLOW
-        ),
-    ),
-);
+        'archetypes' => [
+            'manager' => CAP_ALLOW,
+        ],
+    ],
+];

@@ -40,9 +40,9 @@ class tool_trigger_external extends external_api {
      */
     public static function step_by_type_parameters() {
         return new external_function_parameters(
-            array(
+            [
                 'steptype' => new external_value(PARAM_ALPHA, 'The type of step to get.'),
-            )
+            ]
         );
     }
 
@@ -80,7 +80,7 @@ class tool_trigger_external extends external_api {
         foreach ($steps as $class => $namestr) {
             $output[] = [
                 'class' => $class,
-                'name' => $namestr
+                'name' => $namestr,
             ];
         }
         return $output;
@@ -93,10 +93,10 @@ class tool_trigger_external extends external_api {
     public static function step_by_type_returns() {
         return new external_multiple_structure(
             new external_single_structure(
-                array(
+                [
                     'class' => new external_value(PARAM_TEXT, 'Event identifier'),
                     'name' => new external_value(PARAM_TEXT, 'Event Name'),
-                )
+                ]
                 )
             );
     }
@@ -107,10 +107,10 @@ class tool_trigger_external extends external_api {
      */
     public static function validate_form_parameters() {
         return new external_function_parameters(
-            array(
+            [
                 'stepclass' => new external_value(PARAM_RAW, 'The step class being validated'),
-                'jsonformdata' => new external_value(PARAM_RAW, 'The data from the create group form, encoded as a json array')
-            )
+                'jsonformdata' => new external_value(PARAM_RAW, 'The data from the create group form, encoded as a json array'),
+            ]
         );
     }
 
@@ -136,14 +136,14 @@ class tool_trigger_external extends external_api {
         $workflowmanager = new \tool_trigger\workflow_manager();
         $step = $workflowmanager->validate_and_make_step($stepclass);
 
-        $data = array();
+        $data = [];
         if (!empty($params['jsonformdata'])) {
             $serialiseddata = json_decode($params['jsonformdata']);
             parse_str($serialiseddata, $data);
         }
 
         // Create the form and trigger validation.
-        $mform = $step->make_form(array(), $data);
+        $mform = $step->make_form([], $data);
 
         if (!$mform->is_validated()) {
             // Generate a warning.
@@ -168,9 +168,9 @@ class tool_trigger_external extends external_api {
      */
     public static function process_import_form_parameters() {
         return new external_function_parameters(
-            array(
-                'jsonformdata' => new external_value(PARAM_RAW, 'The data from the create group form, encoded as a json array')
-            )
+            [
+                'jsonformdata' => new external_value(PARAM_RAW, 'The data from the create group form, encoded as a json array'),
+            ]
             );
     }
 
@@ -192,7 +192,7 @@ class tool_trigger_external extends external_api {
         $params = self::validate_parameters(self::process_import_form_parameters(),
             ['jsonformdata' => $jsonformdata]);
 
-        $data = array();
+        $data = [];
         if (!empty($params['jsonformdata'])) {
             $serialiseddata = json_decode($params['jsonformdata']);
             parse_str($serialiseddata, $data);
@@ -221,7 +221,7 @@ class tool_trigger_external extends external_api {
                 $cache = \cache::make('tool_trigger', 'eventsubscriptions');
                 $cache->purge();
 
-                $returnmsg->message = array('success' => get_string('workflowimported', 'tool_trigger'));
+                $returnmsg->message = ['success' => get_string('workflowimported', 'tool_trigger')];
                 $returnmsg->errorcode = 'success';
 
             } else { // Processing failure.

@@ -25,32 +25,32 @@
 defined('MOODLE_INTERNAL') || die();
 
 // Define the web service functions to install.
-$functions = array(
-        'tool_trigger_step_by_type' => array(
+$functions = [
+        'tool_trigger_step_by_type' => [
                 'classname'   => 'tool_trigger_external',
                 'methodname'  => 'step_by_type',
                 'classpath'   => 'admin/tool/trigger/externallib.php',
                 'description' => 'Returns all steps matching supplied type',
                 'type'        => 'read',
                 'capabilities'  => 'tool/trigger:manageworkflows',
-                'ajax' => true
-        ),
-        'tool_trigger_validate_form' => array(
+                'ajax' => true,
+        ],
+        'tool_trigger_validate_form' => [
             'classname'   => 'tool_trigger_external',
             'methodname'  => 'validate_form',
             'classpath'   => 'admin/tool/trigger/externallib.php',
             'description' => 'Checks to see if a form contains valid data',
             'type'        => 'read',
             'capabilities'  => 'tool/trigger:manageworkflows',
-            'ajax' => true
-        ),
-        'tool_trigger_process_import_form' => array(
+            'ajax' => true,
+        ],
+        'tool_trigger_process_import_form' => [
             'classname'   => 'tool_trigger_external',
             'methodname'  => 'process_import_form',
             'classpath'   => 'admin/tool/trigger/externallib.php',
             'description' => 'Creates a new workflow.',
             'type'        => 'write',
             'capabilities'  => 'tool/trigger:manageworkflows',
-            'ajax' => true
-        ),
-);
+            'ajax' => true,
+        ],
+];

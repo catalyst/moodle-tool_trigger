@@ -33,7 +33,6 @@ global $CFG;
  * @copyright   Matt Porritt <mattp@catalyst-au.net>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 abstract class tool_trigger_testcase extends advanced_testcase {
 
     /**
@@ -54,7 +53,7 @@ abstract class tool_trigger_testcase extends advanced_testcase {
                     'name' => 'Get user data',
                     'description' => 'Get user data',
                     'useridfield' => 'userid',
-                    'outputprefix' => 'user_'
+                    'outputprefix' => 'user_',
                 ],
             ];
         }

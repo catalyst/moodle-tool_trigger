@@ -14,14 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Workflow form processing unit tests.
- *
- * @package    tool_trigger
- * @copyright  Matt Porritt <mattp@catalyst-au.net>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace tool_trigger;
 
 /**
@@ -31,36 +23,29 @@ namespace tool_trigger;
  * @copyright   Matt Porritt <mattp@catalyst-au.net>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-class process_workflows_test extends \advanced_testcase {
+final class process_workflows_test extends \advanced_testcase {
 
     /**
      * Test user.
-     * @var
+     * @var \stdClass
      */
     protected $user;
 
     /**
      * Test context.
-     * @var
+     * @var \context
      */
     protected $context;
 
     /**
-     * Test event.
-     * @var
-     */
-    protected $event;
-
-    /**
      * Test event object.
-     * @var
+     * @var \stdClass
      */
     protected $eventobj;
 
 
 
-    public function setup():void {
+    public function setup(): void {
         global $DB;
         $this->resetAfterTest(true);
 
@@ -107,7 +92,7 @@ class process_workflows_test extends \advanced_testcase {
      *
      * TODO: test a workflow that throws an execption
      */
-    public function test_process_workflow() {
+    public function test_process_workflow(): void {
         $mdata = new \stdClass();
         $mdata->workflowid = 0;
         $mdata->workflowname = 'Email me about login';
@@ -127,7 +112,7 @@ class process_workflows_test extends \advanced_testcase {
                 'name' => 'Get user data',
                 'description' => 'Get user data',
                 'useridfield' => 'userid',
-                'outputprefix' => 'user_'
+                'outputprefix' => 'user_',
             ],
             [
                 'id' => 0,
@@ -139,8 +124,8 @@ class process_workflows_test extends \advanced_testcase {
                 'emailto' => \core_user::get_user_by_username('admin')->email,
                 'emailsubject' => '{user_firstname} {user_lastname} logged in',
                 'emailcontent_editor[text]' => '{user_email} logged in.',
-                'emailcontent_editor[format]' => 0
-            ]
+                'emailcontent_editor[format]' => 0,
+            ],
         ]);
 
         // Insert it into the database. (It seems like it'll be more robust to do this

@@ -31,7 +31,7 @@ $workflowid = optional_param('workflowid', 0, PARAM_INT);
 
 require_login();
 
-$url = new moodle_url("/admin/tool/trigger/edit.php", array('workflowid' => $workflowid));
+$url = new moodle_url("/admin/tool/trigger/edit.php", ['workflowid' => $workflowid]);
 $context = context_system::instance();
 
 // Check for caps.
@@ -52,7 +52,7 @@ $PAGE->set_heading($pagetitlestr);
 if ($node = $PAGE->settingsnav->find('root', \navigation_node::TYPE_SITE_ADMIN)) {
     $PAGE->navbar->add($node->get_content(), $node->action());
 }
-foreach (array('tools', 'tool_trigger', 'tool_trigger_worfklowsettings') as $label) {
+foreach (['tools', 'tool_trigger', 'tool_trigger_worfklowsettings'] as $label) {
     if ($node = $PAGE->settingsnav->find($label, \navigation_node::TYPE_SETTING)) {
         $PAGE->navbar->add($node->get_content(), $node->action());
     }
@@ -60,7 +60,7 @@ foreach (array('tools', 'tool_trigger', 'tool_trigger_worfklowsettings') as $lab
 $PAGE->navbar->add($pagetitlestr);
 
 // Load the javascript.
-$PAGE->requires->js_call_amd('tool_trigger/step_select', 'init', array($context->id));
+$PAGE->requires->js_call_amd('tool_trigger/step_select', 'init', [$context->id]);
 
 $eventlist = \tool_monitor\eventlist::get_all_eventlist();
 

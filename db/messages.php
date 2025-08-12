@@ -13,16 +13,18 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
 /**
  * Defines message providers (types of message sent) for the Re-engagement activity.
  *
  * @package    tool_trigger
  * @author     Dan Marsden
+ * @copyright  Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 
 defined('MOODLE_INTERNAL') || die();
-$messageproviders = array(
-    'tool_trigger' => array(),
-);
+$messageproviders = [
+    'tool_trigger' => [],
+];

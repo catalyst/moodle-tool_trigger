@@ -14,6 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
+global $CFG;
+
 /**
  * A lot of our tests need to go through a similar set of steps to
  * create an event. This is a trait that does so.
@@ -23,15 +27,29 @@
  * @copyright  Catalyst IT 2018
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-defined('MOODLE_INTERNAL') || die();
-
-global $CFG;
-
 trait tool_trigger_user_event_fixture {
+    /**
+     * User 1.
+     * @var ?\stdClass
+     */
     public $user1 = null;
+
+    /**
+     * User 2.
+     * @var ?\stdClass
+     */
     public $user2 = null;
+
+    /**
+     * Course.
+     * @var ?\stdClass
+     */
     public $course = null;
+
+    /**
+     * Event.
+     * @var mixed
+     */
     public $event = null;
 
     /**
@@ -47,7 +65,7 @@ trait tool_trigger_user_event_fixture {
             'descriptionformat' => FORMAT_HTML,
             'url' => 'https://www.example.com',
             'picture' => 1,
-            'password' => 'af98y4hqkfhacvaHKHDFSs'
+            'password' => 'af98y4hqkfhacvaHKHDFSs',
         ];
 
         $this->user1 = $this->getDataGenerator()->create_user($extrauserdata);
@@ -65,7 +83,7 @@ trait tool_trigger_user_event_fixture {
                 'courseshortname' => $this->course->shortname,
                 'coursefullname' => $this->course->fullname,
                 'eventid' => 1,
-            ]
+            ],
         ]);
 
         $this->event->trigger();

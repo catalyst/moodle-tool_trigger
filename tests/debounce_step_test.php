@@ -14,6 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace tool_trigger;
+
+defined('MOODLE_INTERNAL') || die();
+
+global $CFG;
+require_once("$CFG->libdir/gradelib.php");
+
 /**
  * Debounce filter step's unit test
  *
@@ -22,15 +29,7 @@
  * @copyright  Catalyst IT 2018
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-namespace tool_trigger;
-
-defined('MOODLE_INTERNAL') || die();
-
-global $CFG;
-require_once("$CFG->libdir/gradelib.php");
-
-class debounce_step_test extends \advanced_testcase {
+final class debounce_step_test extends \advanced_testcase {
     /**
      * The step to execute.
      *
@@ -40,6 +39,8 @@ class debounce_step_test extends \advanced_testcase {
 
     /**
      * EventID to keep track of.
+     *
+     * @var int
      */
     private $eventid;
 
@@ -53,7 +54,7 @@ class debounce_step_test extends \advanced_testcase {
      * Create a "user_profile_viewed" event, of user1 viewing user2's
      * profile. And then run everything else as the cron user.
      */
-    public function setup():void {
+    public function setup(): void {
         global $DB;
         $this->resetAfterTest(true);
 
@@ -68,7 +69,7 @@ class debounce_step_test extends \advanced_testcase {
 
         $gradeitem->update_final_grade($user->id, 10, 'gradebook');
 
-        $gradegrade = new \grade_grade(array('userid' => $user->id, 'itemid' => $gradeitem->id), true);
+        $gradegrade = new \grade_grade(['userid' => $user->id, 'itemid' => $gradeitem->id], true);
         $gradegrade->grade_item = $gradeitem;
 
         $this->event = \core\event\user_graded::create_from_grade($gradegrade);
@@ -100,13 +101,13 @@ class debounce_step_test extends \advanced_testcase {
             'tries' => 0,
             'laststep' => 1,
             'timecreated' => time(),
-            'timemodified' => time()
+            'timemodified' => time(),
         ], true);
 
         return $DB->get_record('tool_trigger_queue', ['id' => $id]);
     }
 
-    public function test_event_queue() {
+    public function test_event_queue(): void {
         global $DB;
 
         // Scenario 1: No existing event queue.
@@ -153,7 +154,7 @@ class debounce_step_test extends \advanced_testcase {
         $this->assertTrue($end->executiontime >= time());
     }
 
-    public function test_event_cancellation() {
+    public function test_event_cancellation(): void {
         global $DB;
 
         // Scenario 1:  2 event, run lower

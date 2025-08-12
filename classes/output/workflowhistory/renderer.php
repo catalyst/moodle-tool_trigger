@@ -56,7 +56,7 @@ class renderer extends \plugin_renderer_base {
         $sqlwhere = 'workflowid = :workflow AND runid = :run';
         $sqlparams = [
             'workflow' => $workflowid,
-            'run' => $run
+            'run' => $run,
         ];
 
         $renderable->set_sql($sqlfields, $sqlfrom, $sqlwhere, $sqlparams);
@@ -146,6 +146,19 @@ class renderer extends \plugin_renderer_base {
         $renderable->out($renderable->pagesize, false);
     }
 
+    /**
+     * Generates the HTML for the "Step Actions" button group.
+     *
+     * Produces a primary "View step info" button and a dropdown menu of actions
+     * for both current and historic workflow step executions. This includes
+     * rerunning the step, rerunning the step and following steps, rerunning until
+     * the workflow is finished, and executing the next step directly.
+     *
+     * The available actions are grouped into "current" and "historic" sections.
+     *
+     * @param \stdClass $step Step record containing step information.
+     * @return string HTML markup for the step actions button group.
+     */
     public function step_actions_button($step) {
         $workflow = required_param('workflow', PARAM_INT);
         $run = required_param('run', PARAM_INT);
@@ -223,9 +236,24 @@ class renderer extends \plugin_renderer_base {
         return $btn;
     }
 
+    /**
+     * Generates the HTML for the "Run Actions" button group.
+     *
+     * Produces a primary "View detailed run" button and a dropdown menu of actions
+     * to rerun the workflow either for the current run state or from historic state.
+     * If the user has the appropriate capability, an option to download run details
+     * is also provided.
+     *
+     * If $statusonly is true, only the "View detailed run" button is displayed.
+     *
+     * @param \stdClass $run Run record containing workflow run information.
+     * @param bool $statusonly Whether to show only the status (no dropdown actions).
+     * @param array $searchparams Additional search parameters to include in URLs.
+     * @return string HTML markup for the run actions button group.
+     */
     public function run_actions_button($run, $statusonly = false, $searchparams = []) {
         $btn = '';
-        $viewurl = new \moodle_url('/admin/tool/trigger/history.php', array('run' => $run->id, 'workflow' => $run->workflowid));
+        $viewurl = new \moodle_url('/admin/tool/trigger/history.php', ['run' => $run->id, 'workflow' => $run->workflowid]);
         $viewbtn = \html_writer::link($viewurl, get_string('viewdetailedrun', 'tool_trigger'), ['class' => 'btn btn-primary']);
 
         // For deferred and cancelled runs, show only details.

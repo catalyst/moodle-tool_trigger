@@ -14,15 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Numeric comparison filter step's unit test
- *
- * @package    tool_trigger
- * @author     Aaron Wells <aaronw@catalyst.net.nz>
- * @copyright  Catalyst IT 2018
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace tool_trigger;
 
 use tool_trigger\steps\filters\stringcompare_filter_step;
@@ -32,8 +23,15 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once(__DIR__.'/fixtures/user_event_fixture.php');
 
-
-class stringcompare_filter_step_test extends \advanced_testcase {
+/**
+ * Numeric comparison filter step's unit test
+ *
+ * @package    tool_trigger
+ * @author     Aaron Wells <aaronw@catalyst.net.nz>
+ * @copyright  Catalyst IT 2018
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+final class stringcompare_filter_step_test extends \advanced_testcase {
     use \tool_trigger_user_event_fixture;
 
 
@@ -41,7 +39,7 @@ class stringcompare_filter_step_test extends \advanced_testcase {
      * Create a "user_profile_viewed" event, of user1 viewing user2's
      * profile. And then run everything else as the cron user.
      */
-    public function setup():void {
+    public function setup(): void {
         $this->setup_user_event();
     }
 
@@ -55,12 +53,12 @@ class stringcompare_filter_step_test extends \advanced_testcase {
      *
      * @dataProvider operator_permutations
      */
-    public function test_all_operators($operator, $comparator, $expectedresult) {
+    public function test_all_operators($operator, $comparator, $expectedresult): void {
         $stepconfig = [
             'field1' => 'Aaron Wells',
             'operator' => $operator,
             'field2' => $comparator,
-            'wantmatch' => true
+            'wantmatch' => true,
         ];
         $step = new \tool_trigger\steps\filters\stringcompare_filter_step(
             json_encode($stepconfig)
@@ -87,7 +85,7 @@ class stringcompare_filter_step_test extends \advanced_testcase {
      *
      * @return array
      */
-    public function operator_permutations() {
+    public function operator_permutations(): array {
         return [
             [stringcompare_filter_step::OPERATOR_EQUAL, 'Aaron Wells', true],
             [stringcompare_filter_step::OPERATOR_EQUAL, 'Aaron Burr', false],
@@ -102,14 +100,14 @@ class stringcompare_filter_step_test extends \advanced_testcase {
             // a problem, because datafields have an alphabetic component, and
             // regexes only accept integers and commas inside of {}.
             [stringcompare_filter_step::OPERATOR_REGEX, '^[A-Z][a-z]{4} ', true],
-            [stringcompare_filter_step::OPERATOR_REGEX, '[0-9]', false]
+            [stringcompare_filter_step::OPERATOR_REGEX, '[0-9]', false],
         ];
     }
 
     /**
      * Test that datafield substitution works correctly.
      */
-    public function test_datafield() {
+    public function test_datafield(): void {
         $step = new stringcompare_filter_step(
             json_encode([
                 // Put a datafield placeholder in field1.
@@ -117,7 +115,7 @@ class stringcompare_filter_step_test extends \advanced_testcase {
                 'operator' => stringcompare_filter_step::OPERATOR_STARTS_WITH,
                 // The course we created during the event setup.
                 'field2' => $this->course->fullname,
-                'wantmatch' => true
+                'wantmatch' => true,
             ])
         );
 
@@ -126,13 +124,13 @@ class stringcompare_filter_step_test extends \advanced_testcase {
         $this->assertTrue($status);
     }
 
-    public function test_invalidregex() {
+    public function test_invalidregex(): void {
         $step = new stringcompare_filter_step(
             json_encode([
                 'field1' => 'foo',
                 'operator' => stringcompare_filter_step::OPERATOR_REGEX,
                 'field2' => '***[',
-                'wantmatch' => true
+                'wantmatch' => true,
             ])
         );
 

@@ -25,9 +25,9 @@
 defined('MOODLE_INTERNAL') || die();
 
 // List of observers.
-$observers = array(
-    array(
+$observers = [
+    [
         'eventname'   => '*',
         'callback'    => '\tool_trigger\event_processor::process_event',
-    ),
-);
+    ],
+];

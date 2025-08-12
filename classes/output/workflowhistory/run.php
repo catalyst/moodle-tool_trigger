@@ -14,14 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Renderable class for run history page.
- *
- * @package    tool_trigger
- * @copyright  Peter Burnett <peterburnett@catalyst-au.net>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace tool_trigger\output\workflowhistory;
 
 use html_writer;
@@ -31,6 +23,13 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . '/tablelib.php');
 
+/**
+ * Renderable class for run history page.
+ *
+ * @package    tool_trigger
+ * @copyright  Peter Burnett <peterburnett@catalyst-au.net>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class runhistory_renderable extends \table_sql implements \renderable {
     /**
      * @var \context_course|\context_system context of the page to be rendered.
@@ -59,24 +58,24 @@ class runhistory_renderable extends \table_sql implements \renderable {
 
         $this->set_attribute('id', 'tooltriggerrunhistory_table');
         $this->set_attribute('class', 'tooltrigger runhistory generaltable generalbox');
-        $this->define_columns(array(
+        $this->define_columns([
                 'step',
                 'id',
                 'name',
                 'type',
                 'executed',
                 'prevstep',
-                'actions'
-        ));
-        $this->define_headers(array(
+                'actions',
+        ]);
+        $this->define_headers([
                 get_string('stepnumber', 'tool_trigger'),
                 get_string('stepid', 'tool_trigger'),
                 get_string('name'),
                 get_string('type', 'search'),
                 get_string('timeexecuted', 'tool_trigger'),
                 get_string('prevstep', 'tool_trigger'),
-                get_string('actions')
-            )
+                get_string('actions'),
+            ]
         );
         $this->pagesize = $perpage;
         $systemcontext = \context_system::instance();
@@ -89,28 +88,70 @@ class runhistory_renderable extends \table_sql implements \renderable {
         $this->stepcounter = 1;
     }
 
+    /**
+     * Column renderer for step number.
+     *
+     * Adds 1 to the stored step number for human readability.
+     *
+     * @param \stdClass $step Step record.
+     * @return int Human-readable step number.
+     */
     public function col_step($step) {
         // Add 1 to be human readable.
         return $step->number + 1;
     }
 
+    /**
+     * Column renderer for step ID.
+     *
+     * @param \stdClass $step Step record.
+     * @return int Step ID.
+     */
     public function col_id($step) {
         return $step->id;
     }
 
+    /**
+     * Column renderer for step name.
+     *
+     * @param \stdClass $step Step record.
+     * @return string Step name.
+     */
     public function col_name($step) {
         return $step->name;
     }
 
+    /**
+     * Column renderer for step type.
+     *
+     * @param \stdClass $step Step record.
+     * @return string Step type.
+     */
     public function col_type($step) {
         return $step->type;
     }
 
+    /**
+     * Column renderer for executed time.
+     *
+     * Formats the timestamp using the short date/time format.
+     *
+     * @param \stdClass $step Step record.
+     * @return string Formatted execution date/time.
+     */
     public function col_executed($step) {
         $format = get_string('strftimedatetimeshort', 'langconfig');
         return userdate($step->executed, $format);
     }
 
+    /**
+     * Column renderer for previous step ID.
+     *
+     * Returns the previous step ID if available, or "none" otherwise.
+     *
+     * @param \stdClass $step Step record.
+     * @return string|int Previous step ID or "none".
+     */
     public function col_prevstep($step) {
         if (!empty($step->prevstepid)) {
             return $step->prevstepid;
@@ -119,6 +160,15 @@ class runhistory_renderable extends \table_sql implements \renderable {
         }
     }
 
+    /**
+     * Column renderer for step actions.
+     *
+     * Uses the workflow history renderer to produce the actions
+     * available for the given step.
+     *
+     * @param \stdClass $step Step record.
+     * @return string HTML for step action buttons.
+     */
     public function col_actions($step) {
         global $PAGE;
 

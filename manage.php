@@ -29,7 +29,7 @@ defined('MOODLE_INTERNAL') || die();
 
 require_login();
 
-admin_externalpage_setup('tool_trigger_worfklowsettings', '', null, '', array('pagelayout' => 'report'));
+admin_externalpage_setup('tool_trigger_worfklowsettings', '', null, '', ['pagelayout' => 'report']);
 
 $context = context_system::instance();
 
@@ -37,7 +37,7 @@ $context = context_system::instance();
 require_capability('tool/trigger:manageworkflows', $context);
 
 // Load the javascript.
-$PAGE->requires->js_call_amd('tool_trigger/import_workflow', 'init', array($context->id));
+$PAGE->requires->js_call_amd('tool_trigger/import_workflow', 'init', [$context->id]);
 
 // Build the page output.
 echo $OUTPUT->header();

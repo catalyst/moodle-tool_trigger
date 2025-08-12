@@ -14,18 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Roles unassign action step class.
- *
- * @package    tool_trigger
- * @copyright  Ilya Tregubov <ilyatregubov@catalyst-au.net>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace tool_trigger\steps\actions;
 
 /**
- * HTTP Post action step class.
+ * Roles unassign action step class.
  *
  * @package    tool_trigger
  * @copyright  Ilya Tregubov <ilyatregubov@catalyst-au.net>
@@ -40,16 +32,25 @@ class roles_unassign_action_step extends base_action_step {
      *
      * @var array
      */
-    private static $stepfields = array();
+    private static $stepfields = [];
 
     /**
      * The prefix to put before the new fields added to the workflow data.
      *
-     * @var string
+     * @var ?string
      */
     private $inputprefixuser = null;
+
+    /**
+     * The prefix to put before the new fields added to the workflow data.
+     *
+     * @var ?string
+     */
     private $inputprefixrole = null;
 
+    /**
+     * Init the step.
+     */
     protected function init() {
         if (!is_null($this->data['inputprefixuser'])) {
             $this->inputprefixuser = $this->data['inputprefixuser'];
@@ -82,6 +83,8 @@ class roles_unassign_action_step extends base_action_step {
     }
 
     /**
+     * Execute the step.
+     *
      * @param $step
      * @param $trigger
      * @param $event
@@ -93,21 +96,18 @@ class roles_unassign_action_step extends base_action_step {
 
         if ($stepresults['user_suspended'] == 1) {
             foreach ($stepresults[$this->inputprefixrole . 'roles'] as $key => $value) {
-                role_unassign_all(array(
+                role_unassign_all([
                     'userid' => $stepresults[$this->inputprefixrole . 'id'],
                     'contextid' => $value['contextid'],
                     'component' => $value['component'],
-                    'itemid' => $value['itemid']));
+                    'itemid' => $value['itemid']]);
             }
         }
 
-        return array(true, $stepresults);
+        return [true, $stepresults];
     }
 
-    /**
-     * {@inheritDoc}
-     * @see \tool_trigger\steps\base\base_step::add_extra_form_fields()
-     */
+    #[\Override]
     public function form_definition_extra($form, $mform, $customdata) {
         $mform->addElement('text', 'inputprefixuser', get_string('inputprefixuser', 'tool_trigger'));
         $mform->setType('inputprefixuser', PARAM_ALPHANUMEXT);

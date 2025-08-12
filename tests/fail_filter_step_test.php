@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace tool_trigger;
+
 /**
  * "Fail" filter step's unit tests.
  *
@@ -22,11 +24,8 @@
  * @copyright  Catalyst IT 2018
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-namespace tool_trigger;
-
-class fail_filter_step_test extends \basic_testcase {
-    public function test_execute() {
+final class fail_filter_step_test extends \basic_testcase {
+    public function test_execute(): void {
         $step = new \tool_trigger\steps\filters\fail_filter_step();
         list($status) = $step->execute(null, null, null, null);
         $this->assertFalse($status);

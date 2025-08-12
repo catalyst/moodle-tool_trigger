@@ -24,7 +24,7 @@
 
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
-admin_externalpage_setup('tool_trigger_worfklowsettings', '', null, '', array('pagelayout' => 'report'));
+admin_externalpage_setup('tool_trigger_worfklowsettings', '', null, '', ['pagelayout' => 'report']);
 
 $context = context_system::instance();
 $PAGE->set_url(new moodle_url('/admin/tool/trigger/stepdetails.php'));

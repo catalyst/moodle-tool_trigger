@@ -17,7 +17,7 @@
 /**
  * This file defines tasks performed by the tool.
  *
- * @package    tool_monitor
+ * @package    tool_trigger
  * @copyright  Matt Porritt <mattp@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -25,41 +25,41 @@
 defined('MOODLE_INTERNAL') || die();
 
 // List of tasks.
-$tasks = array(
-    array(
+$tasks = [
+    [
         'classname' => 'tool_trigger\task\process_workflows',
         'blocking' => 0,
         'minute' => '*',
         'hour' => '*',
         'day' => '*',
         'dayofweek' => '*',
-        'month' => '*'
-    ),
-    array(
+        'month' => '*',
+    ],
+    [
         'classname' => 'tool_trigger\task\cleanup',
         'blocking' => 0,
         'minute' => 'R',
         'hour' => '*',
         'day' => '*',
         'dayofweek' => '*',
-        'month' => '*'
-    ),
-    array(
+        'month' => '*',
+    ],
+    [
         'classname' => 'tool_trigger\task\learn',
         'blocking' => 0,
         'minute' => 'R',
         'hour' => 'R',
         'day' => '*',
         'dayofweek' => '*',
-        'month' => '*'
-    ),
-    array(
+        'month' => '*',
+    ],
+    [
         'classname' => 'tool_trigger\task\cleanup_history',
         'blocking' => 0,
         'minute' => 'R',
         'hour' => '0',
         'day' => '*',
         'dayofweek' => '*',
-        'month' => '*'
-    )
-);
+        'month' => '*',
+    ],
+];

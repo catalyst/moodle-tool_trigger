@@ -14,17 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Base filter step class.
- *
- * A filter is a workflow step that applies a test to the workflow instance's
- * data, and halts execution of further steps if the test does not pass.
- *
- * @package    tool_trigger
- * @copyright  Matt Porritt <mattp@catalyst-au.net>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace tool_trigger\steps\filters;
 
 /**
@@ -37,17 +26,50 @@ namespace tool_trigger\steps\filters;
 class numcompare_filter_step extends base_filter_step {
     use \tool_trigger\helper\datafield_manager;
 
+    /**
+     * Comparison operator for equality.
+     */
     const OPERATOR_EQUAL = '==';
+
+    /**
+     * Comparison operator for inequality.
+     */
     const OPERATOR_NOTEQUAL = '!=';
+
+    /**
+     * Comparison operator for less than.
+     */
     const OPERATOR_LT = '<';
+
+    /**
+     * Comparison operator for less than or equal to.
+     */
     const OPERATOR_LTE = '<=';
+
+    /**
+     * Comparison operator for greater than or equal to.
+     */
     const OPERATOR_GTE = '>=';
+
+    /**
+     * Comparison operator for greater than.
+     */
     const OPERATOR_GT = '>';
 
+    /**
+     * @var mixed The first field or value to be compared.
+     */
     protected $field1;
-    protected $field2;
-    protected $operator;
 
+    /**
+     * @var mixed The second field or value to be compared.
+     */
+    protected $field2;
+
+    /**
+     * @var string The comparison operator, one of the OPERATOR_* constants.
+     */
+    protected $operator;
 
     /**
      * {@inheritDoc}
@@ -94,6 +116,13 @@ class numcompare_filter_step extends base_filter_step {
         return [$result, $stepresults];
     }
 
+    /**
+     * Gets the field value from form value.
+     *
+     * @param mixed $formval
+     *
+     * @return float|int|string
+     */
     private function get_field_value($formval) {
         $formval = trim($formval);
 
@@ -157,7 +186,7 @@ class numcompare_filter_step extends base_filter_step {
             self::OPERATOR_LTE => '<',
             self::OPERATOR_LT => '<=',
             self::OPERATOR_GT => '>',
-            self::OPERATOR_GTE => '>='
+            self::OPERATOR_GTE => '>=',
         ]);
 
         // TODO: lang string!

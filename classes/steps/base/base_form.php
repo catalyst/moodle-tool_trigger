@@ -92,9 +92,9 @@ class base_form extends \moodleform {
      * @return array $explodedfields The formatted fields.
      */
     private function explode_fields($stepfields, $outputprefix) {
-        $explodedfields = array();
+        $explodedfields = [];
         foreach ($stepfields as $field) {
-            $explodedfields[] = array('field' => $outputprefix.$field);
+            $explodedfields[] = ['field' => $outputprefix.$field];
         }
 
         return $explodedfields;
@@ -110,14 +110,14 @@ class base_form extends \moodleform {
      */
     public function get_trigger_fields($eventname, $stepclass, $existingsteps, $steporder) {
         // Get all fields for this workflows event.
-        $fields = array();
+        $fields = [];
         $learnprocess = new \tool_trigger\learn_process();
         $fields['fields'] = $learnprocess->get_event_fields_with_type($eventname);
-        $fields['steps'] = array();
+        $fields['steps'] = [];
 
         // Add notification for no event fields.
         if (empty($fields['fields'])) {
-            $fields['fields'] = array('nofields' => true);
+            $fields['fields'] = ['nofields' => true];
         }
 
         $isfirst = $this->is_first_step($stepclass, $existingsteps);
@@ -132,10 +132,10 @@ class base_form extends \moodleform {
                 $stepfields = $step['stepclass']::get_fields();
                 if ($stepfields) {
                     $stepfieldarray = $this->explode_fields($stepfields, $step['outputprefix']);
-                    $steparray = array(
+                    $steparray = [
                         'stepname' => $step['stepdesc'],
-                        'fields' => $stepfieldarray
-                    );
+                        'fields' => $stepfieldarray,
+                    ];
                     $fields['steps'][] = $steparray;
                 }
             }
@@ -161,13 +161,13 @@ class base_form extends \moodleform {
         $mform->setDefault('steporder', -1);
 
         // Step type.
-        $steptype = array(
+        $steptype = [
             '' => get_string('choosedots'),
             'lookups' => get_string('lookup', 'tool_trigger'),
             'filters' => get_string('filter', 'tool_trigger'),
             'actions' => get_string('action', 'tool_trigger'),
             'debounce' => get_string('debounce', 'tool_trigger'),
-        );
+        ];
         $mform->addElement('select', 'type', get_string('steptype', 'tool_trigger'), $steptype);
         $mform->addHelpButton('type', 'steptype', 'tool_trigger');
         $mform->addRule('type', get_string('required'), 'required');
@@ -176,9 +176,9 @@ class base_form extends \moodleform {
         }
 
         // Step.
-        $steps = array(
+        $steps = [
             '' => get_string('choosedots'),
-        );
+        ];
         if (isset($this->_customdata['stepclass'])) {
             $steps[$this->_customdata['stepclass']] = $this->_customdata['steptext'];
         }
@@ -196,14 +196,14 @@ class base_form extends \moodleform {
         // If a step class has already been instantiated, add more step details.
         if ($this->step) {
             // Name.
-            $attributes = array('size' => '50');
+            $attributes = ['size' => '50'];
             $mform->addElement('text', 'name', get_string ('stepname', 'tool_trigger'), $attributes);
             $mform->setType('name', PARAM_ALPHAEXT);
             $mform->addRule('name', get_string('required'), 'required');
             $mform->addHelpButton('name', 'stepname', 'tool_trigger');
 
             // Description.
-            $attributes = array('cols' => '50', 'rows' => '2');
+            $attributes = ['cols' => '50', 'rows' => '2'];
             $mform->addElement('textarea', 'description', get_string ('stepdescription', 'tool_trigger'), $attributes);
             $mform->setType('description', PARAM_ALPHAEXT);
             $mform->addRule('description', get_string('required'), 'required');

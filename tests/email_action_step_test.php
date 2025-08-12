@@ -14,6 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace tool_trigger;
+
+defined('MOODLE_INTERNAL') || die();
+
+global $CFG;
+require_once(__DIR__.'/fixtures/user_event_fixture.php');
+
 /**
  * Test of the email action
  *
@@ -22,15 +29,7 @@
  * @copyright  Catalyst IT 2018
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-namespace tool_trigger;
-
-defined('MOODLE_INTERNAL') || die();
-
-global $CFG;
-require_once(__DIR__.'/fixtures/user_event_fixture.php');
-
-class email_action_step_test extends \advanced_testcase {
+final class email_action_step_test extends \advanced_testcase {
     use \tool_trigger_user_event_fixture;
 
     /**
@@ -43,7 +42,7 @@ class email_action_step_test extends \advanced_testcase {
      * Create a "user_profile_viewed" event, of user1 viewing user2's
      * profile. And then run everything else as the cron user.
      */
-    public function setup():void {
+    public function setup(): void {
         $this->setup_user_event();
 
         // Set up the email sync.
@@ -51,12 +50,12 @@ class email_action_step_test extends \advanced_testcase {
         $this->sink = $this->redirectMessages();
     }
 
-    public function test_execute_basic() {
+    public function test_execute_basic(): void {
         $settings = [
             'emailto' => $this->user1->email,
             'emailsubject' => 'Subject of the email',
             'emailcontent_editor[text]' => 'Content of the email',
-            'emailcontent_editor[format]' => 0
+            'emailcontent_editor[format]' => 0,
         ];
         $step = new \tool_trigger\steps\actions\email_action_step(json_encode($settings));
 
@@ -88,12 +87,12 @@ class email_action_step_test extends \advanced_testcase {
         );
     }
 
-    public function test_execute_external_email_address() {
+    public function test_execute_external_email_address(): void {
         $settings = [
             'emailto' => 'testusernotinmoodle@example.com',
             'emailsubject' => 'Subject of the email',
             'emailcontent_editor[text]' => 'Content of the email',
-            'emailcontent_editor[format]' => 0
+            'emailcontent_editor[format]' => 0,
         ];
         $step = new \tool_trigger\steps\actions\email_action_step(json_encode($settings));
 
@@ -119,7 +118,7 @@ class email_action_step_test extends \advanced_testcase {
         );
     }
 
-    public function test_execute_with_datafields() {
+    public function test_execute_with_datafields(): void {
         $settings = [
             'emailto' => '{user_email}',
             'emailsubject' => 'User {userid} looked at your profile',
@@ -131,7 +130,7 @@ class email_action_step_test extends \advanced_testcase {
 
         $prevstepresults = [
             // In practice, this value would have been added by a previous user_lookup step.
-            'user_email' => $this->user2->email
+            'user_email' => $this->user2->email,
         ];
 
         // Run the step.

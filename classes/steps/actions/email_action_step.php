@@ -14,15 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * email action step class.
- *
- * @package    tool_trigger
- * @copyright  Catalyst IT
- * @author     Dan Marsden
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace tool_trigger\steps\actions;
 
 /**
@@ -61,7 +52,7 @@ class email_action_step extends base_action_step {
      *
      * @var array
      */
-    private static $stepfields = array(
+    private static $stepfields = [
             'email_action_messageid',
             'email_action_courseid',
             'email_action_subject',
@@ -72,8 +63,8 @@ class email_action_step extends base_action_step {
             'email_action_userfrom_id',
             'email_action_userfrom_email',
             'email_action_userto_id',
-            'email_action_userto_email'
-    );
+            'email_action_userto_email',
+    ];
 
     /**
      * {@inheritDoc}
@@ -105,13 +96,7 @@ class email_action_step extends base_action_step {
         return get_string('emailactionstepdesc', 'tool_trigger');
     }
 
-    /**
-     * @param $step
-     * @param $trigger
-     * @param $event
-     * @param $stepresults - result of previousstep to include in processing this step.
-     * @return array if execution was succesful and the response from the execution.
-     */
+    #[\Override]
     public function execute($step, $trigger, $event, $stepresults) {
         global $DB;
 
@@ -125,7 +110,7 @@ class email_action_step extends base_action_step {
         if ($emailto == clean_param($emailto, PARAM_EMAIL)) {
 
             // Check if user exists and use user record.
-            $user = $DB->get_record('user', array('email' => $emailto, 'deleted' => 0));
+            $user = $DB->get_record('user', ['email' => $emailto, 'deleted' => 0]);
 
             // If user not found, use noreply as a base.
             if (empty($user)) {
@@ -169,7 +154,7 @@ class email_action_step extends base_action_step {
             $stepresults['email_action_messageid'] = false;
         }
 
-        return array(true, $stepresults);
+        return [true, $stepresults];
     }
 
     /**
@@ -191,7 +176,7 @@ class email_action_step extends base_action_step {
         $mform->addHelpButton('emailsubject', 'emailsubject', 'tool_trigger');
 
         // Params!
-        $attributes = array(
+        $attributes = [
             'subdirs' => false,
             'maxbytes' => 0,
             'maxfiles' => 0,
@@ -199,8 +184,8 @@ class email_action_step extends base_action_step {
             'context' => null,
             'noclean' => 0,
             'trusttext' => true,
-            'enable_filemanagement' => false
-        );
+            'enable_filemanagement' => false,
+        ];
 
         // Message!
         $mform->addElement('editor', 'emailcontent_editor', get_string('emailcontent', 'tool_trigger'), null, $attributes);

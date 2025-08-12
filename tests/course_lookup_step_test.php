@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace tool_trigger;
+
 /**
  * "Fail" filter step's unit tests.
  *
@@ -22,20 +24,17 @@
  * @copyright  Catalyst IT 2018
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-namespace tool_trigger;
-
-class course_lookup_step_test extends \advanced_testcase {
+final class course_lookup_step_test extends \advanced_testcase {
 
     /**
      * Test user.
-     * @var
+     * @var \stdClass
      */
     protected $user;
 
     /**
-     * Test user.
-     * @var
+     * Test course.
+     * @var \stdClass
      */
     protected $course;
 
@@ -49,7 +48,7 @@ class course_lookup_step_test extends \advanced_testcase {
      * Create a "user_profile_viewed" event, of user1 viewing user2's
      * profile. And then run everything else as the cron user.
      */
-    public function setup():void {
+    public function setup(): void {
         $this->resetAfterTest(true);
         $this->user = \core_user::get_user_by_username('admin');
         $this->course = $this->getDataGenerator()->create_course();
@@ -61,8 +60,8 @@ class course_lookup_step_test extends \advanced_testcase {
             'context' => \context_course::instance($this->course->id),
             'other' => [
                 'shortname' => $this->course->shortname,
-                'fullname' => $this->course->fullname
-            ]
+                'fullname' => $this->course->fullname,
+            ],
         ]);
 
         // Run as the cron user  .
@@ -73,11 +72,11 @@ class course_lookup_step_test extends \advanced_testcase {
      * Find the course identified at "objectid", and add their data with the
      * prefix "course_".
      */
-    public function test_execute_basic() {
+    public function test_execute_basic(): void {
         $step = new \tool_trigger\steps\lookups\course_lookup_step(
             json_encode([
                 'courseidfield' => 'objectid',
-                'outputprefix' => 'course_'
+                'outputprefix' => 'course_',
             ])
         );
 
@@ -93,11 +92,11 @@ class course_lookup_step_test extends \advanced_testcase {
     /**
      * Test for exception if an invalid field name is entered.
      */
-    public function test_execute_nosuchfield() {
+    public function test_execute_nosuchfield(): void {
         $step = new \tool_trigger\steps\lookups\course_lookup_step(
             json_encode([
                 'courseidfield' => 'nosuchfield',
-                'outputprefix' => 'course_'
+                'outputprefix' => 'course_',
             ])
         );
 
@@ -108,13 +107,13 @@ class course_lookup_step_test extends \advanced_testcase {
     /**
      * Test for failure if a course is no longer present in the database.
      */
-    public function test_execute_nosuchcourse() {
+    public function test_execute_nosuchcourse(): void {
         delete_course($this->course, false);
 
         $step = new \tool_trigger\steps\lookups\course_lookup_step(
             json_encode([
                 'courseidfield' => 'objectid',
-                'outputprefix' => 'course_'
+                'outputprefix' => 'course_',
             ])
         );
 
@@ -126,7 +125,7 @@ class course_lookup_step_test extends \advanced_testcase {
      * Data provided to test hardcoded category id.
      * @return array
      */
-    public function hardcoded_course_id_data_provider() {
+    public function hardcoded_course_id_data_provider(): array {
 
         return [
             'Non-existing Course id.' => [
@@ -157,11 +156,11 @@ class course_lookup_step_test extends \advanced_testcase {
      *
      * @dataProvider hardcoded_course_id_data_provider
      */
-    public function test_execute_course_id($courseid, $status, $exception) {
+    public function test_execute_course_id($courseid, $status, $exception): void {
         $step = new \tool_trigger\steps\lookups\course_lookup_step(
             json_encode([
                 'courseidfield' => $courseid,
-                'outputprefix' => 'course_'
+                'outputprefix' => 'course_',
             ])
         );
 
@@ -186,11 +185,11 @@ class course_lookup_step_test extends \advanced_testcase {
     /**
      * Test for exception if course id entered directly with dynamic id as integer.
      */
-    public function test_execute_course_id_integer() {
+    public function test_execute_course_id_integer(): void {
         $step = new \tool_trigger\steps\lookups\course_lookup_step(
             json_encode([
                 'courseidfield' => $this->course->id,
-                'outputprefix' => 'course_'
+                'outputprefix' => 'course_',
             ])
         );
 
@@ -206,11 +205,11 @@ class course_lookup_step_test extends \advanced_testcase {
     /**
      * Test for exception if course id entered directly with dynamic id as string.
      */
-    public function test_execute_course_id_string() {
+    public function test_execute_course_id_string(): void {
         $step = new \tool_trigger\steps\lookups\course_lookup_step(
             json_encode([
                 'courseidfield' => (string)$this->course->id,
-                'outputprefix' => 'course_'
+                'outputprefix' => 'course_',
             ])
         );
 

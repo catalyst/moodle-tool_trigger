@@ -14,14 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Process trigger system events.
- *
- * @package     tool_trigger
- * @copyright   Matt Porritt <mattp@catalyst-au.net>
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace tool_trigger;
 
 use tool_trigger\helper\processor_helper;
@@ -138,7 +130,7 @@ class event_processor {
         // If we do not have the triggers in the cache then return them from the DB.
         if ($sitesubscriptions === false) {
             // Set the array for the cache.
-            $sitesubscriptions = array();
+            $sitesubscriptions = [];
             if ($subscriptions = $DB->get_records_sql($sql)) {
                 foreach ($subscriptions as $subscription) {
                     $sitesubscriptions[$subscription->event] = true;
@@ -198,6 +190,21 @@ class event_processor {
         }
     }
 
+    /**
+     * Processes a real-time workflow by executing its steps immediately in response to an event.
+     *
+     * This method:
+     *  - Marks the workflow as triggered and updates its record in the database.
+     *  - Records the workflow trigger in history.
+     *  - Restores the triggering event from stored data.
+     *  - Iterates through workflow steps in order, executing each step and recording results.
+     *  - Stops execution early if a step fails or throws an error.
+     *  - Handles transactional safety for each step to prevent partial writes.
+     *  - If an error occurs, records the failed step and queues the workflow for retry via cron.
+     *
+     * @param \stdClass $workflow    The workflow object containing workflow metadata.
+     * @param \stdClass $evententry  The event entry object representing the trigger event data.
+     */
     private function process_realtime_workflow($workflow, $evententry) {
         global $DB;
 
@@ -292,20 +299,20 @@ class event_processor {
 
         // Get new run number.
         $sqlfrag = "SELECT MAX(number) FROM {tool_trigger_workflow_hist} WHERE workflowid = :wfid";
-        $runnumber = $DB->get_field_sql($sqlfrag, array('wfid' => $workflowid)) + 1;
+        $runnumber = $DB->get_field_sql($sqlfrag, ['wfid' => $workflowid]) + 1;
 
         // Encode event data as JSON.
         $eventdata = json_encode($event);
 
-        $id = $DB->insert_record('tool_trigger_workflow_hist', array(
+        $id = $DB->insert_record('tool_trigger_workflow_hist', [
             'workflowid' => $workflowid,
             'number' => $runnumber,
             'timecreated' => time(),
             'event' => $eventdata,
             'eventid' => $event->id,
             'userid' => $event->userid,
-            'attemptnum' => $attemptnum
-        ), true);
+            'attemptnum' => $attemptnum,
+        ], true);
 
         // Return the id for use in other tables.
         return $id;
@@ -488,7 +495,7 @@ class event_processor {
             'workflow' => $step->workflowid,
             'run' => $origrun,
             'number' => $step->number + 1,
-            'previd' => $step->id
+            'previd' => $step->id,
         ];
         $nextstep = $DB->get_record_sql($nextstepsql, $params);
 
@@ -529,7 +536,7 @@ class event_processor {
             'workflow' => $nextstep->workflowid,
             'run' => $runid,
             'stepname' => $nextstep->name,
-            'previd' => $previd
+            'previd' => $previd,
         ]);
 
         // Return the ID just executed for use in moving through the historic chain.
@@ -559,7 +566,7 @@ class event_processor {
         $nextstep = $DB->get_record_sql($nextstepsql, [
             'workflow' => $step->workflowid,
             'run' => $step->runid,
-            'number' => $step->number + 1
+            'number' => $step->number + 1,
         ]);
 
         // If no nextstep is found, jump out.
@@ -582,7 +589,7 @@ class event_processor {
         $newstepid = $DB->get_field_sql($newstepsql, [
             'workflow' => $nextstep->workflowid,
             'run' => $nextstep->runid,
-            'stepname' => $nextstep->name
+            'stepname' => $nextstep->name,
         ]);
         return $newstepid;
     }
@@ -619,7 +626,7 @@ class event_processor {
         $newstep = $DB->get_record_sql($newstepsql, [
             'workflow' => $step->workflowid,
             'run' => $newrunid,
-            'stepname' => $step->name
+            'stepname' => $step->name,
         ]);
 
         // Now execute the next step in the historic chain.
@@ -660,7 +667,7 @@ class event_processor {
         $newstep = $DB->get_record_sql($newstepsql, [
             'workflow' => $step->workflowid,
             'run' => $step->runid,
-            'stepname' => $step->name
+            'stepname' => $step->name,
         ]);
 
         // Now execute the next step, based on the step we just created.
@@ -809,7 +816,7 @@ class event_processor {
 
         // Get new run number.
         $sqlfrag = "SELECT MAX(number) FROM {tool_trigger_workflow_hist} WHERE workflowid = :wfid";
-        $runnumber = $DB->get_field_sql($sqlfrag, array('wfid' => $workflowid)) + 1;
+        $runnumber = $DB->get_field_sql($sqlfrag, ['wfid' => $workflowid]) + 1;
 
         // Encode event data as JSON.
         $eventdata = json_encode($event);
@@ -822,7 +829,7 @@ class event_processor {
             'timecreated' => time(),
             'event' => $eventdata,
             'eventid' => $event->id,
-            'failedstep' => $status
+            'failedstep' => $status,
         ];
 
         if (empty($runid)) {

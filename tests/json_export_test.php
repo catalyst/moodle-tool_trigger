@@ -31,22 +31,22 @@ namespace tool_trigger;
  * @copyright   Matt Porritt <mattp@catalyst-au.net>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class json_export_test extends \advanced_testcase {
+final class json_export_test extends \advanced_testcase {
 
-    public function setup():void {
+    public function setup(): void {
         $this->resetAfterTest(true);
     }
 
     /**
      * Test filename creations
      */
-    public function test_set_filename() {
+    public function test_set_filename(): void {
         $workflowobj = new \stdClass();  // Create workflow object.
         $workflowobj->name = '__testworkflow__';
         $workflowobj->description = 'test workflow description';
         $workflowobj->event = '\mod_scorm\event\user_report_viewed';
-        $workflowobj->steps = array (
-            358000 => array(
+        $workflowobj->steps = [
+            358000 => [
                 'id' => 358000,
                 'name' => 'a',
                 'description' => 's',
@@ -55,18 +55,18 @@ class json_export_test extends \advanced_testcase {
                 'data' => '{"useridfield":"userid","outputprefix":"user_","nodeleted":"1",'
                            .'"stepdesc":"User lookup","typedesc":"Lookup"}',
                 'steporder' => 0,
-            ),
-            358001 => array(
+            ],
+            358001 => [
                 'id' => 358001,
                 'name' => 's',
                 'description' => 's',
                 'type' => 'lookups',
                 'stepclass' => '/tool_trigger/steps/lookups/course_lookup_step',
                 'data' => '{"courseidfield":"courseid","outputprefix":"course_","stepdesc":"Course lookup","typedesc":"Lookup"}',
-                'steporder' => 1
-            )
+                'steporder' => 1,
+            ],
 
-        );
+        ];
         $workflowobj->moodleversion = 2018080300;
         $workflowobj->pluginversion = 2018080500;
 

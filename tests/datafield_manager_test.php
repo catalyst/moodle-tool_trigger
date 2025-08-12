@@ -14,6 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace tool_trigger;
+
+defined('MOODLE_INTERNAL') || die();
+
+global $CFG;
+require_once(__DIR__.'/fixtures/user_event_fixture.php');
+
 /**
  * Test of the datafield_manager trait
  *
@@ -22,15 +29,7 @@
  * @copyright  Catalyst IT 2018
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-namespace tool_trigger;
-
-defined('MOODLE_INTERNAL') || die();
-
-global $CFG;
-require_once(__DIR__.'/fixtures/user_event_fixture.php');
-
-class datafield_manager_test extends \advanced_testcase {
+final class datafield_manager_test extends \advanced_testcase {
     use \tool_trigger_user_event_fixture;
 
     /**
@@ -44,7 +43,7 @@ class datafield_manager_test extends \advanced_testcase {
     /**
      * Test that all the datafields are correctly generated.
      */
-    public function test_get_datafields() {
+    public function test_get_datafields(): void {
         $stepdata = ['foo' => 'bar'];
 
         // Tell PHPUnit to create a generic object that uses this trait. Handy!
@@ -97,7 +96,7 @@ class datafield_manager_test extends \advanced_testcase {
      *  - multiple instances of the same tag, in the template
      *  - some non-existent tags in the template (which should be left in place)
      */
-    public function test_render_datafields() {
+    public function test_render_datafields(): void {
         $stepdata = [
             'tagnotused' => 'valuenotused',
             'tagexists' => 'tagvalue',
@@ -145,7 +144,7 @@ Good tag again: tagvalue.', $populatedstring);
     public function test_render_datafields_transformcallback() {
         $stepdata = [
             'tagnotused' => 'valuenotused',
-            'tagexists' => 'tagvalue'
+            'tagexists' => 'tagvalue',
         ];
 
         $templatestring = 'Tag: {tagexists}';

@@ -72,17 +72,17 @@ function tool_trigger_output_fragment_new_step_form($args) {
     $workflowmanager = new \tool_trigger\workflow_manager();
     $stepclassobj = $workflowmanager->validate_and_make_step($stepclass);
 
-    $customdata = array(
+    $customdata = [
         'type'      => $steptype,
         'stepclass' => $stepclass,
         'steptext'  => $stepclass::get_step_name(),
         'steps' => $workflowmanager->get_steps_by_type($steptype),
         'event' => $event,
         'existingsteps' => $existingsteps,
-        'steporder' => $steporder
-    );
+        'steporder' => $steporder,
+    ];
 
-    $ajaxformdata = array();
+    $ajaxformdata = [];
     if (!empty($args['ajaxformdata'])) {
         // Don't need to clean/validate these, because formslib will do that.
         parse_str($args['ajaxformdata'], $ajaxformdata);

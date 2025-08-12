@@ -132,7 +132,7 @@ class json_export {
      *
      * @param string $workflowjson
      */
-    private function print_json_data ($workflowjson) {
+    private function print_json_data($workflowjson) {
         echo $workflowjson;
     }
 

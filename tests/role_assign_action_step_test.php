@@ -24,42 +24,42 @@ namespace tool_trigger;
  * @copyright  2019 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class role_assign_action_step_test extends \advanced_testcase {
+final class role_assign_action_step_test extends \advanced_testcase {
 
     /**
      * Test user.
-     * @var
+     * @var \stdClass
      */
     protected $user;
 
     /**
      * Test category.
-     * @var
+     * @var \stdClass
      */
     protected $course;
 
     /**
      * Test event.
-     * @var
+     * @var \core\event\role_assigned
      */
     protected $event;
 
     /**
      * Test role id.
-     * @var
+     * @var int
      */
     protected $roleid;
 
     /**
      * Test context.
-     * @var
+     * @var \context
      */
     protected $context;
 
     /**
      * Initial set up.
      */
-    public function setUp():void {
+    public function setUp(): void {
         parent::setUp();
 
         $this->resetAfterTest(true);
@@ -78,7 +78,7 @@ class role_assign_action_step_test extends \advanced_testcase {
             'other' => [
                 'id' => 'not important',
                 'component' => 'not important',
-                'itemid' => 'not important'
+                'itemid' => 'not important',
             ],
         ]);
 
@@ -89,7 +89,7 @@ class role_assign_action_step_test extends \advanced_testcase {
     /**
      * Test fields list.
      */
-    public function test_get_fields() {
+    public function test_get_fields(): void {
         $expected = [
             'role_assign_result',
             'role_assign_record_id',
@@ -100,7 +100,7 @@ class role_assign_action_step_test extends \advanced_testcase {
     /**
      * Test can use hardcoded values.
      */
-    public function test_execute_basic() {
+    public function test_execute_basic(): void {
         $this->assertFalse(user_has_role_assignment($this->user->id, $this->roleid, $this->context->id));
 
         $step = new \tool_trigger\steps\actions\role_assign_action_step(
@@ -121,7 +121,7 @@ class role_assign_action_step_test extends \advanced_testcase {
     /**
      * Test can use placeholders.
      */
-    public function test_execute_placeholder() {
+    public function test_execute_placeholder(): void {
         $this->assertFalse(user_has_role_assignment($this->user->id, $this->roleid, $this->context->id));
 
         $step = new \tool_trigger\steps\actions\role_assign_action_step(
@@ -142,7 +142,7 @@ class role_assign_action_step_test extends \advanced_testcase {
     /**
      * Test for exception if an invalid field name is entered.
      */
-    public function test_execute_nosuchfield() {
+    public function test_execute_nosuchfield(): void {
         $step = new \tool_trigger\steps\actions\role_assign_action_step(
             json_encode([
                 'useridfield' => 'nosuchfield',

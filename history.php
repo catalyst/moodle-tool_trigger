@@ -25,7 +25,7 @@
 require_once(__DIR__ . '/../../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
-admin_externalpage_setup('tool_trigger_worfklowsettings', '', null, '', array('pagelayout' => 'report'));
+admin_externalpage_setup('tool_trigger_worfklowsettings', '', null, '', ['pagelayout' => 'report']);
 
 $context = context_system::instance();
 
@@ -188,7 +188,7 @@ if (!empty($action) && confirm_sesskey()) {
             } else {
                 $confirmurl = new moodle_url('/admin/tool/trigger/history.php');
                 $confirmurl->params(['confirm' => 1, 'action' => $action, 'id' => $actionid,
-                    'workflow' => $workflowid, 'id' => $actionid]);
+                    'workflow' => $workflowid]);
                 $cancelurl = new moodle_url('/admin/tool/trigger/history.php', ['workflow' => $workflowid, 'run' => $runid]);
                 $string = get_string('rerunallcurrconfirm', 'tool_trigger');
             }
@@ -200,7 +200,7 @@ if (!empty($action) && confirm_sesskey()) {
             } else {
                 $confirmurl = new moodle_url('/admin/tool/trigger/history.php');
                 $confirmurl->params(['confirm' => 1, 'action' => $action, 'id' => $actionid,
-                    'workflow' => $workflowid, 'id' => $actionid]);
+                    'workflow' => $workflowid]);
                 $cancelurl = new moodle_url('/admin/tool/trigger/history.php', ['workflow' => $workflowid, 'run' => $runid]);
                 $string = get_string('rerunallhistconfirm', 'tool_trigger');
             }

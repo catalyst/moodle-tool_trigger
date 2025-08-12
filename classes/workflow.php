@@ -120,7 +120,7 @@ class workflow {
      * @return \string
      */
     public function get_name($context) {
-        return format_text($this->workflow->name, FORMAT_HTML, array('context' => $context));
+        return format_text($this->workflow->name, FORMAT_HTML, ['context' => $context]);
     }
 
     /**
@@ -130,6 +130,6 @@ class workflow {
      * @return \string
      */
     public function get_description($context) {
-        return format_text($this->descriptiontext, $this->descriptionformat, array('context' => $context));
+        return format_text($this->descriptiontext, $this->descriptionformat, ['context' => $context]);
     }
 }

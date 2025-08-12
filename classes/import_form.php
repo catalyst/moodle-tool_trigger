@@ -58,7 +58,7 @@ class import_form extends \moodleform {
 
         // Workflow file.
         $mform->addElement('filepicker', 'userfile', get_string('workflowfile', 'tool_trigger'), null,
-            array('maxbytes' => 256000, 'accepted_types' => '.json'));
+            ['maxbytes' => 256000, 'accepted_types' => '.json']);
         $mform->addRule('userfile', get_string('required'), 'required');
     }
 
@@ -73,7 +73,7 @@ class import_form extends \moodleform {
     public function validation($data, $files) {
         global $USER;
 
-        $validationerrors = array();
+        $validationerrors = [];
 
         // Get the file from the filestystem. $files will always be empty.
         $fs = get_file_storage();

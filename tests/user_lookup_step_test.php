@@ -14,15 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * "Fail" filter step's unit tests.
- *
- * @package    tool_trigger
- * @author     Aaron Wells <aaronw@catalyst.net.nz>
- * @copyright  Catalyst IT 2018
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace tool_trigger;
 
 defined('MOODLE_INTERNAL') || die();
@@ -30,14 +21,22 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once(__DIR__.'/fixtures/user_event_fixture.php');
 
-class user_lookup_step_test extends \advanced_testcase {
+/**
+ * User look up step's unit tests.
+ *
+ * @package    tool_trigger
+ * @author     Aaron Wells <aaronw@catalyst.net.nz>
+ * @copyright  Catalyst IT 2018
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+final class user_lookup_step_test extends \advanced_testcase {
     use \tool_trigger_user_event_fixture;
 
     /**
      * Create a "user_profile_viewed" event, of user1 viewing user2's
      * profile. And then run everything else as the cron user.
      */
-    public function setup():void {
+    public function setup(): void {
         $this->setup_user_event();
     }
 
@@ -46,12 +45,12 @@ class user_lookup_step_test extends \advanced_testcase {
      * user identified at "userid", and add their data with the
      * prefix "user_".
      */
-    public function test_execute_basic() {
+    public function test_execute_basic(): void {
         $step = new \tool_trigger\steps\lookups\user_lookup_step(
             json_encode([
                 'useridfield' => 'userid',
                 'outputprefix' => 'user_',
-                'nodeleted' => '1'
+                'nodeleted' => '1',
             ])
         );
 
@@ -65,7 +64,7 @@ class user_lookup_step_test extends \advanced_testcase {
     /**
      * Basic test, but this time with additional custom profile field.
      */
-    public function test_execute_basic_with_custom_profile_fields() {
+    public function test_execute_basic_with_custom_profile_fields(): void {
         // Create user profile fields.
         $field1 = $this->add_user_custom_profile_field('testfield1', 'text');
         $field2 = $this->add_user_custom_profile_field('testfield2', 'text');
@@ -79,7 +78,7 @@ class user_lookup_step_test extends \advanced_testcase {
             json_encode([
                 'useridfield' => 'userid',
                 'outputprefix' => 'user_',
-                'nodeleted' => '1'
+                'nodeleted' => '1',
             ])
         );
 
@@ -97,12 +96,12 @@ class user_lookup_step_test extends \advanced_testcase {
      * (an optional field, for events that involve one user interacting
      * with another), and use a different prefix.
      */
-    public function test_execute_relateduser() {
+    public function test_execute_relateduser(): void {
         $step = new \tool_trigger\steps\lookups\user_lookup_step(
             json_encode([
                 'useridfield' => 'relateduserid',
                 'outputprefix' => 'vieweduser_',
-                'nodeleted' => '1'
+                'nodeleted' => '1',
             ])
         );
 
@@ -116,12 +115,12 @@ class user_lookup_step_test extends \advanced_testcase {
     /**
      * Test for exception if an invalid field name is entered.
      */
-    public function test_execute_nosuchfield() {
+    public function test_execute_nosuchfield(): void {
         $step = new \tool_trigger\steps\lookups\user_lookup_step(
             json_encode([
                 'useridfield' => 'nosuchfield',
                 'outputprefix' => 'user_',
-                'nodeleted' => '1'
+                'nodeleted' => '1',
             ])
         );
 
@@ -132,7 +131,7 @@ class user_lookup_step_test extends \advanced_testcase {
     /**
      * Test for failure if a user is no longer present in the database.
      */
-    public function test_execute_deleted_user() {
+    public function test_execute_deleted_user(): void {
         // Delete one of our users.
         delete_user($this->user1);
 
@@ -142,7 +141,7 @@ class user_lookup_step_test extends \advanced_testcase {
             json_encode([
                 'useridfield' => 'userid',
                 'outputprefix' => 'user_',
-                'nodeleted' => '1'
+                'nodeleted' => '1',
             ])
         );
 
@@ -155,7 +154,7 @@ class user_lookup_step_test extends \advanced_testcase {
             json_encode([
                 'useridfield' => 'userid',
                 'outputprefix' => 'user_',
-                'nodeleted' => '0'
+                'nodeleted' => '0',
             ])
         );
         list($status2, $stepresults2) = $step2->execute(null, null, $this->event, []);

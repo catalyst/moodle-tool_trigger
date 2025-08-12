@@ -31,10 +31,11 @@ class logdump_action_step extends base_action_step {
      *
      * @var array
      */
-    private static $stepfields = array(
+    private static $stepfields = [
         'vardump',
-    );
+    ];
 
+    #[\Override]
     public function form_definition_extra(
                                         $form,
                                         $mform,
@@ -42,14 +43,17 @@ class logdump_action_step extends base_action_step {
         $mform->addElement('html', self::get_step_desc());
     }
 
+    #[\Override]
     public static function get_step_desc() {
         return get_string('step_action_logdump_desc', 'tool_trigger');
     }
 
+    #[\Override]
     public static function get_step_name() {
         return get_string('step_action_logdump_name', 'tool_trigger');
     }
 
+    #[\Override]
     public function execute($step, $trigger, $event, $stepresults) {
         mtrace('logdump step "' . $step->name);
         ob_start();
@@ -72,5 +76,4 @@ class logdump_action_step extends base_action_step {
         return self::$stepfields;
 
     }
-
 }

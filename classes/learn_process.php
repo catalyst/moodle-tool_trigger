@@ -37,7 +37,7 @@ class learn_process {
      *
      * @var array
      */
-    private $typearray = array();
+    private $typearray = [];
 
     /**
      * Get a list of all the distinct events names in the learning table.
@@ -64,7 +64,7 @@ class learn_process {
     private function get_learnt_records($learntevent) {
         global $DB;
 
-        $learntrecords = $DB->get_recordset('tool_trigger_learn_events', array('eventname' => $learntevent));
+        $learntrecords = $DB->get_recordset('tool_trigger_learn_events', ['eventname' => $learntevent]);
 
         return $learntrecords;
     }
@@ -161,7 +161,7 @@ class learn_process {
             $transaction = $DB->start_delegated_transaction();
 
             // Check for existing record in DB.
-            $exists = $DB->get_record('tool_trigger_event_fields', array('eventname' => $learntevent), '*', IGNORE_MISSING);
+            $exists = $DB->get_record('tool_trigger_event_fields', ['eventname' => $learntevent], '*', IGNORE_MISSING);
 
             if ($exists) {  // If record exists update.
                 $record->id = $exists->id;
@@ -180,7 +180,7 @@ class learn_process {
     /**
      * Process the learnt events and extract the field names.
      */
-    public function process () {
+    public function process() {
         global $DB;
 
         // Get a list of the event types from the learn table.
@@ -188,16 +188,16 @@ class learn_process {
 
         // For each type of event get all the entries for that event from the learn table.
         foreach ($learntevents as $learntevent) {
-            $processedrecords = array();
+            $processedrecords = [];
             $learntrecords = $this->get_learnt_records($learntevent);
 
             foreach ($learntrecords as $record) {
-                $this->typearray = array(); // Reset typearray before calling convert_record_type.
+                $this->typearray = []; // Reset typearray before calling convert_record_type.
                 // Convert each record into an array where key is field name and value is type.
                 $processedrecords[] = $this->convert_record_type($record, false);
 
                 // Remove learnt event from DB.
-                $DB->delete_records('tool_trigger_learn_events', array('id' => $record->id));
+                $DB->delete_records('tool_trigger_learn_events', ['id' => $record->id]);
             }
 
             $learntrecords->close(); // Don't forget to close the recordset!
@@ -239,7 +239,7 @@ class learn_process {
         global $DB;
         $jsonfields = $DB->get_record(
                 'tool_trigger_event_fields',
-                array('eventname' => $eventname), 'jsonfields', IGNORE_MISSING);
+                ['eventname' => $eventname], 'jsonfields', IGNORE_MISSING);
 
         return $jsonfields;
     }
@@ -252,30 +252,30 @@ class learn_process {
      */
     public function get_event_fields_with_type($eventname) {
         global $DB;
-        $fieldarray = array();
+        $fieldarray = [];
 
         $jsonfields = $DB->get_record(
             'tool_trigger_event_fields',
-            array('eventname' => $eventname), 'jsonfields', IGNORE_MISSING);
+            ['eventname' => $eventname], 'jsonfields', IGNORE_MISSING);
 
         if ($jsonfields) {
             $fields = json_decode($jsonfields->jsonfields, true);
             foreach ($fields as $field => $type) {
-                $fieldarray[] = array(
+                $fieldarray[] = [
                     'field' => $field,
-                    'type' => $type
-                );
+                    'type' => $type,
+                ];
             }
         }
 
-        $fieldarray[] = array(
+        $fieldarray[] = [
             'field' => 'wwwroot',
-            'type' => 'string'
-        );
-        $fieldarray[] = array(
+            'type' => 'string',
+        ];
+        $fieldarray[] = [
             'field' => 'wwwroot_domain',
-            'type' => 'string'
-        );
+            'type' => 'string',
+        ];
 
         return $fieldarray;
     }
