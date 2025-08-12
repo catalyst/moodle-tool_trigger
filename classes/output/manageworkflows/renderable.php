@@ -59,7 +59,7 @@ class renderable extends \table_sql implements \renderable {
 
         $this->set_attribute('id', 'tooltriggerrules_table');
         $this->set_attribute('class', 'tooltrigger managerules generaltable generalbox');
-        $this->define_columns(array(
+        $this->define_columns([
                 'name',
                 'description',
                 'eventname',
@@ -68,9 +68,9 @@ class renderable extends \table_sql implements \renderable {
                 'numsteps',
                 'lasttriggered',
                 'triggerhistory',
-                'manage'
-        ));
-        $this->define_headers(array(
+                'manage',
+        ]);
+        $this->define_headers([
                 get_string('name', 'tool_trigger'),
                 get_string('description', 'tool_trigger'),
                 get_string('event', 'tool_trigger'),
@@ -80,7 +80,7 @@ class renderable extends \table_sql implements \renderable {
                 get_string('lasttriggered', 'tool_trigger'),
                 get_string('triggerhistory', 'tool_trigger'),
                 get_string('manage', 'tool_trigger'),
-            )
+            ]
         );
         $this->pagesize = $perpage;
         $systemcontext = \context_system::instance();
@@ -101,7 +101,7 @@ class renderable extends \table_sql implements \renderable {
     public function col_name(\tool_trigger\workflow $workflow) {
         global $OUTPUT;
 
-        $editurl = new \moodle_url('/admin/tool/trigger/edit.php', array('workflowid' => $workflow->id));
+        $editurl = new \moodle_url('/admin/tool/trigger/edit.php', ['workflowid' => $workflow->id]);
         return \html_writer::link($editurl, $workflow->get_name($this->context));
     }
 
@@ -125,6 +125,8 @@ class renderable extends \table_sql implements \renderable {
         if (!empty($workflow->lasttriggered)) {
             return userdate($workflow->lasttriggered);
         }
+
+        return '-';
     }
 
     /**
@@ -141,8 +143,14 @@ class renderable extends \table_sql implements \renderable {
         }
     }
 
+    /**
+     * Generate content for triggerhistor column.
+     *
+     * @param \tool_trigger\workflow $workflow rule object
+     * @return string html used to display the column field.
+     */
     public function col_triggerhistory(\tool_trigger\workflow $workflow) {
-        $url = new \moodle_url('/admin/tool/trigger/history.php', array('workflow' => $workflow->id));
+        $url = new \moodle_url('/admin/tool/trigger/history.php', ['workflow' => $workflow->id]);
         return \html_writer::link($url, get_string('workflowviewhistory', 'tool_trigger'));
     }
 
@@ -157,29 +165,35 @@ class renderable extends \table_sql implements \renderable {
 
         $manage = '';
 
-        $editurl = new \moodle_url('/admin/tool/trigger/edit.php', array('workflowid' => $workflow->id));
+        $editurl = new \moodle_url('/admin/tool/trigger/edit.php', ['workflowid' => $workflow->id]);
         $icon = $OUTPUT->render(new \pix_icon('t/edit', get_string('editrule', 'tool_trigger')));
-        $manage .= \html_writer::link($editurl, $icon, array('class' => 'action-icon'));
+        $manage .= \html_writer::link($editurl, $icon, ['class' => 'action-icon']);
 
         // The user should always be able to copy the rule if they are able to view the page.
         $copyurl = new \moodle_url('/admin/tool/trigger/manageworkflow.php',
-                array('workflowid' => $workflow->id, 'action' => 'copy', 'sesskey' => sesskey()));
+                ['workflowid' => $workflow->id, 'action' => 'copy', 'sesskey' => sesskey()]);
         $icon = $OUTPUT->render(new \pix_icon('t/copy', get_string('duplicaterule', 'tool_trigger')));
-        $manage .= \html_writer::link($copyurl, $icon, array('class' => 'action-icon'));
+        $manage .= \html_writer::link($copyurl, $icon, ['class' => 'action-icon']);
 
-        $deleteurl = new \moodle_url('/admin/tool/trigger/manageworkflow.php', array('workflowid' => $workflow->id,
-                'action' => 'delete', 'sesskey' => sesskey()));
+        $deleteurl = new \moodle_url('/admin/tool/trigger/manageworkflow.php', ['workflowid' => $workflow->id,
+                'action' => 'delete', 'sesskey' => sesskey()]);
         $icon = $OUTPUT->render(new \pix_icon('t/delete', get_string('deleterule', 'tool_trigger')));
-        $manage .= \html_writer::link($deleteurl, $icon, array('class' => 'action-icon'));
+        $manage .= \html_writer::link($deleteurl, $icon, ['class' => 'action-icon']);
 
-        $downloadurl = new \moodle_url('/admin/tool/trigger/export.php', array('workflowid' => $workflow->id,
-            'action' => 'download', 'sesskey' => sesskey()));
+        $downloadurl = new \moodle_url('/admin/tool/trigger/export.php', ['workflowid' => $workflow->id,
+            'action' => 'download', 'sesskey' => sesskey()]);
         $icon = $OUTPUT->render(new \pix_icon('t/download', get_string('downloadrule', 'tool_trigger')));
-        $manage .= \html_writer::link($downloadurl, $icon, array('class' => 'action-icon'));
+        $manage .= \html_writer::link($downloadurl, $icon, ['class' => 'action-icon']);
 
         return $manage;
     }
 
+    /**
+     * Generate content for active column.
+     *
+     * @param \tool_trigger\workflow $workflow rule object
+     * @return string html used to display the manage column field.
+     */
     public function col_active($row) {
         if ($row->active) {
             return get_string('active');

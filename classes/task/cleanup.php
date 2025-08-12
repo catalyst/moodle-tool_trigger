@@ -64,7 +64,7 @@ class cleanup extends \core\task\scheduled_task {
                    AND timecreated < :timetocleanup";
         $DB->execute($sql, [
             'statusready' => \tool_trigger\task\process_workflows::STATUS_READY_TO_RUN,
-            'timetocleanup' => $timetocleanup
+            'timetocleanup' => $timetocleanup,
         ]);
 
         // Now delete processed queue items.
@@ -74,7 +74,7 @@ class cleanup extends \core\task\scheduled_task {
                    AND timemodified < :timetocleanup";
         $DB->execute($sql, [
             'statusready' => \tool_trigger\task\process_workflows::STATUS_READY_TO_RUN,
-            'timetocleanup' => $timetocleanup
+            'timetocleanup' => $timetocleanup,
         ]);
     }
 }

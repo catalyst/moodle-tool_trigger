@@ -209,7 +209,7 @@ class stringcompare_filter_step extends base_filter_step {
 
         $fields[] = $mform->createElement('select', 'wantmatch', 'Reverse match?', [
             1 => 'does',
-            0 => 'does not'
+            0 => 'does not',
         ]);
 
         // TODO: lang strings!
@@ -218,7 +218,7 @@ class stringcompare_filter_step extends base_filter_step {
             self::OPERATOR_CONTAINS => 'contain',
             self::OPERATOR_STARTS_WITH => 'start with',
             self::OPERATOR_ENDS_WITH => 'end with',
-            self::OPERATOR_REGEX => 'match regex'
+            self::OPERATOR_REGEX => 'match regex',
         ]);
 
         // TODO: lang string!
@@ -230,7 +230,7 @@ class stringcompare_filter_step extends base_filter_step {
 
         // Error instead of failure.
         $mform->addElement('advcheckbox', 'erroronfail', get_string ('erroronfail', 'tool_trigger'),
-            'Enable', array(), array(0, 1));
+            'Enable', [], [0, 1]);
         $mform->setType('erroronfail', PARAM_INT);
         $mform->addHelpButton('erroronfail', 'erroronfail', 'tool_trigger');
         $mform->setDefault('erroronfail', 0);

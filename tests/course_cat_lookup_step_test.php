@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace tool_trigger;
+
 /**
  * Course category look up tests.
  *
@@ -22,33 +24,30 @@
  * @copyright  2019 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-namespace tool_trigger;
-
-class course_cat_lookup_step_test extends \advanced_testcase {
+final class course_cat_lookup_step_test extends \advanced_testcase {
 
     /**
      * Test user.
-     * @var
+     * @var \stdClass
      */
     protected $user;
 
     /**
      * Test category.
-     * @var
+     * @var \stdClass
      */
     protected $category;
 
     /**
      * Test event.
-     * @var
+     * @var \core\event\course_category_created
      */
     protected $event;
 
     /**
      * Initial set up.
      */
-    public function setUp():void {
+    public function setUp(): void {
         parent::setUp();
 
         $this->resetAfterTest(true);
@@ -69,7 +68,7 @@ class course_cat_lookup_step_test extends \advanced_testcase {
     /**
      * Test fields list.
      */
-    public function test_get_fields() {
+    public function test_get_fields(): void {
         $expected = [
             'id',
             'name',
@@ -94,11 +93,11 @@ class course_cat_lookup_step_test extends \advanced_testcase {
      * Find the category identified at "objectid", and add their data with the
      * prefix "category_".
      */
-    public function test_execute_basic() {
+    public function test_execute_basic(): void {
         $step = new \tool_trigger\steps\lookups\course_cat_lookup_step(
             json_encode([
                 'categoryidfield' => 'objectid',
-                'outputprefix' => 'category_'
+                'outputprefix' => 'category_',
             ])
         );
 
@@ -114,11 +113,11 @@ class course_cat_lookup_step_test extends \advanced_testcase {
     /**
      * Test for exception if an invalid field name is entered.
      */
-    public function test_execute_nosuchfield() {
+    public function test_execute_nosuchfield(): void {
         $step = new \tool_trigger\steps\lookups\course_cat_lookup_step(
             json_encode([
                 'categoryidfield' => 'nosuchfield',
-                'outputprefix' => 'category_'
+                'outputprefix' => 'category_',
             ])
         );
 
@@ -129,7 +128,7 @@ class course_cat_lookup_step_test extends \advanced_testcase {
     /**
      * Test for failure if a category is no longer present in the database.
      */
-    public function test_execute_no_such_category() {
+    public function test_execute_no_such_category(): void {
         global $DB;
 
         $DB->delete_records('course_categories', ['id' => $this->category->id]);
@@ -137,7 +136,7 @@ class course_cat_lookup_step_test extends \advanced_testcase {
         $step = new \tool_trigger\steps\lookups\course_cat_lookup_step(
             json_encode([
                 'categoryidfield' => 'objectid',
-                'outputprefix' => 'category_'
+                'outputprefix' => 'category_',
             ])
         );
 
@@ -149,7 +148,7 @@ class course_cat_lookup_step_test extends \advanced_testcase {
      * Data provided to test hardcoded category id.
      * @return array
      */
-    public function hardcoded_category_id_data_provider() {
+    public function hardcoded_category_id_data_provider(): array {
 
         return [
             'Non-existing category id.' => [
@@ -180,11 +179,11 @@ class course_cat_lookup_step_test extends \advanced_testcase {
      *
      * @dataProvider hardcoded_category_id_data_provider
      */
-    public function test_execute_category_id($categoryid, $status, $exception) {
+    public function test_execute_category_id($categoryid, $status, $exception): void {
         $step = new \tool_trigger\steps\lookups\course_cat_lookup_step(
             json_encode([
                 'categoryidfield' => $categoryid,
-                'outputprefix' => 'category_'
+                'outputprefix' => 'category_',
             ])
         );
 
@@ -209,11 +208,11 @@ class course_cat_lookup_step_test extends \advanced_testcase {
     /**
      * Test dynamic category id as int.
      */
-    public function test_execute_category_id_integer() {
+    public function test_execute_category_id_integer(): void {
         $step = new \tool_trigger\steps\lookups\course_cat_lookup_step(
             json_encode([
                 'categoryidfield' => $this->category->id,
-                'outputprefix' => 'category_'
+                'outputprefix' => 'category_',
             ])
         );
 
@@ -229,11 +228,11 @@ class course_cat_lookup_step_test extends \advanced_testcase {
     /**
      * Test dynamic category id as string.
      */
-    public function test_execute_category_id_string() {
+    public function test_execute_category_id_string(): void {
         $step = new \tool_trigger\steps\lookups\course_cat_lookup_step(
             json_encode([
                 'categoryidfield' => (string) $this->category->id,
-                'outputprefix' => 'category_'
+                'outputprefix' => 'category_',
             ])
         );
 

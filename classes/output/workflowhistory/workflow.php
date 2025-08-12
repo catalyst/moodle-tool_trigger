@@ -14,6 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace tool_trigger\output\workflowhistory;
+
+defined('MOODLE_INTERNAL') || die;
+
+require_once($CFG->libdir . '/tablelib.php');
+
+
 /**
  * Renderable class for workflow history page.
  *
@@ -21,13 +28,6 @@
  * @copyright  Peter Burnett <peterburnett@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-namespace tool_trigger\output\workflowhistory;
-
-defined('MOODLE_INTERNAL') || die;
-
-require_once($CFG->libdir . '/tablelib.php');
-
 class workflowhistory_renderable extends \table_sql implements \renderable {
     /**
      * @var \context_course|\context_system context of the page to be rendered.
@@ -101,22 +101,55 @@ class workflowhistory_renderable extends \table_sql implements \renderable {
         }
     }
 
+    /**
+     * Column renderer for run ID.
+     *
+     * @param \stdClass $run Run record.
+     * @return int Run ID.
+     */
     public function col_id($run) {
         return $run->id;
     }
 
+    /**
+     * Column renderer for run number.
+     *
+     * @param \stdClass $run Run record.
+     * @return int Run number.
+     */
     public function col_number($run) {
         return $run->number;
     }
 
+    /**
+     * Column renderer for event ID.
+     *
+     * @param \stdClass $run Run record.
+     * @return int Event ID.
+     */
     public function col_eventid($run) {
         return $run->eventid;
     }
 
+    /**
+     * Column renderer for the username.
+     *
+     * @param \stdClass $run Run record (must contain user fields for fullname()).
+     * @return string Full name of the user.
+     */
     public function col_username($run) {
         return fullname($run);
     }
 
+    /**
+     * Column renderer for event description.
+     *
+     * Decodes the stored event JSON, restores the event object,
+     * and retrieves its human-readable description.
+     *
+     * @param \stdClass $run Run record.
+     * @return string Event description.
+     */
     public function col_description($run) {
         // Get the event class from info.
         $evententry = json_decode($run->event);
@@ -126,11 +159,30 @@ class workflowhistory_renderable extends \table_sql implements \renderable {
         return $eventobject->get_description();
     }
 
+    /**
+     * Column renderer for run time.
+     *
+     * @param \stdClass $run Run record.
+     * @return string Formatted date/time string.
+     */
     public function col_time($run) {
         $format = get_string('strftimedatetimeshort', 'langconfig');
         return userdate($run->timecreated, $format);
     }
 
+    /**
+     * Column renderer for run status.
+     *
+     * Produces a status badge (or plain text when downloading)
+     * indicating the outcome of the run:
+     * - Warning badge with retry info if error step encountered.
+     * - Info badge for cancelled or deferred steps.
+     * - Danger badge for failed steps.
+     * - Success badge for passed runs.
+     *
+     * @param \stdClass $run Run record.
+     * @return string HTML for badge or plain text for downloads.
+     */
     public function col_runstatus($run) {
         global $DB;
 
@@ -173,6 +225,15 @@ class workflowhistory_renderable extends \table_sql implements \renderable {
         }
     }
 
+    /**
+     * Column renderer for available actions on a run.
+     *
+     * Uses the workflow history renderer to produce action buttons.
+     * Status-only actions are shown if the run is cancelled or deferred.
+     *
+     * @param \stdClass $run Run record.
+     * @return string HTML for action buttons.
+     */
     public function col_actions($run) {
         global $PAGE;
 
@@ -180,7 +241,7 @@ class workflowhistory_renderable extends \table_sql implements \renderable {
 
         $statusonly = !empty($run->failedstep) &&
             ((int) $run->failedstep === \tool_trigger\task\process_workflows::STATUS_CANCELLED ||
-            (int) $run->failedstep === \tool_trigger\task\process_workflows::STATUS_DEFERRED);
+                (int) $run->failedstep === \tool_trigger\task\process_workflows::STATUS_DEFERRED);
 
         return $renderer->run_actions_button($run, $statusonly, $this->searchparams);
     }

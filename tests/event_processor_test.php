@@ -14,14 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Event processor unit tests.
- *
- * @package    tool_trigger
- * @copyright  Matt Porritt <mattp@catalyst-au.net>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace tool_trigger;
 
 defined('MOODLE_INTERNAL') || die();
@@ -37,35 +29,34 @@ require_once('tool_trigger_testcase.php');
  * @copyright   Matt Porritt <mattp@catalyst-au.net>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-class event_processor_test extends \tool_trigger_testcase {
+final class event_processor_test extends \tool_trigger_testcase {
 
     /**
      * Event array.
-     * @var
+     * @var array
      */
     protected $eventarr;
 
     /**
      * Test user.
-     * @var
+     * @var \stdClass
      */
     protected $user;
 
     /**
      * Test context.
-     * @var
+     * @var \context
      */
     protected $context;
 
 
-    public function setup():void {
+    public function setup(): void {
         $this->resetAfterTest(true);
         // Create an event. This _is_ easier to do via direct DB insertions.
         $user = $this->getDataGenerator()->create_user();
         $context = \context_system::instance();
 
-        $eventarr = array(
+        $eventarr = [
         'objectid' => $user->id,
         'contextid' => $context->id,
         'userid' => $user->id,
@@ -74,7 +65,7 @@ class event_processor_test extends \tool_trigger_testcase {
         'anonymous' => 0,
         'other' => ['username' => $user->username],
 
-        );
+        ];
 
         $this->eventarr = $eventarr;
         $this->user = $user;
@@ -84,7 +75,7 @@ class event_processor_test extends \tool_trigger_testcase {
         \core\cron::setup_user();
     }
 
-    public function tearDown():void {
+    public function tearDown(): void {
         global $DB;
         // Manually clear all related DB tables. Avoids voodoo failing tests.
         $DB->delete_records('tool_trigger_run_hist', []);
@@ -94,13 +85,14 @@ class event_processor_test extends \tool_trigger_testcase {
 
         // Purge caches that may cause issues with events being ignored.
         \cache_helper::purge_by_definition('tool_trigger', 'eventsubscriptions');
+        parent::tearDown();
     }
 
     /**
      * Test is event ignored.
      * Test event with no associated workflow is ignored.
      */
-    public function test_is_event_ignored() {
+    public function test_is_event_ignored(): void {
 
         $event = \core\event\user_loggedin::create($this->eventarr);
 
@@ -116,7 +108,7 @@ class event_processor_test extends \tool_trigger_testcase {
      * Test is event ignored.
      * Test event with no associated workflow is NOT ignored.
      */
-    public function test_is_event_ignored_false() {
+    public function test_is_event_ignored_false(): void {
 
         $this->create_workflow(); // Add a workflow to the database.
         $event = \core\event\user_loggedin::create($this->eventarr);
@@ -132,7 +124,7 @@ class event_processor_test extends \tool_trigger_testcase {
     /**
      * Test is prepare event data when learning mode is false.
      */
-    public function test_prepare_event() {
+    public function test_prepare_event(): void {
         $event = \core\event\user_loggedin::create($this->eventarr);
 
         // We're testing a protected method, so we need to setup reflector magic.
@@ -148,7 +140,7 @@ class event_processor_test extends \tool_trigger_testcase {
      * Test processing event.
      * Ensure details for a non ignored event end up in database.
      */
-    public function test_process_event_add_event_to_db() {
+    public function test_process_event_add_event_to_db(): void {
         global $DB;
         $this->create_workflow();
 
@@ -164,7 +156,7 @@ class event_processor_test extends \tool_trigger_testcase {
      * Test processing real time event.
      * Ensure realtime event processed and timetriggered updated in DB.
      */
-    public function test_process_realtime_workflow() {
+    public function test_process_realtime_workflow(): void {
         global $DB;
 
         $now = time();
@@ -187,7 +179,7 @@ class event_processor_test extends \tool_trigger_testcase {
     /**
      * Test processing real time event with an error will add a message to a queue to process later.
      */
-    public function test_process_realtime_workflow_save_to_queue_if_failed() {
+    public function test_process_realtime_workflow_save_to_queue_if_failed(): void {
         global $DB;
 
         $now = time();
@@ -200,7 +192,7 @@ class event_processor_test extends \tool_trigger_testcase {
                 'name' => 'Get user data',
                 'description' => 'Get user data',
                 'useridfield' => 'broken_field', // This should trigger exception on look up step.
-                'outputprefix' => 'user_'
+                'outputprefix' => 'user_',
             ],
         ];
 
@@ -220,7 +212,7 @@ class event_processor_test extends \tool_trigger_testcase {
         $this->assertGreaterThanOrEqual($now, $timetriggered);
     }
 
-    public function test_record_workflow_trigger() {
+    public function test_record_workflow_trigger(): void {
         // Perform basic workflow setup, with debug mode disabled.
         global $DB;
         $workflowid = $this->create_workflow(1);
@@ -260,7 +252,7 @@ class event_processor_test extends \tool_trigger_testcase {
                 'name' => 'Get user data',
                 'description' => 'Get user data',
                 'useridfield' => 'broken_field', // This should trigger exception on look up step.
-                'outputprefix' => 'user_'
+                'outputprefix' => 'user_',
             ],
         ];
         // Now create a new indentical WF, and check that only 1 set of events is logged.
@@ -277,7 +269,7 @@ class event_processor_test extends \tool_trigger_testcase {
         $this->assertEquals(1, $histrecord2->number);
     }
 
-    public function test_record_step_trigger() {
+    public function test_record_step_trigger(): void {
         // Perform basic workflow setup, with debug mode disabled.
         global $DB;
         $this->create_workflow(1);
@@ -299,7 +291,7 @@ class event_processor_test extends \tool_trigger_testcase {
                 'name' => 'Get user data',
                 'description' => 'Get user data',
                 'useridfield' => 'userid',
-                'outputprefix' => 'user_'
+                'outputprefix' => 'user_',
             ],
             [
                 'id' => 1,
@@ -309,8 +301,8 @@ class event_processor_test extends \tool_trigger_testcase {
                 'name' => 'Get user data2',
                 'description' => 'Get user data2',
                 'useridfield' => 'userid',
-                'outputprefix' => 'user2_'
-            ]
+                'outputprefix' => 'user2_',
+            ],
         ];
 
         // Now create a workflow with debug mode enabled.
@@ -351,7 +343,7 @@ class event_processor_test extends \tool_trigger_testcase {
                 'name' => 'Get user data',
                 'description' => 'Get user data',
                 'useridfield' => 'userid',
-                'outputprefix' => 'user_'
+                'outputprefix' => 'user_',
             ],
             [
                 'id' => 1,
@@ -361,8 +353,8 @@ class event_processor_test extends \tool_trigger_testcase {
                 'name' => 'Get user data2',
                 'description' => 'Get user data2',
                 'useridfield' => 'broken_field',
-                'outputprefix' => 'user2_'
-            ]
+                'outputprefix' => 'user2_',
+            ],
         ];
 
         $this->create_workflow(1, $brokensteps, 1);
@@ -374,7 +366,7 @@ class event_processor_test extends \tool_trigger_testcase {
         $this->assertEquals(2, $countrunhist3);
     }
 
-    public function test_execute_current_step() {
+    public function test_execute_current_step(): void {
         // Perform basic workflow setup, with debug mode enabled.
         global $DB;
         $steps = [
@@ -386,7 +378,7 @@ class event_processor_test extends \tool_trigger_testcase {
                 'name' => 'Get user data',
                 'description' => 'Get user data',
                 'useridfield' => 'userid',
-                'outputprefix' => 'user_'
+                'outputprefix' => 'user_',
             ],
             [
                 'id' => 1,
@@ -396,8 +388,8 @@ class event_processor_test extends \tool_trigger_testcase {
                 'name' => 'Get user data2',
                 'description' => 'Get user data2',
                 'useridfield' => 'userid',
-                'outputprefix' => 'user2_'
-            ]
+                'outputprefix' => 'user2_',
+            ],
         ];
         $this->create_workflow(1, $steps, 1);
 
@@ -439,7 +431,7 @@ class event_processor_test extends \tool_trigger_testcase {
         $this->assertNotEquals($secondstep->description, $newstep->description);
     }
 
-    public function test_execute_historic_step() {
+    public function test_execute_historic_step(): void {
         // Perform basic workflow setup, with debug mode enabled.
         global $DB;
         $steps = [
@@ -451,7 +443,7 @@ class event_processor_test extends \tool_trigger_testcase {
                 'name' => 'Get user data',
                 'description' => 'Get user data',
                 'useridfield' => 'userid',
-                'outputprefix' => 'user_'
+                'outputprefix' => 'user_',
             ],
             [
                 'id' => 1,
@@ -461,8 +453,8 @@ class event_processor_test extends \tool_trigger_testcase {
                 'name' => 'Get user data2',
                 'description' => 'Get user data2',
                 'useridfield' => 'userid',
-                'outputprefix' => 'user2_'
-            ]
+                'outputprefix' => 'user2_',
+            ],
         ];
         $this->create_workflow(1, $steps, 1);
 
@@ -497,7 +489,7 @@ class event_processor_test extends \tool_trigger_testcase {
         $this->assertEquals($secondstep->prevstepid, $newstep->prevstepid);
     }
 
-    public function test_execute_next_step_current() {
+    public function test_execute_next_step_current(): void {
         // Perform basic workflow setup, with debug mode enabled.
         global $DB;
         $steps = [
@@ -509,7 +501,7 @@ class event_processor_test extends \tool_trigger_testcase {
                 'name' => 'Get user data',
                 'description' => 'Get user data',
                 'useridfield' => 'userid',
-                'outputprefix' => 'user_'
+                'outputprefix' => 'user_',
             ],
             [
                 'id' => 1,
@@ -519,8 +511,8 @@ class event_processor_test extends \tool_trigger_testcase {
                 'name' => 'Get user data2',
                 'description' => 'Get user data2',
                 'useridfield' => 'userid',
-                'outputprefix' => 'user2_'
-            ]
+                'outputprefix' => 'user2_',
+            ],
         ];
         $this->create_workflow(1, $steps, 1);
 
@@ -554,7 +546,7 @@ class event_processor_test extends \tool_trigger_testcase {
         $this->assertNotEquals($secondstep->description, $thirdstep->description);
     }
 
-    public function test_execute_next_step_historic() {
+    public function test_execute_next_step_historic(): void {
         // Perform basic workflow setup, with debug mode enabled.
         global $DB;
         $steps = [
@@ -566,7 +558,7 @@ class event_processor_test extends \tool_trigger_testcase {
                 'name' => 'Get user data',
                 'description' => 'Get user data',
                 'useridfield' => 'userid',
-                'outputprefix' => 'user_'
+                'outputprefix' => 'user_',
             ],
             [
                 'id' => 0,
@@ -576,8 +568,8 @@ class event_processor_test extends \tool_trigger_testcase {
                 'name' => 'Get user data2',
                 'description' => 'Get user data2',
                 'useridfield' => 'userid',
-                'outputprefix' => 'user2_'
-            ]
+                'outputprefix' => 'user2_',
+            ],
         ];
         $this->create_workflow(1, $steps, 1);
 
@@ -606,7 +598,7 @@ class event_processor_test extends \tool_trigger_testcase {
         $this->assertEquals($secondstep->prevstepid, $thirdstep->prevstepid);
     }
 
-    public function test_execute_step_and_continue_current() {
+    public function test_execute_step_and_continue_current(): void {
         // Perform basic workflow setup, with debug mode enabled.
         global $DB;
         $steps = [
@@ -618,7 +610,7 @@ class event_processor_test extends \tool_trigger_testcase {
                 'name' => 'Get user data',
                 'description' => 'Get user data',
                 'useridfield' => 'userid',
-                'outputprefix' => 'user_'
+                'outputprefix' => 'user_',
             ],
             [
                 'id' => 1,
@@ -630,8 +622,8 @@ class event_processor_test extends \tool_trigger_testcase {
                 'emailto' => 'testusernotinmoodle@example.com',
                 'emailsubject' => 'Subject of the email',
                 'emailcontent_editor[text]' => 'Content of the email',
-                'emailcontent_editor[format]' => 0
-            ]
+                'emailcontent_editor[format]' => 0,
+            ],
         ];
         $this->create_workflow(1, $steps, 1);
 
@@ -697,7 +689,7 @@ class event_processor_test extends \tool_trigger_testcase {
                 'name' => 'Get user data',
                 'description' => 'Get user data',
                 'useridfield' => 'userid',
-                'outputprefix' => 'user_'
+                'outputprefix' => 'user_',
             ],
             [
                 'id' => 1,
@@ -709,7 +701,7 @@ class event_processor_test extends \tool_trigger_testcase {
                 'emailto' => 'testusernotinmoodle@example.com',
                 'emailsubject' => 'Subject of the email',
                 'emailcontent_editor[text]' => 'Content of the email',
-                'emailcontent_editor[format]' => 0
+                'emailcontent_editor[format]' => 0,
             ],
             [
                 'id' => 2,
@@ -721,7 +713,7 @@ class event_processor_test extends \tool_trigger_testcase {
                 'emailto' => 'testusernotinmoodle@example.com',
                 'emailsubject' => 'Subject of the email',
                 'emailcontent_editor[text]' => 'Content of the email',
-                'emailcontent_editor[format]' => 0
+                'emailcontent_editor[format]' => 0,
             ],
             [
                 'id' => 3,
@@ -733,8 +725,8 @@ class event_processor_test extends \tool_trigger_testcase {
                 'emailto' => 'testusernotinmoodle@example.com',
                 'emailsubject' => 'Subject of the email',
                 'emailcontent_editor[text]' => 'Content of the email',
-                'emailcontent_editor[format]' => 0
-            ]
+                'emailcontent_editor[format]' => 0,
+            ],
         ];
         $this->create_workflow(1, $longsteps, 1);
         \tool_trigger\event_processor::process_event($event);
@@ -765,7 +757,7 @@ class event_processor_test extends \tool_trigger_testcase {
         $this->assertEquals(8, count($fouthrecords));
     }
 
-    public function test_execute_step_and_continue_historic() {
+    public function test_execute_step_and_continue_historic(): void {
         // Perform basic workflow setup, with debug mode enabled.
         global $DB;
         $steps = [
@@ -777,7 +769,7 @@ class event_processor_test extends \tool_trigger_testcase {
                 'name' => 'Get user data',
                 'description' => 'Get user data',
                 'useridfield' => 'userid',
-                'outputprefix' => 'user_'
+                'outputprefix' => 'user_',
             ],
             [
                 'id' => 1,
@@ -787,8 +779,8 @@ class event_processor_test extends \tool_trigger_testcase {
                 'name' => 'Get user data2',
                 'description' => 'Get user data2',
                 'useridfield' => 'userid',
-                'outputprefix' => 'user2_'
-            ]
+                'outputprefix' => 'user2_',
+            ],
         ];
         $this->create_workflow(1, $steps, 1);
 
@@ -845,7 +837,7 @@ class event_processor_test extends \tool_trigger_testcase {
                 'name' => 'Get user data',
                 'description' => 'Get user data',
                 'useridfield' => 'userid',
-                'outputprefix' => 'user_'
+                'outputprefix' => 'user_',
             ],
             [
                 'id' => 1,
@@ -855,7 +847,7 @@ class event_processor_test extends \tool_trigger_testcase {
                 'name' => 'Get user data2',
                 'description' => 'Get user data2',
                 'useridfield' => 'userid',
-                'outputprefix' => 'user2_'
+                'outputprefix' => 'user2_',
             ],
             [
                 'id' => 2,
@@ -865,7 +857,7 @@ class event_processor_test extends \tool_trigger_testcase {
                 'name' => 'Get user data3',
                 'description' => 'Get user data3',
                 'useridfield' => 'userid',
-                'outputprefix' => 'user3_'
+                'outputprefix' => 'user3_',
             ],
             [
                 'id' => 3,
@@ -875,8 +867,8 @@ class event_processor_test extends \tool_trigger_testcase {
                 'name' => 'Get user data4',
                 'description' => 'Get user data4',
                 'useridfield' => 'userid',
-                'outputprefix' => 'user4_'
-            ]
+                'outputprefix' => 'user4_',
+            ],
         ];
         $this->create_workflow(1, $longsteps, 1);
         \tool_trigger\event_processor::process_event($event);
@@ -904,7 +896,7 @@ class event_processor_test extends \tool_trigger_testcase {
         $this->assertEquals(8, count($fouthrecords));
     }
 
-    public function test_execute_workflow_from_event_current() {
+    public function test_execute_workflow_from_event_current(): void {
         // Perform basic workflow setup, with debug mode enabled.
         global $DB;
         $steps = [
@@ -916,7 +908,7 @@ class event_processor_test extends \tool_trigger_testcase {
                 'name' => 'Get user data',
                 'description' => 'Get user data',
                 'useridfield' => 'userid',
-                'outputprefix' => 'user_'
+                'outputprefix' => 'user_',
             ],
             [
                 'id' => 1,
@@ -926,8 +918,8 @@ class event_processor_test extends \tool_trigger_testcase {
                 'name' => 'Get user data2',
                 'description' => 'Get user data2',
                 'useridfield' => 'userid',
-                'outputprefix' => 'user2_'
-            ]
+                'outputprefix' => 'user2_',
+            ],
         ];
         $this->create_workflow(1, $steps, 1);
 
@@ -967,7 +959,7 @@ class event_processor_test extends \tool_trigger_testcase {
         $this->assertEquals('New description', $secondstep->description);
     }
 
-    public function test_execute_workflow_from_event_historic() {
+    public function test_execute_workflow_from_event_historic(): void {
         // Perform basic workflow setup, with debug mode enabled.
         global $DB;
         $steps = [
@@ -979,7 +971,7 @@ class event_processor_test extends \tool_trigger_testcase {
                 'name' => 'Get user data',
                 'description' => 'Get user data',
                 'useridfield' => 'userid',
-                'outputprefix' => 'user_'
+                'outputprefix' => 'user_',
             ],
             [
                 'id' => 1,
@@ -989,8 +981,8 @@ class event_processor_test extends \tool_trigger_testcase {
                 'name' => 'Get user data2',
                 'description' => 'Get user data2',
                 'useridfield' => 'userid',
-                'outputprefix' => 'user2_'
-            ]
+                'outputprefix' => 'user2_',
+            ],
         ];
         $this->create_workflow(1, $steps, 1);
 
@@ -1018,7 +1010,7 @@ class event_processor_test extends \tool_trigger_testcase {
         $this->assertEquals($firstruncount, $secondruncount);
     }
 
-    public function test_rerun_all_error_runs() {
+    public function test_rerun_all_error_runs(): void {
         global $DB;
 
         set_config('historyduration', 14 * DAYSECS, 'tool_trigger');
@@ -1033,7 +1025,7 @@ class event_processor_test extends \tool_trigger_testcase {
                 'name' => 'Get user data',
                 'description' => 'Get user data',
                 'useridfield' => 'userid',
-                'outputprefix' => 'user_'
+                'outputprefix' => 'user_',
             ],
             [
                 'id' => 1,
@@ -1043,8 +1035,8 @@ class event_processor_test extends \tool_trigger_testcase {
                 'name' => 'Get user data2',
                 'description' => 'Get user data2',
                 'useridfield' => 'userid',
-                'outputprefix' => 'user2_'
-            ]
+                'outputprefix' => 'user2_',
+            ],
         ];
         $wfid = $this->create_workflow(1, $goodsteps, 1);
 
@@ -1079,7 +1071,7 @@ class event_processor_test extends \tool_trigger_testcase {
                 'field1' => 123,
                 'operator' => '==',
                 'field2' => 456,
-            ]
+            ],
         ];
 
         // New workflow with these steps.
@@ -1115,7 +1107,7 @@ class event_processor_test extends \tool_trigger_testcase {
                 'field1' => 123,
                 'operator' => 'invalid operator',
                 'field2' => 456,
-            ]
+            ],
         ];
 
         // New workflow with these steps.
@@ -1159,7 +1151,7 @@ class event_processor_test extends \tool_trigger_testcase {
         $this->assertEquals($insertedid, $third->id);
     }
 
-    public function test_cleanup_history() {
+    public function test_cleanup_history(): void {
         global $DB;
         $this->resetAfterTest();
 

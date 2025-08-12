@@ -14,6 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace tool_trigger;
+
+defined('MOODLE_INTERNAL') || die();
+
+global $CFG;
+require_once($CFG->dirroot . '/admin/tool/trigger/lib.php');
+
 /**
  * Test for the rendering of the forms of all the step classes.
  *
@@ -21,22 +28,18 @@
  * @copyright  Matt Porritt <mattp@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+final class steps_form_test extends \advanced_testcase {
 
-defined('MOODLE_INTERNAL') || die();
-
-global $CFG;
-require_once($CFG->dirroot . '/admin/tool/trigger/lib.php');
-
-class tool_trigger_steps_form_testcase extends advanced_testcase {
-
-    public function setUp():void {
+    public function setUp(): void {
+        parent::setUp();
         // Run as admin user.
         $this->setAdminUser();
     }
 
-    public function tearDown():void {
+    public function tearDown(): void {
         // Reset user for tests.
         $this->setUser();
+        parent::tearDown();
     }
 
     /**
@@ -45,7 +48,7 @@ class tool_trigger_steps_form_testcase extends advanced_testcase {
      * @return array $fields The event fields.
      */
     public function get_event_fields() {
-        $fields = array(
+        $fields = [
             'eventname' => 'string',
             'component' => 'string',
             'action' => 'string',
@@ -65,8 +68,8 @@ class tool_trigger_steps_form_testcase extends advanced_testcase {
             'timecreated' => 'integer',
             'origin' => 'string',
             'ip' => 'string',
-            'realuserid' => 'string'
-        );
+            'realuserid' => 'string',
+        ];
 
         return $fields;
     }
@@ -74,10 +77,10 @@ class tool_trigger_steps_form_testcase extends advanced_testcase {
     /**
      * Test the display of the starting form (with just the "type" and "step" menus).
      */
-    public function test_base_form() {
+    public function test_base_form(): void {
         // This lib function simply prints out the base form.
         $html = tool_trigger_output_fragment_new_base_form([
-            'context' => \context_system::instance()
+            'context' => \context_system::instance(),
         ]);
 
         // Check that it has these form fields.
@@ -100,7 +103,7 @@ class tool_trigger_steps_form_testcase extends advanced_testcase {
      * @dataProvider provide_steps
      * @runInSeparateProcess
      */
-    public function test_step_form($steptype, $stepclass) {
+    public function test_step_form($steptype, $stepclass): void {
         global $PAGE;
 
         $PAGE->set_url('/');
@@ -111,7 +114,7 @@ class tool_trigger_steps_form_testcase extends advanced_testcase {
             'stepclass' => $stepclass,
             'event' => '\core\event\user_loggedin',
             'existingsteps' => '[]',
-            'steporder' => 0
+            'steporder' => 0,
         ]);
 
         // We mostly want to test that it renders with no errors thrown.
@@ -124,7 +127,7 @@ class tool_trigger_steps_form_testcase extends advanced_testcase {
     /**
      * Test getting the available fields from database.
      */
-    public function test_get_trigger_fields() {
+    public function test_get_trigger_fields(): void {
         $this->resetAfterTest();
         global $DB;
 
@@ -141,142 +144,142 @@ class tool_trigger_steps_form_testcase extends advanced_testcase {
         $DB->insert_record('tool_trigger_event_fields', $record);
 
         // We're testing a private method, so we need to setup reflector magic.
-        $method = new ReflectionMethod('tool_trigger\steps\base\base_form', 'get_trigger_fields');
+        $method = new \ReflectionMethod('tool_trigger\steps\base\base_form', 'get_trigger_fields');
         $method->setAccessible(true); // Allow accessing of private method.
         $proxy = $method->invoke(
                 new \tool_trigger\steps\base\base_form,
                 '\core\event\user_login_failed',
                 '\tool_trigger\steps\lookups\course_lookup_step',
-                array(),
+                [],
                 -1
                 );  // Get result of invoked method.
 
-        $expected = array (
+        $expected = [
             'fields' =>
-            array (
+             [
                 0 =>
-                array (
+                 [
                     'field' => 'id',
                     'type' => 'string',
-                ),
+                ],
                 1 =>
-                array (
+                 [
                     'field' => 'eventname',
                     'type' => 'string',
-                ),
+                ],
                 2 =>
-                array (
+                 [
                     'field' => 'component',
                     'type' => 'string',
-                ),
+                ],
                 3 =>
-                array (
+                 [
                     'field' => 'action',
                     'type' => 'string',
-                ),
+                ],
                 4 =>
-                array (
+                 [
                     'field' => 'target',
                     'type' => 'string',
-                ),
+                ],
                 5 =>
-                array (
+                 [
                     'field' => 'objecttable',
                     'type' => 'string',
-                ),
+                ],
                 6 =>
-                array (
+                 [
                     'field' => 'objectid',
                     'type' => 'string',
-                ),
+                ],
                 7 =>
-                array (
+                 [
                     'field' => 'crud',
                     'type' => 'string',
-                ),
+                ],
                 8 =>
-                array (
+                 [
                     'field' => 'edulevel',
                     'type' => 'string',
-                ),
+                ],
                 9 =>
-                array (
+                 [
                     'field' => 'contextid',
                     'type' => 'string',
-                ),
+                ],
                 10 =>
-                array (
+                 [
                     'field' => 'contextlevel',
                     'type' => 'string',
-                ),
+                ],
                 11 =>
-                array (
+                 [
                     'field' => 'contextinstanceid',
                     'type' => 'string',
-                ),
+                ],
                 12 =>
-                array (
+                 [
                     'field' => 'userid',
                     'type' => 'string',
-                ),
+                ],
                 13 =>
-                array (
+                 [
                     'field' => 'courseid',
                     'type' => 'string',
-                ),
+                ],
                 14 =>
-                array (
+                 [
                     'field' => 'relateduserid',
                     'type' => 'string',
-                ),
+                ],
                 15 =>
-                array (
+                 [
                     'field' => 'anonymous',
                     'type' => 'string',
-                ),
+                ],
                 16 =>
-                array (
+                 [
                     'field' => 'other_username',
                     'type' => 'string',
-                ),
+                ],
                 17 =>
-                array (
+                 [
                     'field' => 'other_reason',
                     'type' => 'integer',
-                ),
+                ],
                 18 =>
-                array (
+                 [
                     'field' => 'timecreated',
                     'type' => 'string',
-                ),
+                ],
                 19 =>
-                array (
+                 [
                     'field' => 'origin',
                     'type' => 'string',
-                ),
+                ],
                 20 =>
-                array (
+                 [
                     'field' => 'ip',
                     'type' => 'string',
-                ),
+                ],
                 21 =>
-                array (
+                 [
                     'field' => 'realuserid',
                     'type' => 'string',
-                ),
+                ],
                 22 =>
-                array(
+                [
                     'field' => 'wwwroot',
-                    'type' => 'string'
-                ),
+                    'type' => 'string',
+                ],
                 23 =>
-                array(
+                [
                     'field' => 'wwwroot_domain',
-                    'type' => 'string'
-                ),
-            ),
-            'steps' => array()
-        );
+                    'type' => 'string',
+                ],
+            ],
+            'steps' => [],
+        ];
 
         $this->assertEquals($proxy, $expected);
 
@@ -287,7 +290,7 @@ class tool_trigger_steps_form_testcase extends advanced_testcase {
      *
      * @return array
      */
-    public function provide_steps() {
+    public function provide_steps(): array {
         $data = [];
 
         $wfm = new \tool_trigger\workflow_manager();

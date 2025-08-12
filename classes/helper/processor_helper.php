@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace tool_trigger\helper;
+
 /**
  * trait to help in processing events.
  *
@@ -22,9 +24,6 @@
  * @copyright  2019 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-namespace tool_trigger\helper;
-
 trait processor_helper {
 
     /**
@@ -37,11 +36,11 @@ trait processor_helper {
         if (empty((array)$data)) {
             return null;
         }
-        $extra = array('origin' => $data->origin, 'ip' => $data->ip, 'realuserid' => $data->realuserid);
+        $extra = ['origin' => $data->origin, 'ip' => $data->ip, 'realuserid' => $data->realuserid];
         $data = (array)$data;
         $data['other'] = unserialize($data['other']);
         if ($data['other'] === false) {
-            $data['other'] = array();
+            $data['other'] = [];
         }
 
         // Insert eventid into other data.

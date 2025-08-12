@@ -14,14 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Debounce step form class.
- *
- * @package    tool_trigger
- * @copyright  Peter Burnett <peterburnett@catalyst-au.net>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace tool_trigger\steps\debounce;
 
 defined('MOODLE_INTERNAL') || die;
@@ -37,6 +29,9 @@ require_once($CFG->dirroot.'/lib/formslib.php');
  */
 class debounce_form extends \tool_trigger\steps\base\base_form {
 
+    /**
+     * Form definition.
+     */
     public function definition() {
         parent::definition();
 

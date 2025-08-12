@@ -89,7 +89,7 @@ switch ($action) {
                     'workflowid' => $workflowid,
                     'action' => 'delete',
                     'confirm' => true,
-                    'sesskey' => sesskey()
+                    'sesskey' => sesskey(),
                 ]
             );
             $cancelurl = new moodle_url($CFG->wwwroot. '/admin/tool/trigger/manage.php');

@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace tool_trigger\steps\actions;
+
 /**
  * Role assignment action step class.
  *
@@ -21,9 +23,6 @@
  * @copyright  Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-namespace tool_trigger\steps\actions;
-
 class role_assign_action_step extends base_action_step {
 
     use \tool_trigger\helper\datafield_manager;
@@ -70,18 +69,14 @@ class role_assign_action_step extends base_action_step {
         return get_string('roleassignactionstepdesc', 'tool_trigger');
     }
 
-    /**
-     * @inheritdoc
-     */
+    #[\Override]
     protected function init() {
         $this->useridfield = $this->data['useridfield'];
         $this->roleidfield = $this->data['roleidfield'];
         $this->contextidfield = $this->data['contextidfield'];
     }
 
-    /**
-     * @inheritdoc
-     */
+    #[\Override]
     public function execute($step, $trigger, $event, $stepresults) {
 
         $datafields = $this->get_datafields($event, $stepresults);
@@ -128,10 +123,7 @@ class role_assign_action_step extends base_action_step {
         return [true, $stepresults];
     }
 
-    /**
-     * {@inheritDoc}
-     * @see \tool_trigger\steps\base\base_step::add_extra_form_fields()
-     */
+    #[\Override]
     public function form_definition_extra($form, $mform, $customdata) {
         $mform->addElement('text', 'useridfield', get_string('step_action_role_assign_useridfield', 'tool_trigger'));
         $mform->setType('useridfield', PARAM_ALPHANUMEXT);

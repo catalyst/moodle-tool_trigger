@@ -31,12 +31,12 @@ namespace tool_trigger;
  * @copyright   Matt Porritt <mattp@catalyst-au.net>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class workflow_manager_test extends \advanced_testcase {
+final class workflow_manager_test extends \advanced_testcase {
 
     /**
      * Test getting step class names by step type.
      */
-    public function test_get_step_class_names() {
+    public function test_get_step_class_names(): void {
         $steptype = 'actions';
         $stepobj = new \tool_trigger\workflow_manager();
         $steps = $stepobj->get_step_class_names($steptype);
@@ -50,9 +50,9 @@ class workflow_manager_test extends \advanced_testcase {
     /**
      * Test getting step human readable names by class name.
      */
-    public function test_lookup_step_names() {
+    public function test_lookup_step_names(): void {
 
-        $stepclasses = array('\tool_trigger\steps\actions\http_post_action_step');
+        $stepclasses = ['\tool_trigger\steps\actions\http_post_action_step'];
         $stepobj = new \tool_trigger\workflow_manager();
         $steps = $stepobj->lookup_step_names($stepclasses);
 
@@ -67,7 +67,7 @@ class workflow_manager_test extends \advanced_testcase {
      *
      * @runInSeparateProcess
      */
-    public function test_get_steps_by_type() {
+    public function test_get_steps_by_type(): void {
 
         $steptype = 'actions';
         $stepobj = new \tool_trigger\workflow_manager();
@@ -85,7 +85,7 @@ class workflow_manager_test extends \advanced_testcase {
      * (This is an important security feature, because we take the step class names from form input. We have to make sure that
      * a user can't modify the form submission data and cause us to instantiate an arbitrary class.)
      */
-    public function test_validate_step_class_good() {
+    public function test_validate_step_class_good(): void {
         $wfm = new \tool_trigger\workflow_manager();
 
         $goodstepclassname = '\tool_trigger\steps\filters\fail_filter_step';
@@ -97,7 +97,7 @@ class workflow_manager_test extends \advanced_testcase {
     /**
      * Test that the validation code will reject a bad step class name, and throw an exception when asked to instantiate it.
      */
-    public function test_validate_step_class_bad() {
+    public function test_validate_step_class_bad(): void {
         $wfm = new \tool_trigger\workflow_manager();
 
         $badstepclassname = '\core\task\password_reset_cleanup_task';
@@ -110,7 +110,7 @@ class workflow_manager_test extends \advanced_testcase {
     /**
      * Test getting workflow data object with step data included.
      */
-    public function test_get_workflow_data_with_steps() {
+    public function test_get_workflow_data_with_steps(): void {
         $this->resetAfterTest();
         global $DB;
 
@@ -133,7 +133,7 @@ class workflow_manager_test extends \advanced_testcase {
 
         $workflowprocess = new \tool_trigger\workflow_process($mdata);
         $workflowprocess->processform();
-        $workflow = $DB->get_record('tool_trigger_workflows', array('name' => '__testworkflow__'), '*', MUST_EXIST);
+        $workflow = $DB->get_record('tool_trigger_workflows', ['name' => '__testworkflow__'], '*', MUST_EXIST);
         $workflowid = $workflow->id;
 
         $workflowdata = \tool_trigger\workflow_manager::get_workflow_data_with_steps($workflowid);
@@ -143,7 +143,7 @@ class workflow_manager_test extends \advanced_testcase {
 
     }
 
-    public function test_cleanup() {
+    public function test_cleanup(): void {
         $this->resetAfterTest();
         // Run the task. This only tests that DB query does not throw exceptions.
         $task = new \tool_trigger\task\cleanup();

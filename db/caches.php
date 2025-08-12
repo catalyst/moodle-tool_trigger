@@ -25,12 +25,12 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$definitions = array(
-    'eventsubscriptions' => array(
+$definitions = [
+    'eventsubscriptions' => [
         'mode' => cache_store::MODE_APPLICATION,
         'simplekeys' => true,
         'simpledata' => true,
         'staticacceleration' => true,
-        'staticaccelerationsize' => 30
-    )
-);
+        'staticaccelerationsize' => 30,
+    ],
+];

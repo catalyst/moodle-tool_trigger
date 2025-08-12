@@ -56,10 +56,13 @@ class cohort_lookup_step extends base_lookup_step {
      *
      * @var array
      */
-    private static $stepfields = array(
-        'id_[cohortid]'
-    );
+    private static $stepfields = [
+        'id_[cohortid]',
+    ];
 
+    /**
+     * Init the step.
+     */
     protected function init() {
         $this->useridfield = $this->data['useridfield'];
         $this->outputprefix = $this->data['outputprefix'];

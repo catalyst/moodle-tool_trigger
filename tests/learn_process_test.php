@@ -14,14 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Learn processor unit tests.
- *
- * @package    tool_trigger
- * @copyright  Matt Porritt <mattp@catalyst-au.net>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace tool_trigger;
 
 /**
@@ -31,10 +23,9 @@ namespace tool_trigger;
  * @copyright   Matt Porritt <mattp@catalyst-au.net>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+final class learn_process_test extends \advanced_testcase {
 
-class learn_process_test extends \advanced_testcase {
-
-    public function setup():void {
+    public function setup(): void {
         $this->resetAfterTest(true);
     }
 
@@ -76,7 +67,7 @@ class learn_process_test extends \advanced_testcase {
      * @return array $fields The event fields.
      */
     public function get_event_fields() {
-        $fields = array(
+        $fields = [
             'eventname' => 'string',
             'component' => 'string',
             'action' => 'string',
@@ -96,8 +87,8 @@ class learn_process_test extends \advanced_testcase {
             'timecreated' => 'integer',
             'origin' => 'string',
             'ip' => 'string',
-            'realuserid' => 'string'
-        );
+            'realuserid' => 'string',
+        ];
 
         return $fields;
     }
@@ -105,7 +96,7 @@ class learn_process_test extends \advanced_testcase {
     /**
      * Test learnt events names are retrieved from database.
      */
-    public function test_get_learnt_events() {
+    public function test_get_learnt_events(): void {
         global $DB;
 
         // Add event records to database.
@@ -114,9 +105,9 @@ class learn_process_test extends \advanced_testcase {
         $learntevent2->eventname = '\core\event\user_loggedout';
         $learntevent2->action = 'loggedout';
 
-        $DB->insert_records('tool_trigger_learn_events', array($learntevent, $learntevent2));
+        $DB->insert_records('tool_trigger_learn_events', [$learntevent, $learntevent2]);
 
-        $expected = array('\core\event\fake_event', '\core\event\user_loggedout');  // Expected result.
+        $expected = ['\core\event\fake_event', '\core\event\user_loggedout'];  // Expected result.
 
         // We're testing a private method, so we need to setup reflector magic.
         $method = new \ReflectionMethod('tool_trigger\learn_process', 'get_learnt_events');
@@ -129,17 +120,17 @@ class learn_process_test extends \advanced_testcase {
     /**
      * Test learnt event records are retrieved from database.
      */
-    public function test_get_learnt_records() {
+    public function test_get_learnt_records(): void {
         global $DB;
         $count = 0;
-        $eventnames = array();
+        $eventnames = [];
 
         // Add event records to database.
         $learntevent = $this->create_learnt_event_object();
 
-        $DB->insert_records('tool_trigger_learn_events', array($learntevent, $learntevent));
+        $DB->insert_records('tool_trigger_learn_events', [$learntevent, $learntevent]);
 
-        $expected = array('\core\event\fake_event', '\core\event\fake_event');  // Expected result.
+        $expected = ['\core\event\fake_event', '\core\event\fake_event'];  // Expected result.
 
         // We're testing a private method, so we need to setup reflector magic.
         $method = new \ReflectionMethod('tool_trigger\learn_process', 'get_learnt_records');
@@ -161,7 +152,7 @@ class learn_process_test extends \advanced_testcase {
     /**
      * Test learnt event records are retrieved from database.
      */
-    public function test_convert_record_type() {
+    public function test_convert_record_type(): void {
 
         $learntevent = $this->create_learnt_event_object();
 
@@ -179,12 +170,12 @@ class learn_process_test extends \advanced_testcase {
     /**
      * Test processed records are merged successfully.
      */
-    public function test_merge_records() {
+    public function test_merge_records(): void {
 
         $processedrecord = $this->get_event_fields();
         $processedrecord2 = $processedrecord;
         $processedrecord2['oher_foo'] = 'string';
-        $processedrecords = array($processedrecord, $processedrecord2);
+        $processedrecords = [$processedrecord, $processedrecord2];
 
         $expected = $processedrecord;
         $expected['oher_foo'] = 'string';
@@ -201,7 +192,7 @@ class learn_process_test extends \advanced_testcase {
     /**
      * Test db record is merged successfully before updating.
      */
-    public function test_merge_db_record() {
+    public function test_merge_db_record(): void {
 
         // Simulate learnt event.
         $processedrecord = $this->get_event_fields();
@@ -238,7 +229,7 @@ class learn_process_test extends \advanced_testcase {
     /**
      * Test learnt fields are correctly inserted in the database.
      */
-    public function test_store_json_fields_insert() {
+    public function test_store_json_fields_insert(): void {
         global $DB;
 
         // Simulate learnt event.
@@ -251,7 +242,7 @@ class learn_process_test extends \advanced_testcase {
         $learnprocess->store_json_fields($learntevent, $jsonfields);
 
         // Get record form DB.
-        $result = $DB->get_record('tool_trigger_event_fields', array('eventname' => $learntevent));
+        $result = $DB->get_record('tool_trigger_event_fields', ['eventname' => $learntevent]);
 
         $this->assertEquals($result->eventname, $learntevent);
         $this->assertEquals($result->jsonfields, $jsonfields);
@@ -261,7 +252,7 @@ class learn_process_test extends \advanced_testcase {
     /**
      * Test learnt fields are correctly updated in the database.
      */
-    public function test_store_json_fields_update() {
+    public function test_store_json_fields_update(): void {
         global $DB;
 
         // Simulate learnt event.
@@ -280,7 +271,7 @@ class learn_process_test extends \advanced_testcase {
         $learnprocess->store_json_fields($learntevent, $jsonfields);
 
         // Get record form DB.
-        $result = $DB->get_record('tool_trigger_event_fields', array('eventname' => $learntevent));
+        $result = $DB->get_record('tool_trigger_event_fields', ['eventname' => $learntevent]);
 
         $this->assertEquals($result->eventname, $learntevent);
         $this->assertEquals($result->jsonfields, $jsonfields);
@@ -290,7 +281,7 @@ class learn_process_test extends \advanced_testcase {
     /**
      * Test learnt fields are correctly retrieved from database for step form.
      */
-    public function test_get_event_fields_with_type() {
+    public function test_get_event_fields_with_type(): void {
         global $DB;
 
         // Simulate learnt event.
@@ -309,118 +300,118 @@ class learn_process_test extends \advanced_testcase {
         $learnprocess = new \tool_trigger\learn_process();
         $eventfields = $learnprocess->get_event_fields_with_type($eventname);
 
-        $expected = array (
+        $expected = [
                 0 =>
-                array (
+                 [
                     'field' => 'eventname',
                     'type' => 'string',
-                ),
+                ],
                 1 =>
-                array (
+                 [
                     'field' => 'component',
                     'type' => 'string',
-                ),
+                ],
                 2 =>
-                array (
+                 [
                     'field' => 'action',
                     'type' => 'string',
-                ),
+                ],
                 3 =>
-                array (
+                 [
                     'field' => 'target',
                     'type' => 'string',
-                ),
+                ],
                 4 =>
-                array (
+                 [
                     'field' => 'objecttable',
                     'type' => 'string',
-                ),
+                ],
                 5 =>
-                array (
+                 [
                     'field' => 'objectid',
                     'type' => 'integer',
-                ),
+                ],
                 6 =>
-                array (
+                 [
                     'field' => 'crud',
                     'type' => 'string',
-                ),
+                ],
                 7 =>
-                array (
+                 [
                     'field' => 'edulevel',
                     'type' => 'integer',
-                ),
+                ],
                 8 =>
-                array (
+                 [
                     'field' => 'contextid',
                     'type' => 'integer',
-                ),
+                ],
                 9 =>
-                array (
+                 [
                     'field' => 'contextlevel',
                     'type' => 'integer',
-                ),
+                ],
                 10 =>
-                array (
+                 [
                     'field' => 'contextinstanceid',
                     'type' => 'integer',
-                ),
+                ],
                 11 =>
-                array (
+                 [
                     'field' => 'userid',
                     'type' => 'integer',
-                ),
+                ],
                 12 =>
-                array (
+                 [
                     'field' => 'courseid',
                     'type' => 'integer',
-                ),
+                ],
                 13 =>
-                array (
+                 [
                     'field' => 'relateduserid',
                     'type' => 'string',
-                ),
+                ],
                 14 =>
-                array (
+                 [
                     'field' => 'anonymous',
                     'type' => 'integer',
-                ),
+                ],
                 15 =>
-                array (
+                 [
                     'field' => 'other_username',
                     'type' => 'string',
-                ),
+                ],
                 16 =>
-                array (
+                 [
                     'field' => 'timecreated',
                     'type' => 'integer',
-                ),
+                ],
                 17 =>
-                array (
+                 [
                     'field' => 'origin',
                     'type' => 'string',
-                ),
+                ],
                 18 =>
-                array (
+                 [
                     'field' => 'ip',
                     'type' => 'string',
-                ),
+                ],
                 19 =>
-                array (
+                 [
                     'field' => 'realuserid',
                     'type' => 'string',
-                ),
+                ],
                 20 =>
-                array (
+                 [
                     'field' => 'wwwroot',
-                    'type' => 'string'
-                ),
+                    'type' => 'string',
+                ],
                 21 =>
-                array (
+                 [
                     'field' => 'wwwroot_domain',
-                    'type' => 'string'
-                ),
-            );
+                    'type' => 'string',
+                ],
+            ];
 
         $this->assertEquals($eventfields, $expected);
 
@@ -429,7 +420,7 @@ class learn_process_test extends \advanced_testcase {
     /**
      * Test retrieve all the event names we have stored fields for.
      */
-    public function test_get_event_fields_events() {
+    public function test_get_event_fields_events(): void {
         global $DB;
 
         // Simulate learnt event.
@@ -454,7 +445,7 @@ class learn_process_test extends \advanced_testcase {
     /**
      * Test get the stored JSON fields for that event.
      */
-    public function test_get_event_fields_json() {
+    public function test_get_event_fields_json(): void {
         global $DB;
 
         // Simulate learnt event.
@@ -479,7 +470,7 @@ class learn_process_test extends \advanced_testcase {
     /**
      * Test procesing of JSON fixture file.
      */
-    public function test_process_fixtures() {
+    public function test_process_fixtures(): void {
         $learnprocess = new \tool_trigger\learn_process();
         $learnprocess->process_fixtures();
 

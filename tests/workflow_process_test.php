@@ -23,12 +23,12 @@ namespace tool_trigger;
  * @copyright   Matt Porritt <mattp@catalyst-au.net>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class workflow_process_test extends \advanced_testcase {
+final class workflow_process_test extends \advanced_testcase {
 
     /**
      * Test workflow process form data
      */
-    public function test_processform() {
+    public function test_processform(): void {
         $this->resetAfterTest();
         global $DB;
 
@@ -49,8 +49,8 @@ class workflow_process_test extends \advanced_testcase {
         $result = $workflowprocess->processform();
 
         // Check that some values were actually written to db.
-        $workflowexists = $DB->record_exists('tool_trigger_workflows', array('name' => 'test workflow'));
-        $stepexists = $DB->record_exists('tool_trigger_steps', array('name' => 'test step'));
+        $workflowexists = $DB->record_exists('tool_trigger_workflows', ['name' => 'test workflow']);
+        $stepexists = $DB->record_exists('tool_trigger_steps', ['name' => 'test step']);
 
         $this->assertTrue($workflowexists);
         $this->assertTrue($stepexists);
@@ -60,7 +60,7 @@ class workflow_process_test extends \advanced_testcase {
     /**
      * Test workflow process step json data.
      */
-    public function test_processjson() {
+    public function test_processjson(): void {
         $mdata = new \stdClass();
         $json = '[{"id":"0","type":"action","stepclass":"/steps/action/log_step","steporder":"0"'
             . ',"name":"test step","description":"test step description"}]';
@@ -87,7 +87,7 @@ class workflow_process_test extends \advanced_testcase {
     /**
      * Test workflow process step json data with mulitple steps.
      */
-    public function test_processjson_multiple_steps() {
+    public function test_processjson_multiple_steps(): void {
         $mdata = new \stdClass();
         $json = '['
                 . '{"id":"0","type":"action","stepclass":"/steps/action/log_step",'
@@ -128,7 +128,7 @@ class workflow_process_test extends \advanced_testcase {
         $this->assertEquals ($expected2, $result[1]);
     }
 
-    public function test_import_prep () {
+    public function test_import_prep(): void {
         global $CFG;
 
         $filename = $CFG->dirroot . '/admin/tool/trigger/tests/fixtures/' . 'Test_login_failed_workflow_20180826_0058.json';
@@ -141,8 +141,8 @@ class workflow_process_test extends \advanced_testcase {
             .'<p>It is triggered on a user login failed event<br></p>';
         $expecteddescription->format = '1';
 
-        $expectedsteps = array(
-            array(
+        $expectedsteps = [
+            [
                  'name' => 'Test fixture user lookup',
                  'description' => 'A user step that gets user profile imformation',
                  'type' => 'lookups',
@@ -152,18 +152,18 @@ class workflow_process_test extends \advanced_testcase {
                  'outputprefix' => 'user_',
                  'nodeleted' => '1',
                  'stepdesc' => 'User lookup',
-                 'typedesc' => 'Lookup'
-             ),
-             array(
+                 'typedesc' => 'Lookup',
+             ],
+             [
                  'name' => 'Test fixture cron log',
                  'description' => 'A step that dumps workflow output to the cron log.',
                  'type' => 'actions',
                  'stepclass' => '\\tool_trigger\\steps\\actions\\logdump_action_step',
                  'steporder' => '1',
                  'stepdesc' => 'Cron log',
-                 'typedesc' => 'Action'
-             )
-             );
+                 'typedesc' => 'Action',
+             ],
+             ];
 
         $expected = new \stdClass ();
         $expected->workflowid = 0;

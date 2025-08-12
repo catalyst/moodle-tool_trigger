@@ -61,9 +61,12 @@ class course_cat_lookup_step extends base_lookup_step {
         'depth',
         'path',
         'theme',
-        'contextid'
+        'contextid',
     ];
 
+    /**
+     * Init the step.
+     */
     protected function init() {
         $this->categoryidfield = $this->data['categoryidfield'];
         $this->outputprefix = $this->data['outputprefix'];

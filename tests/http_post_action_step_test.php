@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace tool_trigger;
+
 /**
  * Test of the HTTP POST action step.
  *
@@ -22,30 +24,27 @@
  * @copyright  Catalyst IT 2018
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-namespace tool_trigger;
-
-class http_post_action_step_test extends \advanced_testcase {
+final class http_post_action_step_test extends \advanced_testcase {
 
     /**
      * Test user.
-     * @var
+     * @var \stdClass
      */
     protected $user;
 
     /**
      * A list of sent requests.
-     * @var
+     * @var array
      */
     protected $requestssent;
 
     /**
      * Test event.
-     * @var
+     * @var \core\event\user_profile_viewed
      */
     protected $event;
 
-    public function setup():void {
+    public function setup(): void {
         $this->resetAfterTest(true);
 
         $this->requestssent = [];
@@ -57,8 +56,8 @@ class http_post_action_step_test extends \advanced_testcase {
             'other' => [
                 'courseid' => 1,
                 'courseshortname' => 'short name',
-                'coursefullname' => 'full name'
-            ]
+                'coursefullname' => 'full name',
+            ],
         ]);
 
         // Run as the cron user  .
@@ -80,7 +79,7 @@ class http_post_action_step_test extends \advanced_testcase {
     /**
      * Test supported HTTP methods.
      */
-    public function test_supported_http_methods() {
+    public function test_supported_http_methods(): void {
         $expected = [
             'POST' => 'POST',
             'GET' => 'GET',
@@ -95,12 +94,12 @@ class http_post_action_step_test extends \advanced_testcase {
      * Test that POST method is set as default if no httpmethod set for the step class.
      * This is to make sure that steps created before httpmethod was introduced will  get it by default.
      */
-    public function test_if_httpmethod_is_not_set_post_method_set_as_default() {
+    public function test_if_httpmethod_is_not_set_post_method_set_as_default(): void {
         $stepsettings = [
             'url' => 'http://http_post_action_step.example.com',
             'httpheaders' => 'My-Special-Header: {headervalue}',
             'httpparams' => '',
-            'jsonencode' => '0'
+            'jsonencode' => '0',
         ];
 
         $step = new \tool_trigger\steps\actions\http_post_action_step(json_encode($stepsettings));
@@ -132,13 +131,13 @@ class http_post_action_step_test extends \advanced_testcase {
      * @dataProvider http_methods_data_provider
      * @param string $httpmethod
      */
-    public function test_execute_200(string $httpmethod) {
+    public function test_execute_200(string $httpmethod): void {
         $stepsettings = [
             'url' => 'http://http_post_action_step.example.com',
             'httpmethod' => $httpmethod,
             'httpheaders' => 'My-Special-Header: {headervalue}',
             'httpparams' => '',
-            'jsonencode' => '0'
+            'jsonencode' => '0',
         ];
         $step = new \tool_trigger\steps\actions\http_post_action_step(json_encode($stepsettings));
 
@@ -161,14 +160,14 @@ class http_post_action_step_test extends \advanced_testcase {
      * @dataProvider http_methods_data_provider
      * @param string $httpmethod
      */
-    public function test_execute_404(string $httpmethod) {
+    public function test_execute_404(string $httpmethod): void {
         $stepsettings = [
             'url' => 'http://http_post_action_step.example.com/badurl',
             'httpmethod' => $httpmethod,
             'httpheaders' => 'My-Special-Header: {headervalue}',
             'httpparams' => '',
             'jsonencode' => '0',
-            'expectedresponse' => 404
+            'expectedresponse' => 404,
         ];
         $step = new \tool_trigger\steps\actions\http_post_action_step(json_encode($stepsettings));
 
@@ -189,12 +188,12 @@ class http_post_action_step_test extends \advanced_testcase {
      * Placeholders in the "http headers" setting can go in as-is, but placeholders
      * in the url and http params need to be urlencoded.
      */
-    public function test_execute_with_datafields() {
+    public function test_execute_with_datafields(): void {
         $stepsettings = [
                 'url' => 'http://api.example.com/?returnurl={returnurl}&lang=en',
                 'httpheaders' => 'My-Special-Header: {headervalue}',
                 'httpparams' => 'a={a}&b={b}&c={c}&d=1&e={e}',
-                'jsonencode' => '0'
+                'jsonencode' => '0',
         ];
         $step = new \tool_trigger\steps\actions\http_post_action_step(json_encode($stepsettings));
 
@@ -210,7 +209,7 @@ class http_post_action_step_test extends \advanced_testcase {
             'a' => '1005',
             'b' => '?.&=;',
             'c' => 'c',
-            'e' => null
+            'e' => null,
         ];
 
         list($status) = $step->execute(null, null, $this->event, $prevstepresults);
@@ -247,12 +246,12 @@ class http_post_action_step_test extends \advanced_testcase {
      * Placeholders in the "http headers" setting can go in as-is, but placeholders
      * in the url and http params need to be urlencoded.
      */
-    public function test_execute_with_datafields_json() {
+    public function test_execute_with_datafields_json(): void {
         $stepsettings = [
                 'url' => 'http://api.example.com/?returnurl={returnurl}&lang=en',
                 'httpheaders' => 'My-Special-Header: {headervalue}',
                 'httpparams' => 'a={a}&b={b}&c={c}&d=1&e={e}',
-                'jsonencode' => '1'
+                'jsonencode' => '1',
         ];
         $step = new \tool_trigger\steps\actions\http_post_action_step(json_encode($stepsettings));
 
@@ -268,7 +267,7 @@ class http_post_action_step_test extends \advanced_testcase {
                 'a' => '1005',
                 'b' => '?.&=;',
                 'c' => 'c',
-                'e' => null
+                'e' => null,
         ];
 
         list($status) = $step->execute(null, null, $this->event, $prevstepresults);

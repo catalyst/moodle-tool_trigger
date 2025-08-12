@@ -52,7 +52,7 @@ class user_lookup_step extends base_lookup_step {
      *
      * @var array
      */
-    private static $stepfields = array(
+    private static $stepfields = [
             'id',
             'auth',
             'confirmed',
@@ -98,7 +98,7 @@ class user_lookup_step extends base_lookup_step {
             'firstnamephonetic',
             'middlename',
             'alternatename',
-            'moodlenetprofile');
+            'moodlenetprofile'];
 
     /**
      * Whether to halt execution of the workflow, if the user has been marked "deleted".
@@ -107,6 +107,9 @@ class user_lookup_step extends base_lookup_step {
      */
     private $nodeleted;
 
+    /**
+     * Init the step.
+     */
     protected function init() {
         $this->useridfield = $this->data['useridfield'];
         $this->outputprefix = $this->data['outputprefix'];

@@ -47,8 +47,11 @@ class roles_lookup_step extends base_lookup_step {
      *
      * @var array
      */
-    private static $stepfields = array('roles');
+    private static $stepfields = ['roles'];
 
+    /**
+     * Init the step.
+     */
     protected function init() {
         $this->useridfield = $this->data['useridfield'];
         $this->outputprefix = $this->data['outputprefix'];
@@ -69,7 +72,7 @@ class roles_lookup_step extends base_lookup_step {
         }
 
         $sql = 'SELECT id, roleid, contextid, component, itemid FROM {role_assignments} WHERE userid = :userid';
-        $params = array('userid' => $datafields[$this->useridfield]);
+        $params = ['userid' => $datafields[$this->useridfield]];
         $userroles = $DB->get_records_sql($sql, $params);
         foreach ($userroles as $role) {
             foreach ($role as $key => $value) {

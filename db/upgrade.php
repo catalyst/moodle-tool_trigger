@@ -49,7 +49,7 @@ function xmldb_tool_trigger_upgrade($oldversion) {
         $table->add_field('timecreated', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
 
         // Adding keys to table tool_trigger_events.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
 
         // Conditionally launch create table for tool_trigger_events.
         if (!$dbman->table_exists($table)) {
@@ -86,7 +86,7 @@ function xmldb_tool_trigger_upgrade($oldversion) {
 
         // Add new index to table tool_trigger_events.
         $table = new xmldb_table('tool_trigger_events');
-        $table->add_index('eventname', XMLDB_INDEX_NOTUNIQUE, array('eventname'));
+        $table->add_index('eventname', XMLDB_INDEX_NOTUNIQUE, ['eventname']);
 
         // Conditionally launch create table for tool_trigger_events.
         if (!$dbman->table_exists($table)) {
@@ -119,11 +119,11 @@ function xmldb_tool_trigger_upgrade($oldversion) {
         $table->add_field('ip', XMLDB_TYPE_CHAR, '45', null, null, null, null);
         $table->add_field('realuserid', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
 
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
-        $table->add_key('contextid', XMLDB_KEY_FOREIGN, array('contextid'), 'context', array('id'));
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('contextid', XMLDB_KEY_FOREIGN, ['contextid'], 'context', ['id']);
 
-        $table->add_index('timecreated', XMLDB_INDEX_NOTUNIQUE, array('timecreated'));
-        $table->add_index('eventname', XMLDB_INDEX_NOTUNIQUE, array('eventname'));
+        $table->add_index('timecreated', XMLDB_INDEX_NOTUNIQUE, ['timecreated']);
+        $table->add_index('eventname', XMLDB_INDEX_NOTUNIQUE, ['eventname']);
 
         // Conditionally launch create table for tool_trigger_events.
         if (!$dbman->table_exists($table)) {
@@ -173,7 +173,7 @@ function xmldb_tool_trigger_upgrade($oldversion) {
 
         // Convert all old email text fields to new Atto fields.
         $sql = 'SELECT * FROM {tool_trigger_steps} WHERE stepclass = \'\tool_trigger\steps\actions\email_action_step\'';
-        $rs = $DB->get_recordset_sql($sql, array());
+        $rs = $DB->get_recordset_sql($sql, []);
         foreach ($rs as $record) {
             $data = json_decode($record->data, true);
             $data['emailcontent_editor[text]'] = $data['emailcontent'];
@@ -217,8 +217,8 @@ function xmldb_tool_trigger_upgrade($oldversion) {
         $table->add_field('failedstep', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
 
         // Adding keys to table tool_trigger_workflow_hist.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
-        $table->add_key('eventid', XMLDB_KEY_FOREIGN, array('eventid'), 'tool_trigger_events', array('id'));
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('eventid', XMLDB_KEY_FOREIGN, ['eventid'], 'tool_trigger_events', ['id']);
 
         // Conditionally launch create table for tool_trigger_workflow_hist.
         if (!$dbman->table_exists($table)) {
@@ -247,12 +247,12 @@ function xmldb_tool_trigger_upgrade($oldversion) {
         $table->add_field('stepconfigid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
 
         // Adding keys to table tool_trigger_run_hist.
-        $table->add_key('primary', XMLDB_KEY_PRIMARY, array('id'));
-        $table->add_key('workflowid', XMLDB_KEY_FOREIGN, array('workflowid'), 'tool_trigger_workflows', array('id'));
-        $table->add_key('run', XMLDB_KEY_FOREIGN, array('runid'), 'tool_trigger_workflow_hist', array('id'));
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('workflowid', XMLDB_KEY_FOREIGN, ['workflowid'], 'tool_trigger_workflows', ['id']);
+        $table->add_key('run', XMLDB_KEY_FOREIGN, ['runid'], 'tool_trigger_workflow_hist', ['id']);
 
         // Adding indexes to table tool_trigger_run_hist.
-        $table->add_index('class', XMLDB_INDEX_NOTUNIQUE, array('stepclass'));
+        $table->add_index('class', XMLDB_INDEX_NOTUNIQUE, ['stepclass']);
 
         // Conditionally launch create table for tool_trigger_run_hist.
         if (!$dbman->table_exists($table)) {

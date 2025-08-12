@@ -41,14 +41,14 @@ class workflow_process {
     /**
      * @var array Array of fields to filter from step JSON.
      */
-    protected $stepfields = array(
+    protected $stepfields = [
             'id',
             'type',
             'stepclass',
             'name',
             'description',
-            'steporder'
-    );
+            'steporder',
+    ];
 
     /**
      * Class constructor.
@@ -75,14 +75,14 @@ class workflow_process {
             'workflowname' => $workflow->workflow->name,
             'workflowdescription' => [
                 'text' => $workflow->descriptiontext,
-                'format' => $workflow->descriptionformat
+                'format' => $workflow->descriptionformat,
             ],
             'eventtomonitor' => $workflow->event,
             'draftmode' => $workflow->draft,
             'workflowactive' => $workflow->active,
             'workflowrealtime' => $workflow->realtime,
             'workflowdebug' => $workflow->debug,
-            'stepjson' => $this->encode_steps_to_json_for_form($workflow)
+            'stepjson' => $this->encode_steps_to_json_for_form($workflow),
         ];
     }
 
@@ -271,7 +271,7 @@ class workflow_process {
         $data->workflowdebug = isset($content['debug']) ? $content['debug'] : 0;
 
         // Format and flatten step data.
-        $cleansteps = array();
+        $cleansteps = [];
         foreach ($content['steps'] as $step) {
             $stepdata = json_decode($step['data']);
             foreach ($stepdata as $key => $value) {

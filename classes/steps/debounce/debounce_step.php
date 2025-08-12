@@ -258,7 +258,7 @@ class debounce_step extends base_step {
      * {@inheritDoc}
      * @see \tool_trigger\steps\base\base_step::form_definition_extra()
      */
-    public function form_definition_extra ($form, $mform, $customdata) {
+    public function form_definition_extra($form, $mform, $customdata) {
         return;
     }
 }

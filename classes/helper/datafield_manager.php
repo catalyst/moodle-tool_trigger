@@ -14,15 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * A lookup step that takes a user's ID and adds standard data about the user.
- *
- * @package    tool_trigger
- * @author     Aaron Wells <aaronw@catalyst.net.nz>
- * @copyright  Catalyst IT, 2018
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace tool_trigger\helper;
 
 /**
@@ -36,6 +27,10 @@ namespace tool_trigger\helper;
  */
 trait datafield_manager {
 
+    /**
+     * Data fields.
+     * @var array
+     */
     protected $datafields = [];
 
     /** @var string regex to determine data fields - should ideally be readonly */

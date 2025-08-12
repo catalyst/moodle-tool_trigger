@@ -14,14 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Test for processor helper trait.
- *
- * @package    tool_trigger
- * @copyright  Dmitrii Metelkin <dmitriim@catalyst-au.net>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace tool_trigger;
 
 defined('MOODLE_INTERNAL') || die();
@@ -30,18 +22,25 @@ global $CFG;
 
 require_once('tool_trigger_testcase.php');
 
-class processor_helper_test extends \tool_trigger_testcase {
+/**
+ * Test for processor helper trait.
+ *
+ * @package    tool_trigger
+ * @copyright  Dmitrii Metelkin <dmitriim@catalyst-au.net>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+final class processor_helper_test extends \tool_trigger_testcase {
 
     /**
      * Anonymous class for testing.
-     * @var
+     * @var mixed
      */
     protected $testclass;
 
     /**
      * Set up.
      */
-    public function setup():void {
+    public function setup(): void {
         $this->resetAfterTest(true);
 
         // Create anonymous class for testing trait.
@@ -53,7 +52,7 @@ class processor_helper_test extends \tool_trigger_testcase {
     /**
      * Test can restore event from the DB record.
      */
-    public function test_restore_event() {
+    public function test_restore_event(): void {
         $data = (object) [
             'id' => 1,
             'eventname' => '\\core\\event\\user_loggedin',
@@ -94,7 +93,7 @@ class processor_helper_test extends \tool_trigger_testcase {
         $expectedevent = \core\event\user_loggedin::create([
             'userid' => '113000',
             'objectid' => '113000',
-            'other' => array('username' => 'username1'),
+            'other' => ['username' => 'username1'],
         ]);
         $this->assertTrue($actual->is_restored());
         $this->assertEquals($expectedevent->eventname, $actual->eventname);
@@ -108,7 +107,7 @@ class processor_helper_test extends \tool_trigger_testcase {
     /**
      * Test can execute step.
      */
-    public function test_execute_step() {
+    public function test_execute_step(): void {
         global $DB;
 
         $user = $this->getDataGenerator()->create_user();
@@ -116,7 +115,7 @@ class processor_helper_test extends \tool_trigger_testcase {
         $event = \core\event\user_loggedin::create([
             'userid' => $user->id,
             'objectid' => $user->id,
-            'other' => array('username' => $user->username),
+            'other' => ['username' => $user->username],
         ]);
 
         $workflowid = $this->create_workflow();
@@ -135,7 +134,7 @@ class processor_helper_test extends \tool_trigger_testcase {
     /**
      * Test can get workflow steps.
      */
-    public function test_get_workflow_steps() {
+    public function test_get_workflow_steps(): void {
         // Non-existing.
         $this->assertEmpty($this->testclass->get_workflow_steps(777777));
 
@@ -153,7 +152,7 @@ class processor_helper_test extends \tool_trigger_testcase {
     /**
      * Test can get workflow record.
      */
-    public function test_update_workflow_record() {
+    public function test_update_workflow_record(): void {
         global $DB;
 
         $workflowid = $this->create_workflow();
@@ -186,7 +185,7 @@ class processor_helper_test extends \tool_trigger_testcase {
     /**
      * Test can save a list of records to a trigger queue.
      */
-    public function test_insert_queue_records() {
+    public function test_insert_queue_records(): void {
         global $DB;
 
         $this->assertEquals(0, $DB->count_records('tool_trigger_queue'));
@@ -207,13 +206,13 @@ class processor_helper_test extends \tool_trigger_testcase {
     /**
      * Test can get event record.
      */
-    public function test_get_event_record() {
+    public function test_get_event_record(): void {
         global $DB;
 
         $event = \core\event\user_loggedin::create([
             'userid' => '113000',
             'objectid' => '113000',
-            'other' => array('username' => 'username1'),
+            'other' => ['username' => 'username1'],
         ]);
 
         $data = (object)$event->get_data();

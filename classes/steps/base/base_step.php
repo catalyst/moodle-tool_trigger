@@ -14,14 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Base step class.
- *
- * @package    tool_trigger
- * @copyright  Matt Porritt <mattp@catalyst-au.net>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace tool_trigger\steps\base;
 
 /**
@@ -33,10 +25,22 @@ namespace tool_trigger\steps\base;
  */
 abstract class base_step {
 
+    /**
+     * @var array Data storage array, typically holding parsed configuration or input values.
+     */
     protected $data = [];
 
-    private $stepfields = array();
+    /**
+     * @var array List of fields used in a specific processing step.
+     */
+    private $stepfields = [];
 
+    /**
+     * Constructor.
+     *
+     * @param string|null $jsondata Optional JSON-encoded string to initialize the object with.
+     *                              If provided, it will be decoded into $data and init() will be called.
+     */
     public function __construct($jsondata = null) {
         if ($jsondata) {
             $this->data = json_decode($jsondata, true);

@@ -47,7 +47,7 @@ class course_lookup_step extends base_lookup_step {
      *
      * @var array
      */
-    private static $stepfields = array(
+    private static $stepfields = [
         'id',
         'category',
         'sortorder',
@@ -80,8 +80,11 @@ class course_lookup_step extends base_lookup_step {
         'completionnotify',
         'cacherev',
         'contextid',
-    );
+    ];
 
+    /**
+     * Init the step.
+     */
     protected function init() {
         $this->courseidfield = $this->data['courseidfield'];
         $this->outputprefix = $this->data['outputprefix'];

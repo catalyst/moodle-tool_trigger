@@ -14,15 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Numeric comparison filter step's unit test
- *
- * @package    tool_trigger
- * @author     Aaron Wells <aaronw@catalyst.net.nz>
- * @copyright  Catalyst IT 2018
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 namespace tool_trigger;
 
 use tool_trigger\steps\filters\numcompare_filter_step;
@@ -32,7 +23,15 @@ defined('MOODLE_INTERNAL') || die();
 global $CFG;
 require_once("$CFG->libdir/gradelib.php");
 
-class numcompare_filter_step_test extends \advanced_testcase {
+/**
+ * Numeric comparison filter step's unit test
+ *
+ * @package    tool_trigger
+ * @author     Aaron Wells <aaronw@catalyst.net.nz>
+ * @copyright  Catalyst IT 2018
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+final class numcompare_filter_step_test extends \advanced_testcase {
 
     /**
      * Event for testing.
@@ -44,7 +43,7 @@ class numcompare_filter_step_test extends \advanced_testcase {
      * Create a "user_profile_viewed" event, of user1 viewing user2's
      * profile. And then run everything else as the cron user.
      */
-    public function setup():void {
+    public function setup(): void {
         $this->resetAfterTest(true);
 
         // Grade event generation, copied from lib/tests/event_user_graded.php!
@@ -58,7 +57,7 @@ class numcompare_filter_step_test extends \advanced_testcase {
 
         $gradeitem->update_final_grade($user->id, 10, 'gradebook');
 
-        $gradegrade = new \grade_grade(array('userid' => $user->id, 'itemid' => $gradeitem->id), true);
+        $gradegrade = new \grade_grade(['userid' => $user->id, 'itemid' => $gradeitem->id], true);
         $gradegrade->grade_item = $gradeitem;
 
         $this->event = \core\event\user_graded::create_from_grade($gradegrade);
@@ -72,12 +71,12 @@ class numcompare_filter_step_test extends \advanced_testcase {
      *
      * @dataProvider operator_permutations
      */
-    public function test_all_operators($operator, $comparator, $expectedresult) {
+    public function test_all_operators($operator, $comparator, $expectedresult): void {
         $step = new \tool_trigger\steps\filters\numcompare_filter_step(
             json_encode([
                 'field1' => $comparator,
                 'operator' => $operator,
-                'field2' => '0'
+                'field2' => '0',
             ])
         );
 
@@ -95,7 +94,7 @@ class numcompare_filter_step_test extends \advanced_testcase {
      *
      * @return string[][]|boolean[][]
      */
-    public function operator_permutations() {
+    public function operator_permutations(): array {
         return [
             [ numcompare_filter_step::OPERATOR_EQUAL, '-100', false ],
             [ numcompare_filter_step::OPERATOR_EQUAL, '0', true ],
@@ -114,18 +113,18 @@ class numcompare_filter_step_test extends \advanced_testcase {
             [ numcompare_filter_step::OPERATOR_GT, '100', true ],
             [ numcompare_filter_step::OPERATOR_GT, '-100', false ],
             [ numcompare_filter_step::OPERATOR_GT, '0', false ],
-            [ numcompare_filter_step::OPERATOR_GT, '100', true ]
+            [ numcompare_filter_step::OPERATOR_GT, '100', true ],
         ];
     }
 
-    public function test_datafield() {
+    public function test_datafield(): void {
         $step = new numcompare_filter_step(
             json_encode([
                 // Should work if the datafield name is provided on its own...
                 'field1' => 'other_finalgrade',
                 'operator' => numcompare_filter_step::OPERATOR_EQUAL,
                 // ... or if the datafield name is in {brackets}.
-                'field2' => '{target_grade}'
+                'field2' => '{target_grade}',
             ])
         );
 
@@ -134,12 +133,12 @@ class numcompare_filter_step_test extends \advanced_testcase {
         $this->assertTrue($status);
     }
 
-    public function test_nosuch_datafield() {
+    public function test_nosuch_datafield(): void {
         $step = new numcompare_filter_step(
             json_encode([
                 'field1' => 'nosuchfield',
                 'operator' => numcompare_filter_step::OPERATOR_NOTEQUAL,
-                'field2' => '10'
+                'field2' => '10',
             ])
             );
 
@@ -147,12 +146,12 @@ class numcompare_filter_step_test extends \advanced_testcase {
         $this->assertTrue($status);
     }
 
-    public function test_not_numeric() {
+    public function test_not_numeric(): void {
         $step = new numcompare_filter_step(
             json_encode([
                 'field1' => 'stringfield',
                 'operator' => numcompare_filter_step::OPERATOR_EQUAL,
-                'field2' => '100'
+                'field2' => '100',
             ])
         );
 

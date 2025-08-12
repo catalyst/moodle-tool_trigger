@@ -14,20 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace tool_trigger\task;
+
+use tool_trigger\helper\processor_helper;
+
 /**
  * Process queued workflows.
  *
  * @package    tool_trigger
  * @copyright  Matt Porritt <mattp@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
-namespace tool_trigger\task;
-
-use tool_trigger\helper\processor_helper;
-
-/**
- * Simple task to rocess queued workflows.
  */
 class process_workflows extends \core\task\scheduled_task {
     use processor_helper;
@@ -91,7 +87,7 @@ class process_workflows extends \core\task\scheduled_task {
      */
     private function create_trigger_queue($now) {
         global $DB;
-        $triggerqueue = array();
+        $triggerqueue = [];
 
         // Get list of events to process that are not already in the queue for not real time workflows.
         $sql = "SELECT e.*, w.id as workflowid
@@ -116,7 +112,12 @@ class process_workflows extends \core\task\scheduled_task {
         $this->insert_queue_records($triggerqueue);
     }
 
-    private function process_queue($starttime) {
+    /**
+     * Process queue.
+     *
+     * @param int $starttime Start time.
+     */
+    private function process_queue(int $starttime) {
         global $DB;
 
         // Now process queue including real time workflows that dumped records in the queue as couldn't process realtime.
@@ -130,7 +131,7 @@ class process_workflows extends \core\task\scheduled_task {
                  ORDER BY q.timecreated";
         $params = [
             'time' => time(),
-            'autorerunmaxtries' => get_config('tool_trigger', 'autorerunmaxtries')
+            'autorerunmaxtries' => get_config('tool_trigger', 'autorerunmaxtries'),
         ];
         $queue = $DB->get_recordset_sql($sql, $params, 0, get_config('tool_trigger', 'queuelimit'));
 
@@ -146,7 +147,12 @@ class process_workflows extends \core\task\scheduled_task {
         $queue->close();
     }
 
-    private function process_item($item) {
+    /**
+     * Process a given item
+     *
+     * @param \stdClass $item Item to process.
+     */
+    private function process_item(\stdClass $item) {
         global $DB;
 
         // Check if this queue item has been cancelled in this run.

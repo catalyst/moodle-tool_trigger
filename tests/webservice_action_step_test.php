@@ -29,7 +29,7 @@ require_once(__DIR__.'/fixtures/user_event_fixture.php');
  * @copyright  Catalyst IT, 2022
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class webservice_action_step_test extends \advanced_testcase {
+final class webservice_action_step_test extends \advanced_testcase {
     use \tool_trigger_user_event_fixture;
 
     /**
@@ -44,7 +44,7 @@ class webservice_action_step_test extends \advanced_testcase {
      * Simple test, with a successful result.
      * @runInSeparateProcess
      */
-    public function test_with_valid_call_to_enrol_user() {
+    public function test_with_valid_call_to_enrol_user(): void {
         global $DB;
 
         $adminuser = get_admin();
@@ -86,7 +86,7 @@ class webservice_action_step_test extends \advanced_testcase {
      * Test when the username is not valid, so the step fails with an exception.
      * @runInSeparateProcess
      */
-    public function test_with_invalid_username() {
+    public function test_with_invalid_username(): void {
         $stepsettings = [
             'username' => 'tool_trigger_invalid_username',
             'functionname' => 'enrol_manual_enrol_users',
@@ -102,7 +102,7 @@ class webservice_action_step_test extends \advanced_testcase {
      * Test with non_existent function
      * @runInSeparateProcess
      */
-    public function test_with_non_existent_function() {
+    public function test_with_non_existent_function(): void {
         $adminuser = get_admin();
         $stepsettings = [
             'username' => $adminuser->username,
@@ -122,7 +122,7 @@ class webservice_action_step_test extends \advanced_testcase {
      * Test with invalid function parameters
      * @runInSeparateProcess
      */
-    public function test_with_invalid_function_parameters() {
+    public function test_with_invalid_function_parameters(): void {
         $adminuser = get_admin();
         $stepsettings = [
             'username' => $adminuser->username,
