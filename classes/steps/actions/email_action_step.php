@@ -24,7 +24,6 @@ namespace tool_trigger\steps\actions;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class email_action_step extends base_action_step {
-
     use \tool_trigger\helper\datafield_manager;
 
     /**
@@ -75,7 +74,9 @@ class email_action_step extends base_action_step {
         $this->emailsubject = $this->data['emailsubject'];
         $this->emailcontent = $this->data['emailcontent_editor[text]'];
         $this->messageplain = format_text_email(
-            $this->data['emailcontent_editor[text]'], $this->data['emailcontent_editor[format]']);
+            $this->data['emailcontent_editor[text]'],
+            $this->data['emailcontent_editor[format]']
+        );
     }
 
     /**
@@ -106,17 +107,25 @@ class email_action_step extends base_action_step {
         $emailcontent = $this->render_datafields($this->emailcontent);
         $messageplain = $this->render_datafields($this->messageplain);
 
-        // Check we have a valid email address.
-        if ($emailto == clean_param($emailto, PARAM_EMAIL)) {
+        $recipients = array_map('trim', explode(',', $emailto));
+
+        $firsteventdata = null;
+        $firstmsgid = null;
+
+        foreach ($recipients as $recipient) {
+            // Check we have a valid email address.
+            if ($recipient !== clean_param($recipient, PARAM_EMAIL)) {
+                continue;
+            }
 
             // Check if user exists and use user record.
-            $user = $DB->get_record('user', ['email' => $emailto, 'deleted' => 0]);
+            $user = $DB->get_record('user', ['email' => $recipient, 'deleted' => 0]);
 
             // If user not found, use noreply as a base.
             if (empty($user)) {
                 $user = \core_user::get_noreply_user();
-                $user->firstname = $emailto;
-                $user->email = $emailto;
+                $user->firstname = $recipient;
+                $user->email = $recipient;
                 $user->maildisplay = 1;
                 $user->emailstop = 0;
             }
@@ -140,16 +149,23 @@ class email_action_step extends base_action_step {
                 throw new \invalid_response_exception('Tried but failed to send message.');
             }
 
-            $stepresults['email_action_messageid'] = $msgid;
-            foreach ((array)$eventdata as $key => $value) {
+            if ($firsteventdata === null) {
+                $firsteventdata = $eventdata;
+                $firstmsgid = $msgid;
+            }
+        }
+
+        if ($firsteventdata !== null) {
+            $stepresults['email_action_messageid'] = $firstmsgid;
+            foreach ((array)$firsteventdata as $key => $value) {
                 if (is_scalar($value)) {
                     $stepresults['email_action_' . $key] = $value;
                 }
             }
-            $stepresults['email_action_userfrom_id'] = $eventdata->userfrom->id;
-            $stepresults['email_action_userfrom_email'] = $eventdata->userfrom->email;
-            $stepresults['email_action_userto_id'] = $eventdata->userto->id;
-            $stepresults['email_action_userto_email'] = $eventdata->userto->email;
+            $stepresults['email_action_userfrom_id'] = $firsteventdata->userfrom->id;
+            $stepresults['email_action_userfrom_email'] = $firsteventdata->userfrom->email;
+            $stepresults['email_action_userto_id'] = $firsteventdata->userto->id;
+            $stepresults['email_action_userto_email'] = $firsteventdata->userto->email;
         } else {
             $stepresults['email_action_messageid'] = false;
         }
@@ -164,13 +180,13 @@ class email_action_step extends base_action_step {
     public function form_definition_extra($form, $mform, $customdata) {
 
         // To!
-        $mform->addElement('text', 'emailto', get_string ('emailto', 'tool_trigger'));
+        $mform->addElement('text', 'emailto', get_string('emailto', 'tool_trigger'));
         $mform->setType('emailto', PARAM_RAW_TRIMMED);
         $mform->addRule('emailto', get_string('required'), 'required');
         $mform->addHelpButton('emailto', 'emailto', 'tool_trigger');
 
         // Subject!
-        $mform->addElement('text', 'emailsubject', get_string ('emailsubject', 'tool_trigger'));
+        $mform->addElement('text', 'emailsubject', get_string('emailsubject', 'tool_trigger'));
         $mform->setType('emailsubject', PARAM_RAW_TRIMMED);
         $mform->addRule('emailsubject', get_string('required'), 'required');
         $mform->addHelpButton('emailsubject', 'emailsubject', 'tool_trigger');
@@ -213,6 +229,5 @@ class email_action_step extends base_action_step {
      */
     public static function get_fields() {
         return self::$stepfields;
-
     }
 }
