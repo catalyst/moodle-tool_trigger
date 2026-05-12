@@ -19,7 +19,7 @@ namespace tool_trigger;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once(__DIR__.'/fixtures/user_event_fixture.php');
+require_once(__DIR__ . '/fixtures/user_event_fixture.php');
 
 /**
  * Test of the email action
@@ -28,6 +28,7 @@ require_once(__DIR__.'/fixtures/user_event_fixture.php');
  * @author     Aaron Wells <aaronw@catalyst.net.nz>
  * @copyright  Catalyst IT 2018
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers     \tool_trigger\steps\actions\email_action_step
  */
 final class email_action_step_test extends \advanced_testcase {
     use \tool_trigger_user_event_fixture;
@@ -60,7 +61,7 @@ final class email_action_step_test extends \advanced_testcase {
         $step = new \tool_trigger\steps\actions\email_action_step(json_encode($settings));
 
         // Run the step.
-        list($status) = $step->execute(null, null, $this->event, []);
+        [$status] = $step->execute(null, null, $this->event, []);
         $this->assertTrue($status);
 
         // Retrieve the messages sent (should be just one).
@@ -97,7 +98,7 @@ final class email_action_step_test extends \advanced_testcase {
         $step = new \tool_trigger\steps\actions\email_action_step(json_encode($settings));
 
         // Execute the step.
-        list($status, $stepresults) = $step->execute(null, null, $this->event, []);
+        [$status, $stepresults] = $step->execute(null, null, $this->event, []);
         $this->assertTrue($status);
 
         // Retrieve the message.
@@ -118,6 +119,54 @@ final class email_action_step_test extends \advanced_testcase {
         );
     }
 
+    public function test_execute_multiple_email_addresses(): void {
+        $emailstosend = [$this->user1->email, $this->user2->email, 'testusernotinmoodle@example.com'];
+        $settings = [
+            'emailto' => implode(",", $emailstosend),
+            'emailsubject' => 'Subject of the email',
+            'emailcontent_editor[text]' => 'Content of the email',
+            'emailcontent_editor[format]' => 0,
+        ];
+        $step = new \tool_trigger\steps\actions\email_action_step(json_encode($settings));
+
+        // Execute the step.
+        [$status, $stepresults] = $step->execute(null, null, $this->event, []);
+        $this->assertTrue($status);
+
+        // Retrieve the messages.
+        $messages = $this->sink->get_messages();
+        $this->assertEquals(count($emailstosend), count($messages));
+
+        $this->assertEquals($this->user1->id, $messages[0]->useridto);
+        $this->assertEquals($this->user2->id, $messages[1]->useridto);
+    }
+
+    public function test_execute_multiple_email_addresses_with_datafields(): void {
+        $emailstosend = [$this->user1->email, $this->user2->email, 'testusernotinmoodle@example.com'];
+        $settings = [
+            'emailto' => '{user_emails}',
+            'emailsubject' => 'Subject of the email',
+            'emailcontent_editor[text]' => 'Content of the email',
+            'emailcontent_editor[format]' => 0,
+        ];
+        $step = new \tool_trigger\steps\actions\email_action_step(json_encode($settings));
+
+        // Ensure that this step can accept a string of emails from a previous step.
+        // Not currently possible with existing steps.
+        $emailstosend = [$this->user1->email, $this->user2->email];
+        $prevstepresults = [
+            'user_emails' => implode(',', $emailstosend),
+        ];
+
+        // Execute the step.
+        [$status] = $step->execute(null, null, $this->event, $prevstepresults);
+        $this->assertTrue($status);
+
+        // Retrieve the messages.
+        $messages = $this->sink->get_messages();
+        $this->assertEquals(count($emailstosend), count($messages));
+    }
+
     public function test_execute_with_datafields(): void {
         $settings = [
             'emailto' => '{user_email}',
@@ -134,7 +183,7 @@ final class email_action_step_test extends \advanced_testcase {
         ];
 
         // Run the step.
-        list($status) = $step->execute(null, null, $this->event, $prevstepresults);
+        [$status] = $step->execute(null, null, $this->event, $prevstepresults);
         $this->assertTrue($status);
 
         // Retrieve the messages sent (should be just one).
