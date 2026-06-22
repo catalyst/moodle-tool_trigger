@@ -1,0 +1,5 @@
+{
+    "plugintypes": {
+        "trigger": "admin\/tool\/trigger\/custom"
+    }
+}

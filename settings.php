@@ -91,5 +91,9 @@ if ($hassiteconfig) {
     $ADMIN->add('tool_trigger', $settings);
     $ADMIN->add('tool_trigger', $workflowsettings);
 
+    foreach (core_plugin_manager::instance()->get_plugins_of_type('trigger') as $plugin) {
+        $plugin->load_settings($ADMIN, 'trigger', $hassiteconfig);
+    }
+
     $settings = null;
 }

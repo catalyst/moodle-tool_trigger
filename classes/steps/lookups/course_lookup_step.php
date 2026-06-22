@@ -128,6 +128,17 @@ class course_lookup_step extends base_lookup_step {
         foreach ($coursedata as $key => $value) {
             $stepresults[$this->outputprefix . $key] = $value;
         }
+
+        $handler = \core_customfield\handler::get_handler('core_course', 'course');
+        $datas = $handler->get_instance_data($courseid);
+        foreach ($datas as $data) {
+            if (empty($data->get_value())) {
+                continue;
+            }
+            $key = $data->get_field()->get('shortname');
+            $stepresults[$this->outputprefix . $key] = $data->get_value();
+        }
+
         return [true, $stepresults];
     }
 
@@ -178,7 +189,12 @@ class course_lookup_step extends base_lookup_step {
      * @return array $stepfields The fields this step provides.
      */
     public static function get_fields() {
-        return self::$stepfields;
+        $handler = \core_customfield\handler::get_handler('core_course', 'course');
+        $customfields = [];
+        foreach ($handler->get_fields() as $field) {
+            $customfields[] = $field->get('shortname');
+        }
 
+        return array_merge(self::$stepfields, $customfields);
     }
 }
