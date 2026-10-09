@@ -290,7 +290,7 @@ final class steps_form_test extends \advanced_testcase {
      *
      * @return array
      */
-    public function provide_steps(): array {
+    public static function provide_steps(): array {
         $data = [];
 
         $wfm = new \tool_trigger\workflow_manager();

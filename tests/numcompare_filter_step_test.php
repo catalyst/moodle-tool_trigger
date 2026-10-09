@@ -94,7 +94,7 @@ final class numcompare_filter_step_test extends \advanced_testcase {
      *
      * @return string[][]|boolean[][]
      */
-    public function operator_permutations(): array {
+    public static function operator_permutations(): array {
         return [
             [ numcompare_filter_step::OPERATOR_EQUAL, '-100', false ],
             [ numcompare_filter_step::OPERATOR_EQUAL, '0', true ],

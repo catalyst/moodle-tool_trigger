@@ -30,7 +30,6 @@ require_once($CFG->dirroot . '/user/profile/lib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class user_lookup_step extends base_lookup_step {
-
     use \tool_trigger\helper\datafield_manager;
 
     /**
@@ -97,8 +96,7 @@ class user_lookup_step extends base_lookup_step {
             'lastnamephonetic',
             'firstnamephonetic',
             'middlename',
-            'alternatename',
-            'moodlenetprofile'];
+            'alternatename'];
 
     /**
      * Whether to halt execution of the workflow, if the user has been marked "deleted".
@@ -106,6 +104,23 @@ class user_lookup_step extends base_lookup_step {
      * @var bool
      */
     private $nodeleted;
+
+    /**
+     * Get the list of fields this step provides.
+     */
+    private static function get_stepfields() {
+        global $DB;
+
+        $dbman = $DB->get_manager();
+        $fields = self::$stepfields;
+        // The moodlenetprofile user field was removed from the users table and migrated over to a custom user profile field in 5.2.
+        // In newer sites (5.2 and above), profile_load_custom_fields() loads the migrated moodlenetprofile.
+        // Only add it to the $stepfields if the field exists in the users table (i.e. on sites older than 5.2).
+        if ($dbman->field_exists('user', 'moodlenetprofile')) {
+            $fields[] = 'moodlenetprofile';
+        }
+        return $fields;
+    }
 
     /**
      * Init the step.
@@ -134,7 +149,7 @@ class user_lookup_step extends base_lookup_step {
                     . $this->useridfield);
         }
 
-        $userfields = implode(',', self::$stepfields);
+        $userfields = implode(',', self::get_stepfields());
         $userdata = \core_user::get_user($datafields[$this->useridfield], $userfields);
 
         // Users are not typically deleted from the database on deletion; they're just flagged as "deleted".
@@ -219,7 +234,8 @@ class user_lookup_step extends base_lookup_step {
     public static function get_fields() {
         $customfields = profile_get_custom_fields(true);
         $customfieldoptions = array_column($customfields, 'shortname', 'shortname');
+        $stepfields = self::get_stepfields();
 
-        return self::$stepfields + $customfieldoptions;
+        return $stepfields + $customfieldoptions;
     }
 }

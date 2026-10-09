@@ -314,7 +314,7 @@ final class event_processor_test extends \tool_trigger_testcase {
 
         // Lets check the shape of the data (we only care about the specific historical fields).
         $runid = $DB->get_field('tool_trigger_workflow_hist', 'id', ['workflowid' => $workflowid]);
-        $records = $DB->get_records('tool_trigger_run_hist', []);
+        $records = $DB->get_records('tool_trigger_run_hist', [], 'id ASC');
         $firststep = reset($records);
         $this->assertEquals($workflowid, $firststep->workflowid);
         $this->assertEquals($runid, $firststep->runid);

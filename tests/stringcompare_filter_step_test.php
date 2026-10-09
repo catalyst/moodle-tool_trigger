@@ -85,7 +85,7 @@ final class stringcompare_filter_step_test extends \advanced_testcase {
      *
      * @return array
      */
-    public function operator_permutations(): array {
+    public static function operator_permutations(): array {
         return [
             [stringcompare_filter_step::OPERATOR_EQUAL, 'Aaron Wells', true],
             [stringcompare_filter_step::OPERATOR_EQUAL, 'Aaron Burr', false],

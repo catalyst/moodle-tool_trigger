@@ -125,7 +125,7 @@ final class course_lookup_step_test extends \advanced_testcase {
      * Data provided to test hardcoded category id.
      * @return array
      */
-    public function hardcoded_course_id_data_provider(): array {
+    public static function hardcoded_course_id_data_provider(): array {
 
         return [
             'Non-existing Course id.' => [

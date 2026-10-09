@@ -143,9 +143,10 @@ final class process_workflows_test extends \advanced_testcase {
         $task->execute();
 
         // Make sure the output didn't contain any warning or error messages.
-        $this->assertStringNotContainsString('warning', strtolower($this->getActualOutput()));
-        $this->assertStringNotContainsString('error', strtolower($this->getActualOutput()));
-        $this->assertStringNotContainsString('debug', strtolower($this->getActualOutput()));
+        $actualoutput = strtolower($this->getActualOutputForAssertion());
+        $this->assertStringNotContainsString('warning', $actualoutput);
+        $this->assertStringNotContainsString('error', $actualoutput);
+        $this->assertStringNotContainsString('debug', $actualoutput);
 
         $messages = $messagesink->get_messages();
         $this->assertCount(1, $messages);

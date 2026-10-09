@@ -115,7 +115,7 @@ final class http_post_action_step_test extends \advanced_testcase {
      * Data provider for all supported HTTP methods.
      * @return array[]
      */
-    public function http_methods_data_provider(): array {
+    public static function http_methods_data_provider(): array {
         return [
             ['POST'],
             ['GET'],
