@@ -25,7 +25,7 @@
  */
 
 require_once(__DIR__ . '/../../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
+require_once($CFG->libdir . '/adminlib.php');
 
 require_login();
 $context = context_system::instance();
@@ -84,7 +84,7 @@ switch ($action) {
             echo $OUTPUT->header();
 
             $confirmurl = new moodle_url(
-                $CFG->wwwroot. '/admin/tool/trigger/manageworkflow.php',
+                $CFG->wwwroot . '/admin/tool/trigger/manageworkflow.php',
                 [
                     'workflowid' => $workflowid,
                     'action' => 'delete',
@@ -92,7 +92,7 @@ switch ($action) {
                     'sesskey' => sesskey(),
                 ]
             );
-            $cancelurl = new moodle_url($CFG->wwwroot. '/admin/tool/trigger/manage.php');
+            $cancelurl = new moodle_url($CFG->wwwroot . '/admin/tool/trigger/manage.php');
             $strconfirm = get_string('workflowdeleteareyousure', 'tool_trigger', $workflow->get_name($context));
 
             echo $OUTPUT->confirm($strconfirm, $confirmurl, $cancelurl);

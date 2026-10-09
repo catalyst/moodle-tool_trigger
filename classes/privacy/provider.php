@@ -44,9 +44,8 @@ use core_privacy\local\request\userlist;
  */
 class provider implements
     \core_privacy\local\metadata\provider,
-    \core_privacy\local\request\plugin\provider,
-    \core_privacy\local\request\core_userlist_provider {
-
+    \core_privacy\local\request\core_userlist_provider,
+    \core_privacy\local\request\plugin\provider {
     use \tool_log\local\privacy\moodle_database_export_and_delete {
         delete_data_for_all_users_in_context as trait_delete_data_for_all_users_in_context;
         delete_data_for_user as trait_delete_data_for_user;
@@ -212,8 +211,7 @@ class provider implements
                 SELECT 1
                   FROM {tool_trigger_events} e
                  WHERE {tool_trigger_queue}.eventid = e.id
-            )"
-        );
+            )");
 
         $DB->execute("
             DELETE
@@ -311,7 +309,7 @@ class provider implements
         }
 
         // Only delete events that do not have an unfinished queue still waiting.
-        list($insql, $inparams) = $DB->get_in_or_equal($userids);
+        [$insql, $inparams] = $DB->get_in_or_equal($userids);
         array_unshift($inparams, \tool_trigger\task\process_workflows::STATUS_READY_TO_RUN);
         $sql = "
             DELETE
@@ -325,7 +323,7 @@ class provider implements
         $DB->execute($sql, $inparams);
 
         // Also remove user information from learnt events.
-        list($insql, $inparams) = $DB->get_in_or_equal($userids);
+        [$insql, $inparams] = $DB->get_in_or_equal($userids);
         $select = "userid $insql";
         $DB->delete_records_select('tool_trigger_learn_events', $select, $inparams);
 

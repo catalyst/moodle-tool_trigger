@@ -32,7 +32,6 @@ namespace tool_trigger\json;
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class json_export {
-
     /**
      * Mime type for the downloaded file.
      *
@@ -90,7 +89,7 @@ class json_export {
             header('Cache-Control: private, must-revalidate, pre-check=0, post-check=0, max-age=0');
             header('Pragma: no-cache');
         }
-        header('Expires: '. gmdate('D, d M Y H:i:s', 0) .' GMT');
+        header('Expires: ' . gmdate('D, d M Y H:i:s', 0) . ' GMT');
         header("Content-Type: $this->mimetype\n");
         header("Content-Disposition: attachment; filename=\"$filename\"");
     }
@@ -101,7 +100,7 @@ class json_export {
      * @param string $workflowname The ID of the workflow.
      * @param int $now  The Unix timestamp to use in the file name.
      */
-    private function get_filename($workflowname, $now=null) {
+    private function get_filename($workflowname, $now = null) {
 
         if (!$now) {
             $now = time();
@@ -148,5 +147,4 @@ class json_export {
         $this->print_json_data($workflowjson);
         exit;
     }
-
 }

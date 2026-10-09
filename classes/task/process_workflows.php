@@ -175,7 +175,11 @@ class process_workflows extends \core\task\scheduled_task {
         // Update workflow record to state this workflow was attempted.
         $workflow = new \stdClass();
         $workflow->id = $item->workflowid;
-        $runid = \tool_trigger\event_processor::record_workflow_trigger($workflow->id, $this->get_event_record($item->eventid), $trigger->tries);
+        $runid = \tool_trigger\event_processor::record_workflow_trigger(
+            $workflow->id,
+            $this->get_event_record($item->eventid),
+            $trigger->tries
+        );
         $workflow->timetriggered = time();
         $this->update_workflow_record($workflow);
 
@@ -199,7 +203,7 @@ class process_workflows extends \core\task\scheduled_task {
             try {
                 $outertransaction = $DB->is_transaction_started();
 
-                list($success, $stepresults) = $this->execute_step($step,  $trigger, $event, $stepresults);
+                [$success, $stepresults] = $this->execute_step($step, $trigger, $event, $stepresults);
 
                 // Record a success, or a failed debounce step with a queuedid.
                 if (!empty($runid) && ($success || !$success && !empty($stepresults['debouncequeueid']))) {
@@ -214,7 +218,6 @@ class process_workflows extends \core\task\scheduled_task {
                     mtrace('Exiting workflow early');
                     break;
                 }
-
             } catch (\Exception $e) {
                 // Errored out executing this step. Exit processing this trigger, and try again later.
                 $now = time();
@@ -223,7 +226,6 @@ class process_workflows extends \core\task\scheduled_task {
                 $trigger->executiontime = $now + get_config('tool_trigger', 'autorerunduration');
                 $this->update_queue_record($trigger);
                 if (!empty($e->debuginfo)) {
-
                     mtrace("Debug info:");
                     mtrace($e->debuginfo);
                 }
@@ -237,7 +239,6 @@ class process_workflows extends \core\task\scheduled_task {
                 }
 
                 return;
-
             } finally {
                 if (!$outertransaction && $DB->is_transaction_started()) {
                     mtrace('WARNING: Database transaction left uncommitted in '
@@ -276,6 +277,5 @@ class process_workflows extends \core\task\scheduled_task {
         }
         $trigger->timemodified = time();
         $this->update_queue_record($trigger);
-
     }
 }

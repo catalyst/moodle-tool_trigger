@@ -35,7 +35,6 @@ namespace tool_trigger\steps\filters;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class fail_filter_step extends base_filter_step {
-
     /**
      * {@inheritDoc}
      * @see \tool_trigger\steps\base\base_step::execute()
@@ -75,6 +74,5 @@ class fail_filter_step extends base_filter_step {
      */
     public static function get_fields() {
         return false;
-
     }
 }

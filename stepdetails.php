@@ -54,16 +54,22 @@ if (!$step) {
     $pagecontent .= html_writer::tag('pre', var_export($results, true));
 }
 
-$backbutton = new single_button(new moodle_url('/admin/tool/trigger/history.php',
-    ['workflow' => $step->workflowid, 'run' => $step->runid]),
-    get_string('back'));
+$backbutton = new single_button(
+    new moodle_url(
+        '/admin/tool/trigger/history.php',
+        ['workflow' => $step->workflowid, 'run' => $step->runid]
+    ),
+    get_string('back')
+);
 
 // Manually inject navigation nodes based on the page params.
 $workflowurl = new moodle_url('/admin/tool/trigger/history.php', ['workflow' => $step->workflowid]);
 $PAGE->navbar->add(get_string('workflowviewhistory', 'tool_trigger'), $workflowurl);
 
-$runurl = new moodle_url('/admin/tool/trigger/history.php',
-    ['workflow' => $step->workflowid, 'run' => $step->runid]);
+$runurl = new moodle_url(
+    '/admin/tool/trigger/history.php',
+    ['workflow' => $step->workflowid, 'run' => $step->runid]
+);
 $PAGE->navbar->add(get_string('viewdetailedrun', 'tool_trigger'), $runurl);
 
 $stepdetailsurl = new moodle_url('/admin/tool/trigger/stepdetails.php', ['id' => $stepid]);

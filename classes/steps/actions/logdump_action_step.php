@@ -25,7 +25,6 @@ namespace tool_trigger\steps\actions;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class logdump_action_step extends base_action_step {
-
     /**
      * The fields supplied by this step.
      *
@@ -37,9 +36,10 @@ class logdump_action_step extends base_action_step {
 
     #[\Override]
     public function form_definition_extra(
-                                        $form,
-                                        $mform,
-                                        $customdata) {
+        $form,
+        $mform,
+        $customdata
+    ) {
         $mform->addElement('html', self::get_step_desc());
     }
 
@@ -74,6 +74,5 @@ class logdump_action_step extends base_action_step {
      */
     public static function get_fields() {
         return self::$stepfields;
-
     }
 }

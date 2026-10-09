@@ -35,9 +35,9 @@ use core_privacy\local\request\approved_userlist;
  * @category   test
  * @copyright  2019 Matt Porritt <mattp@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers     \tool_trigger\privacy\provider
  */
 final class privacy_test extends \advanced_testcase {
-
     /**
      * Set up method.
      */
@@ -94,7 +94,6 @@ final class privacy_test extends \advanced_testcase {
         $userids = $userlist->get_userids();
         $this->assertCount(1, $userlist);
         $this->assertEquals($user->id, $userids[0]);
-
     }
 
     /**
@@ -154,6 +153,5 @@ final class privacy_test extends \advanced_testcase {
 
         $dbrules = $DB->get_records('tool_trigger_learn_events');
         $this->assertEmpty($dbrules);
-
     }
 }

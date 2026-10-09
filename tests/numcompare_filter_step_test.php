@@ -30,9 +30,9 @@ require_once("$CFG->libdir/gradelib.php");
  * @author     Aaron Wells <aaronw@catalyst.net.nz>
  * @copyright  Catalyst IT 2018
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers     \tool_trigger\steps\filters\numcompare_filter_step
  */
 final class numcompare_filter_step_test extends \advanced_testcase {
-
     /**
      * Event for testing.
      * @var \core\event\user_graded
@@ -80,7 +80,7 @@ final class numcompare_filter_step_test extends \advanced_testcase {
             ])
         );
 
-        list($status) = $step->execute(null, null, $this->event, []);
+        [$status] = $step->execute(null, null, $this->event, []);
 
         $this->assertEquals($expectedresult, $status);
     }
@@ -94,7 +94,7 @@ final class numcompare_filter_step_test extends \advanced_testcase {
      *
      * @return string[][]|boolean[][]
      */
-    public function operator_permutations(): array {
+    public static function operator_permutations(): array {
         return [
             [ numcompare_filter_step::OPERATOR_EQUAL, '-100', false ],
             [ numcompare_filter_step::OPERATOR_EQUAL, '0', true ],
@@ -128,7 +128,7 @@ final class numcompare_filter_step_test extends \advanced_testcase {
             ])
         );
 
-        list($status) = $step->execute(null, null, $this->event, ['target_grade' => '10']);
+        [$status] = $step->execute(null, null, $this->event, ['target_grade' => '10']);
 
         $this->assertTrue($status);
     }
@@ -140,9 +140,9 @@ final class numcompare_filter_step_test extends \advanced_testcase {
                 'operator' => numcompare_filter_step::OPERATOR_NOTEQUAL,
                 'field2' => '10',
             ])
-            );
+        );
 
-        list($status) = $step->execute(null, null, $this->event, []);
+        [$status] = $step->execute(null, null, $this->event, []);
         $this->assertTrue($status);
     }
 

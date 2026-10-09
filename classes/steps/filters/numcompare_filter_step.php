@@ -91,7 +91,7 @@ class numcompare_filter_step extends base_filter_step {
         $field2val = $this->get_field_value($this->field2);
 
         $result = null;
-        switch($this->operator) {
+        switch ($this->operator) {
             case self::OPERATOR_EQUAL:
                 $result = ($field1val == $field2val);
                 break;
@@ -204,6 +204,5 @@ class numcompare_filter_step extends base_filter_step {
      */
     public static function get_fields() {
         return false;
-
     }
 }

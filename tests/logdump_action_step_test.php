@@ -23,6 +23,7 @@ namespace tool_trigger;
  * @author     Aaron Wells <aaronw@catalyst.net.nz>
  * @copyright  Catalyst IT 2018
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers     \tool_trigger\steps\actions\logdump_action_step
  */
 final class logdump_action_step_test extends \basic_testcase {
     public function test_execute(): void {
@@ -76,7 +77,7 @@ EOD;
         $step = new \tool_trigger\steps\actions\logdump_action_step();
         // Look for the var_dump of the event object and the stepresults object, in the output.
         $this->expectOutputRegex('/' . preg_quote($eventdump) . '.*' . preg_quote($stepresultsdump) . '/ms', '/');
-        list($status, $stepresults) = $step->execute((object)['name' => 'logdump step'], null, $event, $prevstepresults);
+        [$status, $stepresults] = $step->execute((object)['name' => 'logdump step'], null, $event, $prevstepresults);
         $this->assertTrue($status);
 
         // The logdump step also adds the var_dump()s to a datafield called "vardump".

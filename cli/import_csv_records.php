@@ -25,13 +25,13 @@
 
 define('CLI_SCRIPT', 1);
 
-require(__DIR__.'/../../../../config.php');
-require_once($CFG->libdir.'/clilib.php');
+require(__DIR__ . '/../../../../config.php');
+require_once($CFG->libdir . '/clilib.php');
 
 global $DB;
 
 // Get cli options.
-list($options, $unrecognized) = cli_get_params(
+[$options, $unrecognized] = cli_get_params(
     [
         'source' => '',
         'help' => false,
@@ -39,7 +39,7 @@ list($options, $unrecognized) = cli_get_params(
     [
         'h' => 'help',
     ]
-    );
+);
 
 if ($unrecognized) {
     $unrecognized = implode("\n  ", $unrecognized);
@@ -77,8 +77,8 @@ if ($fp) {
         $valuesmatches = [];
 
         // Only get the 2 fields from the CSV that contain the data we need.
-        $gotparameters = preg_match ('/\((.*?)\)/', $data[13], $parametermatches);
-        $gotvalues = preg_match ('/parameters\:\s(.*)/', $data[14], $valuesmatches);
+        $gotparameters = preg_match('/\((.*?)\)/', $data[13], $parametermatches);
+        $gotvalues = preg_match('/parameters\:\s(.*)/', $data[14], $valuesmatches);
 
         if ($gotparameters && $gotvalues) {
             // Extract the required data from the fetched fields.
@@ -87,7 +87,6 @@ if ($fp) {
 
             $record = new \stdClass();
             for ($i = 0; $i < count($parameterarray); $i++) {
-
                 // Do some final formating and converison on values before insert.
                 $value = preg_replace('/\d*\s\=\s/', '', $valuesarray[$i]);
                 $value = str_replace('NULL', '', $value);
@@ -101,7 +100,6 @@ if ($fp) {
             $DB->insert_record('tool_trigger_learn_events', $record);
             $count++;
         }
-
     }
 
     echo 'Processed: ' . $count . ' records' . "\n";

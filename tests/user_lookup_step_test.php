@@ -19,7 +19,7 @@ namespace tool_trigger;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once(__DIR__.'/fixtures/user_event_fixture.php');
+require_once(__DIR__ . '/fixtures/user_event_fixture.php');
 
 /**
  * User look up step's unit tests.
@@ -28,6 +28,7 @@ require_once(__DIR__.'/fixtures/user_event_fixture.php');
  * @author     Aaron Wells <aaronw@catalyst.net.nz>
  * @copyright  Catalyst IT 2018
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers     \tool_trigger\steps\lookups\user_lookup_step
  */
 final class user_lookup_step_test extends \advanced_testcase {
     use \tool_trigger_user_event_fixture;
@@ -54,7 +55,7 @@ final class user_lookup_step_test extends \advanced_testcase {
             ])
         );
 
-        list($status, $stepresults) = $step->execute(null, null, $this->event, []);
+        [$status, $stepresults] = $step->execute(null, null, $this->event, []);
 
         $this->assertTrue($status);
         $this->assertEquals($this->user1->username, $stepresults['user_username']);
@@ -82,7 +83,7 @@ final class user_lookup_step_test extends \advanced_testcase {
             ])
         );
 
-        list($status, $stepresults) = $step->execute(null, null, $this->event, []);
+        [$status, $stepresults] = $step->execute(null, null, $this->event, []);
 
         $this->assertTrue($status);
         $this->assertEquals($this->user1->username, $stepresults['user_username']);
@@ -105,7 +106,7 @@ final class user_lookup_step_test extends \advanced_testcase {
             ])
         );
 
-        list($status, $stepresults) = $step->execute(null, null, $this->event, []);
+        [$status, $stepresults] = $step->execute(null, null, $this->event, []);
 
         $this->assertTrue($status);
         $this->assertEquals($this->user2->username, $stepresults['vieweduser_username']);
@@ -145,7 +146,7 @@ final class user_lookup_step_test extends \advanced_testcase {
             ])
         );
 
-        list($status) = $step->execute(null, null, $this->event, []);
+        [$status] = $step->execute(null, null, $this->event, []);
         $this->assertFalse($status);
 
         // With "nodeleted = 0", we should see a true return status, and data
@@ -157,7 +158,7 @@ final class user_lookup_step_test extends \advanced_testcase {
                 'nodeleted' => '0',
             ])
         );
-        list($status2, $stepresults2) = $step2->execute(null, null, $this->event, []);
+        [$status2, $stepresults2] = $step2->execute(null, null, $this->event, []);
         $this->assertTrue($status2);
         $this->assertEquals($this->user1->id, $stepresults2['user_id']);
         $this->assertEquals('1', $stepresults2['user_deleted']);

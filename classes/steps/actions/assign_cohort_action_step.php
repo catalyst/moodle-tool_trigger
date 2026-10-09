@@ -17,7 +17,7 @@
 namespace tool_trigger\steps\actions;
 
 defined('MOODLE_INTERNAL') || die;
-require_once($CFG->dirroot.'/cohort/lib.php');
+require_once($CFG->dirroot . '/cohort/lib.php');
 
 /**
  * Cohort assignment action step class.

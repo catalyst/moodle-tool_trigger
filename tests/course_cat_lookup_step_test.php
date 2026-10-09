@@ -23,9 +23,9 @@ namespace tool_trigger;
  * @author     Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @copyright  2019 Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers     \tool_trigger\steps\lookups\course_cat_lookup_step
  */
 final class course_cat_lookup_step_test extends \advanced_testcase {
-
     /**
      * Test user.
      * @var \stdClass
@@ -101,7 +101,7 @@ final class course_cat_lookup_step_test extends \advanced_testcase {
             ])
         );
 
-        list($status, $stepresults) = $step->execute(null, null, $this->event, []);
+        [$status, $stepresults] = $step->execute(null, null, $this->event, []);
         $context = \context_coursecat::instance($this->category->id);
 
         $this->assertTrue($status);
@@ -140,7 +140,7 @@ final class course_cat_lookup_step_test extends \advanced_testcase {
             ])
         );
 
-        list($status) = $step->execute(null, null, $this->event, []);
+        [$status] = $step->execute(null, null, $this->event, []);
         $this->assertFalse($status);
     }
 
@@ -148,7 +148,7 @@ final class course_cat_lookup_step_test extends \advanced_testcase {
      * Data provided to test hardcoded category id.
      * @return array
      */
-    public function hardcoded_category_id_data_provider(): array {
+    public static function hardcoded_category_id_data_provider(): array {
 
         return [
             'Non-existing category id.' => [
@@ -192,7 +192,7 @@ final class course_cat_lookup_step_test extends \advanced_testcase {
             $this->expectExceptionMessageMatches("/Specified category field not present in the workflow data:*/");
         }
 
-        list($statusresult, $stepresults) = $step->execute(null, null, $this->event, []);
+        [$statusresult, $stepresults] = $step->execute(null, null, $this->event, []);
 
         if ($status) {
             $context = \context_coursecat::instance($this->category->id);
@@ -216,7 +216,7 @@ final class course_cat_lookup_step_test extends \advanced_testcase {
             ])
         );
 
-        list($status, $stepresults) = $step->execute(null, null, $this->event, []);
+        [$status, $stepresults] = $step->execute(null, null, $this->event, []);
 
         $context = \context_coursecat::instance($this->category->id);
         $this->assertTrue($status);
@@ -236,7 +236,7 @@ final class course_cat_lookup_step_test extends \advanced_testcase {
             ])
         );
 
-        list($status, $stepresults) = $step->execute(null, null, $this->event, []);
+        [$status, $stepresults] = $step->execute(null, null, $this->event, []);
 
         $context = \context_coursecat::instance($this->category->id);
         $this->assertTrue($status);
