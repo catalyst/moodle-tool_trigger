@@ -22,9 +22,9 @@ namespace tool_trigger;
  * @package     tool_trigger
  * @copyright   Matt Porritt <mattp@catalyst-au.net>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers     \tool_trigger\task\process_workflows
  */
 final class process_workflows_test extends \advanced_testcase {
-
     /**
      * Test user.
      * @var \stdClass
@@ -45,6 +45,9 @@ final class process_workflows_test extends \advanced_testcase {
 
 
 
+    /**
+     * Set up the test environment.
+     */
     public function setup(): void {
         global $DB;
         $this->resetAfterTest(true);
@@ -83,7 +86,6 @@ final class process_workflows_test extends \advanced_testcase {
 
         // Run as the cron user  .
         \core\cron::setup_user();
-
     }
 
     /**

@@ -24,7 +24,6 @@ namespace tool_trigger\steps\actions;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class roles_unassign_action_step extends base_action_step {
-
     use \tool_trigger\helper\datafield_manager;
 
     /**
@@ -57,7 +56,7 @@ class roles_unassign_action_step extends base_action_step {
         } else {
             $this->inputprefixuser = 'user_';
         }
-        if (!is_null ($this->data['inputprefixuser'])) {
+        if (!is_null($this->data['inputprefixuser'])) {
             $this->inputprefixrole = $this->data['inputprefixrole'];
         } else {
             $this->inputprefixrole = 'user_';
@@ -127,6 +126,5 @@ class roles_unassign_action_step extends base_action_step {
      */
     public static function get_fields() {
         return self::$stepfields;
-
     }
 }

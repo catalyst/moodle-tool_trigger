@@ -29,7 +29,6 @@ namespace tool_trigger\task;
  * Task to cleanup old queue.
  */
 class cleanup_history extends \core\task\scheduled_task {
-
     /** @var int Maximum number parameters to use in the SQL IN statement. */
     const MAX_PARAM_IN = 10000;
 

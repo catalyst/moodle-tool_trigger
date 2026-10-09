@@ -32,7 +32,6 @@ namespace tool_trigger\output\manageworkflows;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class renderer extends \plugin_renderer_base {
-
     /**
      * Get html to display on the page.
      *
@@ -75,7 +74,7 @@ class renderer extends \plugin_renderer_base {
         global $CFG;
 
         $button = \html_writer::tag('button', get_string('addworkflow', 'tool_trigger'), ['class' => 'btn btn-primary']);
-        $addurl = new \moodle_url($CFG->wwwroot. '/admin/tool/trigger/edit.php', ['workflowid' => 0]);
+        $addurl = new \moodle_url($CFG->wwwroot . '/admin/tool/trigger/edit.php', ['workflowid' => 0]);
         return \html_writer::link($addurl, $button);
     }
 
@@ -91,7 +90,7 @@ class renderer extends \plugin_renderer_base {
             'button',
             get_string('importworkflow', 'tool_trigger'),
             ['class' => 'btn btn-primary', 'name' => 'importbtn']
-            );
+        );
         return \html_writer::link('#', $button);
     }
 

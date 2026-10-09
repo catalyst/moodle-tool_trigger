@@ -35,7 +35,6 @@ function xmldb_tool_trigger_upgrade($oldversion) {
     $dbman = $DB->get_manager();
 
     if ($oldversion < 2018050700) {
-
         // Define table tool_trigger_events to be created.
         $table = new xmldb_table('tool_trigger_events');
 
@@ -61,7 +60,6 @@ function xmldb_tool_trigger_upgrade($oldversion) {
     }
 
     if ($oldversion < 2018050702) {
-
         // Define field eventid to be added to tool_trigger_queue.
         $table = new xmldb_table('tool_trigger_queue');
         $field = new xmldb_field('eventid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, 'workflowid');
@@ -83,7 +81,6 @@ function xmldb_tool_trigger_upgrade($oldversion) {
     }
 
     if ($oldversion < 2018063004) {
-
         // Add new index to table tool_trigger_events.
         $table = new xmldb_table('tool_trigger_events');
         $table->add_index('eventname', XMLDB_INDEX_NOTUNIQUE, ['eventname']);
@@ -135,7 +132,6 @@ function xmldb_tool_trigger_upgrade($oldversion) {
     }
 
     if ($oldversion < 2018070101) {
-
         // Define table tool_trigger_event_fields to be created.
         $table = new xmldb_table('tool_trigger_event_fields');
 
@@ -160,7 +156,6 @@ function xmldb_tool_trigger_upgrade($oldversion) {
     }
 
     if ($oldversion < 2018071700) {
-
         // Add events fields from fixture file to database.
         $learnprocess = new \tool_trigger\learn_process();
         $learnprocess->process_fixtures();
@@ -170,7 +165,6 @@ function xmldb_tool_trigger_upgrade($oldversion) {
     }
 
     if ($oldversion < 2019021100) {
-
         // Convert all old email text fields to new Atto fields.
         $sql = 'SELECT * FROM {tool_trigger_steps} WHERE stepclass = \'\tool_trigger\steps\actions\email_action_step\'';
         $rs = $DB->get_recordset_sql($sql, []);
@@ -189,7 +183,6 @@ function xmldb_tool_trigger_upgrade($oldversion) {
     }
 
     if ($oldversion < 2019102200) {
-
         // A new realtime field to the workflow table.
         $table = new xmldb_table('tool_trigger_workflows');
         $field = new xmldb_field('realtime', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, 0);
@@ -203,7 +196,6 @@ function xmldb_tool_trigger_upgrade($oldversion) {
     }
 
     if ($oldversion < 2020050100) {
-
         // Define table tool_trigger_workflow_hist to be created.
         $table = new xmldb_table('tool_trigger_workflow_hist');
 
@@ -273,7 +265,6 @@ function xmldb_tool_trigger_upgrade($oldversion) {
     }
 
     if ($oldversion < 2020061900) {
-
         // Define field errorstep to be added to tool_trigger_workflow_hist.
         $table = new xmldb_table('tool_trigger_workflow_hist');
         $field = new xmldb_field('errorstep', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'failedstep');
@@ -288,7 +279,6 @@ function xmldb_tool_trigger_upgrade($oldversion) {
     }
 
     if ($oldversion < 2021022300) {
-
         // Define field executiontime to be added to tool_trigger_queue.
         $table = new xmldb_table('tool_trigger_queue');
         $field = new xmldb_field('executiontime', XMLDB_TYPE_INTEGER, '15', null, null, null, null, 'timemodified');
@@ -303,7 +293,6 @@ function xmldb_tool_trigger_upgrade($oldversion) {
     }
 
     if ($oldversion < 2021030402) {
-
         // Define field id to be added to tool_trigger_workflow_hist.
         $table = new xmldb_table('tool_trigger_workflow_hist');
         $field = new xmldb_field('userid', XMLDB_TYPE_INTEGER, '10', null, null, null, '0', 'event');
@@ -318,7 +307,6 @@ function xmldb_tool_trigger_upgrade($oldversion) {
     }
 
     if ($oldversion < 2021030403) {
-
         // Define field id to be added to tool_trigger_workflow_hist.
         $table = new xmldb_table('tool_trigger_workflow_hist');
         $field = new xmldb_field('attemptnum', XMLDB_TYPE_INTEGER, '10', null, null, null, '1', 'errorstep');
@@ -336,7 +324,6 @@ function xmldb_tool_trigger_upgrade($oldversion) {
     }
 
     if ($oldversion < 2021102101) {
-
         // Define key stepconfigid (foreign) to be added to tool_trigger_run_hist.
         $table = new xmldb_table('tool_trigger_run_hist');
         $key = new xmldb_key('stepconfigid', XMLDB_KEY_FOREIGN, ['stepconfigid'], 'tool_trigger_steps', ['id']);
@@ -351,7 +338,6 @@ function xmldb_tool_trigger_upgrade($oldversion) {
     }
 
     if ($oldversion < 2022101800) {
-
         // Define index workflowid-number (not unique) to be added to tool_trigger_workflow_hist.
         $table = new xmldb_table('tool_trigger_workflow_hist');
         $index = new xmldb_index('workflowid-number', XMLDB_INDEX_NOTUNIQUE, ['workflowid', 'number']);

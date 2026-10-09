@@ -23,9 +23,9 @@ namespace tool_trigger;
  * @author     Aaron Wells <aaronw@catalyst.net.nz>
  * @copyright  Catalyst IT 2018
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers     \tool_trigger\steps\actions\http_post_action_step
  */
 final class http_post_action_step_test extends \advanced_testcase {
-
     /**
      * Test user.
      * @var \stdClass
@@ -44,6 +44,9 @@ final class http_post_action_step_test extends \advanced_testcase {
      */
     protected $event;
 
+    /**
+     * Set up the test environment.
+     */
     public function setup(): void {
         $this->resetAfterTest(true);
 
@@ -64,6 +67,9 @@ final class http_post_action_step_test extends \advanced_testcase {
         \core\cron::setup_user();
     }
 
+    /**
+     * Build a mock HTTP handler returning the given response.
+     */
     private function make_mock_http_handler($response) {
 
         $stack = \GuzzleHttp\HandlerStack::create(
@@ -144,7 +150,7 @@ final class http_post_action_step_test extends \advanced_testcase {
         $response = new \GuzzleHttp\Psr7\Response(200, [], 'OK', 1.1, 'All good');
         $step->set_http_client_handler($this->make_mock_http_handler($response));
 
-        list($status, $stepresults) = $step->execute(null, null, $this->event, []);
+        [$status, $stepresults] = $step->execute(null, null, $this->event, []);
 
         $this->assertTrue($status);
         $this->assertEquals(1, count($this->requestssent));
@@ -174,7 +180,7 @@ final class http_post_action_step_test extends \advanced_testcase {
         $response = new \GuzzleHttp\Psr7\Response(404, [], json_encode(false), 1.1, 'Huh?');
         $step->set_http_client_handler($this->make_mock_http_handler($response));
 
-        list($status, $stepresults) = $step->execute(null, null, $this->event, []);
+        [$status, $stepresults] = $step->execute(null, null, $this->event, []);
 
         $this->assertTrue($status);
         $this->assertEquals(1, count($this->requestssent));
@@ -212,7 +218,7 @@ final class http_post_action_step_test extends \advanced_testcase {
             'e' => null,
         ];
 
-        list($status) = $step->execute(null, null, $this->event, $prevstepresults);
+        [$status] = $step->execute(null, null, $this->event, $prevstepresults);
 
         $this->assertTrue($status);
         $this->assertEquals(1, count($this->requestssent));
@@ -237,7 +243,6 @@ final class http_post_action_step_test extends \advanced_testcase {
             "a=1005&b=%3F.%26%3D%3B&c=c&d=1&e=",
             $request->getBody()->getContents()
         );
-
     }
 
     /**
@@ -270,7 +275,7 @@ final class http_post_action_step_test extends \advanced_testcase {
                 'e' => null,
         ];
 
-        list($status) = $step->execute(null, null, $this->event, $prevstepresults);
+        [$status] = $step->execute(null, null, $this->event, $prevstepresults);
 
         $this->assertTrue($status);
         $this->assertEquals(1, count($this->requestssent));
@@ -280,21 +285,20 @@ final class http_post_action_step_test extends \advanced_testcase {
 
         // The datafield in the header line didn't need to be urlencoded, so it should be exactly the same.
         $this->assertEquals(
-                $prevstepresults['headervalue'],
-                $request->getHeaderLine('My-Special-Header')
-                );
+            $prevstepresults['headervalue'],
+            $request->getHeaderLine('My-Special-Header')
+        );
 
         // The "returnurl" datafield in the request URL should be urlencoded.
         $this->assertEquals(
-                "http://api.example.com/?returnurl=http%3A%2F%2Freturnurl.example.com%3Fid%3D35%26lang%3Den&lang=en",
-                (string) $request->getUri()
-                );
+            "http://api.example.com/?returnurl=http%3A%2F%2Freturnurl.example.com%3Fid%3D35%26lang%3Den&lang=en",
+            (string) $request->getUri()
+        );
 
         // The datafields in the request body should be JSON encoded.
         $this->assertEquals(
-                '{"a":"1005","b":"?.","c":"c","d":"1","e":""}',
-                $request->getBody()->getContents()
-                );
-
+            '{"a":"1005","b":"?.","c":"c","d":"1","e":""}',
+            $request->getBody()->getContents()
+        );
     }
 }

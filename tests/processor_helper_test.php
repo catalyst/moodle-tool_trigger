@@ -28,9 +28,9 @@ require_once('tool_trigger_testcase.php');
  * @package    tool_trigger
  * @copyright  Dmitrii Metelkin <dmitriim@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers     \tool_trigger\helper\processor_helper
  */
 final class processor_helper_test extends \tool_trigger_testcase {
-
     /**
      * Anonymous class for testing.
      * @var mixed
@@ -100,7 +100,7 @@ final class processor_helper_test extends \tool_trigger_testcase {
         $this->assertEquals($expectedevent->userid, $actual->userid);
         $this->assertEquals($expectedevent->objectid, $actual->objectid);
         $this->assertEquals($expectedevent->get_username(), $actual->get_username());
-        // Tool trigger event id
+        // Tool trigger event id.
         $this->assertEquals(1, $actual->other['eventid']);
     }
 
@@ -224,5 +224,4 @@ final class processor_helper_test extends \tool_trigger_testcase {
         $this->assertEquals('\core\event\user_loggedin', $actual->eventname);
         $this->assertEquals('113000', $actual->objectid);
     }
-
 }

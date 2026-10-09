@@ -22,9 +22,12 @@ namespace tool_trigger;
  * @package     tool_trigger
  * @copyright   Matt Porritt <mattp@catalyst-au.net>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers     \tool_trigger\learn_process
  */
 final class learn_process_test extends \advanced_testcase {
-
+    /**
+     * Set up the test environment.
+     */
     public function setup(): void {
         $this->resetAfterTest(true);
     }
@@ -112,7 +115,7 @@ final class learn_process_test extends \advanced_testcase {
         // We're testing a private method, so we need to setup reflector magic.
         $method = new \ReflectionMethod('tool_trigger\learn_process', 'get_learnt_events');
         $method->setAccessible(true); // Allow accessing of private method.
-        $proxy = $method->invoke(new \tool_trigger\learn_process); // Get result of invoked method.
+        $proxy = $method->invoke(new \tool_trigger\learn_process()); // Get result of invoked method.
 
         $this->assertEquals(sort($expected), sort($proxy));  // Order of returned array is not important, just values.
     }
@@ -135,7 +138,7 @@ final class learn_process_test extends \advanced_testcase {
         // We're testing a private method, so we need to setup reflector magic.
         $method = new \ReflectionMethod('tool_trigger\learn_process', 'get_learnt_records');
         $method->setAccessible(true); // Allow accessing of private method.
-        $proxy = $method->invoke(new \tool_trigger\learn_process, '\core\event\fake_event'); // Get result of invoked method.
+        $proxy = $method->invoke(new \tool_trigger\learn_process(), '\core\event\fake_event'); // Get result of invoked method.
 
         foreach ($proxy as $value) {
             $eventnames[] = $value->eventname;
@@ -161,10 +164,9 @@ final class learn_process_test extends \advanced_testcase {
         // We're testing a private method, so we need to setup reflector magic.
         $method = new \ReflectionMethod('tool_trigger\learn_process', 'convert_record_type');
         $method->setAccessible(true); // Allow accessing of private method.
-        $proxy = $method->invoke(new \tool_trigger\learn_process, $learntevent, false); // Get result of invoked method.
+        $proxy = $method->invoke(new \tool_trigger\learn_process(), $learntevent, false); // Get result of invoked method.
 
         $this->assertEquals($expected, $proxy);
-
     }
 
     /**
@@ -183,10 +185,9 @@ final class learn_process_test extends \advanced_testcase {
         // We're testing a private method, so we need to setup reflector magic.
         $method = new \ReflectionMethod('tool_trigger\learn_process', 'merge_records');
         $method->setAccessible(true); // Allow accessing of private method.
-        $proxy = $method->invoke(new \tool_trigger\learn_process, $processedrecords); // Get result of invoked method.
+        $proxy = $method->invoke(new \tool_trigger\learn_process(), $processedrecords); // Get result of invoked method.
 
         $this->assertEquals($expected, $proxy);
-
     }
 
     /**
@@ -218,12 +219,11 @@ final class learn_process_test extends \advanced_testcase {
         // We're testing a private method, so we need to setup reflector magic.
         $method = new \ReflectionMethod('tool_trigger\learn_process', 'merge_json_fields');
         $method->setAccessible(true); // Allow accessing of private method.
-        $proxy = $method->invoke(new \tool_trigger\learn_process, $record, $exists); // Get result of invoked method.
+        $proxy = $method->invoke(new \tool_trigger\learn_process(), $record, $exists); // Get result of invoked method.
 
         $result = json_decode($proxy->jsonfields, true);
 
         $this->assertEquals($expected, $result);
-
     }
 
     /**
@@ -246,7 +246,6 @@ final class learn_process_test extends \advanced_testcase {
 
         $this->assertEquals($result->eventname, $learntevent);
         $this->assertEquals($result->jsonfields, $jsonfields);
-
     }
 
     /**
@@ -275,7 +274,6 @@ final class learn_process_test extends \advanced_testcase {
 
         $this->assertEquals($result->eventname, $learntevent);
         $this->assertEquals($result->jsonfields, $jsonfields);
-
     }
 
     /**
@@ -414,7 +412,6 @@ final class learn_process_test extends \advanced_testcase {
             ];
 
         $this->assertEquals($eventfields, $expected);
-
     }
 
     /**
@@ -439,7 +436,6 @@ final class learn_process_test extends \advanced_testcase {
         $result = $learnprocess->get_event_fields_events();
 
         $this->assertContains($learntevent, $result);
-
     }
 
     /**
@@ -464,7 +460,6 @@ final class learn_process_test extends \advanced_testcase {
         $result = $learnprocess->get_event_fields_json($learntevent);
 
         $this->assertEquals($result->jsonfields, $jsonfields);
-
     }
 
     /**
@@ -479,6 +474,5 @@ final class learn_process_test extends \advanced_testcase {
         $fields = json_decode($fieldsjson->jsonfields, true);
 
         $this->assertEquals($fields['eventname'], 'string');
-
     }
 }

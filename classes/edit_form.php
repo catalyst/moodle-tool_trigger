@@ -36,7 +36,6 @@ require_once("$CFG->libdir/formslib.php");
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class edit_form extends \moodleform {
-
     /**
      * Build form for the general setting admin page for plugin.
      *
@@ -52,7 +51,7 @@ class edit_form extends \moodleform {
         $mform->setDefault('hidden', 0);
 
         // Workflow name.
-        $mform->addElement('text', 'workflowname', get_string ('workflowname', 'tool_trigger'), 'size="50"');
+        $mform->addElement('text', 'workflowname', get_string('workflowname', 'tool_trigger'), 'size="50"');
         $mform->setType('workflowname', PARAM_TEXT);
         $mform->addRule('workflowname', get_string('required'), 'required');
         $mform->addHelpButton('workflowname', 'workflowname', 'tool_trigger');
@@ -67,7 +66,7 @@ class edit_form extends \moodleform {
             'noclean' => 0,
             'trusttext' => 0,
         ];
-        $mform->addElement('editor', 'workflowdescription', get_string ('workflowdescription', 'tool_trigger'), $editoroptions);
+        $mform->addElement('editor', 'workflowdescription', get_string('workflowdescription', 'tool_trigger'), $editoroptions);
         $mform->setType('workflowdescription', PARAM_RAW_TRIMMED);
         $mform->addHelpButton('workflowdescription', 'workflowdescription', 'tool_trigger');
 
@@ -92,28 +91,40 @@ class edit_form extends \moodleform {
         $mform->setType('draftmode', PARAM_INT);
 
         // Workflow active.
-        $mform->addElement('advcheckbox',
+        $mform->addElement(
+            'advcheckbox',
             'workflowactive',
-            get_string ('workflowactive', 'tool_trigger'),
-            'Enable', [], [0, 1]);
+            get_string('workflowactive', 'tool_trigger'),
+            'Enable',
+            [],
+            [0, 1]
+        );
         $mform->setType('workflowactive', PARAM_INT);
         $mform->addHelpButton('workflowactive', 'workflowactive', 'tool_trigger');
         $mform->setDefault('workflowactive', 1);
 
         // Workflow realtime.
-        $mform->addElement('advcheckbox',
+        $mform->addElement(
+            'advcheckbox',
             'workflowrealtime',
-            get_string ('workflowrealtime', 'tool_trigger'),
-            'Enable', [], [0, 1]);
+            get_string('workflowrealtime', 'tool_trigger'),
+            'Enable',
+            [],
+            [0, 1]
+        );
         $mform->setType('workflowrealtime', PARAM_INT);
         $mform->addHelpButton('workflowrealtime', 'workflowrealtime', 'tool_trigger');
         $mform->setDefault('workflowrealtime', 0);
 
         // Debug mode data collection.
-        $mform->addElement('advcheckbox',
+        $mform->addElement(
+            'advcheckbox',
             'workflowdebug',
             get_string('workflowdebug', 'tool_trigger'),
-            'Enable', [], [0, 1]);
+            'Enable',
+            [],
+            [0, 1]
+        );
         $mform->setType('workflowdebug', PARAM_INT);
         $mform->addHelpButton('workflowdebug', 'workflowdebug', 'tool_trigger');
         $mform->setDefault('workflowdebug', 0);

@@ -39,7 +39,6 @@ use xmldb_field;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class debounce_step extends base_step {
-
     /**
      * The fields to match exactly for the event to debounce.
      *
@@ -173,7 +172,7 @@ class debounce_step extends base_step {
         // We now have the highest executiontime, but we need to prio the highest match with no exectime.
         if (count($notime) > 1) {
             // This can happen with 2 events in succession between a cron run.
-            usort($notime, function($el1, $el2) {
+            usort($notime, function ($el1, $el2) {
                 if ($el1->timecreated === $el2->timecreated) {
                     return $el1->eventid - $el2->eventid;
                 } else {
@@ -192,7 +191,12 @@ class debounce_step extends base_step {
                 continue;
             }
 
-            $DB->set_field('tool_trigger_queue', 'status', \tool_trigger\task\process_workflows::STATUS_CANCELLED, ['id' => $record->id]);
+            $DB->set_field(
+                'tool_trigger_queue',
+                'status',
+                \tool_trigger\task\process_workflows::STATUS_CANCELLED,
+                ['id' => $record->id]
+            );
             $eventrecord = $DB->get_record('tool_trigger_events', ['id' => $record->eventid]);
 
             \tool_trigger\event_processor::record_cancelled_workflow($trigger->workflowid, $eventrecord);

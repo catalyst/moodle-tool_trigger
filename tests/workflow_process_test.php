@@ -22,9 +22,9 @@ namespace tool_trigger;
  * @package     tool_trigger
  * @copyright   Matt Porritt <mattp@catalyst-au.net>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers     \tool_trigger\workflow_process
  */
 final class workflow_process_test extends \advanced_testcase {
-
     /**
      * Test workflow process form data
      */
@@ -43,7 +43,7 @@ final class workflow_process_test extends \advanced_testcase {
         $mdata->draftmode = 0;
         $mdata->isstepschanged = 1;
         $mdata->stepjson = '[{"id":"0","type":"action","stepclass":"/steps/action/log_step",'
-                            .'"steporder":"0","name":"test step","description":"test step description"}]';
+                            . '"steporder":"0","name":"test step","description":"test step description"}]';
 
         $workflowprocess = new \tool_trigger\workflow_process($mdata);
         $result = $workflowprocess->processform();
@@ -97,7 +97,7 @@ final class workflow_process_test extends \advanced_testcase {
                 . ']';
         $now = 1521773594;
 
-        $expected1 = new \stdClass ();
+        $expected1 = new \stdClass();
         $expected1->id = 0;
         $expected1->workflowid = 1;
         $expected1->timecreated = $now;
@@ -109,7 +109,7 @@ final class workflow_process_test extends \advanced_testcase {
         $expected1->description = 'step 1 description';
         $expected1->data = '';
 
-        $expected2 = new \stdClass ();
+        $expected2 = new \stdClass();
         $expected2->id = 0;
         $expected2->workflowid = 1;
         $expected2->timecreated = $now;
@@ -121,11 +121,11 @@ final class workflow_process_test extends \advanced_testcase {
         $expected2->description = 'step 2 description';
         $expected2->data = '';
 
-        $workflowprocess = new \tool_trigger\workflow_process ($mdata);
-        $result = $workflowprocess->processjson ($json, 1, $now);
+        $workflowprocess = new \tool_trigger\workflow_process($mdata);
+        $result = $workflowprocess->processjson($json, 1, $now);
 
-        $this->assertEquals ($expected1, $result[0]);
-        $this->assertEquals ($expected2, $result[1]);
+        $this->assertEquals($expected1, $result[0]);
+        $this->assertEquals($expected2, $result[1]);
     }
 
     public function test_import_prep(): void {
@@ -138,7 +138,7 @@ final class workflow_process_test extends \advanced_testcase {
 
         $expecteddescription = new \stdClass();
         $expecteddescription->text = '<p>A workflow to use as a test fixture for the worklfow import process.</p>'
-            .'<p>It is triggered on a user login failed event<br></p>';
+            . '<p>It is triggered on a user login failed event<br></p>';
         $expecteddescription->format = '1';
 
         $expectedsteps = [
@@ -165,7 +165,7 @@ final class workflow_process_test extends \advanced_testcase {
              ],
              ];
 
-        $expected = new \stdClass ();
+        $expected = new \stdClass();
         $expected->workflowid = 0;
         $expected->workflowname = 'Test login failed workflow';
         $expected->workflowdescription = $expecteddescription;
@@ -179,7 +179,6 @@ final class workflow_process_test extends \advanced_testcase {
 
         $workflowobj = \tool_trigger\workflow_process::import_prep($filecontentjson);
 
-        $this->assertEquals ($expected, $workflowobj);
-
+        $this->assertEquals($expected, $workflowobj);
     }
 }

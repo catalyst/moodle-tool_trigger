@@ -25,7 +25,6 @@ namespace tool_trigger\helper;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 trait processor_helper {
-
     /**
      * Returns an event from the log data.
      *

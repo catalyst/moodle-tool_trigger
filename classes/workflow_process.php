@@ -32,7 +32,6 @@ namespace tool_trigger;
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class workflow_process {
-
     /**
      * @var \stdClass The data from the submitted form.
      */
@@ -137,7 +136,7 @@ class workflow_process {
      * @param int $now the current timestamp.
      * @return array $records The array of record objects ready for DB insertion.
      */
-    public function processjson($formjson, $workflowid, $now=0) {
+    public function processjson($formjson, $workflowid, $now = 0) {
         $jsonobjs = json_decode($formjson, true);
         $records = [];
 
@@ -181,7 +180,7 @@ class workflow_process {
      * @param bool $returnid Should return workflow ID?
      * @return boolean
      */
-    public function processform($now=0, $returnid = false) {
+    public function processform($now = 0, $returnid = false) {
         global $DB;
 
         if ($now == 0) {
@@ -217,10 +216,9 @@ class workflow_process {
             }
 
             if ($formdata->isstepschanged) {
-
                 // Process the JSON into records for the database.
                 $submittedsteps = $this->processjson($formjson, $workflowid);
-                list($stepstoinsert, $stepstoupdate, $stepstodelete) = $this->find_changed_steps($workflowid, $submittedsteps);
+                [$stepstoinsert, $stepstoupdate, $stepstodelete] = $this->find_changed_steps($workflowid, $submittedsteps);
 
                 if (count($stepstoinsert)) {
                     $DB->insert_records('tool_trigger_steps', $stepstoinsert);
@@ -238,7 +236,6 @@ class workflow_process {
             }
 
             $transaction->allow_commit();
-
         } catch (\Exception $e) {
             $transaction->rollback($e);
             $return = false;
@@ -332,7 +329,7 @@ class workflow_process {
                     if (array_key_exists($curstep->id, $stepstoupdate)) {
                         \core\notification::warning(
                             'Duplicate step database IDs in form data.'
-                            .' Check that the steps as submitted look correct.'
+                            . ' Check that the steps as submitted look correct.'
                         );
                     }
                     $stepstoupdate[] = $curstep;

@@ -30,9 +30,9 @@ namespace tool_trigger;
  * @package     tool_trigger
  * @copyright   Matt Porritt <mattp@catalyst-au.net>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers     \tool_trigger\workflow_manager
  */
 final class workflow_manager_test extends \advanced_testcase {
-
     /**
      * Test getting step class names by step type.
      */
@@ -44,7 +44,6 @@ final class workflow_manager_test extends \advanced_testcase {
         $expected = '\tool_trigger\steps\actions\http_post_action_step';
 
         $this->assertContains($expected, $steps);
-
     }
 
     /**
@@ -57,8 +56,8 @@ final class workflow_manager_test extends \advanced_testcase {
         $steps = $stepobj->lookup_step_names($stepclasses);
 
         $this->assertEquals(
-                get_string('httppostactionstepname', 'tool_trigger'),
-                $steps['\tool_trigger\steps\actions\http_post_action_step']
+            get_string('httppostactionstepname', 'tool_trigger'),
+            $steps['\tool_trigger\steps\actions\http_post_action_step']
         );
     }
 
@@ -74,8 +73,8 @@ final class workflow_manager_test extends \advanced_testcase {
         $steps = $stepobj->get_steps_by_type($steptype);
 
         $this->assertEquals(
-                get_string('httppostactionstepname', 'tool_trigger'),
-                $steps['\tool_trigger\steps\actions\http_post_action_step']
+            get_string('httppostactionstepname', 'tool_trigger'),
+            $steps['\tool_trigger\steps\actions\http_post_action_step']
         );
     }
 
@@ -126,10 +125,10 @@ final class workflow_manager_test extends \advanced_testcase {
         $mdata->draftmode = 0;
         $mdata->isstepschanged = 1;
         $mdata->stepjson = '[{"useridfield":"userid","outputprefix":"user_","nodeleted":"1","stepdesc":"User lookup",'
-            .'"typedesc":"Lookup","id":"7","type":"lookups","stepclass":"/tool_trigger/steps/lookups/user_lookup_step",'
-            .'"name":"a","description":"s","steporder":"0"},{"courseidfield":"courseid","outputprefix":"course_",'
-            .'"stepdesc":"Course lookup","typedesc":"Lookup","id":"6","type":"lookups",'
-            .'"stepclass":"/tool_trigger/steps/lookups/course_lookup_step","name":"s","description":"s","steporder":"1"}]';
+            . '"typedesc":"Lookup","id":"7","type":"lookups","stepclass":"/tool_trigger/steps/lookups/user_lookup_step",'
+            . '"name":"a","description":"s","steporder":"0"},{"courseidfield":"courseid","outputprefix":"course_",'
+            . '"stepdesc":"Course lookup","typedesc":"Lookup","id":"6","type":"lookups",'
+            . '"stepclass":"/tool_trigger/steps/lookups/course_lookup_step","name":"s","description":"s","steporder":"1"}]';
 
         $workflowprocess = new \tool_trigger\workflow_process($mdata);
         $workflowprocess->processform();
@@ -140,7 +139,6 @@ final class workflow_manager_test extends \advanced_testcase {
 
         $this->assertEquals('__testworkflow__', $workflowdata->name);
         $this->assertEquals('"test workflow description"', $workflowdata->description);
-
     }
 
     public function test_cleanup(): void {
@@ -149,5 +147,4 @@ final class workflow_manager_test extends \advanced_testcase {
         $task = new \tool_trigger\task\cleanup();
         $task->execute();
     }
-
 }

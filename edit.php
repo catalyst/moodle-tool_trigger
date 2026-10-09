@@ -88,7 +88,6 @@ if ($mform->is_cancelled()) {
     // Handle form cancel operation.
     // Redirect back to workflow page.
     redirect(new moodle_url('/admin/tool/trigger/manage.php'));
-
 } else if ($mdata = $mform->get_data()) {
     // Process validated data.
     $workflowprocess = new \tool_trigger\workflow_process($mdata);
@@ -103,7 +102,6 @@ if ($mform->is_cancelled()) {
     } else {
         redirect(new moodle_url('/admin/tool/trigger/manage.php'), get_string('errorsavingworkflow'));
     }
-
 } else {
     // This branch is executed if the form is submitted but the data doesn't validate,
     // or on the first display of the form.
@@ -117,5 +115,4 @@ if ($mform->is_cancelled()) {
     echo $OUTPUT->header();
     $mform->display();
     echo $OUTPUT->footer();
-
 }

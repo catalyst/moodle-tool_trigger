@@ -134,7 +134,7 @@ class stringcompare_filter_step extends base_filter_step {
         $field2val = $this->render_datafields($this->field2);
 
         $ismatch = null;
-        switch($this->operator) {
+        switch ($this->operator) {
             case self::OPERATOR_EQUAL:
                 $ismatch = ($field1val === $field2val);
                 break;
@@ -229,8 +229,14 @@ class stringcompare_filter_step extends base_filter_step {
         $mform->addRule('stringcomparegroup', get_string('required'), 'required');
 
         // Error instead of failure.
-        $mform->addElement('advcheckbox', 'erroronfail', get_string ('erroronfail', 'tool_trigger'),
-            'Enable', [], [0, 1]);
+        $mform->addElement(
+            'advcheckbox',
+            'erroronfail',
+            get_string('erroronfail', 'tool_trigger'),
+            'Enable',
+            [],
+            [0, 1]
+        );
         $mform->setType('erroronfail', PARAM_INT);
         $mform->addHelpButton('erroronfail', 'erroronfail', 'tool_trigger');
         $mform->setDefault('erroronfail', 0);
@@ -243,6 +249,5 @@ class stringcompare_filter_step extends base_filter_step {
      */
     public static function get_fields() {
         return false;
-
     }
 }

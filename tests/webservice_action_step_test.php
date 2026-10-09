@@ -19,7 +19,7 @@ namespace tool_trigger;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once(__DIR__.'/fixtures/user_event_fixture.php');
+require_once(__DIR__ . '/fixtures/user_event_fixture.php');
 
 /**
  * Test of the Webservice action step.
@@ -28,6 +28,7 @@ require_once(__DIR__.'/fixtures/user_event_fixture.php');
  * @author     Kevin Pham <kevinpham@catalyst-au.net>
  * @copyright  Catalyst IT, 2022
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers     \tool_trigger\steps\actions\webservice_action_step
  */
 final class webservice_action_step_test extends \advanced_testcase {
     use \tool_trigger_user_event_fixture;
@@ -66,7 +67,7 @@ final class webservice_action_step_test extends \advanced_testcase {
         $this->assertFalse($enrolled);
 
         $step = new \tool_trigger\steps\actions\webservice_action_step(json_encode($stepsettings));
-        list($status, $stepresults) = $step->execute(null, null, $this->event, []);
+        [$status, $stepresults] = $step->execute(null, null, $this->event, []);
         $this->assertTrue($status);
         $this->assertNotNull($stepresults);
         $this->assertArrayHasKey('data', $stepresults);
@@ -112,7 +113,7 @@ final class webservice_action_step_test extends \advanced_testcase {
         ];
         $step = new \tool_trigger\steps\actions\webservice_action_step(json_encode($stepsettings));
 
-        // Manually catch the exception to check the message
+        // Manually catch the exception to check the message.
         $this->expectException(\dml_missing_record_exception::class);
         $this->expectExceptionMessageMatches('/external_functions/');
         $step->execute(null, null, $this->event, []);

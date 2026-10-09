@@ -18,7 +18,7 @@ namespace tool_trigger\steps\debounce;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot.'/lib/formslib.php');
+require_once($CFG->dirroot . '/lib/formslib.php');
 
 /**
  * Debounce step form class.
@@ -28,7 +28,6 @@ require_once($CFG->dirroot.'/lib/formslib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class debounce_form extends \tool_trigger\steps\base\base_form {
-
     /**
      * Form definition.
      */
@@ -51,7 +50,7 @@ class debounce_form extends \tool_trigger\steps\base\base_form {
 
         // Mash all the fields from the different bits together.
         if (!empty($triggerfields)) {
-            $fields = array_map(function($el) {
+            $fields = array_map(function ($el) {
                 return $el['field'];
             }, $triggerfields['fields']);
 

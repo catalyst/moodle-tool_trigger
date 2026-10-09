@@ -27,9 +27,9 @@ require_once($CFG->dirroot . '/admin/tool/trigger/lib.php');
  * @package    tool_trigger
  * @copyright  Matt Porritt <mattp@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers     \tool_trigger\steps\base\base_form
  */
 final class steps_form_test extends \advanced_testcase {
-
     public function setUp(): void {
         parent::setUp();
         // Run as admin user.
@@ -147,12 +147,12 @@ final class steps_form_test extends \advanced_testcase {
         $method = new \ReflectionMethod('tool_trigger\steps\base\base_form', 'get_trigger_fields');
         $method->setAccessible(true); // Allow accessing of private method.
         $proxy = $method->invoke(
-                new \tool_trigger\steps\base\base_form,
-                '\core\event\user_login_failed',
-                '\tool_trigger\steps\lookups\course_lookup_step',
-                [],
-                -1
-                );  // Get result of invoked method.
+            new \tool_trigger\steps\base\base_form(),
+            '\core\event\user_login_failed',
+            '\tool_trigger\steps\lookups\course_lookup_step',
+            [],
+            -1
+        );  // Get result of invoked method.
 
         $expected = [
             'fields' =>
@@ -282,7 +282,6 @@ final class steps_form_test extends \advanced_testcase {
         ];
 
         $this->assertEquals($proxy, $expected);
-
     }
 
     /**

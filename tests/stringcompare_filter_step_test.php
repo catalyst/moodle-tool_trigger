@@ -21,7 +21,7 @@ use tool_trigger\steps\filters\stringcompare_filter_step;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once(__DIR__.'/fixtures/user_event_fixture.php');
+require_once(__DIR__ . '/fixtures/user_event_fixture.php');
 
 /**
  * Numeric comparison filter step's unit test
@@ -30,6 +30,7 @@ require_once(__DIR__.'/fixtures/user_event_fixture.php');
  * @author     Aaron Wells <aaronw@catalyst.net.nz>
  * @copyright  Catalyst IT 2018
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers     \tool_trigger\steps\filters\stringcompare_filter_step
  */
 final class stringcompare_filter_step_test extends \advanced_testcase {
     use \tool_trigger_user_event_fixture;
@@ -64,7 +65,7 @@ final class stringcompare_filter_step_test extends \advanced_testcase {
             json_encode($stepconfig)
         );
 
-        list($status) = $step->execute(null, null, $this->event, []);
+        [$status] = $step->execute(null, null, $this->event, []);
         $this->assertEquals($expectedresult, $status);
 
         // Check that the "does not" setting works correctly.
@@ -74,7 +75,7 @@ final class stringcompare_filter_step_test extends \advanced_testcase {
             json_encode($reversestepconfig)
         );
 
-        list($status) = $reversestep->execute(null, null, $this->event, []);
+        [$status] = $reversestep->execute(null, null, $this->event, []);
         $this->assertEquals(!$expectedresult, $status);
     }
 
@@ -119,7 +120,7 @@ final class stringcompare_filter_step_test extends \advanced_testcase {
             ])
         );
 
-        list($status) = $step->execute(null, null, $this->event, []);
+        [$status] = $step->execute(null, null, $this->event, []);
 
         $this->assertTrue($status);
     }

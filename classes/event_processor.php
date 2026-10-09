@@ -62,7 +62,6 @@ class event_processor {
         self::$singleton->write($event);
 
         return false;
-
     }
 
     /**
@@ -106,7 +105,6 @@ class event_processor {
         }
 
         return;
-
     }
 
     /**
@@ -222,7 +220,7 @@ class event_processor {
             foreach ($steps as $step) {
                 try {
                     $outertransaction = $DB->is_transaction_started();
-                    list($success, $stepresults) = $this->execute_step($step,  new \stdClass(), $event, $stepresults);
+                    [$success, $stepresults] = $this->execute_step($step, new \stdClass(), $event, $stepresults);
 
                     // Now record the steps into the history table, and update prevstep for the next iteration.
                     if ($success && !empty($runid)) {
@@ -410,7 +408,7 @@ class event_processor {
         $processor = new \tool_trigger\event_processor();
         $event = $processor->restore_event($eventdata);
 
-        list($success, $stepresults) = $processor->execute_step($step,  new \stdClass(), $event, $stepresults);
+        [$success, $stepresults] = $processor->execute_step($step, new \stdClass(), $event, $stepresults);
         if ($success) {
             self::record_step_trigger($step, $prevstepid, $newrunid, $stepresults);
         }
@@ -455,7 +453,7 @@ class event_processor {
         // Now retrieve the new step config.
         $newstep = $DB->get_record('tool_trigger_steps', ['id' => $step->stepconfigid]);
 
-        list($success, $stepresults) = $processor->execute_step($newstep,  new \stdClass(), $event, $stepresults);
+        [$success, $stepresults] = $processor->execute_step($newstep, new \stdClass(), $event, $stepresults);
         if ($success) {
             self::record_step_trigger($newstep, $prevstepid, $step->runid, $stepresults);
         }
@@ -518,7 +516,7 @@ class event_processor {
             $stepresults = json_decode($step->results, true);
         }
 
-        list($success, $stepresults) = $processor->execute_step($nextstep,  new \stdClass(), $event, $stepresults);
+        [$success, $stepresults] = $processor->execute_step($nextstep, new \stdClass(), $event, $stepresults);
         if ($success) {
             self::record_step_trigger($nextstep, $previd, $runid, $stepresults);
         }
@@ -788,11 +786,11 @@ class event_processor {
             $results[$run->id] = [$newrun->id, $passed];
         }
 
-        // Now output a list of all of the rerun ids with status
+        // Now output a list of all of the rerun ids with status.
         $output = get_string('rerunerrors', 'tool_trigger') . '<br>';
         $error = false;
         foreach ($results as $previd => $new) {
-            list($newid, $passed) = $new;
+            [$newid, $passed] = $new;
             if (!$passed) {
                 $output .= get_string('newrunfailed', 'tool_trigger', ['prev' => $previd, 'new' => $newid]) . '<br>';
                 $error = true;
@@ -821,8 +819,8 @@ class event_processor {
         // Encode event data as JSON.
         $eventdata = json_encode($event);
 
-        // Decide the field type to record
-        $status = $deferred ? \tool_trigger\task\process_workflows::STATUS_DEFERRED : \tool_trigger\task\process_workflows::STATUS_CANCELLED;
+        // Decide the field type to record.
+        $status = $deferred ? process_workflows::STATUS_DEFERRED : process_workflows::STATUS_CANCELLED;
         $dataobj = [
             'workflowid' => $workflowid,
             'number' => $runnumber,

@@ -28,9 +28,9 @@ require_once('tool_trigger_testcase.php');
  * @package     tool_trigger
  * @copyright   Matt Porritt <mattp@catalyst-au.net>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers     \tool_trigger\event_processor
  */
 final class event_processor_test extends \tool_trigger_testcase {
-
     /**
      * Event array.
      * @var array
@@ -50,6 +50,9 @@ final class event_processor_test extends \tool_trigger_testcase {
     protected $context;
 
 
+    /**
+     * Set up the test environment.
+     */
     public function setup(): void {
         $this->resetAfterTest(true);
         // Create an event. This _is_ easier to do via direct DB insertions.
@@ -99,7 +102,7 @@ final class event_processor_test extends \tool_trigger_testcase {
         // We're testing a protected method, so we need to setup reflector magic.
         $method = new \ReflectionMethod('tool_trigger\event_processor', 'is_event_ignored');
         $method->setAccessible(true); // Allow accessing of private method.
-        $proxy = $method->invoke(new \tool_trigger\event_processor, $event); // Get result of invoked method.
+        $proxy = $method->invoke(new \tool_trigger\event_processor(), $event); // Get result of invoked method.
 
         $this->assertTrue($proxy);
     }
@@ -116,7 +119,7 @@ final class event_processor_test extends \tool_trigger_testcase {
         // We're testing a protected method, so we need to setup reflector magic.
         $method = new \ReflectionMethod('tool_trigger\event_processor', 'is_event_ignored');
         $method->setAccessible(true); // Allow accessing of private method.
-        $proxy = $method->invoke(new \tool_trigger\event_processor, $event); // Get result of invoked method.
+        $proxy = $method->invoke(new \tool_trigger\event_processor(), $event); // Get result of invoked method.
 
         $this->assertFalse($proxy);
     }
@@ -130,7 +133,7 @@ final class event_processor_test extends \tool_trigger_testcase {
         // We're testing a protected method, so we need to setup reflector magic.
         $method = new \ReflectionMethod('tool_trigger\event_processor', 'prepare_event');
         $method->setAccessible(true); // Allow accessing of private method.
-        $proxy = $method->invoke(new \tool_trigger\event_processor, $event); // Get result of invoked method.
+        $proxy = $method->invoke(new \tool_trigger\event_processor(), $event); // Get result of invoked method.
         $expected = unserialize($proxy['other']);
 
         $this->assertEquals($this->eventarr['other'], $expected);

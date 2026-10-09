@@ -36,7 +36,6 @@ require_once($CFG->libdir . '/tablelib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class renderable extends \table_sql implements \renderable {
-
     /**
      * @var \context_course|\context_system context of the page to be rendered.
      */
@@ -80,8 +79,7 @@ class renderable extends \table_sql implements \renderable {
                 get_string('lasttriggered', 'tool_trigger'),
                 get_string('triggerhistory', 'tool_trigger'),
                 get_string('manage', 'tool_trigger'),
-            ]
-        );
+            ]);
         $this->pagesize = $perpage;
         $systemcontext = \context_system::instance();
         $this->context = $systemcontext;
@@ -170,8 +168,10 @@ class renderable extends \table_sql implements \renderable {
         $manage .= \html_writer::link($editurl, $icon, ['class' => 'action-icon']);
 
         // The user should always be able to copy the rule if they are able to view the page.
-        $copyurl = new \moodle_url('/admin/tool/trigger/manageworkflow.php',
-                ['workflowid' => $workflow->id, 'action' => 'copy', 'sesskey' => sesskey()]);
+        $copyurl = new \moodle_url(
+            '/admin/tool/trigger/manageworkflow.php',
+            ['workflowid' => $workflow->id, 'action' => 'copy', 'sesskey' => sesskey()]
+        );
         $icon = $OUTPUT->render(new \pix_icon('t/copy', get_string('duplicaterule', 'tool_trigger')));
         $manage .= \html_writer::link($copyurl, $icon, ['class' => 'action-icon']);
 
@@ -214,7 +214,7 @@ class renderable extends \table_sql implements \renderable {
         $this->pagesize($pagesize, $total);
         $workflows = \tool_trigger\workflow_manager::get_workflows_paginated($this->get_page_start(), $this->get_page_size());
         // Sort inactive arrays to the bottom.
-        usort($workflows, function($a, $b) {
+        usort($workflows, function ($a, $b) {
             return (int)($a->active < $b->active);
         });
         $this->rawdata = $workflows;

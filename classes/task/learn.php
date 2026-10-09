@@ -28,7 +28,6 @@ namespace tool_trigger\task;
  * Task to learn from processed events.
  */
 class learn extends \core\task\scheduled_task {
-
     /**
      * Get a descriptive name for this task.
      *
@@ -51,6 +50,5 @@ class learn extends \core\task\scheduled_task {
         mtrace(get_string('tasklearnstart', 'tool_trigger'));
         $processor = new \tool_trigger\learn_process();
         $processor->process();
-
     }
 }

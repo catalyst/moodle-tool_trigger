@@ -24,7 +24,6 @@ namespace tool_trigger\steps\actions;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class role_assign_action_step extends base_action_step {
-
     use \tool_trigger\helper\datafield_manager;
 
     /**

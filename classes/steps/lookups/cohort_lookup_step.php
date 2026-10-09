@@ -26,8 +26,6 @@ namespace tool_trigger\steps\lookups;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class cohort_lookup_step extends base_lookup_step {
-
-
     use \tool_trigger\helper\datafield_manager;
 
     /**
@@ -139,6 +137,5 @@ class cohort_lookup_step extends base_lookup_step {
      */
     public static function get_fields() {
         return self::$stepfields;
-
     }
 }

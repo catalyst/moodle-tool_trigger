@@ -23,7 +23,6 @@ namespace tool_trigger\steps\actions;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class http_post_action_step extends base_action_step {
-
     use \tool_trigger\helper\datafield_manager;
 
     /**
@@ -149,7 +148,7 @@ class http_post_action_step extends base_action_step {
         $headers = \GuzzleHttp\Utils::headersFromLines($headers);
         // ... urlencode the values of any substitutions being placed into the URL
         // or the POST params.
-        $urlencodecallback = function($v) {
+        $urlencodecallback = function ($v) {
             return empty($v) ? $v : urlencode($v);
         };
 
@@ -195,7 +194,7 @@ class http_post_action_step extends base_action_step {
 
         // URL.
         $attributes = ['size' => '50', 'placeholder' => 'https://www.example.com/api', 'type' => 'url'];
-        $mform->addElement('text', 'url', get_string ('httpostactionurl', 'tool_trigger'), $attributes);
+        $mform->addElement('text', 'url', get_string('httpostactionurl', 'tool_trigger'), $attributes);
         // PARAM_URL will reject some templated urls.
         // TODO: Put some validation on this field?
         $mform->setType('url', PARAM_RAW_TRIMMED);
@@ -203,25 +202,31 @@ class http_post_action_step extends base_action_step {
         $mform->addHelpButton('url', 'httpostactionurl', 'tool_trigger');
 
         // HTTP method.
-        $mform->addElement('select', 'httpmethod', get_string ('httpostmethod', 'tool_trigger'), self::SUPPORTED_HTTP_METHODS);
+        $mform->addElement('select', 'httpmethod', get_string('httpostmethod', 'tool_trigger'), self::SUPPORTED_HTTP_METHODS);
         $mform->setType('httpmethod', PARAM_TEXT);
         $mform->addHelpButton('httpmethod', 'httpostmethod', 'tool_trigger');
 
         // Headers.
         $attributes = ['cols' => '50', 'rows' => '2'];
-        $mform->addElement('textarea', 'httpheaders', get_string ('httpostactionheaders', 'tool_trigger'), $attributes);
+        $mform->addElement('textarea', 'httpheaders', get_string('httpostactionheaders', 'tool_trigger'), $attributes);
         $mform->setType('httpheaders', PARAM_RAW_TRIMMED);
         $mform->addHelpButton('httpheaders', 'httpostactionheaders', 'tool_trigger');
 
         // Params.
         $attributes = ['cols' => '50', 'rows' => '5'];
-        $mform->addElement('textarea', 'httpparams', get_string ('httpostactionparams', 'tool_trigger'), $attributes);
+        $mform->addElement('textarea', 'httpparams', get_string('httpostactionparams', 'tool_trigger'), $attributes);
         $mform->setType('httpparams', PARAM_RAW_TRIMMED);
         $mform->addHelpButton('httpparams', 'httpostactionparams', 'tool_trigger');
 
         // Params as JSON.
-        $mform->addElement('advcheckbox', 'jsonencode', get_string ('jsonencode', 'tool_trigger'),
-                'Enable', [], [0, 1]);
+        $mform->addElement(
+            'advcheckbox',
+            'jsonencode',
+            get_string('jsonencode', 'tool_trigger'),
+            'Enable',
+            [],
+            [0, 1]
+        );
         $mform->setType('jsonencode', PARAM_INT);
         $mform->addHelpButton('jsonencode', 'jsonencode', 'tool_trigger');
         $mform->setDefault('jsonencode', 0);
@@ -250,6 +255,5 @@ class http_post_action_step extends base_action_step {
      */
     public static function get_fields() {
         return self::$stepfields;
-
     }
 }

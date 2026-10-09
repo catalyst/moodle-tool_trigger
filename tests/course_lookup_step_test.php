@@ -23,9 +23,9 @@ namespace tool_trigger;
  * @author     Aaron Wells <aaronw@catalyst.net.nz>
  * @copyright  Catalyst IT 2018
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers     \tool_trigger\steps\lookups\course_lookup_step
  */
 final class course_lookup_step_test extends \advanced_testcase {
-
     /**
      * Test user.
      * @var \stdClass
@@ -80,7 +80,7 @@ final class course_lookup_step_test extends \advanced_testcase {
             ])
         );
 
-        list($status, $stepresults) = $step->execute(null, null, $this->event, []);
+        [$status, $stepresults] = $step->execute(null, null, $this->event, []);
         $context = \context_course::instance($this->course->id);
 
         $this->assertTrue($status);
@@ -117,7 +117,7 @@ final class course_lookup_step_test extends \advanced_testcase {
             ])
         );
 
-        list($status) = $step->execute(null, null, $this->event, []);
+        [$status] = $step->execute(null, null, $this->event, []);
         $this->assertFalse($status);
     }
 
@@ -169,7 +169,7 @@ final class course_lookup_step_test extends \advanced_testcase {
             $this->expectExceptionMessageMatches("/Specified courseid field not present in the workflow data:*/");
         }
 
-        list($statusresult, $stepresults) = $step->execute(null, null, $this->event, []);
+        [$statusresult, $stepresults] = $step->execute(null, null, $this->event, []);
 
         if ($status) {
             $context = \context_course::instance($this->course->id);
@@ -193,7 +193,7 @@ final class course_lookup_step_test extends \advanced_testcase {
             ])
         );
 
-        list($status, $stepresults) = $step->execute(null, null, $this->event, []);
+        [$status, $stepresults] = $step->execute(null, null, $this->event, []);
 
         $context = \context_course::instance($this->course->id);
         $this->assertTrue($status);
@@ -213,7 +213,7 @@ final class course_lookup_step_test extends \advanced_testcase {
             ])
         );
 
-        list($status, $stepresults) = $step->execute(null, null, $this->event, []);
+        [$status, $stepresults] = $step->execute(null, null, $this->event, []);
 
         $context = \context_course::instance($this->course->id);
         $this->assertTrue($status);
