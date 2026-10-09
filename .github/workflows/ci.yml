@@ -11,3 +11,4 @@ jobs:
       disable_behat: true
       disable_phpdoc: true
       enable_release: true
+      enable_composer_publish: true
