@@ -23,9 +23,9 @@ namespace tool_trigger;
  * @copyright  2021 Catalyst IT
  * @author     Nicholas Hoobin <nicholashoobin@catalyst-au.net>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers     \tool_trigger\steps\actions\role_unassign_action_step
  */
 final class role_unassign_action_step_test extends \advanced_testcase {
-
     /**
      * Test user.
      * @var \stdClass
@@ -114,7 +114,7 @@ final class role_unassign_action_step_test extends \advanced_testcase {
             ])
         );
 
-        list($status, $stepresults) = $step->execute(null, null, $this->event, []);
+        [$status, $stepresults] = $step->execute(null, null, $this->event, []);
 
         $this->assertTrue($status);
         $this->assertTrue($stepresults['role_unassign_result']);
@@ -135,7 +135,7 @@ final class role_unassign_action_step_test extends \advanced_testcase {
             ])
         );
 
-        list($status, $stepresults) = $step->execute(null, null, $this->event, []);
+        [$status, $stepresults] = $step->execute(null, null, $this->event, []);
 
         $this->assertTrue($status);
         $this->assertTrue($stepresults['role_unassign_result']);

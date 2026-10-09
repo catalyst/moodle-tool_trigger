@@ -33,7 +33,6 @@ require_once($CFG->libdir . "/externallib.php");
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class tool_trigger_external extends external_api {
-
     /**
      * Returns description of method parameters
      * @return external_function_parameters
@@ -97,8 +96,8 @@ class tool_trigger_external extends external_api {
                     'class' => new external_value(PARAM_TEXT, 'Event identifier'),
                     'name' => new external_value(PARAM_TEXT, 'Event Name'),
                 ]
-                )
-            );
+            )
+        );
     }
 
     /**
@@ -129,8 +128,10 @@ class tool_trigger_external extends external_api {
         self::validate_context($context);
 
         // We always must pass webservice params through validate_parameters.
-        $params = self::validate_parameters(self::validate_form_parameters(),
-            ['stepclass' => $stepclass, 'jsonformdata' => $jsonformdata]);
+        $params = self::validate_parameters(
+            self::validate_form_parameters(),
+            ['stepclass' => $stepclass, 'jsonformdata' => $jsonformdata]
+        );
 
         // Validate the stepclass name.
         $workflowmanager = new \tool_trigger\workflow_manager();
@@ -171,7 +172,7 @@ class tool_trigger_external extends external_api {
             [
                 'jsonformdata' => new external_value(PARAM_RAW, 'The data from the create group form, encoded as a json array'),
             ]
-            );
+        );
     }
 
     /**
@@ -189,8 +190,10 @@ class tool_trigger_external extends external_api {
         self::validate_context($context);
 
         // We always must pass webservice params through validate_parameters.
-        $params = self::validate_parameters(self::process_import_form_parameters(),
-            ['jsonformdata' => $jsonformdata]);
+        $params = self::validate_parameters(
+            self::process_import_form_parameters(),
+            ['jsonformdata' => $jsonformdata]
+        );
 
         $data = [];
         if (!empty($params['jsonformdata'])) {
@@ -207,7 +210,6 @@ class tool_trigger_external extends external_api {
             // Generate a warning.
             $returnmsg->message = $mform->get_errors();
             $returnmsg->errorcode = 'errorimportworkflow';
-
         } else {  // Form is valid process.
             // Use submitted JSON file to create a new workflow.
             $filecontent = $mform->get_file_content('userfile');
@@ -217,18 +219,15 @@ class tool_trigger_external extends external_api {
             $result = $workflowprocess->processform();  // Add the workflow.
 
             if ($result) { // Sucessfully imported workflow.
-
                 $cache = \cache::make('tool_trigger', 'eventsubscriptions');
                 $cache->purge();
 
                 $returnmsg->message = ['success' => get_string('workflowimported', 'tool_trigger')];
                 $returnmsg->errorcode = 'success';
-
             } else { // Processing failure.
                 // Throw a proper error, here as this shouldn't fail.
                 throw new moodle_exception('errorimportworkflow', 'tool_trigger');
             }
-
         }
 
         return json_encode($returnmsg);

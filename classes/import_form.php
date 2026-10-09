@@ -36,7 +36,6 @@ require_once("$CFG->libdir/formslib.php");
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class import_form extends \moodleform {
-
     /**
      * Imported worklow JSON files must be at least this version,
      * to be compatible with the import plugin.
@@ -57,8 +56,13 @@ class import_form extends \moodleform {
         $mform = $this->_form;
 
         // Workflow file.
-        $mform->addElement('filepicker', 'userfile', get_string('workflowfile', 'tool_trigger'), null,
-            ['maxbytes' => 256000, 'accepted_types' => '.json']);
+        $mform->addElement(
+            'filepicker',
+            'userfile',
+            get_string('workflowfile', 'tool_trigger'),
+            null,
+            ['maxbytes' => 256000, 'accepted_types' => '.json']
+        );
         $mform->addRule('userfile', get_string('required'), 'required');
     }
 

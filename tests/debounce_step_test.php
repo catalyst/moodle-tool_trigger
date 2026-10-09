@@ -28,6 +28,7 @@ require_once("$CFG->libdir/gradelib.php");
  * @author     Peter Burnett <peterburnett@catalyst-au.net>
  * @copyright  Catalyst IT 2018
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers     \tool_trigger\steps\debounce\debounce_step
  */
 final class debounce_step_test extends \advanced_testcase {
     /**
@@ -91,6 +92,9 @@ final class debounce_step_test extends \advanced_testcase {
         $this->eventid = $DB->insert_record('tool_trigger_events', $entry, true);
     }
 
+    /**
+     * Build a mock queue item for the tests.
+     */
     private function get_mock_queue_item() {
         global $DB;
 
@@ -112,7 +116,7 @@ final class debounce_step_test extends \advanced_testcase {
 
         // Scenario 1: No existing event queue.
         $trigger1 = $this->get_mock_queue_item();
-        list($status, $stepresults) = $this->step->execute(null, $trigger1, $this->event, ['eventid' => $this->eventid]);
+        [$status, $stepresults] = $this->step->execute(null, $trigger1, $this->event, ['eventid' => $this->eventid]);
         // Test that the run bailed early (false), and there is a new queue item with an execution time.
         $this->assertfalse($status);
         $records = $DB->get_records('tool_trigger_queue');
@@ -121,11 +125,11 @@ final class debounce_step_test extends \advanced_testcase {
         $this->assertTrue($end->executiontime >= time());
         $DB->delete_records('tool_trigger_queue');
 
-        // Scenario 2: Already existing no-execution event queue
+        // Scenario 2: Already existing no-execution event queue.
         $trigger1 = $this->get_mock_queue_item();
         $trigger2 = $this->get_mock_queue_item();
 
-        list($status, $stepresults) = $this->step->execute(null, $trigger2, $this->event, ['eventid' => $this->eventid]);
+        [$status, $stepresults] = $this->step->execute(null, $trigger2, $this->event, ['eventid' => $this->eventid]);
         // Test that the first trigger record wasn't affected.
         $this->assertFalse($status);
         $this->assertEquals(0, (int) $DB->get_field('tool_trigger_queue', 'status', ['id' => $trigger1->id]));
@@ -137,12 +141,12 @@ final class debounce_step_test extends \advanced_testcase {
         $this->assertTrue($end->executiontime >= time());
         $DB->delete_records('tool_trigger_queue');
 
-        // Scenario 3: Already existing execution event queue
+        // Scenario 3: Already existing execution event queue.
         $trigger1 = $this->get_mock_queue_item();
         $trigger2 = $this->get_mock_queue_item();
         $DB->set_field('tool_trigger_queue', 'executiontime', 5, ['id' => $trigger1->id]);
 
-        list($status, $stepresults) = $this->step->execute(null, $trigger2, $this->event, ['eventid' => $this->eventid]);
+        [$status, $stepresults] = $this->step->execute(null, $trigger2, $this->event, ['eventid' => $this->eventid]);
         // Test that the first trigger record wasn't affected.
         $this->assertFalse($status);
         $this->assertEquals(0, (int) $DB->get_field('tool_trigger_queue', 'status', ['id' => $trigger1->id]));
@@ -157,14 +161,14 @@ final class debounce_step_test extends \advanced_testcase {
     public function test_event_cancellation(): void {
         global $DB;
 
-        // Scenario 1:  2 event, run lower
+        // Scenario 1:  2 event, run lower.
         $trigger1 = $this->get_mock_queue_item();
         $stepresults1 = ['eventid' => $this->eventid];
         $trigger2 = $this->get_mock_queue_item();
         $stepresults2 = ['eventid' => $this->eventid];
         // Execute both events to create queued versions.
-        list($status, $stepresults1) = $this->step->execute(null, $trigger1, $this->event, $stepresults1);
-        list($status, $stepresults2) = $this->step->execute(null, $trigger2, $this->event, $stepresults2);
+        [$status, $stepresults1] = $this->step->execute(null, $trigger1, $this->event, $stepresults1);
+        [$status, $stepresults2] = $this->step->execute(null, $trigger2, $this->event, $stepresults2);
 
         $this->assertEquals(4, $DB->count_records('tool_trigger_queue'));
 
@@ -176,28 +180,28 @@ final class debounce_step_test extends \advanced_testcase {
         // Fake the cancelled status of the queue step performed by the controller.
         $DB->set_field('tool_trigger_queue', 'status', -1, ['executiontime' => null]);
 
-        list($status, $stepresults1) = $this->step->execute(null, $qtrigger1, $this->event, $stepresults1);
+        [$status, $stepresults1] = $this->step->execute(null, $qtrigger1, $this->event, $stepresults1);
         // Confirm there is a cancel in the stepresults, and the higher exectime was not cancelled.
         $this->assertFalse($status);
         $this->assertTrue($stepresults1['cancelled']);
         $this->assertEquals(0, (int) $DB->get_field('tool_trigger_queue', 'status', ['id' => $qtrigger2->id]));
 
         // Execute the second one and confirm it fires correctly.
-        list($status, $stepresults2) = $this->step->execute(null, $qtrigger2, $this->event, $stepresults2);
+        [$status, $stepresults2] = $this->step->execute(null, $qtrigger2, $this->event, $stepresults2);
         $this->assertTrue($status);
         $this->assertFalse($stepresults2['cancelled']);
         $this->assertEquals(-1, (int) $DB->get_field('tool_trigger_queue', 'status', ['id' => $qtrigger1->id]));
 
         $DB->delete_records('tool_trigger_queue');
 
-        // Scenario 2: 2 event, run higher
+        // Scenario 2: 2 event, run higher.
         $trigger1 = $this->get_mock_queue_item();
         $stepresults1 = ['eventid' => $this->eventid];
         $trigger2 = $this->get_mock_queue_item();
         $stepresults2 = ['eventid' => $this->eventid];
         // Execute both events to create queued versions.
-        list($status, $stepresults1) = $this->step->execute(null, $trigger1, $this->event, $stepresults1);
-        list($status, $stepresults2) = $this->step->execute(null, $trigger2, $this->event, $stepresults2);
+        [$status, $stepresults1] = $this->step->execute(null, $trigger1, $this->event, $stepresults1);
+        [$status, $stepresults2] = $this->step->execute(null, $trigger2, $this->event, $stepresults2);
 
         $this->assertEquals(4, $DB->count_records('tool_trigger_queue'));
 
@@ -209,7 +213,7 @@ final class debounce_step_test extends \advanced_testcase {
         // Fake the cancelled status of the queue step performed by the controller.
         $DB->set_field('tool_trigger_queue', 'status', -1, ['executiontime' => null]);
 
-        list($status, $stepresults2) = $this->step->execute(null, $qtrigger2, $this->event, $stepresults2);
+        [$status, $stepresults2] = $this->step->execute(null, $qtrigger2, $this->event, $stepresults2);
         // Confirm there is a cancel in the stepresults, and the higher exectime was not cancelled.
         $this->assertTrue($status);
         $this->assertFalse($stepresults2['cancelled']);
@@ -217,7 +221,7 @@ final class debounce_step_test extends \advanced_testcase {
 
         $DB->delete_records('tool_trigger_queue');
 
-        // Scenario 3: 3 event, run middle
+        // Scenario 3: 3 event, run middle.
         $trigger1 = $this->get_mock_queue_item();
         $stepresults1 = ['eventid' => $this->eventid];
         $trigger2 = $this->get_mock_queue_item();
@@ -225,9 +229,9 @@ final class debounce_step_test extends \advanced_testcase {
         $trigger3 = $this->get_mock_queue_item();
         $stepresults3 = ['eventid' => $this->eventid];
         // Execute all events to create queued versions.
-        list($status, $stepresults1) = $this->step->execute(null, $trigger1, $this->event, $stepresults1);
-        list($status, $stepresults2) = $this->step->execute(null, $trigger2, $this->event, $stepresults2);
-        list($status, $stepresults3) = $this->step->execute(null, $trigger3, $this->event, $stepresults3);
+        [$status, $stepresults1] = $this->step->execute(null, $trigger1, $this->event, $stepresults1);
+        [$status, $stepresults2] = $this->step->execute(null, $trigger2, $this->event, $stepresults2);
+        [$status, $stepresults3] = $this->step->execute(null, $trigger3, $this->event, $stepresults3);
 
         $this->assertEquals(6, $DB->count_records('tool_trigger_queue'));
 
@@ -241,7 +245,7 @@ final class debounce_step_test extends \advanced_testcase {
         // Fake the cancelled status of the queue step performed by the controller.
         $DB->set_field('tool_trigger_queue', 'status', -1, ['executiontime' => null]);
 
-        list($status, $stepresults2) = $this->step->execute(null, $qtrigger2, $this->event, $stepresults2);
+        [$status, $stepresults2] = $this->step->execute(null, $qtrigger2, $this->event, $stepresults2);
         // Confirm there is a cancel in the stepresults, and the higher exectime was not cancelled.
         $this->assertFalse($status);
         $this->assertTrue($stepresults2['cancelled']);
@@ -249,7 +253,7 @@ final class debounce_step_test extends \advanced_testcase {
         $this->assertEquals(0, (int) $DB->get_field('tool_trigger_queue', 'status', ['id' => $qtrigger3->id]));
 
         // Execute the third one and confirm it fires correctly.
-        list($status, $stepresults3) = $this->step->execute(null, $qtrigger3, $this->event, $stepresults3);
+        [$status, $stepresults3] = $this->step->execute(null, $qtrigger3, $this->event, $stepresults3);
         $this->assertTrue($status);
         $this->assertFalse($stepresults3['cancelled']);
         $this->assertEquals(-1, (int) $DB->get_field('tool_trigger_queue', 'status', ['id' => $qtrigger1->id]));

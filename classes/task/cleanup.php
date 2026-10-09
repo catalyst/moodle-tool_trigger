@@ -29,7 +29,6 @@ namespace tool_trigger\task;
  * Task to cleanup old queue.
  */
 class cleanup extends \core\task\scheduled_task {
-
     /**
      * Get a descriptive name for this task.
      *

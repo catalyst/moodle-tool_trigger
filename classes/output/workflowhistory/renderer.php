@@ -27,8 +27,8 @@ namespace tool_trigger\output\workflowhistory;
 use single_button;
 
 defined('MOODLE_INTERNAL') || die;
-require_once(__DIR__.'/run.php');
-require_once(__DIR__.'/workflow.php');
+require_once(__DIR__ . '/run.php');
+require_once(__DIR__ . '/workflow.php');
 
 /**
  * Renderer class for workflow history page.
@@ -38,7 +38,6 @@ require_once(__DIR__.'/workflow.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class renderer extends \plugin_renderer_base {
-
     /**
      * Sets the SQL for the run history table, and renders it.
      *
@@ -82,7 +81,13 @@ class renderer extends \plugin_renderer_base {
         }
 
         $url = new \moodle_url('/admin/tool/trigger/history.php', $searchparams);
-        $renderable = new \tool_trigger\output\workflowhistory\workflowhistory_renderable('triggerhistory', $url, $searchparams, $download, 100);
+        $renderable = new \tool_trigger\output\workflowhistory\workflowhistory_renderable(
+            'triggerhistory',
+            $url,
+            $searchparams,
+            $download,
+            100
+        );
 
         $namefields = implode(',', \core_user\fields::get_name_fields());
         $sqlfields = "tfh.*, {$namefields}";
@@ -166,8 +171,11 @@ class renderer extends \plugin_renderer_base {
         $btn = '';
 
         $stepdetailsurl = new \moodle_url('/admin/tool/trigger/stepdetails.php', ['id' => $step->id]);
-        $stepdetailslbtn = \html_writer::link($stepdetailsurl,
-            get_string('viewstepinfo', 'tool_trigger'), ['class' => 'btn btn-primary']);
+        $stepdetailslbtn = \html_writer::link(
+            $stepdetailsurl,
+            get_string('viewstepinfo', 'tool_trigger'),
+            ['class' => 'btn btn-primary']
+        );
 
         // Historic urls.
         $rerunhisturl = new \moodle_url('/admin/tool/trigger/history.php');
@@ -210,27 +218,57 @@ class renderer extends \plugin_renderer_base {
         $btn .= \html_writer::span('toggle-dropdown', 'sr-only');
         $btn .= \html_writer::end_tag('button');
         $btn .= \html_writer::start_div('dropdown-menu dropdown-menu-right');
-        $btn .= \html_writer::tag('h6', get_string('actionscurrent', 'tool_trigger'),
-            ['class' => 'dropdown-header']);
-        $btn .= \html_writer::link($reruncurrurl, get_string('rerunstep', 'tool_trigger'),
-            ['class' => 'dropdown-item']);
-        $btn .= \html_writer::link($rerunandnextcurrurl, get_string('rerunstepandnext', 'tool_trigger'),
-            ['class' => 'dropdown-item']);
-        $btn .= \html_writer::link($rerunandfinishcurrurl, get_string('rerunstepandfinish', 'tool_trigger'),
-            ['class' => 'dropdown-item']);
-        $btn .= \html_writer::link($executenextcurrurl, get_string('executenext', 'tool_trigger'),
-            ['class' => 'dropdown-item']);
+        $btn .= \html_writer::tag(
+            'h6',
+            get_string('actionscurrent', 'tool_trigger'),
+            ['class' => 'dropdown-header']
+        );
+        $btn .= \html_writer::link(
+            $reruncurrurl,
+            get_string('rerunstep', 'tool_trigger'),
+            ['class' => 'dropdown-item']
+        );
+        $btn .= \html_writer::link(
+            $rerunandnextcurrurl,
+            get_string('rerunstepandnext', 'tool_trigger'),
+            ['class' => 'dropdown-item']
+        );
+        $btn .= \html_writer::link(
+            $rerunandfinishcurrurl,
+            get_string('rerunstepandfinish', 'tool_trigger'),
+            ['class' => 'dropdown-item']
+        );
+        $btn .= \html_writer::link(
+            $executenextcurrurl,
+            get_string('executenext', 'tool_trigger'),
+            ['class' => 'dropdown-item']
+        );
         $btn .= \html_writer::div('', 'dropdown-divider');
-        $btn .= \html_writer::tag('h6', get_string('actionshistoric', 'tool_trigger'),
-            ['class' => 'dropdown-header']);
-        $btn .= \html_writer::link($rerunhisturl, get_string('rerunstep', 'tool_trigger'),
-            ['class' => 'dropdown-item']);
-        $btn .= \html_writer::link($rerunandnexthisturl, get_string('rerunstepandnext', 'tool_trigger'),
-            ['class' => 'dropdown-item']);
-        $btn .= \html_writer::link($rerunandfinishhisturl, get_string('rerunstepandfinish', 'tool_trigger'),
-            ['class' => 'dropdown-item']);
-        $btn .= \html_writer::link($executenexthisturl, get_string('executenext', 'tool_trigger'),
-            ['class' => 'dropdown-item']);
+        $btn .= \html_writer::tag(
+            'h6',
+            get_string('actionshistoric', 'tool_trigger'),
+            ['class' => 'dropdown-header']
+        );
+        $btn .= \html_writer::link(
+            $rerunhisturl,
+            get_string('rerunstep', 'tool_trigger'),
+            ['class' => 'dropdown-item']
+        );
+        $btn .= \html_writer::link(
+            $rerunandnexthisturl,
+            get_string('rerunstepandnext', 'tool_trigger'),
+            ['class' => 'dropdown-item']
+        );
+        $btn .= \html_writer::link(
+            $rerunandfinishhisturl,
+            get_string('rerunstepandfinish', 'tool_trigger'),
+            ['class' => 'dropdown-item']
+        );
+        $btn .= \html_writer::link(
+            $executenexthisturl,
+            get_string('executenext', 'tool_trigger'),
+            ['class' => 'dropdown-item']
+        );
         $btn .= \html_writer::end_div() . \html_writer::end_div();
 
         return $btn;
@@ -261,10 +299,14 @@ class renderer extends \plugin_renderer_base {
             return $viewbtn;
         }
 
-        $reruncurrurl = new \moodle_url('/admin/tool/trigger/history.php',
-            ['action' => 'rerunworkflowcurr', 'id' => $run->id, 'workflow' => $run->workflowid, 'sesskey' => sesskey()]);
-        $rerunhisturl = new \moodle_url('/admin/tool/trigger/history.php',
-            ['action' => 'rerunworkflowhist', 'id' => $run->id, 'workflow' => $run->workflowid, 'sesskey' => sesskey()]);
+        $reruncurrurl = new \moodle_url(
+            '/admin/tool/trigger/history.php',
+            ['action' => 'rerunworkflowcurr', 'id' => $run->id, 'workflow' => $run->workflowid, 'sesskey' => sesskey()]
+        );
+        $rerunhisturl = new \moodle_url(
+            '/admin/tool/trigger/history.php',
+            ['action' => 'rerunworkflowhist', 'id' => $run->id, 'workflow' => $run->workflowid, 'sesskey' => sesskey()]
+        );
 
         $btn .= \html_writer::start_div('btn-group');
         $btn .= $viewbtn;
@@ -273,21 +315,38 @@ class renderer extends \plugin_renderer_base {
         $btn .= \html_writer::span('toggle-dropdown', 'sr-only');
         $btn .= \html_writer::end_tag('button');
         $btn .= \html_writer::start_div('dropdown-menu dropdown-menu-right');
-        $btn .= \html_writer::tag('h6', get_string('actionscurrent', 'tool_trigger'),
-            ['class' => 'dropdown-header']);
-        $btn .= \html_writer::link($reruncurrurl, get_string('rerunworkflow', 'tool_trigger'),
-            ['class' => 'dropdown-item']);
+        $btn .= \html_writer::tag(
+            'h6',
+            get_string('actionscurrent', 'tool_trigger'),
+            ['class' => 'dropdown-header']
+        );
+        $btn .= \html_writer::link(
+            $reruncurrurl,
+            get_string('rerunworkflow', 'tool_trigger'),
+            ['class' => 'dropdown-item']
+        );
         $btn .= \html_writer::div('', 'dropdown-divider');
-        $btn .= \html_writer::tag('h6', get_string('actionshistoric', 'tool_trigger'),
-            ['class' => 'dropdown-header']);
-        $btn .= \html_writer::link($rerunhisturl, get_string('rerunworkflow', 'tool_trigger'),
-            ['class' => 'dropdown-item']);
+        $btn .= \html_writer::tag(
+            'h6',
+            get_string('actionshistoric', 'tool_trigger'),
+            ['class' => 'dropdown-header']
+        );
+        $btn .= \html_writer::link(
+            $rerunhisturl,
+            get_string('rerunworkflow', 'tool_trigger'),
+            ['class' => 'dropdown-item']
+        );
         if (has_capability('tool/trigger:exportrundetails', \context_system::instance())) {
-            $downloadurl = new \moodle_url('/admin/tool/trigger/exportrun.php',
-                ['run' => $run->id, 'workflow' => $run->workflowid, 'sesskey' => sesskey()]);
+            $downloadurl = new \moodle_url(
+                '/admin/tool/trigger/exportrun.php',
+                ['run' => $run->id, 'workflow' => $run->workflowid, 'sesskey' => sesskey()]
+            );
             $btn .= \html_writer::div('', 'dropdown-divider');
-            $btn .= \html_writer::link($downloadurl, get_string('downloadrundetails', 'tool_trigger'),
-                ['class' => 'dropdown-item']);
+            $btn .= \html_writer::link(
+                $downloadurl,
+                get_string('downloadrundetails', 'tool_trigger'),
+                ['class' => 'dropdown-item']
+            );
         }
         $btn .= \html_writer::end_div() . \html_writer::end_div();
 
@@ -300,8 +359,10 @@ class renderer extends \plugin_renderer_base {
      * @return void
      */
     private function rerun_all_historic_button($workflowid) {
-        $url = new \moodle_url('/admin/tool/trigger/history.php',
-            ['action' => 'rerunallhist', 'sesskey' => sesskey(), 'id' => $workflowid, 'workflow' => $workflowid]);
+        $url = new \moodle_url(
+            '/admin/tool/trigger/history.php',
+            ['action' => 'rerunallhist', 'sesskey' => sesskey(), 'id' => $workflowid, 'workflow' => $workflowid]
+        );
         $btn = new \single_button($url, get_string('rerunallhist', 'tool_trigger'), 'get', \single_button::BUTTON_PRIMARY);
         echo $this->render($btn);
     }
@@ -312,8 +373,10 @@ class renderer extends \plugin_renderer_base {
      * @return void
      */
     private function rerun_all_current_button($workflowid) {
-        $url = new \moodle_url('/admin/tool/trigger/history.php',
-            ['action' => 'rerunallcurr', 'sesskey' => sesskey(), 'id' => $workflowid, 'workflow' => $workflowid]);
+        $url = new \moodle_url(
+            '/admin/tool/trigger/history.php',
+            ['action' => 'rerunallcurr', 'sesskey' => sesskey(), 'id' => $workflowid, 'workflow' => $workflowid]
+        );
         $btn = new \single_button($url, get_string('rerunallcurr', 'tool_trigger'), 'get', \single_button::BUTTON_PRIMARY);
         echo $this->render($btn);
     }

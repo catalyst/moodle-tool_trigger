@@ -32,7 +32,6 @@ namespace tool_trigger;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class workflow_manager {
-
     /**
      * @var string[] The categories of steps available.
      */
@@ -118,7 +117,6 @@ class workflow_manager {
         }
 
         return $workflowrecord;
-
     }
 
     /**
@@ -131,7 +129,8 @@ class workflow_manager {
     public static function get_workflows_paginated($limitfrom = 0, $limitto = 0) {
         global $DB;
 
-        $records = $DB->get_records_sql("
+        $records = $DB->get_records_sql(
+            "
             select
                 *,
                 (select count(*) from {tool_trigger_steps} s where s.workflowid = w.id) as numsteps
@@ -174,7 +173,11 @@ class workflow_manager {
         // Previous step data which is used to diff the run history results object.
         $prevdata = [];
 
-        $runrecords = $DB->get_recordset('tool_trigger_run_hist', ['workflowid' => $workflowid, 'runid' => $runid], 'steporder ASC');
+        $runrecords = $DB->get_recordset(
+            'tool_trigger_run_hist',
+            ['workflowid' => $workflowid, 'runid' => $runid],
+            'steporder ASC'
+        );
         foreach ($runrecords as $record) {
             $currdata = json_decode($record->results, true);
 
@@ -240,7 +243,6 @@ class workflow_manager {
         $matchedsteps = array_unique($matchedsteps);
 
         return $matchedsteps;
-
     }
 
     /**
@@ -261,7 +263,6 @@ class workflow_manager {
         // Sort them alphabetically by name.
         natsort($stepclasses);
         return $stepnames;
-
     }
 
     /**

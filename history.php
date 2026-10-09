@@ -54,7 +54,6 @@ if (!empty($action) && confirm_sesskey()) {
             // Rerun a workflow with current config.
             if ($confirm) {
                 \tool_trigger\event_processor::execute_workflow_from_event_current($actionid);
-
             } else {
                 $confirmurl = new moodle_url('/admin/tool/trigger/history.php');
                 $confirmurl->params(['confirm' => 1, 'workflow' => $workflowid, 'action' => $action, 'id' => $actionid]);
@@ -121,7 +120,6 @@ if (!empty($action) && confirm_sesskey()) {
             // Rerun a workflow with current config.
             if ($confirm) {
                 \tool_trigger\event_processor::execute_workflow_from_event_historic($actionid);
-
             } else {
                 $confirmurl = new moodle_url('/admin/tool/trigger/history.php');
                 $confirmurl->params(['confirm' => 1, 'workflow' => $workflowid, 'action' => $action, 'id' => $actionid]);
@@ -224,8 +222,10 @@ $navbarurl = new moodle_url('/admin/tool/trigger/history.php', ['workflow' => $w
 $PAGE->navbar->add(get_string('workflowviewhistory', 'tool_trigger'), $navbarurl);
 
 if (!empty($runid)) {
-    $navbarurl = new moodle_url('/admin/tool/trigger/history.php',
-        ['workflow' => $workflowid, 'run' => $runid]);
+    $navbarurl = new moodle_url(
+        '/admin/tool/trigger/history.php',
+        ['workflow' => $workflowid, 'run' => $runid]
+    );
     $PAGE->navbar->add(get_string('viewdetailedrun', 'tool_trigger'), $navbarurl);
 }
 

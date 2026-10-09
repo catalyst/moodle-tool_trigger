@@ -26,7 +26,7 @@ namespace tool_trigger\steps\base;
 
 defined('MOODLE_INTERNAL') || die;
 
-require_once($CFG->dirroot.'/lib/formslib.php');
+require_once($CFG->dirroot . '/lib/formslib.php');
 
 /**
  * Base step form class.
@@ -36,7 +36,6 @@ require_once($CFG->dirroot.'/lib/formslib.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class base_form extends \moodleform {
-
     /**
      * An instance of a step class. Used to allow steps to customize the
      * interface.
@@ -51,8 +50,16 @@ class base_form extends \moodleform {
      * @param \tool_trigger\steps\base\base_step $step A step instance, to add
      * fields to this form.
      */
-    public function __construct($action = null, $customdata = null, $method = 'post', $target = '', $attributes = null,
-            $editable = true, $ajaxformdata = null, $step = false) {
+    public function __construct(
+        $action = null,
+        $customdata = null,
+        $method = 'post',
+        $target = '',
+        $attributes = null,
+        $editable = true,
+        $ajaxformdata = null,
+        $step = false
+    ) {
         $this->step = $step;
         parent::__construct($action, $customdata, $method, $target, $attributes, $editable, $ajaxformdata);
     }
@@ -73,7 +80,7 @@ class base_form extends \moodleform {
         $isfirst = false;
         $existingstepscount = count($existingsteps);
 
-        if ($existingstepscount == 0 ) {
+        if ($existingstepscount == 0) {
             $isfirst = true;
         }
         if ($existingstepscount == 1 && $existingsteps[0]['stepclass'] == $stepclass) {
@@ -94,7 +101,7 @@ class base_form extends \moodleform {
     private function explode_fields($stepfields, $outputprefix) {
         $explodedfields = [];
         foreach ($stepfields as $field) {
-            $explodedfields[] = ['field' => $outputprefix.$field];
+            $explodedfields[] = ['field' => $outputprefix . $field];
         }
 
         return $explodedfields;
@@ -139,7 +146,6 @@ class base_form extends \moodleform {
                     $fields['steps'][] = $steparray;
                 }
             }
-
         }
 
         return $fields;
@@ -197,14 +203,14 @@ class base_form extends \moodleform {
         if ($this->step) {
             // Name.
             $attributes = ['size' => '50'];
-            $mform->addElement('text', 'name', get_string ('stepname', 'tool_trigger'), $attributes);
+            $mform->addElement('text', 'name', get_string('stepname', 'tool_trigger'), $attributes);
             $mform->setType('name', PARAM_ALPHAEXT);
             $mform->addRule('name', get_string('required'), 'required');
             $mform->addHelpButton('name', 'stepname', 'tool_trigger');
 
             // Description.
             $attributes = ['cols' => '50', 'rows' => '2'];
-            $mform->addElement('textarea', 'description', get_string ('stepdescription', 'tool_trigger'), $attributes);
+            $mform->addElement('textarea', 'description', get_string('stepdescription', 'tool_trigger'), $attributes);
             $mform->setType('description', PARAM_ALPHAEXT);
             $mform->addRule('description', get_string('required'), 'required');
             $mform->addHelpButton('description', 'stepdescription', 'tool_trigger');
@@ -219,7 +225,7 @@ class base_form extends \moodleform {
                     $this->_customdata['stepclass'],
                     $this->_customdata['existingsteps'],
                     $this->_customdata['steporder']
-                    );
+                );
                 $fieldhtml = $OUTPUT->render_from_template('tool_trigger/trigger_fields', $triggerfields);
                 $mform->addElement('html', $fieldhtml);
             }
@@ -247,5 +253,4 @@ class base_form extends \moodleform {
             $this->step->form_validation($data, $files)
         );
     }
-
 }

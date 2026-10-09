@@ -30,9 +30,12 @@ namespace tool_trigger;
  * @package     tool_trigger
  * @copyright   Matt Porritt <mattp@catalyst-au.net>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers     \tool_trigger\json\json_export
  */
 final class json_export_test extends \advanced_testcase {
-
+    /**
+     * Set up the test environment.
+     */
     public function setup(): void {
         $this->resetAfterTest(true);
     }
@@ -53,7 +56,7 @@ final class json_export_test extends \advanced_testcase {
                 'type' => 'lookups',
                 'stepclass' => '/tool_trigger/steps/lookups/user_lookup_step',
                 'data' => '{"useridfield":"userid","outputprefix":"user_","nodeleted":"1",'
-                           .'"stepdesc":"User lookup","typedesc":"Lookup"}',
+                           . '"stepdesc":"User lookup","typedesc":"Lookup"}',
                 'steporder' => 0,
             ],
             358001 => [
@@ -81,7 +84,5 @@ final class json_export_test extends \advanced_testcase {
         $proxy = $method->invoke($jsonclass, $workflowobj->name, $now); // Get result of invoked method.
 
         $this->assertEquals($expected, $proxy);
-
     }
-
 }

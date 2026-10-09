@@ -75,8 +75,7 @@ class runhistory_renderable extends \table_sql implements \renderable {
                 get_string('timeexecuted', 'tool_trigger'),
                 get_string('prevstep', 'tool_trigger'),
                 get_string('actions'),
-            ]
-        );
+            ]);
         $this->pagesize = $perpage;
         $systemcontext = \context_system::instance();
         $this->context = $systemcontext;
@@ -206,6 +205,5 @@ class runhistory_renderable extends \table_sql implements \renderable {
 
         echo html_writer::start_tag('div');
         echo html_writer::start_tag('table', $this->attributes);
-
     }
 }

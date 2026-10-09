@@ -23,11 +23,12 @@ namespace tool_trigger;
  * @author     Aaron Wells <aaronw@catalyst.net.nz>
  * @copyright  Catalyst IT 2018
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers     \tool_trigger\steps\filters\fail_filter_step
  */
 final class fail_filter_step_test extends \basic_testcase {
     public function test_execute(): void {
         $step = new \tool_trigger\steps\filters\fail_filter_step();
-        list($status) = $step->execute(null, null, null, null);
+        [$status] = $step->execute(null, null, null, null);
         $this->assertFalse($status);
     }
 }

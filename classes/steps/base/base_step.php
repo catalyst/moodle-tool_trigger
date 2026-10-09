@@ -24,7 +24,6 @@ namespace tool_trigger\steps\base;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 abstract class base_step {
-
     /**
      * @var array Data storage array, typically holding parsed configuration or input values.
      */
@@ -180,7 +179,6 @@ abstract class base_step {
      */
     public static function get_fields() {
         throw new \Exception('Not implemented');
-
     }
 
     /**

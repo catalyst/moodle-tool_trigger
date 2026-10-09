@@ -19,7 +19,7 @@ namespace tool_trigger;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
-require_once(__DIR__.'/fixtures/user_event_fixture.php');
+require_once(__DIR__ . '/fixtures/user_event_fixture.php');
 
 /**
  * Test of the datafield_manager trait
@@ -28,6 +28,7 @@ require_once(__DIR__.'/fixtures/user_event_fixture.php');
  * @author     Aaron Wells <aaronw@catalyst.net.nz>
  * @copyright  Catalyst IT 2018
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers     \tool_trigger\helper\datafield_manager
  */
 final class datafield_manager_test extends \advanced_testcase {
     use \tool_trigger_user_event_fixture;
@@ -141,7 +142,7 @@ Good tag again: tagvalue.', $populatedstring);
      * For completeness' sake, the callback function receives the tag's value
      * and the tag's name, in case there's some use-case that requires both.
      */
-    public function test_render_datafields_transformcallback() {
+    public function test_render_datafields_transformcallback(): void {
         $stepdata = [
             'tagnotused' => 'valuenotused',
             'tagexists' => 'tagvalue',
@@ -152,7 +153,7 @@ Good tag again: tagvalue.', $populatedstring);
         $dfprovider = $this->getMockForTrait('\tool_trigger\helper\datafield_manager');
         $dfprovider->update_datafields($this->event, $stepdata);
 
-        $transformcallback = function($v, $k) {
+        $transformcallback = function ($v, $k) {
             return strtoupper("$k = $v");
         };
 

@@ -31,7 +31,6 @@ namespace tool_trigger;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class learn_process {
-
     /**
      * An array of the fields for that event record.
      *
@@ -82,7 +81,6 @@ class learn_process {
      */
     private function convert_record_type($record, $isother) {
         foreach ($record as $key => $value) {  // Iterate through record fields.
-
             if ($key == 'other') {  // Treat the 'other' field as special.
                 $other = unserialize($value);  // Convert back to PHP array.
                 if ($other) {
@@ -96,7 +94,6 @@ class learn_process {
                 } else {
                     $this->typearray[$key] = gettype($value); // Update result array with result.
                 }
-
             }
         }
 
@@ -211,7 +208,6 @@ class learn_process {
             // Store collated field json in db.
             $this->store_json_fields($learntevent, $jsonfields);
         }
-
     }
 
     /**
@@ -238,8 +234,11 @@ class learn_process {
     public function get_event_fields_json($eventname) {
         global $DB;
         $jsonfields = $DB->get_record(
-                'tool_trigger_event_fields',
-                ['eventname' => $eventname], 'jsonfields', IGNORE_MISSING);
+            'tool_trigger_event_fields',
+            ['eventname' => $eventname],
+            'jsonfields',
+            IGNORE_MISSING
+        );
 
         return $jsonfields;
     }
@@ -256,7 +255,10 @@ class learn_process {
 
         $jsonfields = $DB->get_record(
             'tool_trigger_event_fields',
-            ['eventname' => $eventname], 'jsonfields', IGNORE_MISSING);
+            ['eventname' => $eventname],
+            'jsonfields',
+            IGNORE_MISSING
+        );
 
         if ($jsonfields) {
             $fields = json_decode($jsonfields->jsonfields, true);
@@ -298,5 +300,4 @@ class learn_process {
             $this->store_json_fields($eventname, $jsonfields);
         }
     }
-
 }

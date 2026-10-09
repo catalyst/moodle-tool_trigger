@@ -30,5 +30,3 @@ function xmldb_tool_trigger_install() {
     $learnprocess = new \tool_trigger\learn_process();
     $learnprocess->process_fixtures();
 }
-
-

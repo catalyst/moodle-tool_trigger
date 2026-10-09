@@ -27,7 +27,6 @@ use core_external\external_api;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class webservice_action_step extends base_action_step {
-
     use \tool_trigger\helper\datafield_manager;
 
     /** @var string $functionname Name of the function to be called */
@@ -254,7 +253,7 @@ class webservice_action_step extends base_action_step {
                 $errorfield = 'params';
 
                 // Fill template fields with a number.
-                $transformcallback = function() {
+                $transformcallback = function () {
                     return 0;
                 };
 
@@ -304,7 +303,7 @@ class webservice_action_step extends base_action_step {
             // Fill template fields with a number.
             $replacemap = [];
             $start = PHP_INT_MIN; // Unlikely numerical conflict.
-            $transformcallback = function($matches) use(&$replacemap, &$start) {
+            $transformcallback = function ($matches) use (&$replacemap, &$start) {
                 $replacemap[$start] = $matches[0];
                 return $start++;
             };
