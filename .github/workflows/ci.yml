@@ -10,4 +10,4 @@ jobs:
     with:
       disable_behat: true
       disable_phpdoc: true
-      enable_composer_release: true
+      enable_release: true
